@@ -1,0 +1,15 @@
+.vs/
+
+/Saved
+/Intermediate
+
+/Build
+/Plugins
+*.slns
+*_BuiltData.uasset
+
+DummyClient.pch
+GameServer.pch
+
+Binaries/
+GameServer/x64/
