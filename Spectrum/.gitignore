@@ -1,5 +1,12 @@
 Content/MetaHumans/*
-woman2.uasset
+G_man.uasset
+O_man.uasset
+P_man.uasset
+G_Woman.uasset
+O_woman.uasset
+P_Woman.uasset
+
+
 # Visual Studio 2015 user specific files
 .vs/
 
