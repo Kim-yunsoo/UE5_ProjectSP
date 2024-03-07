@@ -7,8 +7,10 @@ public class Spectrum : ModuleRules
 	public Spectrum(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
-	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "Sockets", "Networking", "EnhancedInput" });
+
+		PublicIncludePaths.AddRange(new string[] { "Spectrum" });
+
+        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "Sockets", "Networking", "EnhancedInput" });
          
 		PrivateDependencyModuleNames.AddRange(new string[] { "ProtobufCore" });
 
