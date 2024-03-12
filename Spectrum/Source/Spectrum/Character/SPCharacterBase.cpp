@@ -39,12 +39,12 @@ ASPCharacterBase::ASPCharacterBase()
 	//	GetMesh()->SetSkeletalMesh(CharacterMeshRef.Object);
 	//}
 
-	//static ConstructorHelpers::FClassFinder<UAnimInstance> AnimInstanceClassRef(TEXT("/Game/Characters/Mannequins/Animations/ABP_Quinn.ABP_Quinn_C"));
+	static ConstructorHelpers::FClassFinder<UAnimInstance> AnimInstanceClassRef(TEXT("/Game/Spectrum/Animation/AB_SP_Anim.AB_SP_Anim_c"));
 
-	//if (AnimInstanceClassRef.Class)
-	//{
-	//	GetMesh()->SetAnimInstanceClass(AnimInstanceClassRef.Class);
-	//}
+	if (AnimInstanceClassRef.Class)
+	{
+		GetMesh()->SetAnimInstanceClass(AnimInstanceClassRef.Class);
+	}
 
 	static ConstructorHelpers::FObjectFinder<USPCharacterControlData> ShoulderDataRef(TEXT("/Script/Spectrum.SPCharacterControlData'/Game/Spectrum/CharacterControl/SPC_Shoulder.SPC_Shoulder'"));
 	if (ShoulderDataRef.Object)
