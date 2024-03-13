@@ -3,6 +3,7 @@
 
 #include "Character/SPCharacterPlayer.h"
 #include "Camera/CameraComponent.h"
+#include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "InputMappingContext.h"
 #include "EnhancedInputComponent.h"
