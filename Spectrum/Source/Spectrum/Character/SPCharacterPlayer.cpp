@@ -8,6 +8,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "SPCharacterControlData.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 
 ASPCharacterPlayer::ASPCharacterPlayer()
@@ -65,9 +66,12 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 		QuaterMoveAction = InputActionQuaterMoveRef.Object;
 	}
 
+	static ConstructorHelpers::FObjectFinder<UInputAction> SpeedUpActionRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_SpeedUp.IA_SP_SpeedUp'"));
+	if (nullptr != SpeedUpActionRef.Object)
+	{
+		SpeedUpAction = SpeedUpActionRef.Object;
+	}
 	CurrentCharacterControlType = ECharacterControlType::Shoulder;
-
-
 }
 
 void ASPCharacterPlayer::BeginPlay()
@@ -89,6 +93,8 @@ void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Player
 	EnhancedInputComponent->BindAction(ShoulderMoveAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::ShoulderMove);
 	EnhancedInputComponent->BindAction(ShoulderLookAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::ShoulderLook);
 	EnhancedInputComponent->BindAction(QuaterMoveAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::QuaterMove);
+	EnhancedInputComponent->BindAction(SpeedUpAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::SpeedUp);
+	EnhancedInputComponent->BindAction(SpeedUpAction, ETriggerEvent::Completed, this, &ASPCharacterPlayer::StopSpeedUp);
 }
 
 void ASPCharacterPlayer::SetCharacterControlData(const USPCharacterControlData* CharacterControlData)
@@ -155,6 +161,16 @@ void ASPCharacterPlayer::ShoulderLook(const FInputActionValue& Value)
 
 	AddControllerYawInput(LookAxisVector.X);
 	AddControllerPitchInput(LookAxisVector.Y);
+}
+
+void ASPCharacterPlayer::SpeedUp(const FInputActionValue& Value)
+{
+	GetCharacterMovement()->MaxWalkSpeed = 900.f;
+}
+
+void ASPCharacterPlayer::StopSpeedUp(const FInputActionValue& Value)
+{
+	GetCharacterMovement()->MaxWalkSpeed = 500.f;
 }
 
 void ASPCharacterPlayer::QuaterMove(const FInputActionValue& Value)
