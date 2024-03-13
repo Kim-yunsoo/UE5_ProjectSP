@@ -10,7 +10,7 @@
 #include "Protocol.pb.h"
 #include "ClientPacketHandler.h"
 #include "TestMyPlayer.h"
-
+#include "Character/SPCharacterPlayer.h"
 
 void USpectrumGameInstance::ConnectToGameServer()
 {
@@ -114,7 +114,7 @@ void USpectrumGameInstance::HandleSpawn(const Protocol::PlayerInfo& PlayerInfo, 
 	if (IsMine)
 	{
 		auto* PC = UGameplayStatics::GetPlayerController(this, 0);
-		ATestPlayer* Player = Cast<ATestPlayer>(PC->GetPawn());
+		ASPCharacterBase* Player = Cast<ASPCharacterBase>(PC->GetPawn());
 		if (Player == nullptr)
 			return;
 
@@ -125,7 +125,7 @@ void USpectrumGameInstance::HandleSpawn(const Protocol::PlayerInfo& PlayerInfo, 
 	}
 	else
 	{
-		ATestPlayer* Player = Cast<ATestPlayer>(World->SpawnActor(OtherPlayerClass, &SpawnLocation));
+		ASPCharacterBase* Player = Cast<ASPCharacterBase>(World->SpawnActor(OtherPlayerClass, &SpawnLocation));
 		Player->SetPlayerInfo(PlayerInfo);
 		Players.Add(PlayerInfo.object_id(), Player);
 	}
@@ -155,7 +155,7 @@ void USpectrumGameInstance::HandleDespawn(uint64 ObjectId)
 	if (World == nullptr)
 		return;
 
-	ATestPlayer** FindActor = Players.Find(ObjectId);
+	ASPCharacterBase** FindActor = Players.Find(ObjectId);
 	if (FindActor == nullptr)
 		return;
 
@@ -182,11 +182,11 @@ void USpectrumGameInstance::HandleMove(const Protocol::S_MOVE& MovePkt)
 		return;
 
 	const uint64 ObjectId = MovePkt.info().object_id();
-	ATestPlayer** FindActor = Players.Find(ObjectId);
+	ASPCharacterBase** FindActor = Players.Find(ObjectId);
 	if (FindActor == nullptr)
 		return;
 
-	ATestPlayer* Player = (*FindActor);
+	ASPCharacterBase* Player = (*FindActor);
 	if (Player->IsMyPlayer())
 		return;
 

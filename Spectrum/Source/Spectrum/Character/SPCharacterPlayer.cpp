@@ -8,22 +8,12 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "SPCharacterControlData.h"
+#include "Spectrum.h"
+#include "Kismet/KismetMathLibrary.h"
 
 
 ASPCharacterPlayer::ASPCharacterPlayer()
 {
-	//Mesh
-	Face = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Face"));
-	Face->SetupAttachment(GetMesh());
-
-	Torso = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Torso"));
-	Torso->SetupAttachment(GetMesh());
-
-	Legs = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Legs"));
-	Legs->SetupAttachment(GetMesh());
-
-	Feet = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Feet"));
-	Feet->SetupAttachment(GetMesh());
 
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
@@ -34,6 +24,7 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = false;
 
+	// 카메라 시점에 따른 에셋	로드
 	// Input
 	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionJumpRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Input/Actions/IA_SP_Jump.IA_SP_Jump'"));
 	if (nullptr != InputActionJumpRef.Object)
@@ -75,6 +66,58 @@ void ASPCharacterPlayer::BeginPlay()
 	Super::BeginPlay();
 
 	SetCharacterControl(CurrentCharacterControlType);
+
+	//Add Input Mapping Context
+	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			Subsystem->AddMappingContext(DefaultMappingContext, 0);
+		}
+	}
+}
+
+void ASPCharacterPlayer::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	// 보내는게 맞는지 판정
+	bool ForceSendPacket = false;
+
+	if (LastDesiredInput != DesiredInput)
+	{
+		ForceSendPacket = true;
+		LastDesiredInput = DesiredInput;
+	}
+
+	// 보낼 상태 정보(움직이고 있는지, 아닌지)
+	if (DesiredInput == FVector2D::Zero())
+		SetMoveState(Protocol::MOVE_STATE_IDLE);
+	else
+		SetMoveState(Protocol::MOVE_STATE_RUN);
+
+
+	// 0.1초마다 서버로 이동 패킷을 전송
+	MovePacketSendTimer -= DeltaTime;
+
+	if (MovePacketSendTimer <= 0 || ForceSendPacket)
+	{
+		MovePacketSendTimer = MOVE_PACKET_SEND_DELAY;
+
+		Protocol::C_MOVE MovePkt;
+
+		// 현재 상태 정보를 패킷에 담아서 서버로 전송
+		{
+			Protocol::PlayerInfo* Info = MovePkt.mutable_info();
+			Info->CopyFrom(*PlayerInfo);
+			Info->set_yaw(DesiredYaw);
+			Info->set_state(GetMoveState());
+		}
+
+		SEND_PACKET(MovePkt);
+	}
+
+
 }
 
 void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -83,12 +126,19 @@ void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Player
 
 	UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent);
 
-	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
-	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
-	EnhancedInputComponent->BindAction(ChangeControlAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::ChangeCharacterControl);
-	EnhancedInputComponent->BindAction(ShoulderMoveAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::ShoulderMove);
-	EnhancedInputComponent->BindAction(ShoulderLookAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::ShoulderLook);
-	EnhancedInputComponent->BindAction(QuaterMoveAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::QuaterMove);
+	//if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
+
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+		EnhancedInputComponent->BindAction(ChangeControlAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::ChangeCharacterControl);
+		EnhancedInputComponent->BindAction(ShoulderMoveAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::ShoulderMove);
+		EnhancedInputComponent->BindAction(ShoulderLookAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::ShoulderLook);
+		EnhancedInputComponent->BindAction(QuaterMoveAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::QuaterMove);
+	//}
+	//else
+	//{
+	//	//UE_LOG(LogTemplateCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
+	//}
 }
 
 void ASPCharacterPlayer::SetCharacterControlData(const USPCharacterControlData* CharacterControlData)
@@ -139,27 +189,55 @@ void ASPCharacterPlayer::ShoulderMove(const FInputActionValue& Value)
 {
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
+	if (Controller != nullptr)
+	{
+		const FRotator Rotation = Controller->GetControlRotation();
+		const FRotator YawRotation(0, Rotation.Yaw, 0);
+
+		const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+		const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+
+		AddMovementInput(ForwardDirection, MovementVector.X);
+		AddMovementInput(RightDirection, MovementVector.Y);
+
+		// 서버로 이동 패킷을 전송하기 위해 최종 결과물 저장
+		{
+			DesiredInput = MovementVector;
+
+			// 최종적으로 바라보는 방향을 계산
+			DesiredMoveDirection = FVector::ZeroVector;
+			DesiredMoveDirection += ForwardDirection * MovementVector.Y;
+			DesiredMoveDirection += RightDirection * MovementVector.X;
+			DesiredMoveDirection.Normalize();
+
+			const FVector Location = GetActorLocation();
+			FRotator Rotator = UKismetMathLibrary::FindLookAtRotation(Location, Location + DesiredMoveDirection);
+			DesiredYaw = Rotator.Yaw;
+		}
+
+	}
+}
+
+void ASPCharacterPlayer::ShoulderLook(const FInputActionValue& Value)
+{
+	FVector2D LookAxisVector = Value.Get<FVector2D>();
+	if (Controller != nullptr)
+	{
+		AddControllerYawInput(LookAxisVector.X);
+		AddControllerPitchInput(LookAxisVector.Y);
+	}
+}
+
+void ASPCharacterPlayer::QuaterMove(const FInputActionValue& Value)
+{
+	FVector2D MovementVector = Value.Get<FVector2D>();
+
 	const FRotator Rotation = Controller->GetControlRotation();
 	const FRotator YawRotation(0, Rotation.Yaw, 0);
 
 	const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 	const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 
-	AddMovementInput(ForwardDirection, MovementVector.X);
-	AddMovementInput(RightDirection, MovementVector.Y);
-}
-
-void ASPCharacterPlayer::ShoulderLook(const FInputActionValue& Value)
-{
-	FVector2D LookAxisVector = Value.Get<FVector2D>();
-
-	AddControllerYawInput(LookAxisVector.X);
-	AddControllerPitchInput(LookAxisVector.Y);
-}
-
-void ASPCharacterPlayer::QuaterMove(const FInputActionValue& Value)
-{
-	FVector2D MovementVector = Value.Get<FVector2D>();
 
 	float InputSizeSquared = MovementVector.SquaredLength();
 	float MovementVectorSize = 1.0f;
@@ -177,5 +255,23 @@ void ASPCharacterPlayer::QuaterMove(const FInputActionValue& Value)
 	FVector MoveDirection = FVector(MovementVector.X, MovementVector.Y, 0.0f);
 	GetController()->SetControlRotation(FRotationMatrix::MakeFromX(MoveDirection).Rotator());
 	AddMovementInput(MoveDirection, MovementVectorSize);
+
+
+
+
+	// 서버로 이동 패킷을 전송하기 위해 최종 결과물 저장
+	{
+		DesiredInput = MovementVector;
+
+		// 최종적으로 바라보는 방향을 계산
+		DesiredMoveDirection = FVector::ZeroVector;
+		DesiredMoveDirection += ForwardDirection * MovementVector.Y;
+		DesiredMoveDirection += RightDirection * MovementVector.X;
+		DesiredMoveDirection.Normalize();
+
+		const FVector Location = GetActorLocation();
+		FRotator Rotator = UKismetMathLibrary::FindLookAtRotation(Location, Location + DesiredMoveDirection);
+		DesiredYaw = Rotator.Yaw;
+	}
 }
 

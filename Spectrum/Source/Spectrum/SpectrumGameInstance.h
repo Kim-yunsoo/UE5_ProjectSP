@@ -7,7 +7,7 @@
 #include "Spectrum.h"
 #include "SpectrumGameInstance.generated.h"
 
-class ATestPlayer;
+class ASPCharacterBase;
 /**
  * 
  */
@@ -51,8 +51,8 @@ public:
 
 public:
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<ATestPlayer> OtherPlayerClass;
+	TSubclassOf<ASPCharacterBase> OtherPlayerClass;
 
-	ATestPlayer* MyPlayer;
-	TMap<uint64, ATestPlayer*> Players;
+	ASPCharacterBase* MyPlayer;
+	TMap<uint64, ASPCharacterBase*> Players;
 };
