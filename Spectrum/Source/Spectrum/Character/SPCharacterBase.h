@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "InputActionValue.h"
+#include "Protocol.pb.h"
 #include "SPCharacterBase.generated.h"
 
 UENUM()
@@ -21,10 +23,47 @@ class SPECTRUM_API ASPCharacterBase : public ACharacter
 	public:
 	// Sets default values for this character's properties
 	ASPCharacterBase();
+	virtual ~ASPCharacterBase();
+
 
 protected:
+
+	virtual void BeginPlay();
+	virtual void Tick(float DeltaSeconds) override;			// 매 프레임마다 갱신되어야 하는 것들 여기에  와랄ㄹ라
+
+public:
+	bool IsMyPlayer();
+
+	Protocol::MoveState GetMoveState() { return PlayerInfo->state(); }
+	void SetMoveState(Protocol::MoveState State);
+
+public:
+	void SetPlayerInfo(const Protocol::PlayerInfo& Info);
+	void SetDestInfo(const Protocol::PlayerInfo& Info);
+	Protocol::PlayerInfo* GetPlayerInfo() { return PlayerInfo; }
+
+protected:
+	class Protocol::PlayerInfo* PlayerInfo; // 현재 위치
+	class Protocol::PlayerInfo* DestInfo;	// 가려는 위치
+
+protected:
+	// 시점변환
 	virtual void SetCharacterControlData(const class USPCharacterControlData* CharacterControlData);
 
 	UPROPERTY(EditAnywhere, Category = CharacterControl, Meta = (AllowPrivateAccess = "true"))
 	TMap<ECharacterControlType, class USPCharacterControlData*> CharacterControlManager;
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	TObjectPtr<class USkeletalMeshComponent>Face;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	TObjectPtr<class USkeletalMeshComponent> Torso;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	TObjectPtr<class USkeletalMeshComponent> Legs;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	TObjectPtr<class USkeletalMeshComponent> Feet;
+
+
+
+
 };
