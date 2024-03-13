@@ -17,7 +17,7 @@ class SPECTRUM_API USPAnimInstance : public UAnimInstance
 	USPAnimInstance();
 
 protected:
-	virtual void NativeInitializeAnimation() override;//애님그래프 시작시 작동
+	virtual void NativeInitializeAnimation() override; //애님그래프 시작시 작동
 
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override; //프레임마다 계속 업데이트 
 
@@ -41,8 +41,10 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character)
 	uint8 bIsFalling : 1; //떨어지고있는지
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character)
 	uint8 bIsJumping : 1; //점프하고있는지
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character)
 	float JumpingThreshould; //점프중인지 
 
