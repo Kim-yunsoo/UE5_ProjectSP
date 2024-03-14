@@ -65,6 +65,8 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 		SpeedUpAction = SpeedUpActionRef.Object;
 	}
 	CurrentCharacterControlType = ECharacterControlType::Shoulder;
+
+	LastInput = FVector2D::ZeroVector;
 }
 
 void ASPCharacterPlayer::BeginPlay()
@@ -81,6 +83,8 @@ void ASPCharacterPlayer::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
+
+	
 }
 
 void ASPCharacterPlayer::Tick(float DeltaTime)
@@ -97,14 +101,49 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 	}
 
 	// 보낼 상태 정보(움직이고 있는지, 아닌지)
-	if (DesiredInput == FVector2D::Zero())
+	if (DesiredInput == FVector2D::Zero()) {
+
+		SetMoveState(Protocol::MOVE_STATE_IDLE);
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("IDLE")));
+
+	}
+	else {
+
+		SetMoveState(Protocol::MOVE_STATE_RUN);
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("RUN")));
+
+	}
+	/*if (DesiredInput.SizeSquared() <= KINDA_SMALL_NUMBER)
 		SetMoveState(Protocol::MOVE_STATE_IDLE);
 	else
-		SetMoveState(Protocol::MOVE_STATE_RUN);
+		SetMoveState(Protocol::MOVE_STATE_RUN);*/
+
+
+
+	// 이전 입력과 현재 입력이 다른지 비교
+	//if (DesiredInput == LastInput)
+	//	SetMoveState(Protocol::MOVE_STATE_IDLE);
+	//else
+	//	SetMoveState(Protocol::MOVE_STATE_RUN);
+
+	//LastInput = DesiredInput; // 현재 입력을 다음 비교를 위해 저장
+
+
+
+	//if (!(DesiredInput == FVector2D::Zero()) && !(LastInput == DesiredInput))
+	//{
+	//	SetMoveState(Protocol::MOVE_STATE_RUN);
+	//}
+	//else if (DesiredInput == FVector2D::Zero() || DesiredInput == FVector2D::Zero())
+	//{
+	//	SetMoveState(Protocol::MOVE_STATE_IDLE);
+	//}
+
+	//LastInput = DesiredInput;
 
 
 	// 0.1초마다 서버로 이동 패킷을 전송
-	MovePacketSendTimer -= DeltaTime;
+	MovePacketSendTimer -= DeltaTime*10;
 
 	if (MovePacketSendTimer <= 0 || ForceSendPacket)
 	{
@@ -118,6 +157,14 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 			Info->CopyFrom(*PlayerInfo);
 			Info->set_yaw(DesiredYaw);
 			Info->set_state(GetMoveState());
+
+			////Info 창에 출력
+			//if(GetMoveState()== Protocol::MOVE_STATE_IDLE)
+			//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("IDLE")));
+			//else if(GetMoveState() == Protocol::MOVE_STATE_RUN)
+			//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("RUN")));
+
+
 		}
 
 		SEND_PACKET(MovePkt);
@@ -130,17 +177,29 @@ void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Player
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent);
+	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
+	{
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+
+		EnhancedInputComponent->BindAction(ChangeControlAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::ChangeCharacterControl);
+
+		EnhancedInputComponent->BindAction(ShoulderMoveAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::ShoulderMove);
+		EnhancedInputComponent->BindAction(ShoulderMoveAction, ETriggerEvent::Completed, this, &ASPCharacterPlayer::ShoulderMove);
+
+		EnhancedInputComponent->BindAction(ShoulderLookAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::ShoulderLook);
+
+		EnhancedInputComponent->BindAction(QuaterMoveAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::QuaterMove);
+		EnhancedInputComponent->BindAction(QuaterMoveAction, ETriggerEvent::Completed, this, &ASPCharacterPlayer::QuaterMove);
+
+		EnhancedInputComponent->BindAction(SpeedUpAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::SpeedUp);
+		EnhancedInputComponent->BindAction(SpeedUpAction, ETriggerEvent::Completed, this, &ASPCharacterPlayer::StopSpeedUp);
 
 
-	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
-	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
-	EnhancedInputComponent->BindAction(ChangeControlAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::ChangeCharacterControl);
-	EnhancedInputComponent->BindAction(ShoulderMoveAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::ShoulderMove);
-	EnhancedInputComponent->BindAction(ShoulderLookAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::ShoulderLook);
-	EnhancedInputComponent->BindAction(QuaterMoveAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::QuaterMove);
-	EnhancedInputComponent->BindAction(SpeedUpAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::SpeedUp);
-	EnhancedInputComponent->BindAction(SpeedUpAction, ETriggerEvent::Completed, this, &ASPCharacterPlayer::StopSpeedUp);
+	}
+
+
+
 
 }
 
@@ -188,6 +247,7 @@ void ASPCharacterPlayer::SetCharacterControl(ECharacterControlType NewCharacterC
 
 	CurrentCharacterControlType = NewCharacterControlType;
 }
+
 void ASPCharacterPlayer::ShoulderMove(const FInputActionValue& Value)
 {
 	FVector2D MovementVector = Value.Get<FVector2D>();
