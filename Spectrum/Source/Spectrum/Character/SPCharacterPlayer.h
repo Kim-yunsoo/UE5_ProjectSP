@@ -56,8 +56,12 @@ protected:
 	FVector DesiredMoveDirection;
 	float DesiredYaw;
 
+	FVector2D LastInput; // 이전 프레임의 입력 값을 저장하는 멤버 변수
+	float LastMoveTime; // 멤버 변수로 마지막으로 움직인 시간을 기록합니다.
+
 	// 직전 방향값(테스트용)
 	FVector2D LastDesiredInput;
+
 
 
 	//Camera
