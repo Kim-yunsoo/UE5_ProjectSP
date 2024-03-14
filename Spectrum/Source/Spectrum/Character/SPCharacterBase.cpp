@@ -6,8 +6,9 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "SPCharacterControlData.h"
 #include "SPCharacterPlayer.h"
+#include "Kismet/KismetMathLibrary.h"
 
-// Sets default values
+
 ASPCharacterBase::ASPCharacterBase()
 {
 
@@ -32,6 +33,8 @@ ASPCharacterBase::ASPCharacterBase()
 	GetCharacterMovement()->MaxWalkSpeed = 500.f;
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
+
+	GetCharacterMovement()->bRunPhysicsWithNoController = true;
 
 	//Mesh
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -96.0f), FRotator(0.0f, -90.0f, 0.0f));
@@ -120,35 +123,53 @@ void ASPCharacterBase::Tick(float DeltaSeconds)
 
 	if (IsMyPlayer() == false)		// 내 플레이어가 아닌 경우에만 DestInfo를 이용하여 이동
 	{								// 야금야금 이동하도록 보정
-		//FVector Location = GetActorLocation();
-		//FVector DestLocation = FVector(DestInfo->x(), DestInfo->y(), DestInfo->z());
 
-		//FVector MoveDir = (DestLocation - Location);
+		FVector Location = GetActorLocation();
+		FVector DestLocation = FVector(DestInfo->x(), DestInfo->y(), DestInfo->z());
+
+		FVector MoveDir = (DestLocation - Location);
 		//const float DistToDest = MoveDir.Length();
-		//MoveDir.Normalize();
+		MoveDir.Length();
+		MoveDir.Normalize();
+
+		FRotator Rotator = MoveDir.Rotation();
+		float DestLook = Rotator.Yaw;
+		//float LastLook;
 
 		//float MoveDist = (MoveDir * 600.f * DeltaSeconds).Length();
 		//MoveDist = FMath::Min(MoveDist, DistToDest);	//오버해서 가지 않게 제한
 		//FVector NextLocation = Location + MoveDir* MoveDist;
 
-		//SetActorLocation(NextLocation);
+		SetActorLocation(DestLocation);
 
 		const Protocol::MoveState State = PlayerInfo->state();
 
 		if (State == Protocol::MOVE_STATE_RUN)
 		{
-			SetActorRotation(FRotator(0, DestInfo->yaw(), 0));
+			//SetActorRotation(FRotator(0, DestLook, 0));
+			SetActorRotation(FRotator(0, DestInfo->yaw()-90.f, 0));
 			AddMovementInput(GetActorForwardVector());
+
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("RUN")));
+			//LastLook = DestLook;
 		}
-		else
+		else if (State == Protocol::MOVE_STATE_IDLE)
 		{
-			/* 나중에 만약 중간에 패킷을 못받다가 갑자기 받으면 가야하는 위치가 너무 멀어질수도 있으니까
-			* 이거 어떻게 처리할지 생각해봐야함
-			* 순간이동이나 그런거로 처리할지, 아니면 서버에서 패킷을 받지 못했다고 알려줄지
-			* 보정해서 가게 할지
-			* 아니면 그냥 무시할지
-			*/
+			//SetActorRotation(FRotator(0, LastLook, 0));
+			//AddMovementInput(GetActorForwardVector());
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("IDLE")));
+
 		}
+
+		//else
+		//{
+		//	/* 나중에 만약 중간에 패킷을 못받다가 갑자기 받으면 가야하는 위치가 너무 멀어질수도 있으니까
+		//	* 이거 어떻게 처리할지 생각해봐야함
+		//	* 순간이동이나 그런거로 처리할지, 아니면 서버에서 패킷을 받지 못했다고 알려줄지
+		//	* 보정해서 가게 할지
+		//	* 아니면 그냥 무시할지
+		//	*/
+		//}
 	}
 }
 
@@ -204,6 +225,7 @@ void ASPCharacterBase::SetCharacterControlData(const USPCharacterControlData* Ch
 	GetCharacterMovement()->bOrientRotationToMovement = CharacterControlData->bOrientRotationToMovement;
 	GetCharacterMovement()->bUseControllerDesiredRotation = CharacterControlData->bUseControllerDesiredRotation;
 	GetCharacterMovement()->RotationRate = CharacterControlData->RotationRate;
+
 }
 
 
