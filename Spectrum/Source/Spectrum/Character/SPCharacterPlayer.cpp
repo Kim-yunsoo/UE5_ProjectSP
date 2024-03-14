@@ -269,7 +269,7 @@ void ASPCharacterPlayer::ShoulderMove(const FInputActionValue& Value)
 
 			// 최종적으로 바라보는 방향을 계산
 			DesiredMoveDirection = FVector::ZeroVector;
-			DesiredMoveDirection += ForwardDirection * MovementVector.Y;
+			DesiredMoveDirection -= ForwardDirection * MovementVector.Y;
 			DesiredMoveDirection += RightDirection * MovementVector.X;
 			DesiredMoveDirection.Normalize();
 
