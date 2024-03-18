@@ -64,9 +64,18 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 	{
 		SpeedUpAction = SpeedUpActionRef.Object;
 	}
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> AimActionRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_MouseLeft.IA_SP_MouseLeft'"));
+	if (nullptr != AimActionRef.Object)
+	{
+		AimAction = AimActionRef.Object;
+	}
+
 	CurrentCharacterControlType = ECharacterControlType::Shoulder;
 
 	LastInput = FVector2D::ZeroVector;
+
+	bIsAiming = false;
 }
 
 void ASPCharacterPlayer::BeginPlay()
@@ -195,6 +204,9 @@ void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Player
 		EnhancedInputComponent->BindAction(SpeedUpAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::SpeedUp);
 		EnhancedInputComponent->BindAction(SpeedUpAction, ETriggerEvent::Completed, this, &ASPCharacterPlayer::StopSpeedUp);
 
+		EnhancedInputComponent->BindAction(SpeedUpAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::SpeedUp);
+		EnhancedInputComponent->BindAction(SpeedUpAction, ETriggerEvent::Completed, this, &ASPCharacterPlayer::StopSpeedUp);
+
 
 	}
 
@@ -304,6 +316,16 @@ void ASPCharacterPlayer::StopSpeedUp(const FInputActionValue& Value)
 	GetCharacterMovement()->MaxWalkSpeed = 500.f;
 }
 
+void ASPCharacterPlayer::Aiming(const FInputActionValue& Value)
+{
+	bIsAiming = true;
+}
+
+void ASPCharacterPlayer::StopAiming(const FInputActionValue& Value)
+{
+	bIsAiming = false;
+}
+
 void ASPCharacterPlayer::QuaterMove(const FInputActionValue& Value)
 {
 	FVector2D MovementVector = Value.Get<FVector2D>();
@@ -330,8 +352,6 @@ void ASPCharacterPlayer::QuaterMove(const FInputActionValue& Value)
 	FVector MoveDirection = FVector(MovementVector.X, MovementVector.Y, 0.0f);
 	GetController()->SetControlRotation(FRotationMatrix::MakeFromX(MoveDirection).Rotator());
 	AddMovementInput(MoveDirection, MovementVectorSize);
-
-
 
 
 	// 서버로 이동 패킷을 전송하기 위해 최종 결과물 저장
