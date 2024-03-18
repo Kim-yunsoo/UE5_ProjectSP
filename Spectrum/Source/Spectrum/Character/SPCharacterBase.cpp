@@ -150,14 +150,14 @@ void ASPCharacterBase::Tick(float DeltaSeconds)
 			SetActorRotation(FRotator(0, DestInfo->yaw()-90.f, 0));
 			AddMovementInput(GetActorForwardVector());
 
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("RUN")));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("RUN")));
 			//LastLook = DestLook;
 		}
 		else if (State == Protocol::MOVE_STATE_IDLE)
 		{
 			//SetActorRotation(FRotator(0, LastLook, 0));
 			//AddMovementInput(GetActorForwardVector());
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("IDLE")));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("IDLE")));
 
 		}
 
