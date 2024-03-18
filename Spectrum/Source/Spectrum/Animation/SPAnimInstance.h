@@ -22,7 +22,7 @@ protected:
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override; //프레임마다 계속 업데이트 
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Character)
-	TObjectPtr<class ACharacter> Owner; //애님 인스턴스를 소유하고 있는 정보를 담는 변수 
+	TObjectPtr<class ASPCharacterPlayer> Owner; //애님 인스턴스를 소유하고 있는 정보를 담는 변수 
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Character)
 	TObjectPtr<class UCharacterMovementComponent> Movement;

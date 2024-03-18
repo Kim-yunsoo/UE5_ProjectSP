@@ -17,12 +17,11 @@ void USPAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
 	//GetOwningActor() 현재 소유중인 액터정보를 얻을 수 있다. 리턴 타입이 액터라 캐릭터로 형변환
-	Owner = Cast<ACharacter>(GetOwningActor());
+	Owner = Cast<ASPCharacterPlayer>(GetOwningActor());
 	if (Owner)
 	{
 		Movement = Owner->GetCharacterMovement();
 	}
-
 }
 
 void USPAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -44,5 +43,7 @@ void USPAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		//bIsAiming= Owner->bis
 		/*if (bIsAiming)
 			UE_LOG(LogTemp, Log, TEXT("%d"), bIsAiming);*/
+		bIsAiming = Owner->bIsAiming;
+
 	}
 }
