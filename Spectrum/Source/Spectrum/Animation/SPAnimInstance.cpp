@@ -23,7 +23,6 @@ void USPAnimInstance::NativeInitializeAnimation()
 		Movement = Owner->GetCharacterMovement();
 	}
 
-
 }
 
 void USPAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
