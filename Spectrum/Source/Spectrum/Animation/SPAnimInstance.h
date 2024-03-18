@@ -48,4 +48,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character)
 	float JumpingThreshould; //점프중인지 
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character)
+	uint8 bIsAiming : 1; //점프하고있는지
+
 };

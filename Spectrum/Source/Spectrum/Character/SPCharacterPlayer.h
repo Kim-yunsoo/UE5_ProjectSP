@@ -43,7 +43,8 @@ protected: // 카메라
 	void SpeedUp(const FInputActionValue& Value);
 	void StopSpeedUp(const FInputActionValue& Value);
 
-
+	void Aiming(const FInputActionValue& Value);
+	void StopAiming(const FInputActionValue& Value);
 
 	ECharacterControlType CurrentCharacterControlType;
 
@@ -92,7 +93,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> SpeedUpAction;
 
-
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> AimAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputMappingContext* DefaultMappingContext;
@@ -102,5 +104,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* LookAction;
 
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	uint8 bIsAiming : 1; //점프하고있는지
 
 };
