@@ -50,5 +50,10 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character)
 	uint8 bIsAiming : 1; //점프하고있는지
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character)
+	float DeltaY;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character)
+	float DeltaZ;
 };

@@ -65,7 +65,7 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 		SpeedUpAction = SpeedUpActionRef.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UInputAction> AimActionRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_MouseLeft.IA_SP_MouseLeft'"));
+	static ConstructorHelpers::FObjectFinder<UInputAction> AimActionRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_MouseRight.IA_SP_MouseRight'"));
 	if (nullptr != AimActionRef.Object)
 	{
 		AimAction = AimActionRef.Object;
@@ -204,8 +204,8 @@ void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Player
 		EnhancedInputComponent->BindAction(SpeedUpAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::SpeedUp);
 		EnhancedInputComponent->BindAction(SpeedUpAction, ETriggerEvent::Completed, this, &ASPCharacterPlayer::StopSpeedUp);
 
-		EnhancedInputComponent->BindAction(SpeedUpAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::SpeedUp);
-		EnhancedInputComponent->BindAction(SpeedUpAction, ETriggerEvent::Completed, this, &ASPCharacterPlayer::StopSpeedUp);
+		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::Aiming);
+		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this, &ASPCharacterPlayer::StopAiming);
 
 
 	}
@@ -308,7 +308,9 @@ void ASPCharacterPlayer::ShoulderLook(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::SpeedUp(const FInputActionValue& Value)
 {
+	if (bIsAiming==false) {
 	GetCharacterMovement()->MaxWalkSpeed = 900.f;
+	}
 }
 
 void ASPCharacterPlayer::StopSpeedUp(const FInputActionValue& Value)
