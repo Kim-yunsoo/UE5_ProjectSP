@@ -104,13 +104,13 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 	if (DesiredInput == FVector2D::Zero()) {
 
 		SetMoveState(Protocol::MOVE_STATE_IDLE);
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("IDLE")));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("IDLE")));
 
 	}
 	else {
 
 		SetMoveState(Protocol::MOVE_STATE_RUN);
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("RUN")));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("RUN")));
 
 	}
 	/*if (DesiredInput.SizeSquared() <= KINDA_SMALL_NUMBER)
