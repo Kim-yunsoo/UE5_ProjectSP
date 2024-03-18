@@ -22,9 +22,9 @@ bool Room::HandleEnterPlayerLocked(PlayerRef player)
 	bool success = EnterPlayer(player);
 
 	// 랜덤 위치
-	player->playerInfo->set_x(Utils::GetRandom(0.f, 500.f));
-	player->playerInfo->set_y(Utils::GetRandom(0.f, 500.f));
-	player->playerInfo->set_z(100.f);
+	player->playerInfo->set_x(-159.f);
+	player->playerInfo->set_y(0.f);
+	player->playerInfo->set_z(92.f);
 	player->playerInfo->set_yaw(Utils::GetRandom(0.f, 100.f));
 
 	// 입장 사실을 신입 플레이어에게 알린다
