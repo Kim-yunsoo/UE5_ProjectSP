@@ -64,7 +64,6 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 	{
 		SpeedUpAction = SpeedUpActionRef.Object;
 	}
-
 	static ConstructorHelpers::FObjectFinder<UInputAction> AimActionRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_MouseRight.IA_SP_MouseRight'"));
 	if (nullptr != AimActionRef.Object)
 	{
