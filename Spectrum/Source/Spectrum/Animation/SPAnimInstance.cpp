@@ -5,24 +5,26 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Character/SPCharacterPlayer.h"
+#include "Kismet/KismetMathLibrary.h"
 
 USPAnimInstance::USPAnimInstance()
 {
 	MovingThreshould = 3.0f;
 	JumpingThreshould = 100.0f;
 	bIsAiming = false;
+	DeltaY = 0;
+	DeltaZ = 0;
 }
 
 void USPAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
 	//GetOwningActor() 현재 소유중인 액터정보를 얻을 수 있다. 리턴 타입이 액터라 캐릭터로 형변환
-	Owner = Cast<ACharacter>(GetOwningActor());
+	Owner = Cast<ASPCharacterPlayer>(GetOwningActor());
 	if (Owner)
 	{
 		Movement = Owner->GetCharacterMovement();
 	}
-
 }
 
 void USPAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -36,13 +38,15 @@ void USPAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		bIsIdle = GroundSpeed < MovingThreshould;
 		bIsFalling = Movement->IsFalling();
 		bIsJumping = bIsFalling & (Velocity.Z > JumpingThreshould);
-	/*	FProperty* NameProp = ASPCharacterPlayer::StaticClass()->FindPropertyByName(TEXT("bIsAiming"));
-		if (NameProp)
-		{
-			NameProp->GetValue_InContainer(Owner,&bIsAiming);
-		}*/
-		//bIsAiming= Owner->bis
-		/*if (bIsAiming)
-			UE_LOG(LogTemp, Log, TEXT("%d"), bIsAiming);*/
+		bIsAiming = Owner->bIsAiming;
+
+
+		FRotator ControlRotation = Owner->GetControlRotation();
+		FRotator GetActorRotation = Owner->GetActorRotation();
+		FRotator DeltaRotation=UKismetMathLibrary::NormalizedDeltaRotator(ControlRotation, GetActorRotation);
+		DeltaY = DeltaRotation.Pitch;
+		DeltaZ =  DeltaRotation.Yaw;
+
+		UE_LOG(LogTemp, Log, TEXT("DeltaY : %d"), DeltaY);
 	}
 }

@@ -106,6 +106,6 @@ protected:
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-	uint8 bIsAiming : 1; //점프하고있는지
+	uint8 bIsAiming : 1; //조준 
 
 };
