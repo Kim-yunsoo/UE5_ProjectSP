@@ -208,10 +208,6 @@ void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Player
 
 
 	}
-
-
-
-
 }
 
 void ASPCharacterPlayer::SetCharacterControlData(const USPCharacterControlData* CharacterControlData)
