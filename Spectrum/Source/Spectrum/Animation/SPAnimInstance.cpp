@@ -47,9 +47,6 @@ void USPAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		DeltaY = DeltaRotation.Pitch;
 		DeltaZ = DeltaRotation.Yaw;
 
-		UE_LOG(LogTemp, Log, TEXT("DeltaY : %d"), DeltaY);
-
-
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Pitch %d"), DeltaY));
 		//UE_LOG(LogTemp, Log, TEXT("DeltaY : %d"), DeltaY);
 		//UE_LOG(LogTemp, Log, TEXT("DeltaY : %d"), DeltaY);
