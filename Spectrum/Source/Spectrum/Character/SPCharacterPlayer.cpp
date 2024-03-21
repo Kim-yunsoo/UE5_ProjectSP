@@ -67,7 +67,13 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 	static ConstructorHelpers::FObjectFinder<UInputAction> AimActionRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_MouseRight.IA_SP_MouseRight'"));
 	if (nullptr != AimActionRef.Object)
 	{
-		AimAction = AimActionRef.Object;
+		MouseRight = AimActionRef.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> MouseLeftRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_MouseLeft.IA_SP_MouseLeft'"));
+	if (nullptr != MouseLeftRef.Object)
+	{
+		MouseLeft = MouseLeftRef.Object;
 	}
 
 	CurrentCharacterControlType = ECharacterControlType::Shoulder;
@@ -75,6 +81,7 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 	LastInput = FVector2D::ZeroVector;
 
 	bIsAiming = false;
+	bIsHolding=false;
 }
 
 void ASPCharacterPlayer::BeginPlay()
@@ -203,15 +210,11 @@ void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Player
 		EnhancedInputComponent->BindAction(SpeedUpAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::SpeedUp);
 		EnhancedInputComponent->BindAction(SpeedUpAction, ETriggerEvent::Completed, this, &ASPCharacterPlayer::StopSpeedUp);
 
-		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::Aiming);
-		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this, &ASPCharacterPlayer::StopAiming);
+		EnhancedInputComponent->BindAction(MouseRight, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::Graping);
+		EnhancedInputComponent->BindAction(MouseRight, ETriggerEvent::Completed, this, &ASPCharacterPlayer::StopGraping);
 
 
 	}
-
-
-
-
 }
 
 void ASPCharacterPlayer::SetCharacterControlData(const USPCharacterControlData* CharacterControlData)
@@ -325,6 +328,22 @@ void ASPCharacterPlayer::Aiming(const FInputActionValue& Value)
 void ASPCharacterPlayer::StopAiming(const FInputActionValue& Value)
 {
 	bIsAiming = false;
+}
+
+void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
+{
+	if (false == bIsHolding)
+	{
+
+	}
+	else
+	{
+
+	}
+}
+
+void ASPCharacterPlayer::StopGraping(const FInputActionValue& Value)
+{
 }
 
 void ASPCharacterPlayer::QuaterMove(const FInputActionValue& Value)

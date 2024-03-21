@@ -38,7 +38,7 @@ void USPAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		bIsIdle = GroundSpeed < MovingThreshould;
 		bIsFalling = Movement->IsFalling();
 		bIsJumping = bIsFalling & (Velocity.Z > JumpingThreshould);
-		bIsAiming = Owner->bIsAiming;
+		bIsAiming = Owner->GetIsAiming();
 
 
 		FRotator ControlRotation = Owner->GetControlRotation();

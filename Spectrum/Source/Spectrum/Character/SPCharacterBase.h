@@ -63,6 +63,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	TObjectPtr<class USkeletalMeshComponent> Feet;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	TObjectPtr<class UStaticMeshComponent> Staff;
 
 
 

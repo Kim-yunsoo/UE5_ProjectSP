@@ -54,7 +54,21 @@ ASPCharacterBase::ASPCharacterBase()
 	Feet = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Feet"));
 	Feet->SetupAttachment(GetMesh());
 
-	
+	//staff Mesh
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> StaffMeshRef(TEXT("/Script/Engine.StaticMesh'/Game/Spectrum/Staff/G_Staff/G_Staff.G_Staff'"));
+	Staff = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Staff"));
+	if (StaffMeshRef.Object)
+	{
+		Staff->SetStaticMesh(StaffMeshRef.Object);
+		Staff->SetupAttachment(GetMesh(), TEXT("Staff_Socket"));
+	}
+
+
+	//staff 위치 조정 및 애셋로드 필요함! 
+	//스테프 메쉬 로드
+
+	//스태프 소켓 부착 
+
 
 	//static ConstructorHelpers::FObjectFinder<USkeletalMesh> CharacterMeshRef(TEXT("/Script/Engine.SkeletalMesh'/Game/Characters/Mannequins/Meshes/SKM_Quinn_Simple.SKM_Quinn_Simple'"));
 	//
@@ -147,7 +161,7 @@ void ASPCharacterBase::Tick(float DeltaSeconds)
 		if (State == Protocol::MOVE_STATE_RUN)
 		{
 			//SetActorRotation(FRotator(0, DestLook, 0));
-			SetActorRotation(FRotator(0, DestInfo->yaw()-90.f, 0));
+			SetActorRotation(FRotator(0, DestInfo->yaw() - 90.f, 0));
 			AddMovementInput(GetActorForwardVector());
 
 			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("RUN")));
