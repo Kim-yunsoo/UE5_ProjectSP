@@ -45,6 +45,7 @@ void USPAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		FRotator GetActorRotation = Owner->GetActorRotation();
 		FRotator DeltaRotation=UKismetMathLibrary::NormalizedDeltaRotator(ControlRotation, GetActorRotation);
 		DeltaY = DeltaRotation.Pitch;
+
 		DeltaZ = DeltaRotation.Yaw;
 
 		if (DeltaZ > 170.0f) {
