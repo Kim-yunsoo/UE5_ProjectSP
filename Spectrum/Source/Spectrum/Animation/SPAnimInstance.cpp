@@ -7,6 +7,7 @@
 #include "Character/SPCharacterPlayer.h"
 #include "Kismet/KismetMathLibrary.h"
 
+
 USPAnimInstance::USPAnimInstance()
 {
 	MovingThreshould = 3.0f;
@@ -44,29 +45,16 @@ void USPAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		FRotator ControlRotation = Owner->GetControlRotation();
 		FRotator GetActorRotation = Owner->GetActorRotation();
 		FRotator DeltaRotation=UKismetMathLibrary::NormalizedDeltaRotator(ControlRotation, GetActorRotation);
-		DeltaY = DeltaRotation.Pitch;
 
-		DeltaZ = DeltaRotation.Yaw;
+		float  foo = 0.f;
 
-		if (DeltaZ > 170.0f) {
-			DeltaZ = 170.0f;
-		}
-		else if(DeltaZ < -170.0f){
-			DeltaZ = -170.0f;
-		}
-		
-		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Pitch %d"), DeltaY));
-		//UE_LOG(LogTemp, Log, TEXT("DeltaY : %d"), DeltaY);
-		//UE_LOG(LogTemp, Log, TEXT("DeltaY : %d"), DeltaY);
-		//FRotator BaseAimRotation = Owner->GetBaseAimRotation();
-		//float pitch = BaseAimRotation.Pitch - 360;
+		FRotator NewRotator = UKismetMathLibrary::MakeRotator(0, DeltaY, DeltaZ);
 
-		//if (BaseAimRotation.Pitch >= 180) {
-		//	DeltaY = pitch;
-		//}
-		//else {
-		//	DeltaY = BaseAimRotation.Pitch;
-		//}
-		//DeltaZ = 0;
+		FRotator RInterp = UKismetMathLibrary::RInterpTo(NewRotator, DeltaRotation, DeltaSeconds, 3);
+		UKismetMathLibrary::BreakRotator(RInterp, foo, DeltaY, DeltaZ);
+
+		DeltaY = UKismetMathLibrary::ClampAngle(DeltaY, -90, 90);
+		DeltaZ = UKismetMathLibrary::ClampAngle(DeltaZ, -160, 160);
+
 	}
 }
