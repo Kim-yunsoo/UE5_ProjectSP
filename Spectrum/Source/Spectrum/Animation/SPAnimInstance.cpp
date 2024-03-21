@@ -47,6 +47,13 @@ void USPAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		DeltaY = DeltaRotation.Pitch;
 		DeltaZ = DeltaRotation.Yaw;
 
+		if (DeltaZ > 170.0f) {
+			DeltaZ = 170.0f;
+		}
+		else if(DeltaZ < -170.0f){
+			DeltaZ = -170.0f;
+		}
+		
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Pitch %d"), DeltaY));
 		//UE_LOG(LogTemp, Log, TEXT("DeltaY : %d"), DeltaY);
 		//UE_LOG(LogTemp, Log, TEXT("DeltaY : %d"), DeltaY);
