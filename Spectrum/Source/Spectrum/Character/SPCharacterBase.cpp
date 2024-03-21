@@ -6,6 +6,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "SPCharacterControlData.h"
 #include "SPCharacterPlayer.h"
+#include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 
 
@@ -64,11 +65,18 @@ ASPCharacterBase::ASPCharacterBase()
 	}
 
 
-	//staff 위치 조정 및 애셋로드 필요함! 
-	//스테프 메쉬 로드
-
-	//스태프 소켓 부착 
-
+	//Sphere
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereMeshRef(TEXT("/Script/Engine.StaticMesh'/Engine/EditorMeshes/ArcadeEditorSphere.ArcadeEditorSphere'"));
+	Sphere = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Sphere"));
+	if (SphereMeshRef.Object)
+	{
+		Sphere->SetStaticMesh(SphereMeshRef.Object);
+		Sphere->SetupAttachment(Staff);
+		Sphere->SetWorldScale3D(FVector(-0.03125, -0.03125, -0.03125));
+		Sphere->SetRelativeLocation(FVector(-2.277422, 0.0, 51.739027));
+		Sphere->SetVisibility(false);
+		Sphere->SetCollisionProfileName(TEXT("NoCollision"));
+	}
 
 	//static ConstructorHelpers::FObjectFinder<USkeletalMesh> CharacterMeshRef(TEXT("/Script/Engine.SkeletalMesh'/Game/Characters/Mannequins/Meshes/SKM_Quinn_Simple.SKM_Quinn_Simple'"));
 	//
@@ -95,7 +103,11 @@ ASPCharacterBase::ASPCharacterBase()
 		CharacterControlManager.Add(ECharacterControlType::Quater, QuaterDataRef.Object);
 	}
 
-
+	PhysicsHandleComponent = CreateDefaultSubobject<UPhysicsHandleComponent>(TEXT("PhysicsHandleComponent"));
+	if (PhysicsHandleComponent)
+	{
+		PhysicsHandleComponent->SetInterpolationSpeed(5.0);
+	}
 
 }
 
