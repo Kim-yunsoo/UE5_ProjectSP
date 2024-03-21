@@ -81,7 +81,7 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 	LastInput = FVector2D::ZeroVector;
 
 	bIsAiming = false;
-	bIsHolding=false;
+	bIsHolding = false;
 }
 
 void ASPCharacterPlayer::BeginPlay()
@@ -99,7 +99,7 @@ void ASPCharacterPlayer::BeginPlay()
 		}
 	}
 
-	
+
 }
 
 void ASPCharacterPlayer::Tick(float DeltaTime)
@@ -135,30 +135,30 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 
 
 
-	// 이전 입력과 현재 입력이 다른지 비교
-	//if (DesiredInput == LastInput)
-	//	SetMoveState(Protocol::MOVE_STATE_IDLE);
-	//else
-	//	SetMoveState(Protocol::MOVE_STATE_RUN);
+		// 이전 입력과 현재 입력이 다른지 비교
+		//if (DesiredInput == LastInput)
+		//	SetMoveState(Protocol::MOVE_STATE_IDLE);
+		//else
+		//	SetMoveState(Protocol::MOVE_STATE_RUN);
 
-	//LastInput = DesiredInput; // 현재 입력을 다음 비교를 위해 저장
-
-
-
-	//if (!(DesiredInput == FVector2D::Zero()) && !(LastInput == DesiredInput))
-	//{
-	//	SetMoveState(Protocol::MOVE_STATE_RUN);
-	//}
-	//else if (DesiredInput == FVector2D::Zero() || DesiredInput == FVector2D::Zero())
-	//{
-	//	SetMoveState(Protocol::MOVE_STATE_IDLE);
-	//}
-
-	//LastInput = DesiredInput;
+		//LastInput = DesiredInput; // 현재 입력을 다음 비교를 위해 저장
 
 
-	// 0.1초마다 서버로 이동 패킷을 전송
-	MovePacketSendTimer -= DeltaTime*10;
+
+		//if (!(DesiredInput == FVector2D::Zero()) && !(LastInput == DesiredInput))
+		//{
+		//	SetMoveState(Protocol::MOVE_STATE_RUN);
+		//}
+		//else if (DesiredInput == FVector2D::Zero() || DesiredInput == FVector2D::Zero())
+		//{
+		//	SetMoveState(Protocol::MOVE_STATE_IDLE);
+		//}
+
+		//LastInput = DesiredInput;
+
+
+		// 0.1초마다 서버로 이동 패킷을 전송
+	MovePacketSendTimer -= DeltaTime * 10;
 
 	if (MovePacketSendTimer <= 0 || ForceSendPacket)
 	{
@@ -310,8 +310,8 @@ void ASPCharacterPlayer::ShoulderLook(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::SpeedUp(const FInputActionValue& Value)
 {
-	if (bIsAiming==false) {
-	GetCharacterMovement()->MaxWalkSpeed = 900.f;
+	if (bIsAiming == false) {
+		GetCharacterMovement()->MaxWalkSpeed = 900.f;
 	}
 }
 
@@ -334,7 +334,13 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 {
 	if (false == bIsHolding)
 	{
-		
+		FVector SphereLocationStart = Sphere->K2_GetComponentLocation();
+		FVector SphereLocationEnd = SphereLocationStart + (1500 * FollowCamera->GetForwardVector());
+		TArray<TEnumAsByte<EObjectTypeQuery>> EmptyObjectTypes;
+		EDrawDebugTrace::Type drawDebugType = EDrawDebugTrace::ForDuration;
+		TArray<AActor*> actorsToIgnore;
+
+		UKismetSystemLibrary::LineTraceSingleForObjects(GetWorld(), SphereLocationStart, SphereLocationEnd, EmptyObjectTypes,false, actorsToIgnore, drawDebugType,);
 	}
 	else
 	{
