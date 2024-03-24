@@ -328,7 +328,7 @@ void ASPCharacterPlayer::ShoulderLook(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::SpeedUp(const FInputActionValue& Value)
 {
-	if (bIsAiming == false) {
+	if ( false == bIsAiming && false == bIsHolding) {
 		GetCharacterMovement()->MaxWalkSpeed = 900.f;
 	}
 }
@@ -365,7 +365,7 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 		float DrawTime = 5.0f;
 
 		bool HitSuccess = GetWorld()->LineTraceSingleByChannel(outHitResult, SphereLocationStart, SphereLocationEnd, ECC_GameTraceChannel1, Params);
-		UE_LOG(LogTemp, Log, TEXT("HitSuccess %d"), HitSuccess);
+		//UE_LOG(LogTemp, Log, TEXT("HitSuccess %d"), HitSuccess);
 		if (HitSuccess)
 		{
 			//outHitResult.Component->SetSimulatePhysics(true); //시뮬레이션 켜기 
