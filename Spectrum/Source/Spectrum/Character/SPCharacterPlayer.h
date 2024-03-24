@@ -15,7 +15,7 @@ class SPECTRUM_API ASPCharacterPlayer : public ASPCharacterBase
 {
 	GENERATED_BODY()
 
-	public:
+public:
 	ASPCharacterPlayer();
 
 protected:
@@ -77,6 +77,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, Meta = (AllowPrivateAccess = "ture"))
 	TObjectPtr<class UCameraComponent> FollowCamera;
 
+	
+
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> JumpAction;
@@ -105,9 +107,11 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputMappingContext* DefaultMappingContext;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* LookAction;
+
+
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
@@ -116,7 +120,15 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	uint8 bIsHolding : 1; //잡는지 판단
 
+
 public:
 	const uint8 GetIsAiming() { return bIsAiming; };
+
+protected:
+	UPrimitiveComponent* HitComponent;
+	float HitDistance;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Meta = (AllowPrivateAccess = "ture"))
+	TObjectPtr<class UArrowComponent> GravityArrow;
 
 };

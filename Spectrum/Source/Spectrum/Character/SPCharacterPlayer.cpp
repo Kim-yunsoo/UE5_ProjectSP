@@ -11,13 +11,17 @@
 #include "SPCharacterControlData.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Spectrum.h"
+#include "Components/SceneComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Components/ArrowComponent.h"
+#include "PhysicsEngine/PhysicsHandleComponent.h"
+
+
 
 
 
 ASPCharacterPlayer::ASPCharacterPlayer()
 {
-
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->TargetArmLength = 400.f;
@@ -27,7 +31,12 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = false;
 
-	// 카메라 시점에 따른 에셋	로드
+	//GravityArrow->CreateDefaultSubobject<UArrowComponent>(TEXT("ArrowComponent"));
+	//GravityArrow->SetupAttachment(FollowCamera);
+	//GravityArrow->SetRelativeLocation(FVector(738.363912, 134.885437, 117.326008));
+	//GravityArrow->SetRelativeRotation(FRotator(1.753783, 9.846552, 10.151082));
+
+	// 카메라 시점에 따른 에셋 로드
 	// Input
 	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionJumpRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_Jump.IA_SP_Jump'"));
 	if (nullptr != InputActionJumpRef.Object)
@@ -82,6 +91,10 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 
 	bIsAiming = false;
 	bIsHolding = false;
+	HitComponent = nullptr;
+	HitDistance = 1200.f;
+
+
 }
 
 void ASPCharacterPlayer::BeginPlay()
@@ -185,6 +198,11 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 		SEND_PACKET(MovePkt);
 	}
 
+	// 중력총 클라이언트 코드 
+	if (bIsHolding)
+	{
+
+	}
 
 }
 
@@ -210,10 +228,11 @@ void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Player
 		EnhancedInputComponent->BindAction(SpeedUpAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::SpeedUp);
 		EnhancedInputComponent->BindAction(SpeedUpAction, ETriggerEvent::Completed, this, &ASPCharacterPlayer::StopSpeedUp);
 
-		EnhancedInputComponent->BindAction(MouseRight, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::Graping);
-		EnhancedInputComponent->BindAction(MouseRight, ETriggerEvent::Completed, this, &ASPCharacterPlayer::StopGraping);
+		EnhancedInputComponent->BindAction(MouseLeft, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::Graping);
+		EnhancedInputComponent->BindAction(MouseLeft, ETriggerEvent::Completed, this, &ASPCharacterPlayer::StopGraping);
 
-
+		EnhancedInputComponent->BindAction(MouseRight, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::Aiming);
+		EnhancedInputComponent->BindAction(MouseRight, ETriggerEvent::Completed, this, &ASPCharacterPlayer::StopAiming);
 	}
 }
 
@@ -305,9 +324,6 @@ void ASPCharacterPlayer::ShoulderLook(const FInputActionValue& Value)
 	}
 }
 
-
-
-
 void ASPCharacterPlayer::SpeedUp(const FInputActionValue& Value)
 {
 	if (bIsAiming == false) {
@@ -339,17 +355,78 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 		TArray<TEnumAsByte<EObjectTypeQuery>> EmptyObjectTypes;
 		EDrawDebugTrace::Type drawDebugType = EDrawDebugTrace::ForDuration;
 		TArray<AActor*> actorsToIgnore;
+		FLinearColor RedColor = FLinearColor(1.0f, 0.0f, 0.0f, 1.0f);
+		FLinearColor GreenColor = FLinearColor(0.0f, 1.0f, 0.0f, 1.0f);
+		FHitResult outHitResult;
+		FCollisionQueryParams Params;
+		Params.AddIgnoredActor(this);
+		float DrawTime = 5.0f;
 
-		//UKismetSystemLibrary::LineTraceSingleForObjects(GetWorld(), SphereLocationStart, SphereLocationEnd, EmptyObjectTypes,false, actorsToIgnore, drawDebugType,);
+		bool HitSuccess = GetWorld()->LineTraceSingleByChannel(outHitResult, SphereLocationStart, SphereLocationEnd, ECC_GameTraceChannel1, Params);
+		UE_LOG(LogTemp,Log,TEXT("HitSuccess %d"), HitSuccess);
+		if (HitSuccess)
+		{
+			//outHitResult.Component->SetSimulatePhysics(true); //시뮬레이션 켜기 
+			HitComponent = outHitResult.GetComponent();
+			if (HitComponent && HitComponent->IsSimulatingPhysics())
+			{
+				PhysicsHandleComponent->GrabComponentAtLocation(
+					HitComponent,      // 잡을 컴포넌트
+					NAME_None,         // 본 이름 (이 경우 빈 값)
+					HitComponent->K2_GetComponentLocation() // 컴포넌트를 잡을 위치
+				);
+				bIsHolding = true;
+			}
+		}
+
+		const FColor LineColor = HitSuccess ? FColor::Green : FColor::Red;
+
+		// 라인 트레이스 경로 디버그 라인 그리기
+		DrawDebugLine(
+			GetWorld(),
+			SphereLocationStart,
+			SphereLocationEnd,
+			LineColor,
+			false, // 지속 시간 동안 존재하지 않음
+			5.0f, // 5초 동안 표시
+			0, // 뎁스 우선순위
+			1.0f // 라인 굵기
+		);
+
+		// 충돌이 발생했다면, 충돌 지점에 디버그 포인트 그리기
+		if (HitSuccess)
+		{
+			DrawDebugPoint(
+				GetWorld(),
+				outHitResult.ImpactPoint, // 충돌 지점
+				10.0f, // 포인트 크기
+				FColor::Blue, // 포인트 색상
+				false, // 지속 시간 동안 존재하지 않음
+				5.0f // 5초 동안 표시
+			);
+		}
 	}
-	else
+	else // bIsHolding == true인 경우 
 	{
-
+		if (HitComponent) {
+			PhysicsHandleComponent->ReleaseComponent();
+			bIsHolding = false;
+			HitComponent->AddImpulse(FollowCamera->GetForwardVector() * HitDistance, NAME_None, true);
+			HitComponent = nullptr;
+		}
+		//HitResult.Component->SetSimulatePhysics(false); //시뮬레이션 끄기 
 	}
 }
 
 void ASPCharacterPlayer::StopGraping(const FInputActionValue& Value)
 {
+	if (bIsHolding && HitComponent)
+	{
+		bIsHolding = false;
+		PhysicsHandleComponent->ReleaseComponent();
+		HitComponent->AddImpulse(FollowCamera->GetForwardVector() * HitDistance, NAME_None, true);
+		HitComponent = nullptr;
+	}
 }
 
 void ASPCharacterPlayer::QuaterMove(const FInputActionValue& Value)
