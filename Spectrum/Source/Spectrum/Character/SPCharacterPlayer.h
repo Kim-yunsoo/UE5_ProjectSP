@@ -15,7 +15,7 @@ class SPECTRUM_API ASPCharacterPlayer : public ASPCharacterBase
 {
 	GENERATED_BODY()
 
-	public:
+public:
 	ASPCharacterPlayer();
 
 protected:
@@ -46,6 +46,10 @@ protected: // 카메라
 	void Aiming(const FInputActionValue& Value);
 	void StopAiming(const FInputActionValue& Value);
 
+	void Graping(const FInputActionValue& Value);
+	void StopGraping(const FInputActionValue& Value);
+
+
 	ECharacterControlType CurrentCharacterControlType;
 
 protected:
@@ -73,6 +77,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, Meta = (AllowPrivateAccess = "ture"))
 	TObjectPtr<class UCameraComponent> FollowCamera;
 
+	
+
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> JumpAction;
@@ -94,18 +100,35 @@ protected:
 	TObjectPtr<class UInputAction> SpeedUpAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UInputAction> AimAction;
+	TObjectPtr<class UInputAction> MouseRight;//마우스 오른쪽
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> MouseLeft; //마우스 왼쪽
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputMappingContext* DefaultMappingContext;
 
-
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* LookAction;
 
-public:
+
+
+protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	uint8 bIsAiming : 1; //조준 
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	uint8 bIsHolding : 1; //잡는지 판단
+
+
+public:
+	const uint8 GetIsAiming() { return bIsAiming; };
+	const uint8 GetIsHolding() { return bIsHolding; };
+
+protected:
+	UPrimitiveComponent* HitComponent;
+	float HitDistance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite ,Category = Camera, Meta = (AllowPrivateAccess = "ture"))
+	TObjectPtr<class UArrowComponent> GravityArrow;
 };

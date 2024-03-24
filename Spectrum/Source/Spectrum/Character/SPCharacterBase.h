@@ -56,14 +56,24 @@ protected:
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	TObjectPtr<class USkeletalMeshComponent>Face;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	TObjectPtr<class USkeletalMeshComponent> Torso;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	TObjectPtr<class USkeletalMeshComponent> Legs;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	TObjectPtr<class USkeletalMeshComponent> Feet;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	TObjectPtr<class UStaticMeshComponent> Staff;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	TObjectPtr<class UStaticMeshComponent> Sphere;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gravity Gun")
+	TObjectPtr<class UPhysicsHandleComponent> PhysicsHandleComponent;
 
+	
 };

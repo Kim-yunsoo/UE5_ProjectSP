@@ -49,11 +49,16 @@ protected:
 	float JumpingThreshould; //점프중인지 
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character)
-	uint8 bIsAiming : 1; //점프하고있는지
+	uint8 bIsAiming : 1; //에임모드
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character)
+	uint8 bIsHolding : 1; //무언가를 들고있는지
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character)
 	float DeltaY;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character)
 	float DeltaZ;
+
+
 };

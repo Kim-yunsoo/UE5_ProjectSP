@@ -6,6 +6,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "SPCharacterControlData.h"
 #include "SPCharacterPlayer.h"
+#include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 
 
@@ -15,7 +16,7 @@ ASPCharacterBase::ASPCharacterBase()
 	PlayerInfo = new Protocol::PlayerInfo();
 	DestInfo = new Protocol::PlayerInfo();
 
-
+	
 	//Pawn
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationRoll = false;
@@ -54,7 +55,27 @@ ASPCharacterBase::ASPCharacterBase()
 	Feet = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Feet"));
 	Feet->SetupAttachment(GetMesh());
 
-	
+	//staff Mesh
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> StaffMeshRef(TEXT("/Script/Engine.StaticMesh'/Game/Spectrum/Staff/G_Staff/G_Staff.G_Staff'"));
+	Staff = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Staff"));
+	if (StaffMeshRef.Object)
+	{
+		Staff->SetStaticMesh(StaffMeshRef.Object);
+		Staff->SetupAttachment(GetMesh(), TEXT("Staff_Socket"));
+	}
+
+	//Sphere
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereMeshRef(TEXT("/Script/Engine.StaticMesh'/Engine/EditorMeshes/ArcadeEditorSphere.ArcadeEditorSphere'"));
+	Sphere = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Sphere"));
+	if (SphereMeshRef.Object)
+	{
+		Sphere->SetStaticMesh(SphereMeshRef.Object);
+		Sphere->SetupAttachment(Staff);
+		Sphere->SetWorldScale3D(FVector(-0.03125, -0.03125, -0.03125));
+		Sphere->SetRelativeLocation(FVector(-2.277422, 0.0, 51.739027));
+		Sphere->SetVisibility(false);
+		Sphere->SetCollisionProfileName(TEXT("NoCollision"));
+	}
 
 	//static ConstructorHelpers::FObjectFinder<USkeletalMesh> CharacterMeshRef(TEXT("/Script/Engine.SkeletalMesh'/Game/Characters/Mannequins/Meshes/SKM_Quinn_Simple.SKM_Quinn_Simple'"));
 	//
@@ -81,7 +102,11 @@ ASPCharacterBase::ASPCharacterBase()
 		CharacterControlManager.Add(ECharacterControlType::Quater, QuaterDataRef.Object);
 	}
 
-
+	PhysicsHandleComponent = CreateDefaultSubobject<UPhysicsHandleComponent>(TEXT("PhysicsHandleComponent"));
+	if (PhysicsHandleComponent)
+	{
+		PhysicsHandleComponent->SetInterpolationSpeed(5.0);
+	}
 
 }
 
@@ -147,7 +172,7 @@ void ASPCharacterBase::Tick(float DeltaSeconds)
 		if (State == Protocol::MOVE_STATE_RUN)
 		{
 			//SetActorRotation(FRotator(0, DestLook, 0));
-			SetActorRotation(FRotator(0, DestInfo->yaw()-90.f, 0));
+			SetActorRotation(FRotator(0, DestInfo->yaw() - 90.f, 0));
 			AddMovementInput(GetActorForwardVector());
 
 			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("RUN")));
