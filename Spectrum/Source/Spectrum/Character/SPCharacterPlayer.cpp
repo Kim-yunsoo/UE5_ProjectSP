@@ -340,7 +340,7 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 		EDrawDebugTrace::Type drawDebugType = EDrawDebugTrace::ForDuration;
 		TArray<AActor*> actorsToIgnore;
 
-		UKismetSystemLibrary::LineTraceSingleForObjects(GetWorld(), SphereLocationStart, SphereLocationEnd, EmptyObjectTypes,false, actorsToIgnore, drawDebugType,);
+		//UKismetSystemLibrary::LineTraceSingleForObjects(GetWorld(), SphereLocationStart, SphereLocationEnd, EmptyObjectTypes,false, actorsToIgnore, drawDebugType,);
 	}
 	else
 	{

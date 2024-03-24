@@ -16,7 +16,7 @@ ASPCharacterBase::ASPCharacterBase()
 	PlayerInfo = new Protocol::PlayerInfo();
 	DestInfo = new Protocol::PlayerInfo();
 
-
+	
 	//Pawn
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationRoll = false;
@@ -63,7 +63,6 @@ ASPCharacterBase::ASPCharacterBase()
 		Staff->SetStaticMesh(StaffMeshRef.Object);
 		Staff->SetupAttachment(GetMesh(), TEXT("Staff_Socket"));
 	}
-
 
 	//Sphere
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereMeshRef(TEXT("/Script/Engine.StaticMesh'/Engine/EditorMeshes/ArcadeEditorSphere.ArcadeEditorSphere'"));
