@@ -123,12 +123,12 @@ protected:
 
 public:
 	const uint8 GetIsAiming() { return bIsAiming; };
+	const uint8 GetIsHolding() { return bIsHolding; };
 
 protected:
 	UPrimitiveComponent* HitComponent;
 	float HitDistance;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Meta = (AllowPrivateAccess = "ture"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite ,Category = Camera, Meta = (AllowPrivateAccess = "ture"))
 	TObjectPtr<class UArrowComponent> GravityArrow;
-
 };

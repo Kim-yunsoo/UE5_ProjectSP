@@ -13,6 +13,7 @@ USPAnimInstance::USPAnimInstance()
 	MovingThreshould = 3.0f;
 	JumpingThreshould = 100.0f;
 	bIsAiming = false;
+	bIsHolding = false;
 	DeltaY = 0;
 	DeltaZ = 0;
 }
@@ -40,6 +41,7 @@ void USPAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		bIsFalling = Movement->IsFalling();
 		bIsJumping = bIsFalling & (Velocity.Z > JumpingThreshould);
 		bIsAiming = Owner->GetIsAiming();
+		bIsHolding = Owner->GetIsHolding();
 
 
 		FRotator ControlRotation = Owner->GetControlRotation();

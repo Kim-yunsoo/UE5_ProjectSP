@@ -31,10 +31,13 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = false;
 
-	//GravityArrow->CreateDefaultSubobject<UArrowComponent>(TEXT("ArrowComponent"));
-	//GravityArrow->SetupAttachment(FollowCamera);
-	//GravityArrow->SetRelativeLocation(FVector(738.363912, 134.885437, 117.326008));
-	//GravityArrow->SetRelativeRotation(FRotator(1.753783, 9.846552, 10.151082));
+	GravityArrow = CreateDefaultSubobject<UArrowComponent>(TEXT("GravityArrow"));
+	if (GravityArrow)
+	{
+		GravityArrow->SetupAttachment(FollowCamera);
+		GravityArrow->SetRelativeLocation(FVector(811.303858, 0.00003, 0));
+		GravityArrow->SetRelativeRotation(FRotator(0, 0, 0));
+	}
 
 	// 카메라 시점에 따른 에셋 로드
 	// Input
@@ -201,9 +204,8 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 	// 중력총 클라이언트 코드 
 	if (bIsHolding)
 	{
-
+		PhysicsHandleComponent->SetTargetLocation(GravityArrow->K2_GetComponentLocation());
 	}
-
 }
 
 void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -363,7 +365,7 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 		float DrawTime = 5.0f;
 
 		bool HitSuccess = GetWorld()->LineTraceSingleByChannel(outHitResult, SphereLocationStart, SphereLocationEnd, ECC_GameTraceChannel1, Params);
-		UE_LOG(LogTemp,Log,TEXT("HitSuccess %d"), HitSuccess);
+		UE_LOG(LogTemp, Log, TEXT("HitSuccess %d"), HitSuccess);
 		if (HitSuccess)
 		{
 			//outHitResult.Component->SetSimulatePhysics(true); //시뮬레이션 켜기 
