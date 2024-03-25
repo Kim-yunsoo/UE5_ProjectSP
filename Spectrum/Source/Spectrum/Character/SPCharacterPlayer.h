@@ -120,6 +120,11 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	uint8 bIsHolding : 1; //잡는지 판단
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	FVector UITEST; //위치
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	FVector UIRotator; //위치
 
 public:
 	const uint8 GetIsAiming() { return bIsAiming; };
@@ -133,6 +138,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite ,Category = Camera, Meta = (AllowPrivateAccess = "ture"))
 	TObjectPtr<class UArrowComponent> GravityArrow;
+
 
 	//object 땅 위로 떨어지는지 판단 함수
 	//void CheckFalling();

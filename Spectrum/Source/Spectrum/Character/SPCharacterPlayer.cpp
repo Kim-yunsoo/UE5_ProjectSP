@@ -210,6 +210,12 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 		PhysicsHandleComponent->SetTargetLocation(GravityArrow->K2_GetComponentLocation());
 	}
 
+	if (bIsAiming)
+	{
+		FVector SphereLocationStart = Sphere->K2_GetComponentLocation();
+		UITEST = SphereLocationStart + (100 * FollowCamera->GetForwardVector());
+
+	}
 }
 
 void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -345,6 +351,7 @@ void ASPCharacterPlayer::StopSpeedUp(const FInputActionValue& Value)
 void ASPCharacterPlayer::Aiming(const FInputActionValue& Value)
 {
 	bIsAiming = true;
+
 }
 
 void ASPCharacterPlayer::StopAiming(const FInputActionValue& Value)
@@ -386,6 +393,8 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 
 		const FColor LineColor = HitSuccess ? FColor::Green : FColor::Red;
 
+	
+
 		// 라인 트레이스 경로 디버그 라인 그리기
 		DrawDebugLine(
 			GetWorld(),
@@ -397,6 +406,8 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 			0, // 뎁스 우선순위
 			1.0f // 라인 굵기
 		);
+
+
 
 		// 충돌이 발생했다면, 충돌 지점에 디버그 포인트 그리기
 		if (HitSuccess)
