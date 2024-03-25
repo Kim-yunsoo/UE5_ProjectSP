@@ -127,8 +127,13 @@ public:
 
 protected:
 	UPrimitiveComponent* HitComponent;
+	FHitResult outHitResult;
+
 	float HitDistance;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite ,Category = Camera, Meta = (AllowPrivateAccess = "ture"))
 	TObjectPtr<class UArrowComponent> GravityArrow;
+
+	//object 땅 위로 떨어지는지 판단 함수
+	//void CheckFalling();
 };
