@@ -206,6 +206,7 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 	{
 		PhysicsHandleComponent->SetTargetLocation(GravityArrow->K2_GetComponentLocation());
 	}
+
 }
 
 void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -328,7 +329,7 @@ void ASPCharacterPlayer::ShoulderLook(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::SpeedUp(const FInputActionValue& Value)
 {
-	if ( false == bIsAiming && false == bIsHolding) {
+	if (false == bIsAiming && false == bIsHolding) {
 		GetCharacterMovement()->MaxWalkSpeed = 900.f;
 	}
 }
@@ -359,16 +360,15 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 		TArray<AActor*> actorsToIgnore;
 		FLinearColor RedColor = FLinearColor(1.0f, 0.0f, 0.0f, 1.0f);
 		FLinearColor GreenColor = FLinearColor(0.0f, 1.0f, 0.0f, 1.0f);
-		FHitResult outHitResult;
 		FCollisionQueryParams Params;
 		Params.AddIgnoredActor(this);
 		float DrawTime = 5.0f;
 
 		bool HitSuccess = GetWorld()->LineTraceSingleByChannel(outHitResult, SphereLocationStart, SphereLocationEnd, ECC_GameTraceChannel1, Params);
 		//UE_LOG(LogTemp, Log, TEXT("HitSuccess %d"), HitSuccess);
-		if (HitSuccess)
+		if (HitSuccess && outHitResult.Component->Mobility == EComponentMobility::Movable)
 		{
-			//outHitResult.Component->SetSimulatePhysics(true); //½Ã¹Ä·¹ÀÌ¼Ç ÄÑ±â 
+			outHitResult.Component->SetSimulatePhysics(true); //½Ã¹Ä·¹ÀÌ¼Ç ÄÑ±â 
 			HitComponent = outHitResult.GetComponent();
 			if (HitComponent && HitComponent->IsSimulatingPhysics())
 			{
@@ -416,7 +416,6 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 			HitComponent->AddImpulse(FollowCamera->GetForwardVector() * HitDistance, NAME_None, true);
 			HitComponent = nullptr;
 		}
-		//HitResult.Component->SetSimulatePhysics(false); //½Ã¹Ä·¹ÀÌ¼Ç ²ô±â 
 	}
 }
 
@@ -428,8 +427,34 @@ void ASPCharacterPlayer::StopGraping(const FInputActionValue& Value)
 		PhysicsHandleComponent->ReleaseComponent();
 		HitComponent->AddImpulse(FollowCamera->GetForwardVector() * HitDistance, NAME_None, true);
 		HitComponent = nullptr;
+
 	}
 }
+
+//void ASPCharacterPlayer::CheckFalling()
+//{
+//	AActor* HitActor = outHitResult.GetActor();
+//	UE_LOG(LogTemp, Log, TEXT("CheckFalling"));
+//	if (HitActor)
+//	{
+//		FVector Location = HitActor->GetActorLocation();
+//		FVector Start = Location;
+//		FVector End = Location - FVector(0, 0, 100);
+//		FHitResult HitResult;
+//		FCollisionQueryParams Params;
+//		Params.AddIgnoredActor(this);
+//		bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, Params);
+//		if (bHit)
+//		{
+//			if (HitResult.Component->ComponentHasTag(FName("Floor")))
+//			{
+//				UE_LOG(LogTemp, Log, TEXT("ComponentHasTag!!"));
+//				outHitResult.Component->SetSimulatePhysics(false); //½Ã¹Ä·¹ÀÌ¼Ç ²ô±â 
+//			}
+//		}
+//	}
+//}
+
 
 void ASPCharacterPlayer::QuaterMove(const FInputActionValue& Value)
 {
