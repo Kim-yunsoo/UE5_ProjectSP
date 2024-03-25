@@ -25,17 +25,20 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->TargetArmLength = 400.f;
+	CameraBoom->SetRelativeLocation(FVector(0.0, 0.0, 63.990518));
+
 	CameraBoom->bUsePawnControlRotation = true;
 
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
+	CameraBoom->SetRelativeLocation(FVector(0.0, 29.020852, 11.28551));
 	FollowCamera->bUsePawnControlRotation = false;
 
 	GravityArrow = CreateDefaultSubobject<UArrowComponent>(TEXT("GravityArrow"));
 	if (GravityArrow)
 	{
 		GravityArrow->SetupAttachment(FollowCamera);
-		GravityArrow->SetRelativeLocation(FVector(811.303858, 0.00003, 0));
+		GravityArrow->SetRelativeLocation(FVector(811.303858, 13.162654, 0.0f));
 		GravityArrow->SetRelativeRotation(FRotator(0, 0, 0));
 	}
 
