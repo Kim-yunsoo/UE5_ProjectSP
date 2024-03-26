@@ -361,6 +361,7 @@ void ASPCharacterPlayer::StopAiming(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 {
+
 	if (false == bIsHolding)
 	{
 		FVector SphereLocationStart = Sphere->K2_GetComponentLocation();
@@ -372,6 +373,7 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 		FLinearColor GreenColor = FLinearColor(0.0f, 1.0f, 0.0f, 1.0f);
 		FCollisionQueryParams Params;
 		Params.AddIgnoredActor(this);
+		Params.bTraceComplex = true;
 		float DrawTime = 5.0f;
 
 		bool HitSuccess = GetWorld()->LineTraceSingleByChannel(outHitResult, SphereLocationStart, SphereLocationEnd, ECC_GameTraceChannel1, Params);
@@ -382,6 +384,7 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 			HitComponent = outHitResult.GetComponent();
 			if (HitComponent && HitComponent->IsSimulatingPhysics())
 			{
+				UE_LOG(LogTemp, Log, TEXT("%s"), *HitComponent->GetFName().ToString());
 				PhysicsHandleComponent->GrabComponentAtLocation(
 					HitComponent,      // 잡을 컴포넌트
 					NAME_None,         // 본 이름 (이 경우 빈 값)
@@ -392,8 +395,6 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 		}
 
 		const FColor LineColor = HitSuccess ? FColor::Green : FColor::Red;
-
-	
 
 		// 라인 트레이스 경로 디버그 라인 그리기
 		DrawDebugLine(
