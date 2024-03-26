@@ -365,6 +365,7 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 		FLinearColor GreenColor = FLinearColor(0.0f, 1.0f, 0.0f, 1.0f);
 		FCollisionQueryParams Params;
 		Params.AddIgnoredActor(this);
+		Params.bTraceComplex = true;
 		float DrawTime = 5.0f;
 
 		bool HitSuccess = GetWorld()->LineTraceSingleByChannel(outHitResult, SphereLocationStart, SphereLocationEnd, ECC_GameTraceChannel1, Params);
