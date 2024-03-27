@@ -369,18 +369,23 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 		float DrawTime = 5.0f;
 
 		bool HitSuccess = GetWorld()->LineTraceSingleByChannel(outHitResult, SphereLocationStart, SphereLocationEnd, ECC_GameTraceChannel1, Params);
-		//UE_LOG(LogTemp, Log, TEXT("HitSuccess %d"), HitSuccess);
 		if (HitSuccess && outHitResult.Component->Mobility == EComponentMobility::Movable)
 		{
 			outHitResult.Component->SetSimulatePhysics(true); //시뮬레이션 켜기 
 			HitComponent = outHitResult.GetComponent();
+
+			// UE_LOG 매크로를 사용하여 로그를 출력합니다.
+
 			if (HitComponent && HitComponent->IsSimulatingPhysics())
 			{
+
 				PhysicsHandleComponent->GrabComponentAtLocation(
 					HitComponent,      // 잡을 컴포넌트
 					NAME_None,         // 본 이름 (이 경우 빈 값)
 					HitComponent->K2_GetComponentLocation() // 컴포넌트를 잡을 위치
+
 				);
+
 				bIsHolding = true;
 			}
 		}
