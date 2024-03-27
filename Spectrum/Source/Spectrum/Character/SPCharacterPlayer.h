@@ -50,6 +50,8 @@ protected: // Ä«¸Þ¶ó
 	void StopGraping(const FInputActionValue& Value);
 
 
+	void Jumping(const FInputActionValue& Value);
+
 	ECharacterControlType CurrentCharacterControlType;
 
 protected:

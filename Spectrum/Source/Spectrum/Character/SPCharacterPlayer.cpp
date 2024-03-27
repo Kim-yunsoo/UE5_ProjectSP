@@ -224,7 +224,7 @@ void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Player
 
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
 	{
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::Jumping);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 
 		EnhancedInputComponent->BindAction(ChangeControlAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::ChangeCharacterControl);
@@ -443,6 +443,15 @@ void ASPCharacterPlayer::StopGraping(const FInputActionValue& Value)
 		HitComponent->AddImpulse(FollowCamera->GetForwardVector() * HitDistance, NAME_None, true);
 		HitComponent = nullptr;
 
+	}
+}
+
+void ASPCharacterPlayer::Jumping(const FInputActionValue& Value)
+{
+	if (!bIsAiming) 
+	{
+		bPressedJump = true;
+		JumpKeyHoldTime = 0.0f;
 	}
 }
 
