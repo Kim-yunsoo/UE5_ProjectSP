@@ -361,7 +361,6 @@ void ASPCharacterPlayer::StopAiming(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 {
-
 	if (false == bIsHolding)
 	{
 		FVector SphereLocationStart = Sphere->K2_GetComponentLocation();
@@ -377,12 +376,11 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 		float DrawTime = 5.0f;
 
 		bool HitSuccess = GetWorld()->LineTraceSingleByChannel(outHitResult, SphereLocationStart, SphereLocationEnd, ECC_GameTraceChannel1, Params);
-		//UE_LOG(LogTemp, Log, TEXT("HitSuccess %d"), HitSuccess);
-		if (HitSuccess && outHitResult.Component->Mobility == EComponentMobility::Movable)
+		if (HitSuccess /*&& outHitResult.Component->Mobility == EComponentMobility::Movable*/)
 		{
 			outHitResult.Component->SetSimulatePhysics(true); //시뮬레이션 켜기 
 			HitComponent = outHitResult.GetComponent();
-			if (HitComponent && HitComponent->IsSimulatingPhysics())
+			if (HitComponent /*&& HitComponent->IsSimulatingPhysics()*/)
 			{
 				UE_LOG(LogTemp, Log, TEXT("%s"), *HitComponent->GetFName().ToString());
 				PhysicsHandleComponent->GrabComponentAtLocation(
@@ -393,7 +391,6 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 				bIsHolding = true;
 			}
 		}
-
 		const FColor LineColor = HitSuccess ? FColor::Green : FColor::Red;
 
 		// 라인 트레이스 경로 디버그 라인 그리기
@@ -407,8 +404,6 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 			0, // 뎁스 우선순위
 			1.0f // 라인 굵기
 		);
-
-
 
 		// 충돌이 발생했다면, 충돌 지점에 디버그 포인트 그리기
 		if (HitSuccess)
@@ -425,12 +420,15 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 	}
 	else // bIsHolding == true인 경우 
 	{
+
 		if (HitComponent) {
 			PhysicsHandleComponent->ReleaseComponent();
 			bIsHolding = false;
 			HitComponent->AddImpulse(FollowCamera->GetForwardVector() * HitDistance, NAME_None, true);
 			HitComponent = nullptr;
 		}
+
+
 	}
 }
 

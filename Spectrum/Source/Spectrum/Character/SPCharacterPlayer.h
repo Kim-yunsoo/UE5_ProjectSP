@@ -132,6 +132,8 @@ public:
 
 protected:
 	UPrimitiveComponent* HitComponent;
+	//AActor* HitActor;
+	AActor* HitActor;
 	FHitResult outHitResult;
 
 	float HitDistance;
