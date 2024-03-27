@@ -210,12 +210,6 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 		PhysicsHandleComponent->SetTargetLocation(GravityArrow->K2_GetComponentLocation());
 	}
 
-	if (bIsAiming)
-	{
-		FVector SphereLocationStart = Sphere->K2_GetComponentLocation();
-		UITEST = SphereLocationStart + (100 * FollowCamera->GetForwardVector());
-
-	}
 }
 
 void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -351,7 +345,6 @@ void ASPCharacterPlayer::StopSpeedUp(const FInputActionValue& Value)
 void ASPCharacterPlayer::Aiming(const FInputActionValue& Value)
 {
 	bIsAiming = true;
-
 }
 
 void ASPCharacterPlayer::StopAiming(const FInputActionValue& Value)
@@ -376,21 +369,27 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 		float DrawTime = 5.0f;
 
 		bool HitSuccess = GetWorld()->LineTraceSingleByChannel(outHitResult, SphereLocationStart, SphereLocationEnd, ECC_GameTraceChannel1, Params);
-		if (HitSuccess /*&& outHitResult.Component->Mobility == EComponentMobility::Movable*/)
+		if (HitSuccess && outHitResult.Component->Mobility == EComponentMobility::Movable)
 		{
 			outHitResult.Component->SetSimulatePhysics(true); //시뮬레이션 켜기 
 			HitComponent = outHitResult.GetComponent();
-			if (HitComponent /*&& HitComponent->IsSimulatingPhysics()*/)
+
+			// UE_LOG 매크로를 사용하여 로그를 출력합니다.
+
+			if (HitComponent && HitComponent->IsSimulatingPhysics())
 			{
-				UE_LOG(LogTemp, Log, TEXT("%s"), *HitComponent->GetFName().ToString());
+
 				PhysicsHandleComponent->GrabComponentAtLocation(
 					HitComponent,      // 잡을 컴포넌트
 					NAME_None,         // 본 이름 (이 경우 빈 값)
 					HitComponent->K2_GetComponentLocation() // 컴포넌트를 잡을 위치
+
 				);
+
 				bIsHolding = true;
 			}
 		}
+
 		const FColor LineColor = HitSuccess ? FColor::Green : FColor::Red;
 
 		// 라인 트레이스 경로 디버그 라인 그리기
@@ -420,15 +419,12 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 	}
 	else // bIsHolding == true인 경우 
 	{
-
 		if (HitComponent) {
 			PhysicsHandleComponent->ReleaseComponent();
 			bIsHolding = false;
 			HitComponent->AddImpulse(FollowCamera->GetForwardVector() * HitDistance, NAME_None, true);
 			HitComponent = nullptr;
 		}
-
-
 	}
 }
 
