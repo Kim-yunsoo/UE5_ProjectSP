@@ -75,5 +75,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gravity Gun")
 	TObjectPtr<class UPhysicsHandleComponent> PhysicsHandleComponent;
 
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	uint8 bIsAiming : 1; //조준 
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	uint8 bIsHolding : 1; //잡는지 판단
+
+
+public:
+	const uint8 GetIsAiming() { return bIsAiming; };
+	const uint8 GetIsHolding() { return bIsHolding; };
 	
 };

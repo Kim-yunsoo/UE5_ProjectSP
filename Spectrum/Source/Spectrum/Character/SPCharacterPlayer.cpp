@@ -192,11 +192,11 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 			Info->set_yaw(DesiredYaw);
 			Info->set_state(GetMoveState());
 
-			////Info 창에 출력
-			//if(GetMoveState()== Protocol::MOVE_STATE_IDLE)
-			//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("IDLE")));
-			//else if(GetMoveState() == Protocol::MOVE_STATE_RUN)
-			//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("RUN")));
+			//Info 창에 출력
+			if(GetMoveState()== Protocol::MOVE_STATE_IDLE)
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("IDLE")));
+			else if(GetMoveState() == Protocol::MOVE_STATE_RUN)
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("RUN")));
 
 
 		}

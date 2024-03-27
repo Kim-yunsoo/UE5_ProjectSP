@@ -152,13 +152,13 @@ void ASPCharacterBase::Tick(float DeltaSeconds)
 		FVector Location = GetActorLocation();
 		FVector DestLocation = FVector(DestInfo->x(), DestInfo->y(), DestInfo->z());
 
-		FVector MoveDir = (DestLocation - Location);
-		//const float DistToDest = MoveDir.Length();
-		MoveDir.Length();
-		MoveDir.Normalize();
+		//FVector MoveDir = (DestLocation - Location);
+		////const float DistToDest = MoveDir.Length();
+		//MoveDir.Length();
+		//MoveDir.Normalize();
 
-		FRotator Rotator = MoveDir.Rotation();
-		float DestLook = Rotator.Yaw;
+		//FRotator Rotator = MoveDir.Rotation();
+		//float DestLook = Rotator.Yaw;
 		//float LastLook;
 
 		//float MoveDist = (MoveDir * 600.f * DeltaSeconds).Length();
@@ -175,14 +175,14 @@ void ASPCharacterBase::Tick(float DeltaSeconds)
 			SetActorRotation(FRotator(0, DestInfo->yaw() - 90.f, 0));
 			AddMovementInput(GetActorForwardVector());
 
-			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("RUN")));
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("RUN")));
 			//LastLook = DestLook;
 		}
 		else if (State == Protocol::MOVE_STATE_IDLE)
 		{
 			//SetActorRotation(FRotator(0, LastLook, 0));
 			//AddMovementInput(GetActorForwardVector());
-			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("IDLE")));
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("IDLE")));
 
 		}
 

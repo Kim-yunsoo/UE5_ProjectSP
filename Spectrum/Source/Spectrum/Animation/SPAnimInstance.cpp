@@ -22,7 +22,7 @@ void USPAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
 	//GetOwningActor() 현재 소유중인 액터정보를 얻을 수 있다. 리턴 타입이 액터라 캐릭터로 형변환
-	Owner = Cast<ASPCharacterPlayer>(GetOwningActor());
+	Owner = Cast<ASPCharacterBase>(GetOwningActor());
 	if (Owner)
 	{
 		Movement = Owner->GetCharacterMovement();
