@@ -210,6 +210,12 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 		PhysicsHandleComponent->SetTargetLocation(GravityArrow->K2_GetComponentLocation());
 	}
 
+	if (bIsAiming)
+	{
+		FVector SphereLocationStart = Sphere->K2_GetComponentLocation();
+		UITEST = SphereLocationStart + (100 * FollowCamera->GetForwardVector());
+
+	}
 }
 
 void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
