@@ -16,17 +16,12 @@
 #include "Components/ArrowComponent.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 
-
-
-
-
 ASPCharacterPlayer::ASPCharacterPlayer()
 {
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->TargetArmLength = 400.f;
 	CameraBoom->SetRelativeLocation(FVector(0.0, 0.0, 63.990518));
-
 	CameraBoom->bUsePawnControlRotation = true;
 
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
@@ -92,23 +87,17 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 	}
 
 	CurrentCharacterControlType = ECharacterControlType::Shoulder;
-
 	LastInput = FVector2D::ZeroVector;
-
 	bIsAiming = false;
 	bIsHolding = false;
 	HitComponent = nullptr;
 	HitDistance = 1200.f;
-
-
 }
 
 void ASPCharacterPlayer::BeginPlay()
 {
 	Super::BeginPlay();
-
 	SetCharacterControl(CurrentCharacterControlType);
-
 	//Add Input Mapping Context
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	{
@@ -117,8 +106,6 @@ void ASPCharacterPlayer::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
-
-
 }
 
 void ASPCharacterPlayer::Tick(float DeltaTime)
@@ -136,23 +123,17 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 
 	// 보낼 상태 정보(움직이고 있는지, 아닌지)
 	if (DesiredInput == FVector2D::Zero()) {
-
 		SetMoveState(Protocol::MOVE_STATE_IDLE);
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("IDLE")));
-
 	}
 	else {
-
 		SetMoveState(Protocol::MOVE_STATE_RUN);
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("RUN")));
-
 	}
 	/*if (DesiredInput.SizeSquared() <= KINDA_SMALL_NUMBER)
 		SetMoveState(Protocol::MOVE_STATE_IDLE);
 	else
 		SetMoveState(Protocol::MOVE_STATE_RUN);*/
-
-
 
 		// 이전 입력과 현재 입력이 다른지 비교
 		//if (DesiredInput == LastInput)
@@ -161,8 +142,6 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 		//	SetMoveState(Protocol::MOVE_STATE_RUN);
 
 		//LastInput = DesiredInput; // 현재 입력을 다음 비교를 위해 저장
-
-
 
 		//if (!(DesiredInput == FVector2D::Zero()) && !(LastInput == DesiredInput))
 		//{
@@ -197,8 +176,6 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 			//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("IDLE")));
 			//else if(GetMoveState() == Protocol::MOVE_STATE_RUN)
 			//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("RUN")));
-
-
 		}
 
 		SEND_PACKET(MovePkt);
@@ -214,7 +191,6 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 	{
 		FVector SphereLocationStart = Sphere->K2_GetComponentLocation();
 		UITEST = SphereLocationStart + (100 * FollowCamera->GetForwardVector());
-
 	}
 }
 
