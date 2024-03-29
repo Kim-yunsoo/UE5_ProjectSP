@@ -156,7 +156,7 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 
 
 		// 0.1초마다 서버로 이동 패킷을 전송
-	MovePacketSendTimer -= DeltaTime * 10;
+	MovePacketSendTimer -= DeltaTime;
 
 	if (MovePacketSendTimer <= 0 || ForceSendPacket)
 	{
@@ -172,20 +172,17 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 			Info->set_state(GetMoveState());
 			Info->set_is_aiming(bIsAiming);
 			Info->set_is_holding(bIsHolding);
-			//bool a = PlayerInfo->is_aiming();
-			//if (Info->is_aiming() == true)
-			//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("aim")));
-			//Info->set_is_grap(bIsGraping);
-			
+			Info->set_is_jumping(bIsJumping);
+	
 
 
 			//Info 창에 출력
-			if(GetMoveState()== Protocol::MOVE_STATE_IDLE)
+			/*if(GetMoveState()== Protocol::MOVE_STATE_IDLE)
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("IDLE")));
 			else if(GetMoveState() == Protocol::MOVE_STATE_RUN)
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("RUN")));
-			else if (GetMoveState() == Protocol::MOVE_STATE_JUMP)
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("JUMP")));
+	*/		//else if (GetMoveState() == Protocol::MOVE_STATE_JUMP)
+			//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("JUMP")));
 
 		}
 
@@ -207,7 +204,9 @@ void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Player
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
 	{
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
+		//EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ASPCharacterBase::Do_Jumping);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+		//EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ASPCharacterBase::Stop_Jumping);
 
 		EnhancedInputComponent->BindAction(ChangeControlAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::ChangeCharacterControl);
 

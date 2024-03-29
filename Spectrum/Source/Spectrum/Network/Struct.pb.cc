@@ -31,7 +31,7 @@ PROTOBUF_CONSTEXPR PlayerInfo::PlayerInfo(
   , /*decltype(_impl_.state_)*/0
   , /*decltype(_impl_.is_aiming_)*/false
   , /*decltype(_impl_.is_holding_)*/false
-  , /*decltype(_impl_.is_grap_)*/false
+  , /*decltype(_impl_.is_jumping_)*/false
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct PlayerInfoDefaultTypeInternal {
   PROTOBUF_CONSTEXPR PlayerInfoDefaultTypeInternal()
@@ -62,7 +62,7 @@ const uint32_t TableStruct_Struct_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(p
   PROTOBUF_FIELD_OFFSET(::Protocol::PlayerInfo, _impl_.state_),
   PROTOBUF_FIELD_OFFSET(::Protocol::PlayerInfo, _impl_.is_aiming_),
   PROTOBUF_FIELD_OFFSET(::Protocol::PlayerInfo, _impl_.is_holding_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::PlayerInfo, _impl_.is_grap_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::PlayerInfo, _impl_.is_jumping_),
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::Protocol::PlayerInfo)},
@@ -73,19 +73,19 @@ static const ::_pb::Message* const file_default_instances[] = {
 };
 
 const char descriptor_table_protodef_Struct_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
-  "\n\014Struct.proto\022\010Protocol\032\nEnum.proto\"\251\001\n"
+  "\n\014Struct.proto\022\010Protocol\032\nEnum.proto\"\254\001\n"
   "\nPlayerInfo\022\021\n\tobject_id\030\001 \001(\004\022\t\n\001x\030\002 \001("
   "\002\022\t\n\001y\030\003 \001(\002\022\t\n\001z\030\004 \001(\002\022\013\n\003yaw\030\005 \001(\002\022\"\n\005"
   "state\030\006 \001(\0162\023.Protocol.MoveState\022\021\n\tis_a"
-  "iming\030\007 \001(\010\022\022\n\nis_holding\030\010 \001(\010\022\017\n\007is_gr"
-  "ap\030\t \001(\010b\006proto3"
+  "iming\030\007 \001(\010\022\022\n\nis_holding\030\010 \001(\010\022\022\n\nis_ju"
+  "mping\030\t \001(\010b\006proto3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Struct_2eproto_deps[1] = {
   &::descriptor_table_Enum_2eproto,
 };
 static ::_pbi::once_flag descriptor_table_Struct_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Struct_2eproto = {
-    false, false, 216, descriptor_table_protodef_Struct_2eproto,
+    false, false, 219, descriptor_table_protodef_Struct_2eproto,
     "Struct.proto",
     &descriptor_table_Struct_2eproto_once, descriptor_table_Struct_2eproto_deps, 1, 1,
     schemas, file_default_instances, TableStruct_Struct_2eproto::offsets,
@@ -124,13 +124,13 @@ PlayerInfo::PlayerInfo(const PlayerInfo& from)
     , decltype(_impl_.state_){}
     , decltype(_impl_.is_aiming_){}
     , decltype(_impl_.is_holding_){}
-    , decltype(_impl_.is_grap_){}
+    , decltype(_impl_.is_jumping_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   ::memcpy(&_impl_.object_id_, &from._impl_.object_id_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.is_grap_) -
-    reinterpret_cast<char*>(&_impl_.object_id_)) + sizeof(_impl_.is_grap_));
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.is_jumping_) -
+    reinterpret_cast<char*>(&_impl_.object_id_)) + sizeof(_impl_.is_jumping_));
   // @@protoc_insertion_point(copy_constructor:Protocol.PlayerInfo)
 }
 
@@ -147,7 +147,7 @@ inline void PlayerInfo::SharedCtor(
     , decltype(_impl_.state_){0}
     , decltype(_impl_.is_aiming_){false}
     , decltype(_impl_.is_holding_){false}
-    , decltype(_impl_.is_grap_){false}
+    , decltype(_impl_.is_jumping_){false}
     , /*decltype(_impl_._cached_size_)*/{}
   };
 }
@@ -176,8 +176,8 @@ void PlayerInfo::Clear() {
   (void) cached_has_bits;
 
   ::memset(&_impl_.object_id_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&_impl_.is_grap_) -
-      reinterpret_cast<char*>(&_impl_.object_id_)) + sizeof(_impl_.is_grap_));
+      reinterpret_cast<char*>(&_impl_.is_jumping_) -
+      reinterpret_cast<char*>(&_impl_.object_id_)) + sizeof(_impl_.is_jumping_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -252,10 +252,10 @@ const char* PlayerInfo::_InternalParse(const char* ptr, ::_pbi::ParseContext* ct
         } else
           goto handle_unusual;
         continue;
-      // bool is_grap = 9;
+      // bool is_jumping = 9;
       case 9:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 72)) {
-          _impl_.is_grap_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          _impl_.is_jumping_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -354,10 +354,10 @@ uint8_t* PlayerInfo::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteBoolToArray(8, this->_internal_is_holding(), target);
   }
 
-  // bool is_grap = 9;
-  if (this->_internal_is_grap() != 0) {
+  // bool is_jumping = 9;
+  if (this->_internal_is_jumping() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteBoolToArray(9, this->_internal_is_grap(), target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(9, this->_internal_is_jumping(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -433,8 +433,8 @@ size_t PlayerInfo::ByteSizeLong() const {
     total_size += 1 + 1;
   }
 
-  // bool is_grap = 9;
-  if (this->_internal_is_grap() != 0) {
+  // bool is_jumping = 9;
+  if (this->_internal_is_jumping() != 0) {
     total_size += 1 + 1;
   }
 
@@ -496,8 +496,8 @@ void PlayerInfo::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PRO
   if (from._internal_is_holding() != 0) {
     _this->_internal_set_is_holding(from._internal_is_holding());
   }
-  if (from._internal_is_grap() != 0) {
-    _this->_internal_set_is_grap(from._internal_is_grap());
+  if (from._internal_is_jumping() != 0) {
+    _this->_internal_set_is_jumping(from._internal_is_jumping());
   }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
@@ -517,8 +517,8 @@ void PlayerInfo::InternalSwap(PlayerInfo* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(PlayerInfo, _impl_.is_grap_)
-      + sizeof(PlayerInfo::_impl_.is_grap_)
+      PROTOBUF_FIELD_OFFSET(PlayerInfo, _impl_.is_jumping_)
+      + sizeof(PlayerInfo::_impl_.is_jumping_)
       - PROTOBUF_FIELD_OFFSET(PlayerInfo, _impl_.object_id_)>(
           reinterpret_cast<char*>(&_impl_.object_id_),
           reinterpret_cast<char*>(&other->_impl_.object_id_));

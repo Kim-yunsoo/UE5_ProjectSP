@@ -13,5 +13,5 @@ message PlayerInfo
 	MoveState state = 6;
 	bool is_aiming = 7;
 	bool is_holding = 8;
-	bool is_grap = 9;
+	bool is_jumping = 9;
 }

@@ -36,7 +36,7 @@ public:
 
 	Protocol::MoveState GetMoveState() { return PlayerInfo->state(); }
 
-	FVector DestLocation;
+
 
 public:
 	void SetMoveState(Protocol::MoveState State);
@@ -44,8 +44,8 @@ public:
 	void SetDestInfo(const Protocol::PlayerInfo& Info);
 	Protocol::PlayerInfo* GetPlayerInfo() { return PlayerInfo; }
 
-	bool bSendMovePacket;
-	bool GetSendMovePacket() { return bSendMovePacket; }
+	//bool bSendMovePacket;
+	//bool GetSendMovePacket() { return bSendMovePacket; }
 
 protected:
 	class Protocol::PlayerInfo* PlayerInfo; // 현재 위치
@@ -53,6 +53,9 @@ protected:
 
 	void Aiming(const FInputActionValue& Value);
 	void StopAiming(const FInputActionValue& Value);
+public:
+	void Do_Jumping(const FInputActionValue& Value);
+	void Stop_Jumping(const FInputActionValue& Value);
 
 protected:
 	// 시점변환
@@ -96,5 +99,6 @@ protected:
 public:
 	const uint8 GetIsAiming() { return bIsAiming; };
 	const uint8 GetIsHolding() { return bIsHolding; };
+	const uint8 GetIsJumping() { return bIsJumping; };
 	
 };

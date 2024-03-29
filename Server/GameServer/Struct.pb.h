@@ -186,7 +186,7 @@ class PlayerInfo final :
     kStateFieldNumber = 6,
     kIsAimingFieldNumber = 7,
     kIsHoldingFieldNumber = 8,
-    kIsGrapFieldNumber = 9,
+    kIsJumpingFieldNumber = 9,
   };
   // uint64 object_id = 1;
   void clear_object_id();
@@ -260,13 +260,13 @@ class PlayerInfo final :
   void _internal_set_is_holding(bool value);
   public:
 
-  // bool is_grap = 9;
-  void clear_is_grap();
-  bool is_grap() const;
-  void set_is_grap(bool value);
+  // bool is_jumping = 9;
+  void clear_is_jumping();
+  bool is_jumping() const;
+  void set_is_jumping(bool value);
   private:
-  bool _internal_is_grap() const;
-  void _internal_set_is_grap(bool value);
+  bool _internal_is_jumping() const;
+  void _internal_set_is_jumping(bool value);
   public:
 
   // @@protoc_insertion_point(class_scope:Protocol.PlayerInfo)
@@ -285,7 +285,7 @@ class PlayerInfo final :
     int state_;
     bool is_aiming_;
     bool is_holding_;
-    bool is_grap_;
+    bool is_jumping_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -462,24 +462,24 @@ inline void PlayerInfo::set_is_holding(bool value) {
   // @@protoc_insertion_point(field_set:Protocol.PlayerInfo.is_holding)
 }
 
-// bool is_grap = 9;
-inline void PlayerInfo::clear_is_grap() {
-  _impl_.is_grap_ = false;
+// bool is_jumping = 9;
+inline void PlayerInfo::clear_is_jumping() {
+  _impl_.is_jumping_ = false;
 }
-inline bool PlayerInfo::_internal_is_grap() const {
-  return _impl_.is_grap_;
+inline bool PlayerInfo::_internal_is_jumping() const {
+  return _impl_.is_jumping_;
 }
-inline bool PlayerInfo::is_grap() const {
-  // @@protoc_insertion_point(field_get:Protocol.PlayerInfo.is_grap)
-  return _internal_is_grap();
+inline bool PlayerInfo::is_jumping() const {
+  // @@protoc_insertion_point(field_get:Protocol.PlayerInfo.is_jumping)
+  return _internal_is_jumping();
 }
-inline void PlayerInfo::_internal_set_is_grap(bool value) {
+inline void PlayerInfo::_internal_set_is_jumping(bool value) {
   
-  _impl_.is_grap_ = value;
+  _impl_.is_jumping_ = value;
 }
-inline void PlayerInfo::set_is_grap(bool value) {
-  _internal_set_is_grap(value);
-  // @@protoc_insertion_point(field_set:Protocol.PlayerInfo.is_grap)
+inline void PlayerInfo::set_is_jumping(bool value) {
+  _internal_set_is_jumping(value);
+  // @@protoc_insertion_point(field_set:Protocol.PlayerInfo.is_jumping)
 }
 
 #ifdef __GNUC__

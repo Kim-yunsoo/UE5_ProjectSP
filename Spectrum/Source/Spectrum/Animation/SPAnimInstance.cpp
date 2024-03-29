@@ -40,17 +40,20 @@ void USPAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		bIsIdle = GroundSpeed < MovingThreshould;
 		bIsFalling = Movement->IsFalling();
 		bIsUping = Movement->IsFlying();
-		//if (Owner->IsMyPlayer() == true)
+		if (Owner->IsMyPlayer() == true)
 			bIsJumping = bIsFalling & (Velocity.Z > JumpingThreshould);
-		//else if (Owner->IsMyPlayer() == false)
-		//	bIsJumping = /*bIsFalling | */(Movement->JumpZVelocity > 1.0f);
+		else if (Owner->IsMyPlayer() == false)
+			bIsJumping = Owner->GetIsJumping();
+
 		bIsAiming = Owner->GetIsAiming();
-		if (Owner->IsMyPlayer() == false && bIsAiming == true)
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("222222222")));
-		else if(Owner->IsMyPlayer() == false && bIsAiming == false)
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("333333333")));
+
+		if (Owner->IsMyPlayer() == false && bIsJumping == true)
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("OTHER JUMP")));
+		//else if(Owner->IsMyPlayer() == false && bIsJumping == false)
+		//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("333333333")));
 
 		bIsHolding = Owner->GetIsHolding();
+		
 		
 		FRotator ControlRotation = Owner->GetControlRotation();
 		FRotator GetActorRotation = Owner->GetActorRotation();

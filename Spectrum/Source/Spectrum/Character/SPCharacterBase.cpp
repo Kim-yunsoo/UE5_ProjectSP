@@ -107,9 +107,10 @@ ASPCharacterBase::ASPCharacterBase()
 	{
 		PhysicsHandleComponent->SetInterpolationSpeed(5.0);
 	}
-	bSendMovePacket = false;
+
 	bIsAiming = false;
 	bIsHolding = false;
+	bIsJumping = false;
 
 
 }
@@ -156,16 +157,13 @@ void ASPCharacterBase::Tick(float DeltaSeconds)
 	
 
 		FVector Location = GetActorLocation();
-		if (DestLocation.Z != Location.Z) {
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("JUMP")));
-			//DestLocation = FVector(DestInfo->x(), DestInfo->y(), DestInfo->z()+100.0f);
+		//if (DestLocation.Z != Location.Z) {
+		//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("JUMP")));
+		//	//DestLocation = FVector(DestInfo->x(), DestInfo->y(), DestInfo->z()+100.0f);
 
-			bSendMovePacket = true;
-		}
-		else
-			bSendMovePacket = false;
+		//}
 
-		DestLocation = FVector(DestInfo->x(), DestInfo->y(), DestInfo->z());
+		FVector DestLocation = FVector(DestInfo->x(), DestInfo->y(), DestInfo->z());
 
 
 		//FVector MoveDir = (DestLocation - Location);
@@ -181,7 +179,7 @@ void ASPCharacterBase::Tick(float DeltaSeconds)
 		//MoveDist = FMath::Min(MoveDist, DistToDest);	//오버해서 가지 않게 제한
 		//FVector NextLocation = Location + MoveDir* MoveDist;
 
-		SetActorLocation(DestLocation);
+		//SetActorLocation(DestLocation);
 
 		const Protocol::MoveState State = PlayerInfo->state();
 
@@ -190,20 +188,13 @@ void ASPCharacterBase::Tick(float DeltaSeconds)
 			SetActorRotation(FRotator(0, DestInfo->yaw() - 90.f, 0));
 			AddMovementInput(GetActorForwardVector());
 
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("RUN")));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("RUN")));
 			//LastLook = DestLook;
-		}
-		else if (bSendMovePacket)
-		{
-			//SetActorRotation(FRotator(0, DestInfo->yaw() - 90.f, 0));
-			//AddMovementInput(GetActorForwardVector());
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("JUMP")));
-			//bSendMovePacket = false;
 		}
 		else if (State == Protocol::MOVE_STATE_IDLE)
 		{
 	
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("IDLE")));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("IDLE")));
 
 		}
 
@@ -248,10 +239,11 @@ void ASPCharacterBase::SetPlayerInfo(const Protocol::PlayerInfo& Info)
 	SetActorLocation(Location);
 	//PlayerInfo->set_is_aiming(Info.is_aiming());
 	bIsAiming = Info.is_aiming();
+	bIsJumping = Info.is_jumping();
 
 	//if (IsMyPlayer() == false && PlayerInfo->is_aiming() == true)
-	if (bIsAiming)
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("aim!!!!")));
+	//if (bIsJumping)
+	//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Jumping!!!!")));
 
 	
 }
@@ -268,11 +260,11 @@ void ASPCharacterBase::SetDestInfo(const Protocol::PlayerInfo& Info)
 
 	//DestInfo->set_is_aiming(Info.is_aiming());
 	bIsAiming = Info.is_aiming();
-
+	bIsJumping = Info.is_jumping();
 
 	//if (IsMyPlayer() == false && DestInfo->is_aiming() == true)
-	if (bIsAiming)
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("00000!!!!")));
+	/*if (bIsAiming)
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("00000!!!!")));*/
 
 
 	// 상태만 바로 적용!
@@ -288,6 +280,16 @@ void ASPCharacterBase::Aiming(const FInputActionValue& Value)
 void ASPCharacterBase::StopAiming(const FInputActionValue& Value)
 {
 		bIsAiming = false;
+}
+
+void ASPCharacterBase::Do_Jumping(const FInputActionValue& Value)
+{
+	bIsJumping = true;
+}
+
+void ASPCharacterBase::Stop_Jumping(const FInputActionValue& Value)
+{
+	bIsJumping = false;
 }
 
 
