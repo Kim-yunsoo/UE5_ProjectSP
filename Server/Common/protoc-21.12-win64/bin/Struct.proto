@@ -11,4 +11,7 @@ message PlayerInfo
 	float z = 4;
 	float yaw = 5;
 	MoveState state = 6;
+	bool is_aiming = 7;
+	bool is_holding = 8;
+	bool is_grap = 9;
 }

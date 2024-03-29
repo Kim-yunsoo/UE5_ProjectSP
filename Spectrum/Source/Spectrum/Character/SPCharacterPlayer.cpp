@@ -95,8 +95,8 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 
 	LastInput = FVector2D::ZeroVector;
 
-	bIsAiming = false;
-	bIsHolding = false;
+	//bIsAiming = false;
+	//bIsHolding = false;
 	HitComponent = nullptr;
 	HitDistance = 1200.f;
 
@@ -144,6 +144,7 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 	else {
 
 		SetMoveState(Protocol::MOVE_STATE_RUN);
+		//SetMoveState(Protocol::MOVE_STATE_JUMP);
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("RUN")));
 
 	}
@@ -152,28 +153,6 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 	else
 		SetMoveState(Protocol::MOVE_STATE_RUN);*/
 
-
-
-		// 이전 입력과 현재 입력이 다른지 비교
-		//if (DesiredInput == LastInput)
-		//	SetMoveState(Protocol::MOVE_STATE_IDLE);
-		//else
-		//	SetMoveState(Protocol::MOVE_STATE_RUN);
-
-		//LastInput = DesiredInput; // 현재 입력을 다음 비교를 위해 저장
-
-
-
-		//if (!(DesiredInput == FVector2D::Zero()) && !(LastInput == DesiredInput))
-		//{
-		//	SetMoveState(Protocol::MOVE_STATE_RUN);
-		//}
-		//else if (DesiredInput == FVector2D::Zero() || DesiredInput == FVector2D::Zero())
-		//{
-		//	SetMoveState(Protocol::MOVE_STATE_IDLE);
-		//}
-
-		//LastInput = DesiredInput;
 
 
 		// 0.1초마다 서버로 이동 패킷을 전송
@@ -191,13 +170,17 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 			Info->CopyFrom(*PlayerInfo);
 			Info->set_yaw(DesiredYaw);
 			Info->set_state(GetMoveState());
+			
+			
+
 
 			//Info 창에 출력
 			if(GetMoveState()== Protocol::MOVE_STATE_IDLE)
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("IDLE")));
 			else if(GetMoveState() == Protocol::MOVE_STATE_RUN)
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("RUN")));
-
+			else if (GetMoveState() == Protocol::MOVE_STATE_JUMP)
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("JUMP")));
 
 		}
 
@@ -342,15 +325,15 @@ void ASPCharacterPlayer::StopSpeedUp(const FInputActionValue& Value)
 	GetCharacterMovement()->MaxWalkSpeed = 500.f;
 }
 
-void ASPCharacterPlayer::Aiming(const FInputActionValue& Value)
-{
-	bIsAiming = true;
-}
-
-void ASPCharacterPlayer::StopAiming(const FInputActionValue& Value)
-{
-	bIsAiming = false;
-}
+//void ASPCharacterPlayer::Aiming(const FInputActionValue& Value)
+//{
+//	bIsAiming = true;
+//}
+//
+//void ASPCharacterPlayer::StopAiming(const FInputActionValue& Value)
+//{
+//	bIsAiming = false;
+//}
 
 void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 {

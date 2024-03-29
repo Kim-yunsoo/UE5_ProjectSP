@@ -107,6 +107,10 @@ ASPCharacterBase::ASPCharacterBase()
 	{
 		PhysicsHandleComponent->SetInterpolationSpeed(5.0);
 	}
+	bSendMovePacket = false;
+	bIsAiming = false;
+	bIsHolding = false;
+
 
 }
 
@@ -145,12 +149,22 @@ void ASPCharacterBase::Tick(float DeltaSeconds)
 		PlayerInfo->set_z(Location.Z);
 		PlayerInfo->set_yaw(GetControlRotation().Yaw);
 	}
-
 	if (IsMyPlayer() == false)		// 내 플레이어가 아닌 경우에만 DestInfo를 이용하여 이동
 	{								// 야금야금 이동하도록 보정
+	
 
 		FVector Location = GetActorLocation();
-		FVector DestLocation = FVector(DestInfo->x(), DestInfo->y(), DestInfo->z());
+		if (DestLocation.Z != Location.Z) {
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("JUMP")));
+			//DestLocation = FVector(DestInfo->x(), DestInfo->y(), DestInfo->z()+100.0f);
+
+			bSendMovePacket = true;
+		}
+		else
+			bSendMovePacket = false;
+
+		DestLocation = FVector(DestInfo->x(), DestInfo->y(), DestInfo->z());
+
 
 		//FVector MoveDir = (DestLocation - Location);
 		////const float DistToDest = MoveDir.Length();
@@ -171,17 +185,22 @@ void ASPCharacterBase::Tick(float DeltaSeconds)
 
 		if (State == Protocol::MOVE_STATE_RUN)
 		{
-			//SetActorRotation(FRotator(0, DestLook, 0));
 			SetActorRotation(FRotator(0, DestInfo->yaw() - 90.f, 0));
 			AddMovementInput(GetActorForwardVector());
 
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("RUN")));
 			//LastLook = DestLook;
 		}
+		else if (bSendMovePacket)
+		{
+			//SetActorRotation(FRotator(0, DestInfo->yaw() - 90.f, 0));
+			//AddMovementInput(GetActorForwardVector());
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("JUMP")));
+			//bSendMovePacket = false;
+		}
 		else if (State == Protocol::MOVE_STATE_IDLE)
 		{
-			//SetActorRotation(FRotator(0, LastLook, 0));
-			//AddMovementInput(GetActorForwardVector());
+	
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("IDLE")));
 
 		}
@@ -241,6 +260,17 @@ void ASPCharacterBase::SetDestInfo(const Protocol::PlayerInfo& Info)
 	SetMoveState(Info.state());
 }
 
+void ASPCharacterBase::Aiming(const FInputActionValue& Value)
+{
+	bIsAiming = true;
+}
+
+void ASPCharacterBase::StopAiming(const FInputActionValue& Value)
+{
+		bIsAiming = false;
+}
+
+
 void ASPCharacterBase::SetCharacterControlData(const USPCharacterControlData* CharacterControlData)
 {
 	// Pawn
@@ -252,5 +282,4 @@ void ASPCharacterBase::SetCharacterControlData(const USPCharacterControlData* Ch
 	GetCharacterMovement()->RotationRate = CharacterControlData->RotationRate;
 
 }
-
 

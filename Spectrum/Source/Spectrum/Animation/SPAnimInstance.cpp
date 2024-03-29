@@ -4,7 +4,7 @@
 #include "Animation/SPAnimInstance.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "Character/SPCharacterPlayer.h"
+#include "Character/SPCharacterBase.h"
 #include "Kismet/KismetMathLibrary.h"
 
 
@@ -39,11 +39,14 @@ void USPAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		GroundSpeed = Velocity.Size2D();
 		bIsIdle = GroundSpeed < MovingThreshould;
 		bIsFalling = Movement->IsFalling();
-		bIsJumping = bIsFalling & (Velocity.Z > JumpingThreshould);
+		bIsUping = Movement->IsFlying();
+		//if (Owner->IsMyPlayer() == true)
+			bIsJumping = bIsFalling & (Velocity.Z > JumpingThreshould);
+		//else if (Owner->IsMyPlayer() == false)
+		//	bIsJumping = /*bIsFalling | */(Movement->JumpZVelocity > 1.0f);
 		bIsAiming = Owner->GetIsAiming();
 		bIsHolding = Owner->GetIsHolding();
-
-
+		
 		FRotator ControlRotation = Owner->GetControlRotation();
 		FRotator GetActorRotation = Owner->GetActorRotation();
 		FRotator DeltaRotation=UKismetMathLibrary::NormalizedDeltaRotator(ControlRotation, GetActorRotation);

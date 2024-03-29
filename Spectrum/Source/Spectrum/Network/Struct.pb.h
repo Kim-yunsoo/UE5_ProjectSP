@@ -184,6 +184,9 @@ class PlayerInfo final :
     kZFieldNumber = 4,
     kYawFieldNumber = 5,
     kStateFieldNumber = 6,
+    kIsAimingFieldNumber = 7,
+    kIsHoldingFieldNumber = 8,
+    kIsGrapFieldNumber = 9,
   };
   // uint64 object_id = 1;
   void clear_object_id();
@@ -239,6 +242,33 @@ class PlayerInfo final :
   void _internal_set_state(::Protocol::MoveState value);
   public:
 
+  // bool is_aiming = 7;
+  void clear_is_aiming();
+  bool is_aiming() const;
+  void set_is_aiming(bool value);
+  private:
+  bool _internal_is_aiming() const;
+  void _internal_set_is_aiming(bool value);
+  public:
+
+  // bool is_holding = 8;
+  void clear_is_holding();
+  bool is_holding() const;
+  void set_is_holding(bool value);
+  private:
+  bool _internal_is_holding() const;
+  void _internal_set_is_holding(bool value);
+  public:
+
+  // bool is_grap = 9;
+  void clear_is_grap();
+  bool is_grap() const;
+  void set_is_grap(bool value);
+  private:
+  bool _internal_is_grap() const;
+  void _internal_set_is_grap(bool value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Protocol.PlayerInfo)
  private:
   class _Internal;
@@ -253,6 +283,9 @@ class PlayerInfo final :
     float z_;
     float yaw_;
     int state_;
+    bool is_aiming_;
+    bool is_holding_;
+    bool is_grap_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -387,6 +420,66 @@ inline void PlayerInfo::_internal_set_state(::Protocol::MoveState value) {
 inline void PlayerInfo::set_state(::Protocol::MoveState value) {
   _internal_set_state(value);
   // @@protoc_insertion_point(field_set:Protocol.PlayerInfo.state)
+}
+
+// bool is_aiming = 7;
+inline void PlayerInfo::clear_is_aiming() {
+  _impl_.is_aiming_ = false;
+}
+inline bool PlayerInfo::_internal_is_aiming() const {
+  return _impl_.is_aiming_;
+}
+inline bool PlayerInfo::is_aiming() const {
+  // @@protoc_insertion_point(field_get:Protocol.PlayerInfo.is_aiming)
+  return _internal_is_aiming();
+}
+inline void PlayerInfo::_internal_set_is_aiming(bool value) {
+  
+  _impl_.is_aiming_ = value;
+}
+inline void PlayerInfo::set_is_aiming(bool value) {
+  _internal_set_is_aiming(value);
+  // @@protoc_insertion_point(field_set:Protocol.PlayerInfo.is_aiming)
+}
+
+// bool is_holding = 8;
+inline void PlayerInfo::clear_is_holding() {
+  _impl_.is_holding_ = false;
+}
+inline bool PlayerInfo::_internal_is_holding() const {
+  return _impl_.is_holding_;
+}
+inline bool PlayerInfo::is_holding() const {
+  // @@protoc_insertion_point(field_get:Protocol.PlayerInfo.is_holding)
+  return _internal_is_holding();
+}
+inline void PlayerInfo::_internal_set_is_holding(bool value) {
+  
+  _impl_.is_holding_ = value;
+}
+inline void PlayerInfo::set_is_holding(bool value) {
+  _internal_set_is_holding(value);
+  // @@protoc_insertion_point(field_set:Protocol.PlayerInfo.is_holding)
+}
+
+// bool is_grap = 9;
+inline void PlayerInfo::clear_is_grap() {
+  _impl_.is_grap_ = false;
+}
+inline bool PlayerInfo::_internal_is_grap() const {
+  return _impl_.is_grap_;
+}
+inline bool PlayerInfo::is_grap() const {
+  // @@protoc_insertion_point(field_get:Protocol.PlayerInfo.is_grap)
+  return _internal_is_grap();
+}
+inline void PlayerInfo::_internal_set_is_grap(bool value) {
+  
+  _impl_.is_grap_ = value;
+}
+inline void PlayerInfo::set_is_grap(bool value) {
+  _internal_set_is_grap(value);
+  // @@protoc_insertion_point(field_set:Protocol.PlayerInfo.is_grap)
 }
 
 #ifdef __GNUC__

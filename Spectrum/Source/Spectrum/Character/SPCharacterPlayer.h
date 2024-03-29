@@ -43,8 +43,8 @@ protected: // Ä«¸Þ¶ó
 	void SpeedUp(const FInputActionValue& Value);
 	void StopSpeedUp(const FInputActionValue& Value);
 
-	void Aiming(const FInputActionValue& Value);
-	void StopAiming(const FInputActionValue& Value);
+	//void Aiming(const FInputActionValue& Value);
+	//void StopAiming(const FInputActionValue& Value);
 
 	void Graping(const FInputActionValue& Value);
 	void StopGraping(const FInputActionValue& Value);

@@ -9,29 +9,21 @@ GenPackets.exe --path=./Protocol.proto --output=ServerPacketHandler --recv=C_ --
 
 IF ERRORLEVEL 1 PAUSE
 
-XCOPY /Y Enum.pb.h "../../../GameServer"
-XCOPY /Y Enum.pb.cc "../../../GameServer"
-XCOPY /Y Struct.pb.h "../../../GameServer"
-XCOPY /Y Struct.pb.cc "../../../GameServer"
-XCOPY /Y Protocol.pb.h "../../../GameServer"
-XCOPY /Y Protocol.pb.cc "../../../GameServer"
-XCOPY /Y ServerPacketHandler.h "../../../GameServer"
+XCOPY /Y Enum.pb.h "D:/Unreal/UE5_Spectrum/Server/GameServer"
+XCOPY /Y Enum.pb.cc "D:/Unreal/UE5_Spectrum/Server/GameServer"
+XCOPY /Y Struct.pb.h "D:/Unreal/UE5_Spectrum/Server/GameServer"
+XCOPY /Y Struct.pb.cc "D:/Unreal/UE5_Spectrum/Server/GameServer"
+XCOPY /Y Protocol.pb.h "D:/Unreal/UE5_Spectrum/Server/GameServer"
+XCOPY /Y Protocol.pb.cc "D:/Unreal/UE5_Spectrum/Server/GameServer"
+XCOPY /Y ServerPacketHandler.h "D:/Unreal/UE5_Spectrum/Server/GameServer"
 
-XCOPY /Y Enum.pb.h "../../../DummyClient"
-XCOPY /Y Enum.pb.cc "../../../DummyClient"
-XCOPY /Y Struct.pb.h "../../../DummyClient"
-XCOPY /Y Struct.pb.cc "../../../DummyClient"
-XCOPY /Y Protocol.pb.h "../../../DummyClient"
-XCOPY /Y Protocol.pb.cc "../../../DummyClient"
-XCOPY /Y ClientPacketHandler.h "../../../DummyClient"
-
-XCOPY /Y Enum.pb.h "../../../../S1/Source/S1/Network"
-XCOPY /Y Enum.pb.cc "../../../../S1/Source/S1/Network"
-XCOPY /Y Struct.pb.h "../../../../S1/Source/S1/Network"
-XCOPY /Y Struct.pb.cc "../../../../S1/Source/S1/Network"
-XCOPY /Y Protocol.pb.h "../../../../S1/Source/S1/Network"
-XCOPY /Y Protocol.pb.cc "../../../../S1/Source/S1/Network"
-XCOPY /Y ClientPacketHandler.h "../../../../S1/Source/S1"
+XCOPY /Y Enum.pb.h "D:/Unreal/UE5_Spectrum/Spectrum/Source/Spectrum/Network"
+XCOPY /Y Enum.pb.cc "D:/Unreal/UE5_Spectrum/Spectrum/Source/Spectrum/Network"
+XCOPY /Y Struct.pb.h "D:/Unreal/UE5_Spectrum/Spectrum/Source/Spectrum/Network"
+XCOPY /Y Struct.pb.cc "D:/Unreal/UE5_Spectrum/Spectrum/Source/Spectrum/Network"
+XCOPY /Y Protocol.pb.h "D:/Unreal/UE5_Spectrum/Spectrum/Source/Spectrum/Network"
+XCOPY /Y Protocol.pb.cc "D:/Unreal/UE5_Spectrum/Spectrum/Source/Spectrum/Network"
+XCOPY /Y ClientPacketHandler.h "D:/Unreal/UE5_Spectrum/Spectrum/Source/Spectrum"
 
 DEL /Q /F *.pb.h
 DEL /Q /F *.pb.cc

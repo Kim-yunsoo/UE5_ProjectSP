@@ -43,6 +43,9 @@ protected:
 	uint8 bIsFalling : 1; //떨어지고있는지
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character)
+	uint8 bIsUping : 1; //떨어지고있는지
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character)
 	uint8 bIsJumping : 1; //점프하고있는지
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character)

@@ -36,15 +36,23 @@ public:
 
 	Protocol::MoveState GetMoveState() { return PlayerInfo->state(); }
 
+	FVector DestLocation;
+
 public:
 	void SetMoveState(Protocol::MoveState State);
 	void SetPlayerInfo(const Protocol::PlayerInfo& Info);
 	void SetDestInfo(const Protocol::PlayerInfo& Info);
 	Protocol::PlayerInfo* GetPlayerInfo() { return PlayerInfo; }
 
+	bool bSendMovePacket;
+	bool GetSendMovePacket() { return bSendMovePacket; }
+
 protected:
 	class Protocol::PlayerInfo* PlayerInfo; // 현재 위치
 	class Protocol::PlayerInfo* DestInfo;	// 가려는 위치
+
+	void Aiming(const FInputActionValue& Value);
+	void StopAiming(const FInputActionValue& Value);
 
 protected:
 	// 시점변환
