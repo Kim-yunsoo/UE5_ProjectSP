@@ -191,7 +191,7 @@ void USpectrumGameInstance::HandleMove(const Protocol::S_MOVE& MovePkt)
 		return;
 
 	const Protocol::PlayerInfo& Info = MovePkt.info();
-	//Player->SetPlayerInfo(Info);
+	Player->SetPlayerInfo(Info);
 	Player->SetDestInfo(Info);
 
 }

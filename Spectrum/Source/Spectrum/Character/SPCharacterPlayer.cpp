@@ -170,7 +170,12 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 			Info->CopyFrom(*PlayerInfo);
 			Info->set_yaw(DesiredYaw);
 			Info->set_state(GetMoveState());
-			
+			Info->set_is_aiming(bIsAiming);
+			Info->set_is_holding(bIsHolding);
+			//bool a = PlayerInfo->is_aiming();
+			//if (Info->is_aiming() == true)
+			//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("aim")));
+			//Info->set_is_grap(bIsGraping);
 			
 
 

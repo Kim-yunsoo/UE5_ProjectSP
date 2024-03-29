@@ -90,6 +90,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	uint8 bIsHolding : 1; //잡는지 판단
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character")
+	uint8 bIsJumping : 1; //점프하고있는지
 
 public:
 	const uint8 GetIsAiming() { return bIsAiming; };

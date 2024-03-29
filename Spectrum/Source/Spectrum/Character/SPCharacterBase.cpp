@@ -148,7 +148,9 @@ void ASPCharacterBase::Tick(float DeltaSeconds)
 		PlayerInfo->set_y(Location.Y);
 		PlayerInfo->set_z(Location.Z);
 		PlayerInfo->set_yaw(GetControlRotation().Yaw);
+	
 	}
+
 	if (IsMyPlayer() == false)		// 내 플레이어가 아닌 경우에만 DestInfo를 이용하여 이동
 	{								// 야금야금 이동하도록 보정
 	
@@ -244,6 +246,14 @@ void ASPCharacterBase::SetPlayerInfo(const Protocol::PlayerInfo& Info)
 
 	FVector Location(Info.x(), Info.y(), Info.z());
 	SetActorLocation(Location);
+	//PlayerInfo->set_is_aiming(Info.is_aiming());
+	bIsAiming = Info.is_aiming();
+
+	//if (IsMyPlayer() == false && PlayerInfo->is_aiming() == true)
+	if (bIsAiming)
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("aim!!!!")));
+
+	
 }
 
 void ASPCharacterBase::SetDestInfo(const Protocol::PlayerInfo& Info)
@@ -256,8 +266,18 @@ void ASPCharacterBase::SetDestInfo(const Protocol::PlayerInfo& Info)
 	// Dest에 최종 상태 복사
 	DestInfo->CopyFrom(Info);
 
+	//DestInfo->set_is_aiming(Info.is_aiming());
+	bIsAiming = Info.is_aiming();
+
+
+	//if (IsMyPlayer() == false && DestInfo->is_aiming() == true)
+	if (bIsAiming)
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("00000!!!!")));
+
+
 	// 상태만 바로 적용!
 	SetMoveState(Info.state());
+
 }
 
 void ASPCharacterBase::Aiming(const FInputActionValue& Value)

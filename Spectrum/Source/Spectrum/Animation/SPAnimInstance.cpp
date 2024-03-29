@@ -45,6 +45,11 @@ void USPAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		//else if (Owner->IsMyPlayer() == false)
 		//	bIsJumping = /*bIsFalling | */(Movement->JumpZVelocity > 1.0f);
 		bIsAiming = Owner->GetIsAiming();
+		if (Owner->IsMyPlayer() == false && bIsAiming == true)
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("222222222")));
+		else if(Owner->IsMyPlayer() == false && bIsAiming == false)
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("333333333")));
+
 		bIsHolding = Owner->GetIsHolding();
 		
 		FRotator ControlRotation = Owner->GetControlRotation();
