@@ -190,7 +190,7 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 	if (bIsAiming)
 	{
 		FVector SphereLocationStart = Sphere->K2_GetComponentLocation();
-		UITEST = SphereLocationStart + (100 * FollowCamera->GetForwardVector());
+		UITEST = SphereLocationStart + (200 * FollowCamera->GetForwardVector());
 	}
 }
 
