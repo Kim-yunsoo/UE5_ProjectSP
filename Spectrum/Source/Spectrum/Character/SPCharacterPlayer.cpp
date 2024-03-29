@@ -38,7 +38,7 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 	if (GravityArrow)
 	{
 		GravityArrow->SetupAttachment(FollowCamera);
-		GravityArrow->SetRelativeLocation(FVector(811.303858, 13.162654, 0.0f));
+		GravityArrow->SetRelativeLocation(FVector(811.303858, 62.924746, 64.091908));
 		GravityArrow->SetRelativeRotation(FRotator(0, 0, 0));
 	}
 
@@ -425,9 +425,9 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 	}
 	else // bIsHolding == trueÀÎ °æ¿ì 
 	{
-		if (HitComponent) {
+		bIsHolding = false;
+		if (HitComponent && HitComponent->IsSimulatingPhysics()) {
 			PhysicsHandleComponent->ReleaseComponent();
-			bIsHolding = false;
 			HitComponent->AddImpulse(FollowCamera->GetForwardVector() * HitDistance, NAME_None, true);
 			HitComponent = nullptr;
 		}
@@ -436,19 +436,18 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::StopGraping(const FInputActionValue& Value)
 {
-	if (bIsHolding && HitComponent)
+	if (bIsHolding && HitComponent->IsSimulatingPhysics())
 	{
 		bIsHolding = false;
 		PhysicsHandleComponent->ReleaseComponent();
 		HitComponent->AddImpulse(FollowCamera->GetForwardVector() * HitDistance, NAME_None, true);
 		HitComponent = nullptr;
-
 	}
 }
 
 void ASPCharacterPlayer::Jumping(const FInputActionValue& Value)
 {
-	if (!bIsAiming) 
+	if (!bIsAiming)
 	{
 		bPressedJump = true;
 		JumpKeyHoldTime = 0.0f;
