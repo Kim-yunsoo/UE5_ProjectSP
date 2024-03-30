@@ -14,10 +14,18 @@
 #include "Components/SceneComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Components/ArrowComponent.h"
+#include "Blueprint/UserWidget.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 
 ASPCharacterPlayer::ASPCharacterPlayer()
 {
+	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
+	SpringArm->SetupAttachment(RootComponent);
+	SpringArm->TargetArmLength = 150.f;
+	SpringArm->SetRelativeLocation(FVector(0.0, 0.0, 50.0));
+	SpringArm->SocketOffset.Set(0.0, 30, 10);
+	SpringArm->bUsePawnControlRotation = true;
+
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->TargetArmLength = 400.f;
@@ -99,13 +107,13 @@ void ASPCharacterPlayer::BeginPlay()
 	Super::BeginPlay();
 	SetCharacterControl(CurrentCharacterControlType);
 	//Add Input Mapping Context
-	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
-	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-		{
-			Subsystem->AddMappingContext(DefaultMappingContext, 0);
-		}
-	}
+	//if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	//{
+	//	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+	//	{
+	//		Subsystem->AddMappingContext(DefaultMappingContext, 0);
+	//	}
+	//}
 }
 
 void ASPCharacterPlayer::Tick(float DeltaTime)
@@ -186,12 +194,6 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 	{
 		PhysicsHandleComponent->SetTargetLocation(GravityArrow->K2_GetComponentLocation());
 	}
-
-	//if (bIsAiming)
-	//{
-	//	FVector SphereLocationStart = Sphere->K2_GetComponentLocation();
-	//	UILocation = SphereLocationStart + (200 * FollowCamera->GetForwardVector());
-	//}
 }
 
 void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -235,6 +237,15 @@ void ASPCharacterPlayer::SetCharacterControlData(const USPCharacterControlData* 
 	CameraBoom->bInheritYaw = CharacterControlData->bInheritYaw;
 	CameraBoom->bInheritRoll = CharacterControlData->bInheritRoll;
 	CameraBoom->bDoCollisionTest = CharacterControlData->bDoCollisionTest;
+}
+
+void ASPCharacterPlayer::CameraMove()
+{
+	FLatentActionInfo LatentInfo;
+	FVector TargetRelativeLocation{ 0,0,0 };
+	FRotator TargetRelativeRotation{ 0,0,0 };
+	LatentInfo.CallbackTarget = this;
+	UKismetSystemLibrary::MoveComponentTo(FollowCamera, TargetRelativeLocation, TargetRelativeRotation, true, true, 0.5, true, EMoveComponentAction::Type::Move, LatentInfo);
 }
 
 void ASPCharacterPlayer::ChangeCharacterControl()
@@ -326,20 +337,37 @@ void ASPCharacterPlayer::StopSpeedUp(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::Aiming(const FInputActionValue& Value)
 {
-	bIsAiming = true;
+	if (false == bIsHolding) {
+		bIsAiming = true;
+		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, true);
+		FollowCamera->AttachToComponent(SpringArm, AttachmentRules, NAME_None);
+		CameraMove();
+		
+	}
+	else // bIsHolding == trueÀÎ °æ¿ì
+	{
+		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, true);
+		FollowCamera->AttachToComponent(CameraBoom, AttachmentRules, NAME_None);
+		CameraMove();
+	}
 }
 
 void ASPCharacterPlayer::StopAiming(const FInputActionValue& Value)
 {
 	bIsAiming = false;
+	FollowCamera->K2_AttachToComponent(CameraBoom, NAME_None, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, true);
+	FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, true);
+	FollowCamera->AttachToComponent(CameraBoom, AttachmentRules, NAME_None);
+	CameraMove();
 }
 
 void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 {
 	if (false == bIsHolding)
 	{
+
 		//FVector SphereLocationStart = Sphere->K2_GetComponentLocation();
-		FVector SphereLocationStart= FollowCamera->K2_GetComponentLocation();
+		FVector SphereLocationStart = FollowCamera->K2_GetComponentLocation();
 		//FVector SphereLocationEnd = SphereLocationStart + (1500 * FollowCamera->GetForwardVector());
 		APlayerController* PlayerController = GetController<APlayerController>();
 		if (PlayerController != nullptr)
@@ -381,6 +409,9 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 					);
 
 					bIsHolding = true;
+					FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, true);
+					FollowCamera->AttachToComponent(CameraBoom, AttachmentRules, NAME_None);
+					CameraMove();
 				}
 			}
 

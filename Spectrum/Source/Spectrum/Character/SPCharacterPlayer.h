@@ -31,7 +31,7 @@ protected: // Ä«¸Þ¶ó
 	void ChangeCharacterControl();
 	void SetCharacterControl(ECharacterControlType NewCharacterControlType);
 	virtual void SetCharacterControlData(const class USPCharacterControlData* CharacterControlData) override;
-
+	void CameraMove();
 
 
 
@@ -73,6 +73,9 @@ protected:
 
 	//Camera
 protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, Meta = (AllowPrivateAccess = "ture"))
+	TObjectPtr<class USpringArmComponent> SpringArm;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, Meta = (AllowPrivateAccess = "ture"))
 	TObjectPtr<class USpringArmComponent> CameraBoom;
 
