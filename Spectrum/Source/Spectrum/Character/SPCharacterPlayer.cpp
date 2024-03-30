@@ -187,11 +187,11 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 		PhysicsHandleComponent->SetTargetLocation(GravityArrow->K2_GetComponentLocation());
 	}
 
-	if (bIsAiming)
-	{
-		FVector SphereLocationStart = Sphere->K2_GetComponentLocation();
-		UITEST = SphereLocationStart + (200 * FollowCamera->GetForwardVector());
-	}
+	//if (bIsAiming)
+	//{
+	//	FVector SphereLocationStart = Sphere->K2_GetComponentLocation();
+	//	UILocation = SphereLocationStart + (200 * FollowCamera->GetForwardVector());
+	//}
 }
 
 void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -338,66 +338,80 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 {
 	if (false == bIsHolding)
 	{
-		FVector SphereLocationStart = Sphere->K2_GetComponentLocation();
-		FVector SphereLocationEnd = SphereLocationStart + (1500 * FollowCamera->GetForwardVector());
-		TArray<TEnumAsByte<EObjectTypeQuery>> EmptyObjectTypes;
-		EDrawDebugTrace::Type drawDebugType = EDrawDebugTrace::ForDuration;
-		TArray<AActor*> actorsToIgnore;
-		FLinearColor RedColor = FLinearColor(1.0f, 0.0f, 0.0f, 1.0f);
-		FLinearColor GreenColor = FLinearColor(0.0f, 1.0f, 0.0f, 1.0f);
-		FCollisionQueryParams Params;
-		Params.AddIgnoredActor(this);
-		Params.bTraceComplex = true;
-		float DrawTime = 5.0f;
-
-		bool HitSuccess = GetWorld()->LineTraceSingleByChannel(outHitResult, SphereLocationStart, SphereLocationEnd, ECC_GameTraceChannel1, Params);
-		if (HitSuccess && outHitResult.Component->Mobility == EComponentMobility::Movable)
+		//FVector SphereLocationStart = Sphere->K2_GetComponentLocation();
+		FVector SphereLocationStart= FollowCamera->K2_GetComponentLocation();
+		//FVector SphereLocationEnd = SphereLocationStart + (1500 * FollowCamera->GetForwardVector());
+		APlayerController* PlayerController = GetController<APlayerController>();
+		if (PlayerController != nullptr)
 		{
-			outHitResult.Component->SetSimulatePhysics(true); //시뮬레이션 켜기 
-			HitComponent = outHitResult.GetComponent();
+			FRotator ControlRotation = PlayerController->GetControlRotation();
+			FVector ReseltFoward = UKismetMathLibrary::GetForwardVector(ControlRotation);
 
-			// UE_LOG 매크로를 사용하여 로그를 출력합니다.
+			FVector WorldLocation;
+			FVector WorldDirection;
+			bool TransSuccess = PlayerController->DeprojectScreenPositionToWorld(0.5, 0.5, WorldLocation, WorldDirection);
 
-			if (HitComponent && HitComponent->IsSimulatingPhysics())
+			FVector SphereLocationEnd = ReseltFoward * 10000000 + SphereLocationStart;
+
+			TArray<TEnumAsByte<EObjectTypeQuery>> EmptyObjectTypes;
+			EDrawDebugTrace::Type drawDebugType = EDrawDebugTrace::ForDuration;
+			TArray<AActor*> actorsToIgnore;
+			FLinearColor RedColor = FLinearColor(1.0f, 0.0f, 0.0f, 1.0f);
+			FLinearColor GreenColor = FLinearColor(0.0f, 1.0f, 0.0f, 1.0f);
+			FCollisionQueryParams Params;
+			Params.AddIgnoredActor(this);
+			Params.bTraceComplex = true;
+			float DrawTime = 5.0f;
+
+			bool HitSuccess = GetWorld()->LineTraceSingleByChannel(outHitResult, SphereLocationStart, SphereLocationEnd, ECC_GameTraceChannel1, Params);
+			if (HitSuccess && outHitResult.Component->Mobility == EComponentMobility::Movable)
 			{
+				outHitResult.Component->SetSimulatePhysics(true); //시뮬레이션 켜기 
+				HitComponent = outHitResult.GetComponent();
 
-				PhysicsHandleComponent->GrabComponentAtLocation(
-					HitComponent,      // 잡을 컴포넌트
-					NAME_None,         // 본 이름 (이 경우 빈 값)
-					HitComponent->K2_GetComponentLocation() // 컴포넌트를 잡을 위치
+				// UE_LOG 매크로를 사용하여 로그를 출력합니다.
 
+				if (HitComponent && HitComponent->IsSimulatingPhysics())
+				{
+
+					PhysicsHandleComponent->GrabComponentAtLocation(
+						HitComponent,      // 잡을 컴포넌트
+						NAME_None,         // 본 이름 (이 경우 빈 값)
+						HitComponent->K2_GetComponentLocation()
+					);
+
+					bIsHolding = true;
+				}
+			}
+
+			const FColor LineColor = HitSuccess ? FColor::Green : FColor::Red;
+
+			// 라인 트레이스 경로 디버그 라인 그리기
+			DrawDebugLine(
+				GetWorld(),
+				SphereLocationStart,
+				SphereLocationEnd,
+				LineColor,
+				false, // 지속 시간 동안 존재하지 않음
+				5.0f, // 5초 동안 표시
+				0, // 뎁스 우선순위
+				1.0f // 라인 굵기
+			);
+
+			// 충돌이 발생했다면, 충돌 지점에 디버그 포인트 그리기
+			if (HitSuccess)
+			{
+				DrawDebugPoint(
+					GetWorld(),
+					outHitResult.ImpactPoint, // 충돌 지점
+					10.0f, // 포인트 크기
+					FColor::Blue, // 포인트 색상
+					false, // 지속 시간 동안 존재하지 않음
+					5.0f // 5초 동안 표시
 				);
-
-				bIsHolding = true;
 			}
 		}
 
-		const FColor LineColor = HitSuccess ? FColor::Green : FColor::Red;
-
-		// 라인 트레이스 경로 디버그 라인 그리기
-		DrawDebugLine(
-			GetWorld(),
-			SphereLocationStart,
-			SphereLocationEnd,
-			LineColor,
-			false, // 지속 시간 동안 존재하지 않음
-			5.0f, // 5초 동안 표시
-			0, // 뎁스 우선순위
-			1.0f // 라인 굵기
-		);
-
-		// 충돌이 발생했다면, 충돌 지점에 디버그 포인트 그리기
-		if (HitSuccess)
-		{
-			DrawDebugPoint(
-				GetWorld(),
-				outHitResult.ImpactPoint, // 충돌 지점
-				10.0f, // 포인트 크기
-				FColor::Blue, // 포인트 색상
-				false, // 지속 시간 동안 존재하지 않음
-				5.0f // 5초 동안 표시
-			);
-		}
 	}
 	else // bIsHolding == true인 경우 
 	{

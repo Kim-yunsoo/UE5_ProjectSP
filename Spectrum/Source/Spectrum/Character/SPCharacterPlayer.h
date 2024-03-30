@@ -123,7 +123,7 @@ protected:
 	uint8 bIsHolding : 1; //잡는지 판단
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-	FVector UITEST; //위치
+	FVector UILocation; //위치
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	FVector UIRotator; //위치
