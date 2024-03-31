@@ -365,7 +365,6 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 {
 	if (false == bIsHolding)
 	{
-
 		//FVector SphereLocationStart = Sphere->K2_GetComponentLocation();
 		FVector SphereLocationStart = FollowCamera->K2_GetComponentLocation();
 		//FVector SphereLocationEnd = SphereLocationStart + (1500 * FollowCamera->GetForwardVector());

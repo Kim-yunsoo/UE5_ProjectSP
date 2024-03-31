@@ -4,31 +4,23 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Interface/SPDamageInterface.h"
-#include "SPObject.generated.h"
+#include "SPBlackPotion.generated.h"
 
 UCLASS()
-class SPECTRUM_API ASPObject : public AActor , public ISPDamageInterface
+class SPECTRUM_API ASPBlackPotion : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	ASPObject();
+	ASPBlackPotion();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	virtual void OnExplosionHit(float Damage);
-
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-public:
-	UPROPERTY(EditAnywhere);
-	TObjectPtr<UStaticMeshComponent> MeshComponent;
-
-	bool bHasBeenCalled;
 
 };

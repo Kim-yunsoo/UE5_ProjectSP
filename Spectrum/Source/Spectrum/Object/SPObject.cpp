@@ -9,6 +9,8 @@ ASPObject::ASPObject()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	SetActorEnableCollision(true);
 	PrimaryActorTick.bCanEverTick = true;
+	bHasBeenCalled = false; // 한번만 실행하기 위한 변수
+	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
 
 }
 
@@ -17,6 +19,15 @@ void ASPObject::BeginPlay()
 {
 	Super::BeginPlay();
 	RootComponent->SetMobility(EComponentMobility::Movable);
+}
+
+void ASPObject::OnExplosionHit(float Damage)
+{
+	if (false == bHasBeenCalled) 
+	{
+
+	}
+
 }
 
 // Called every frame
