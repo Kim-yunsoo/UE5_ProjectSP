@@ -10,7 +10,7 @@ ASPObject::ASPObject()
 	SetActorEnableCollision(true);
 	PrimaryActorTick.bCanEverTick = true;
 	bHasBeenCalled = false; // 한번만 실행하기 위한 변수
-	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
+	//MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
 
 }
 

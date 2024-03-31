@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Potion/SPBlackPotion.h" 
 #include "Character/SPCharacterBase.h"
 #include "InputActionValue.h"
 #include "SPCharacterPlayer.generated.h"
@@ -51,6 +52,8 @@ protected: // 카메라
 
 
 	void Jumping(const FInputActionValue& Value);
+
+	void BlackPotionSpawn(const FInputActionValue& Value);
 
 	ECharacterControlType CurrentCharacterControlType;
 
@@ -110,12 +113,18 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> MouseLeft; //마우스 왼쪽
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> BlackFour; //4번 눌렀을 때 작동 
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> ThrowCtrl; //던지기 키
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputMappingContext* DefaultMappingContext;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* LookAction;
-
 
 
 protected:
@@ -129,7 +138,11 @@ protected:
 	FVector UILocation; //위치
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-	FVector UIRotator; //위치
+	uint8 bIsSpawn : 1; //Spawn check
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	FVector UIRotator; //회전값
+
 
 public:
 	const uint8 GetIsAiming() { return bIsAiming; };
@@ -146,7 +159,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite ,Category = Camera, Meta = (AllowPrivateAccess = "ture"))
 	TObjectPtr<class UArrowComponent> GravityArrow;
 
-
-	//object 땅 위로 떨어지는지 판단 함수
-	//void CheckFalling();
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Object, Meta = (AllowPrivateAccess = "ture"))
+	TObjectPtr<class ASPBlackPotion> BlackPotion;
 };

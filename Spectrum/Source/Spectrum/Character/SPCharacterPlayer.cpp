@@ -15,7 +15,9 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Components/ArrowComponent.h"
 #include "Blueprint/UserWidget.h"
+#include "Potion/SPBlackPotion.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
+
 
 ASPCharacterPlayer::ASPCharacterPlayer()
 {
@@ -94,11 +96,24 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 		MouseLeft = MouseLeftRef.Object;
 	}
 
+	static ConstructorHelpers::FObjectFinder<UInputAction> BlackFourRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_BlackPotionSpawn.IA_SP_BlackPotionSpawn'"));
+	if (nullptr != BlackFourRef.Object)
+	{
+		BlackFour = BlackFourRef.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> ThrowCtrlRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_Throw.IA_SP_Throw'"));
+	if (nullptr != ThrowCtrlRef.Object)
+	{
+		ThrowCtrl = ThrowCtrlRef.Object;
+	}
+
 	CurrentCharacterControlType = ECharacterControlType::Shoulder;
 	LastInput = FVector2D::ZeroVector;
 	bIsAiming = false;
 	bIsHolding = false;
 	HitComponent = nullptr;
+	bIsSpawn = false;
 	HitDistance = 1200.f;
 }
 
@@ -223,6 +238,9 @@ void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Player
 
 		EnhancedInputComponent->BindAction(MouseRight, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::Aiming);
 		EnhancedInputComponent->BindAction(MouseRight, ETriggerEvent::Completed, this, &ASPCharacterPlayer::StopAiming);
+
+		EnhancedInputComponent->BindAction(BlackFour, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::BlackPotionSpawn);
+
 	}
 }
 
@@ -342,7 +360,7 @@ void ASPCharacterPlayer::Aiming(const FInputActionValue& Value)
 		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, true);
 		FollowCamera->AttachToComponent(SpringArm, AttachmentRules, NAME_None);
 		CameraMove();
-		
+
 	}
 	else // bIsHolding == true인 경우
 	{
@@ -363,6 +381,8 @@ void ASPCharacterPlayer::StopAiming(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 {
+	UE_LOG(LogTemp, Log, TEXT("Grap"));
+
 	if (false == bIsHolding)
 	{
 		//FVector SphereLocationStart = Sphere->K2_GetComponentLocation();
@@ -471,6 +491,18 @@ void ASPCharacterPlayer::Jumping(const FInputActionValue& Value)
 	{
 		bPressedJump = true;
 		JumpKeyHoldTime = 0.0f;
+	}
+}
+
+void ASPCharacterPlayer::BlackPotionSpawn(const FInputActionValue& Value)
+{
+	UE_LOG(LogTemp, Log, TEXT("BlackPotionSpawn"));
+	if (false == bIsSpawn)
+	{
+		FVector ItemLocation = GetMesh()->GetSocketLocation("Item_Socket");
+		// 액터 타입 캐스팅 
+		BlackPotion =Cast<ASPBlackPotion>( GetWorld()->SpawnActor<ASPBlackPotion>(ASPBlackPotion::StaticClass(), ItemLocation, FRotator{ 0.0f, 0.0f, 0.0f }));
+		bIsSpawn = true;
 	}
 }
 

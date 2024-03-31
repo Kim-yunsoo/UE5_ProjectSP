@@ -26,8 +26,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 public:
-	UPROPERTY(EditAnywhere);
-	TObjectPtr<UStaticMeshComponent> MeshComponent;
+	//UPROPERTY(EditAnywhere);
+	//TObjectPtr<UStaticMeshComponent> MeshComponent;
 
 	bool bHasBeenCalled;
 
