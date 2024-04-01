@@ -17,6 +17,7 @@ ASPBlackPotion::ASPBlackPotion()
 	SphereComponent->SetupAttachment(RootComponent);
 	SphereComponent->SetSphereRadius(35.460735f);
 	SphereComponent->SetMobility(EComponentMobility::Movable);
+	SphereComponent->SetCollisionProfileName(TEXT("NoCollision"));
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereMeshRef(TEXT("/Script/Engine.StaticMesh'/Game/Spectrum/Potion/B_Potion/B_Potion.B_Potion'"));
 	if (SphereMeshRef.Object)
 	{
@@ -25,11 +26,11 @@ ASPBlackPotion::ASPBlackPotion()
 		BlackPotionMesh->SetupAttachment(SphereComponent);
 		BlackPotionMesh->SetRelativeLocation(FVector(2.982332, 0.746419, -20.102119));
 		BlackPotionMesh->SetRelativeScale3D(FVector(1.840461, 1.184211, 1.746711));
+		BlackPotionMesh->SetCollisionProfileName(TEXT("NoCollision"));
 	}
-
 	ExplosionComponent = CreateDefaultSubobject<USPExplosionComponent>(TEXT("ExplosionComponent"));
 	MovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("MovementComponent"));
-
+	MovementComponent->SetAutoActivate(false);
 	bHasExecutedOnce = false;
 }
 
@@ -44,11 +45,11 @@ void ASPBlackPotion::BeginPlay()
 
 void ASPBlackPotion::HandleActorHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
 {
+	UE_LOG(LogTemp, Log, TEXT("HandleActorHit"));
 	ExplosionComponent->Explode();
 	UGameplayStatics::ApplyRadialDamage(GetWorld(), 100.0f, Hit.Component->K2_GetComponentLocation(), 100.0f, nullptr, TArray<AActor*>(), this, nullptr, true, ECollisionChannel::ECC_Pawn);
 	BlackPotionMesh->SetVisibility(false);
 	this->SetLifeSpan(1.0f);
-	
 }
 
 void ASPBlackPotion::Throw(const FVector& PotionDirection)
@@ -60,7 +61,7 @@ void ASPBlackPotion::Throw(const FVector& PotionDirection)
 		MovementComponent->Activate(false);
 		SphereComponent->SetCollisionProfileName(TEXT("BlackItemCollision"), true);
 		MoveTo();
-		bHasExecutedOnce= true;
+		bHasExecutedOnce = true;
 	}
 }
 

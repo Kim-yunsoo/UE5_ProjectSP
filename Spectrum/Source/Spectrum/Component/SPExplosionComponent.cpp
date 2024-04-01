@@ -24,6 +24,7 @@ USPExplosionComponent::USPExplosionComponent()
 void USPExplosionComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	this->SetAutoActivate(false);
 }
 
 void USPExplosionComponent::Explode()

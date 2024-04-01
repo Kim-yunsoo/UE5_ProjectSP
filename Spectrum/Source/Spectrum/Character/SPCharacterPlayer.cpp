@@ -381,7 +381,6 @@ void ASPCharacterPlayer::StopAiming(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp, Log, TEXT("Grap"));
 
 	if (false == bIsHolding)
 	{
@@ -501,8 +500,18 @@ void ASPCharacterPlayer::BlackPotionSpawn(const FInputActionValue& Value)
 	{
 		FVector ItemLocation = GetMesh()->GetSocketLocation("Item_Socket");
 		// 액터 타입 캐스팅 
-		BlackPotion =Cast<ASPBlackPotion>( GetWorld()->SpawnActor<ASPBlackPotion>(ASPBlackPotion::StaticClass(), ItemLocation, FRotator{ 0.0f, 0.0f, 0.0f }));
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride= ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
+		//SpawnParams.bNoCollisionFail = true;
+		BlackPotion =  GetWorld()->SpawnActor<ASPBlackPotion>(ASPBlackPotion::StaticClass(), GetMesh()->GetSocketLocation("Item_Socket"), FRotator{ 0.0f, 0.0f, 0.0f }, SpawnParams);
 		bIsSpawn = true;
+		FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
+		BlackPotion->AttachToComponent(this->GetMesh(), AttachmentRules, FName{"Item_Socket"});
+	} 
+	else // bIsSpawn == true인 경우
+	{
+
 	}
 }
 
