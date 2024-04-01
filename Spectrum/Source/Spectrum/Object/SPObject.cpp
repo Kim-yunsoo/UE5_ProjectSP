@@ -15,6 +15,8 @@ ASPObject::ASPObject()
 	ObjectMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ObjectMesh"));
 	ObjectMesh->SetMobility(EComponentMobility::Movable);
 
+	//ObjectMesh->SetupAttachment(RootComponent);
+
 }
 
 // Called when the game starts or when spawned
