@@ -108,12 +108,19 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 		ThrowCtrl = ThrowCtrlRef.Object;
 	}
 
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> ThrowMontageRef(TEXT("/Script/Engine.AnimMontage'/Game/Spectrum/Animation/AniMeta/Man/AM_SP_Throw.AM_SP_Throw'"));
+	if (ThrowMontageRef.Object)
+	{
+		ThrowMontage = ThrowMontageRef.Object;
+	}
+
 	CurrentCharacterControlType = ECharacterControlType::Shoulder;
 	LastInput = FVector2D::ZeroVector;
 	bIsAiming = false;
 	bIsHolding = false;
 	HitComponent = nullptr;
 	bIsSpawn = false;
+	bIsThrowReady = false;
 	HitDistance = 1200.f;
 }
 
@@ -121,6 +128,7 @@ void ASPCharacterPlayer::BeginPlay()
 {
 	Super::BeginPlay();
 	SetCharacterControl(CurrentCharacterControlType);
+	GetMesh()->GetAnimInstance()->OnPlayMontageNotifyBegin.AddDynamic(this, &ASPCharacterPlayer::HandleMontageAnimNotify);
 	//Add Input Mapping Context
 	//if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	//{
@@ -240,6 +248,9 @@ void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Player
 		EnhancedInputComponent->BindAction(MouseRight, ETriggerEvent::Completed, this, &ASPCharacterPlayer::StopAiming);
 
 		EnhancedInputComponent->BindAction(BlackFour, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::BlackPotionSpawn);
+
+		EnhancedInputComponent->BindAction(ThrowCtrl, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::AimPotion);
+		EnhancedInputComponent->BindAction(ThrowCtrl, ETriggerEvent::Completed, this, &ASPCharacterPlayer::ThrowPotion);
 
 	}
 }
@@ -484,6 +495,40 @@ void ASPCharacterPlayer::StopGraping(const FInputActionValue& Value)
 	}
 }
 
+void ASPCharacterPlayer::AimPotion(const FInputActionValue& Value)
+{
+	if (bIsSpawn)
+	{
+		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+		AnimInstance->Montage_Play(ThrowMontage, 1.0f);
+	}
+}
+
+void ASPCharacterPlayer::ThrowPotion(const FInputActionValue& Value)
+{
+	if (bIsThrowReady)
+	{
+		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+		AnimInstance->Montage_JumpToSection(FName("End"), ThrowMontage);
+		bIsThrowReady= false;
+		if (BlackPotion)
+		{
+			GetController()->GetControlRotation();
+			FVector ForwardVector= UKismetMathLibrary::GetForwardVector(GetController()->GetControlRotation());
+
+			float Mul =1500.0f;
+			BlackPotion->Throw((ForwardVector + FVector{ 0.0f,0.0f,0.4f }) * Mul);
+		}
+		bIsSpawn= false;
+		BlackPotion = nullptr;
+	}
+	else
+	{
+		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+		AnimInstance->Montage_Stop(0.0f);
+	}
+}
+
 void ASPCharacterPlayer::Jumping(const FInputActionValue& Value)
 {
 	if (!bIsAiming)
@@ -495,23 +540,36 @@ void ASPCharacterPlayer::Jumping(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::BlackPotionSpawn(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp, Log, TEXT("BlackPotionSpawn"));
 	if (false == bIsSpawn)
 	{
 		FVector ItemLocation = GetMesh()->GetSocketLocation("Item_Socket");
 		// 액터 타입 캐스팅 
 		FActorSpawnParameters SpawnParams;
-		SpawnParams.SpawnCollisionHandlingOverride= ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
-		//SpawnParams.bNoCollisionFail = true;
-		BlackPotion =  GetWorld()->SpawnActor<ASPBlackPotion>(ASPBlackPotion::StaticClass(), GetMesh()->GetSocketLocation("Item_Socket"), FRotator{ 0.0f, 0.0f, 0.0f }, SpawnParams);
+		BlackPotion = GetWorld()->SpawnActor<ASPBlackPotion>(ASPBlackPotion::StaticClass(), GetMesh()->GetSocketLocation("Item_Socket"), FRotator{ 0.0f, 0.0f, 0.0f }, SpawnParams);
 		bIsSpawn = true;
-		FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
-		BlackPotion->AttachToComponent(this->GetMesh(), AttachmentRules, FName{"Item_Socket"});
-	} 
+		if (BlackPotion)
+		{
+			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
+			BlackPotion->AttachToComponent(this->GetMesh(), AttachmentRules, FName{ "Item_Socket" });
+		}
+	}
 	else // bIsSpawn == true인 경우
 	{
+		if (BlackPotion)
+		{
+			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
+			BlackPotion->AttachToComponent(this->GetMesh(), AttachmentRules, FName{ "Item_Socket" });
+		}
+	}
+}
 
+void ASPCharacterPlayer::HandleMontageAnimNotify(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload)
+{
+	if (NotifyName == FName("PlayMontageNotify"))
+	{
+		bIsThrowReady = true;
 	}
 }
 

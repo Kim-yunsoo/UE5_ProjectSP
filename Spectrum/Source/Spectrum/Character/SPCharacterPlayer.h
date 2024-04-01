@@ -50,6 +50,8 @@ protected: // 카메라
 	void Graping(const FInputActionValue& Value);
 	void StopGraping(const FInputActionValue& Value);
 
+	void AimPotion(const FInputActionValue& Value);
+	void ThrowPotion(const FInputActionValue& Value);
 
 	void Jumping(const FInputActionValue& Value);
 
@@ -85,7 +87,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, Meta = (AllowPrivateAccess = "ture"))
 	TObjectPtr<class UCameraComponent> FollowCamera;
 
-	
+
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
@@ -116,7 +118,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> BlackFour; //4번 눌렀을 때 작동 
 
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> ThrowCtrl; //던지기 키
 
@@ -126,6 +127,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* LookAction;
 
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stat, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UAnimMontage> ThrowMontage ; //던지기 몽타주
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
@@ -139,7 +143,10 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	uint8 bIsSpawn : 1; //Spawn check
-	
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	uint8 bIsThrowReady : 1; //Throw Ready? 
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	FVector UIRotator; //회전값
 
@@ -156,9 +163,12 @@ protected:
 
 	float HitDistance;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite ,Category = Camera, Meta = (AllowPrivateAccess = "ture"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, Meta = (AllowPrivateAccess = "ture"))
 	TObjectPtr<class UArrowComponent> GravityArrow;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Object, Meta = (AllowPrivateAccess = "ture"))
 	TObjectPtr<class ASPBlackPotion> BlackPotion;
+
+	UFUNCTION()
+	void HandleMontageAnimNotify(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload);
 };
