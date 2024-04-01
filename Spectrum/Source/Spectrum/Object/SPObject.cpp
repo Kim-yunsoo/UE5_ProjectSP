@@ -2,6 +2,7 @@
 
 
 #include "Object/SPObject.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 // Sets default values
 ASPObject::ASPObject()
@@ -11,6 +12,8 @@ ASPObject::ASPObject()
 	PrimaryActorTick.bCanEverTick = true;
 	bHasBeenCalled = false; // 한번만 실행하기 위한 변수
 	//MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
+	ObjectMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ObjectMesh"));
+	ObjectMesh->SetMobility(EComponentMobility::Movable);
 
 }
 
@@ -34,10 +37,16 @@ void ASPObject::OnExplosionHit(float Damage)
 void ASPObject::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	FLatentActionInfo LatentInfo;
+	UKismetSystemLibrary::Delay(GetWorld(), 0.5, LatentInfo);
 
-	//FVector ActorWorldLocation = GetActorLocation();
-	//UE_LOG(LogTemp, Log, TEXT("Actor's World Location: %s"), *ActorWorldLocation.ToString());
-	//FRotator ActorWorldRotation = GetActorRotation();
-	//UE_LOG(LogTemp, Log, TEXT("Actor's World Rotation: %s"), *ActorWorldRotation.ToString());
+	if (ObjectLocation == GetActorLocation())
+	{
+
+	}
+	else
+	{
+		ObjectLocation = GetActorLocation();
+	}
 }
 

@@ -171,4 +171,8 @@ protected:
 
 	UFUNCTION()
 	void HandleMontageAnimNotify(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload);
+
+	//µ¥Ä®
+	void ShowProjectilePath();
+
 };

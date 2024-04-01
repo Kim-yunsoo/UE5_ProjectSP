@@ -573,6 +573,11 @@ void ASPCharacterPlayer::HandleMontageAnimNotify(FName NotifyName, const FBranch
 	}
 }
 
+void ASPCharacterPlayer::ShowProjectilePath()
+{
+
+}
+
 //void ASPCharacterPlayer::CheckFalling()
 //{
 //	AActor* HitActor = outHitResult.GetActor();

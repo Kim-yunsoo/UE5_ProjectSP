@@ -28,7 +28,13 @@ public:
 public:
 	//UPROPERTY(EditAnywhere);
 	//TObjectPtr<UStaticMeshComponent> MeshComponent;
-
 	bool bHasBeenCalled;
+
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (AllowPrivateAccess = "ture"))
+	TObjectPtr<UStaticMeshComponent> ObjectMesh ;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (AllowPrivateAccess = "ture"))
+	FVector ObjectLocation;
 
 };
