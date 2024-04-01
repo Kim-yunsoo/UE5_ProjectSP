@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Potion/SPBlackPotion.h" 
 #include "Character/SPCharacterBase.h"
 #include "InputActionValue.h"
 #include "SPCharacterPlayer.generated.h"
@@ -31,7 +32,7 @@ protected: // 카메라
 	void ChangeCharacterControl();
 	void SetCharacterControl(ECharacterControlType NewCharacterControlType);
 	virtual void SetCharacterControlData(const class USPCharacterControlData* CharacterControlData) override;
-
+	void CameraMove();
 
 
 
@@ -49,8 +50,12 @@ protected: // 카메라
 	void Graping(const FInputActionValue& Value);
 	void StopGraping(const FInputActionValue& Value);
 
+	void AimPotion(const FInputActionValue& Value);
+	void ThrowPotion(const FInputActionValue& Value);
 
 	void Jumping(const FInputActionValue& Value);
+
+	void BlackPotionSpawn(const FInputActionValue& Value);
 
 	ECharacterControlType CurrentCharacterControlType;
 
@@ -74,12 +79,15 @@ protected:
 	//Camera
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, Meta = (AllowPrivateAccess = "ture"))
+	TObjectPtr<class USpringArmComponent> SpringArm;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, Meta = (AllowPrivateAccess = "ture"))
 	TObjectPtr<class USpringArmComponent> CameraBoom;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, Meta = (AllowPrivateAccess = "ture"))
 	TObjectPtr<class UCameraComponent> FollowCamera;
 
-	
+
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
@@ -107,13 +115,21 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> MouseLeft; //마우스 왼쪽
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> BlackFour; //4번 눌렀을 때 작동 
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> ThrowCtrl; //던지기 키
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputMappingContext* DefaultMappingContext;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* LookAction;
 
-
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stat, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UAnimMontage> ThrowMontage ; //던지기 몽타주
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
@@ -123,10 +139,17 @@ protected:
 	uint8 bIsHolding : 1; //잡는지 판단
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-	FVector UITEST; //위치
+	FVector UILocation; //위치
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-	FVector UIRotator; //위치
+	uint8 bIsSpawn : 1; //Spawn check
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	uint8 bIsThrowReady : 1; //Throw Ready? 
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	FVector UIRotator; //회전값
+
 
 public:
 	const uint8 GetIsAiming() { return bIsAiming; };
@@ -140,10 +163,16 @@ protected:
 
 	float HitDistance;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite ,Category = Camera, Meta = (AllowPrivateAccess = "ture"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, Meta = (AllowPrivateAccess = "ture"))
 	TObjectPtr<class UArrowComponent> GravityArrow;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Object, Meta = (AllowPrivateAccess = "ture"))
+	TObjectPtr<class ASPBlackPotion> BlackPotion;
 
-	//object 땅 위로 떨어지는지 판단 함수
-	//void CheckFalling();
+	UFUNCTION()
+	void HandleMontageAnimNotify(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload);
+
+	//데칼
+	void ShowProjectilePath();
+
 };
