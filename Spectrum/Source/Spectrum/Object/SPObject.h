@@ -33,9 +33,7 @@ public:
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (AllowPrivateAccess = "ture"))
 	TObjectPtr<UStaticMeshComponent> ObjectMesh ;
-	//TObjectPtr<UStatic> ObjectMesh ;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (AllowPrivateAccess = "ture"))
 	FVector ObjectLocation;
-
 };
