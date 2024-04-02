@@ -674,10 +674,13 @@ void ASPCharacterPlayer::ShowProjectilePath()
 			//NewSplineMeshComp->SetupAttachment(RootComponent);
 			NewSplineMeshComp->SetStaticMesh(StaticMeshforSpline);
 			NewSplineMeshComp->SetMobility(EComponentMobility::Movable);
-			if (StaticMeshforSpline)
+			NewSplineMeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			NewSplineMeshComp->SetCollisionProfileName(TEXT("SplineCollision")); 
+			NewSplineMeshComp->SetGenerateOverlapEvents(true);
+			/*if (StaticMeshforSpline)
 			{
 				UE_LOG(LogTemp, Log, TEXT("MeshName: [%s]"), *GetNameSafe(StaticMeshforSpline));
-			}
+			}*/
 
 			FVector StartPointLocation;
 			FVector StartPointTangent;
@@ -703,7 +706,9 @@ void ASPCharacterPlayer::ShowProjectilePath()
 			if (bIsSuccessStart && bIsSuccessEnd)
 			{
 				NewSplineMeshComp->SetStartAndEnd(StartPointLocation, StartPointTangent, EndPointLocation, EndPointTangent, true);
-				NewSplineMeshComp->SetWorldLocation(StartPointLocation);
+
+				//NewSplineMeshComp->SetWorldLocation(StartPointLocation);
+
 				FColor BeautyfulColor = FColor(
 					FMath::RandRange(30, 200),
 					FMath::RandRange(30, 200),
@@ -719,9 +724,7 @@ void ASPCharacterPlayer::ShowProjectilePath()
 					5.0f, 0, 5);*/
 			}
 			FVector Location = NewSplineMeshComp->K2_GetComponentLocation();
-
-			DrawDebugSphere(GetWorld(), Location, Radius, 20, Color3, false, 5.0f);
-			UE_LOG(LogTemp, Log, TEXT("Component Location : %f, %f, %f"), Location.X, Location.Y, Location.Z);
+			//DrawDebugSphere(GetWorld(), Location, Radius, 20, Color3, false, 5.0f);
 			SplineCompArray.Emplace(NewSplineMeshComp);
 			NewSplineMeshComp->RegisterComponent();
 
@@ -742,9 +745,13 @@ void ASPCharacterPlayer::ShowProjectilePath()
 			Cast<USplineMeshComponent>(ActorComponent)->SetStartAndEnd(SplineLocation, SplineTangent, SplineLocation, SplineTangent, true);
 			SplineMeshComponents.Add(Cast<USplineMeshComponent>(ActorComponent));*/
 		}
-		//FLatentActionInfo LatentInfo;
-		//UKismetSystemLibrary::Delay(GetWorld(), UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), LatentInfo);
-		//ShowProjectilePath();
+		FTimerHandle TimerHandle;
+		float DelayTime = 0.05f;
+
+		// FTimerManager를 이용하여 Delay
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this]() {
+			ShowProjectilePath();
+			}, DelayTime, false);
 	}
 	else
 	{
