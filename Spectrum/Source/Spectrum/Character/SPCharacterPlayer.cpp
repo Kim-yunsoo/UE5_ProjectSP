@@ -16,6 +16,8 @@
 #include "Components/ArrowComponent.h"
 #include "Blueprint/UserWidget.h"
 #include "Potion/SPBlackPotion.h"
+#include "Components/SplineComponent.h"
+#include "Components/SplineMeshComponent.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 
 
@@ -38,6 +40,26 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	CameraBoom->SetRelativeLocation(FVector(0.0, 29.020852, 11.28551));
 	FollowCamera->bUsePawnControlRotation = false;
+
+	PotionThrowStartLocation = CreateDefaultSubobject<USceneComponent>(TEXT("PotionThrowStartLocation"));
+	PotionThrowStartLocation->SetupAttachment(RootComponent);
+	PotionThrowStartLocation->SetRelativeLocation(FVector(0.0, -48.566387, 67.547544));
+
+	Projectile_Path = CreateDefaultSubobject<USplineComponent>(TEXT("Projectile_Path"));
+	Projectile_Path->SetupAttachment(RootComponent);
+
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> CircleRef(TEXT("/Script/Engine.StaticMesh'/Game/Spectrum/Prop/SM_Circle.SM_Circle'"));
+	if (CircleRef.Object)
+	{
+		ProjectileCircle = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ProjectileCircle"));
+		ProjectileCircle->SetStaticMesh(CircleRef.Object);
+		ProjectileCircle->SetupAttachment(RootComponent);
+		ProjectileCircle->SetRelativeLocation(FVector(0.0, 0.0, 0.0));
+		ProjectileCircle->SetVisibility(false);
+	}
+
+
+
 
 	GravityArrow = CreateDefaultSubobject<UArrowComponent>(TEXT("GravityArrow"));
 	if (GravityArrow)
@@ -113,6 +135,15 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 	{
 		ThrowMontage = ThrowMontageRef.Object;
 	}
+
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> SplineCoinRef(TEXT("/Script/Engine.StaticMesh'/Game/Spectrum/Prop/SM_TEST.SM_TEST'"));
+	if (SplineCoinRef.Object)
+	{
+		StaticMeshforSpline = SplineCoinRef.Object;
+	}
+
+	//static ConstructorHelpers::FObjectFinder<UStaticMesh> SplineCoinRef(TEXT("/Script/Engine.StaticMesh'/Game/Spectrum/Prop/SM_Projectile.SM_Projectile'"));
+	//SplineCoin->SetStaticMesh(SplineCoinRef.Object);
 
 	CurrentCharacterControlType = ECharacterControlType::Shoulder;
 	LastInput = FVector2D::ZeroVector;
@@ -430,7 +461,6 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 
 				if (HitComponent && HitComponent->IsSimulatingPhysics())
 				{
-
 					PhysicsHandleComponent->GrabComponentAtLocation(
 						HitComponent,      // 잡을 컴포넌트
 						NAME_None,         // 본 이름 (이 경우 빈 값)
@@ -471,12 +501,12 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 				);
 			}
 		}
-
 	}
 	else // bIsHolding == true인 경우 
 	{
 		bIsHolding = false;
-		if (HitComponent && HitComponent->IsSimulatingPhysics()) {
+		if (HitComponent && HitComponent->IsSimulatingPhysics())
+		{
 			PhysicsHandleComponent->ReleaseComponent();
 			HitComponent->AddImpulse(FollowCamera->GetForwardVector() * HitDistance, NAME_None, true);
 			HitComponent = nullptr;
@@ -510,16 +540,15 @@ void ASPCharacterPlayer::ThrowPotion(const FInputActionValue& Value)
 	{
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 		AnimInstance->Montage_JumpToSection(FName("End"), ThrowMontage);
-		bIsThrowReady= false;
+		bIsThrowReady = false;
 		if (BlackPotion)
 		{
 			GetController()->GetControlRotation();
-			FVector ForwardVector= UKismetMathLibrary::GetForwardVector(GetController()->GetControlRotation());
-
-			float Mul =1500.0f;
+			FVector ForwardVector = UKismetMathLibrary::GetForwardVector(GetController()->GetControlRotation());
+			float Mul = 1500.0f;
 			BlackPotion->Throw((ForwardVector + FVector{ 0.0f,0.0f,0.4f }) * Mul);
 		}
-		bIsSpawn= false;
+		bIsSpawn = false;
 		BlackPotion = nullptr;
 	}
 	else
@@ -570,38 +599,158 @@ void ASPCharacterPlayer::HandleMontageAnimNotify(FName NotifyName, const FBranch
 	if (NotifyName == FName("PlayMontageNotify"))
 	{
 		bIsThrowReady = true;
+		ShowProjectilePath();
 	}
 }
 
 void ASPCharacterPlayer::ShowProjectilePath()
 {
+	Projectile_Path->ClearSplinePoints(true);
+	for (int i = 0; i < SplineCompArray.Num(); i++)
+	{
+		SplineCompArray[i]->DestroyComponent();
+	}
+	SplineCompArray.Empty();
+	if (bIsThrowReady)
+	{
+		FPredictProjectilePathParams PredictParams;
+		FPredictProjectilePathResult PredictResult;
 
+		// 파라미터 설정
+		FHitResult OutHit;
+		TArray<FVector> OutPathPositions;
+		FVector OutLastTraceDestination;
+
+		FVector StartPos = PotionThrowStartLocation->GetComponentLocation();
+		//GetController()->GetControlRotation();
+		//FVector LaunchVelocity = ; // 발사 속도
+		FVector LaunchVelocity = (UKismetMathLibrary::GetForwardVector(GetController()->GetControlRotation())
+			+ FVector{ 0.0f,0.0f,0.4f }) * 1500.0f;
+		//(ForwardVector + FVector{ 0.0f,0.0f,0.4f })* Mul
+		float ProjectileRadius = 0.0f;
+		TEnumAsByte<ECollisionChannel> TraceChannel = ECollisionChannel::ECC_Camera; // 충돌 채널
+		TArray<AActor*> ActorsToIgnore; // 무시할 액터들
+		AActor* SelfActor = GetOwner();
+		ActorsToIgnore.Add(SelfActor);
+		EDrawDebugTrace::Type DrawDebugType = EDrawDebugTrace::None; // 디버그 정보 타입
+		float DrawDebugTime = 0.0f; // 디버그 정보 표시 시간
+		float SimFrequency = 15.0f; // 시뮬레이션 주파수
+		float MaxSimTime = 2.0f; // 최대 시뮬레이션 시간
+		float OverrideGravityZ = 0.0; // 중력 값
+
+		UGameplayStatics::Blueprint_PredictProjectilePath_ByTraceChannel(GetWorld(), OutHit, OutPathPositions,
+			OutLastTraceDestination, StartPos, LaunchVelocity, true, ProjectileRadius, TraceChannel, false, ActorsToIgnore,
+			DrawDebugType, DrawDebugTime, SimFrequency, MaxSimTime, OverrideGravityZ);
+
+		FHitResult SweepHitResult;
+		ProjectileCircle->SetWorldLocation(OutHit.Location, false, &SweepHitResult, ETeleportType::None);
+		ProjectileCircle->SetVisibility(true, false);
+
+		for (int i = 0; i < OutPathPositions.Num(); i++)
+		{
+			Projectile_Path->AddSplinePointAtIndex(OutPathPositions[i], i, ESplineCoordinateSpace::Type::Local, true);
+		}
+		for (int i = 0; i < Projectile_Path->GetNumberOfSplinePoints() - 1; ++i)
+		{
+			UClass* whyClass = USplineMeshComponent::StaticClass();
+			FTransform RelativeTransform = FTransform();
+
+			USplineMeshComponent* NewSplineMeshComp = NewObject<USplineMeshComponent>(this, USplineMeshComponent::StaticClass());
+			//UActorComponent* ActorComponent = AddComponentByClass(USplineMeshComponent::StaticClass(), true, RelativeTransform, false);
+			//USplineMeshComponent* NewSplineMeshComp = Cast<USplineMeshComponent>(ActorComponent);
+
+			if (NewSplineMeshComp == nullptr)
+			{
+				continue;
+			}
+			float Radius = 50.0f;
+			FColor Color1 = FColor::Red;
+			FColor Color2 = FColor::Blue;
+			FColor Color3 = FColor::Black;
+
+			NewSplineMeshComp->OnComponentCreated();
+			NewSplineMeshComp->SetRelativeTransform(RelativeTransform);
+			//NewSplineMeshComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+			//NewSplineMeshComp->SetupAttachment(RootComponent);
+			NewSplineMeshComp->SetStaticMesh(StaticMeshforSpline);
+			NewSplineMeshComp->SetMobility(EComponentMobility::Movable);
+			if (StaticMeshforSpline)
+			{
+				UE_LOG(LogTemp, Log, TEXT("MeshName: [%s]"), *GetNameSafe(StaticMeshforSpline));
+			}
+
+			FVector StartPointLocation;
+			FVector StartPointTangent;
+			FVector EndPointLocation;
+			FVector EndPointTangent;
+
+
+			bool bIsSuccessStart = false;
+			bool bIsSuccessEnd = false;
+			if (i < Projectile_Path->GetNumberOfSplinePoints())
+			{
+				StartPointLocation = Projectile_Path->GetLocationAtSplinePoint(i, ESplineCoordinateSpace::Local);
+				StartPointTangent = Projectile_Path->GetTangentAtSplinePoint(i, ESplineCoordinateSpace::Local);
+				bIsSuccessStart = true;
+			}
+
+			if (i + 1 < Projectile_Path->GetNumberOfSplinePoints())
+			{
+				EndPointLocation = Projectile_Path->GetLocationAtSplinePoint(i + 1, ESplineCoordinateSpace::Local);
+				EndPointTangent = Projectile_Path->GetTangentAtSplinePoint(i + 1, ESplineCoordinateSpace::Local);
+				bIsSuccessEnd = true;
+			}
+			if (bIsSuccessStart && bIsSuccessEnd)
+			{
+				NewSplineMeshComp->SetStartAndEnd(StartPointLocation, StartPointTangent, EndPointLocation, EndPointTangent, true);
+				NewSplineMeshComp->SetWorldLocation(StartPointLocation);
+				FColor BeautyfulColor = FColor(
+					FMath::RandRange(30, 200),
+					FMath::RandRange(30, 200),
+					FMath::RandRange(30, 200),
+					1.f);
+				/*FVector StartPointLocation, EndPointLocation;*/
+			/*	DrawDebugLine(
+					GetWorld(),
+					StartPointLocation,
+					EndPointLocation,
+					BeautyfulColor,
+					false,
+					5.0f, 0, 5);*/
+			}
+			FVector Location = NewSplineMeshComp->K2_GetComponentLocation();
+
+			DrawDebugSphere(GetWorld(), Location, Radius, 20, Color3, false, 5.0f);
+			UE_LOG(LogTemp, Log, TEXT("Component Location : %f, %f, %f"), Location.X, Location.Y, Location.Z);
+			SplineCompArray.Emplace(NewSplineMeshComp);
+			NewSplineMeshComp->RegisterComponent();
+
+			//UActorComponent* ActorComponent= AddComponentByClass(USplineMeshComponent::StaticClass(),true, RelativeTransform,false);
+			//if (/*USplineMeshComponent* SplineMeshComponent = Cast<USplineMeshComponent>(ActorComponent)*/)
+			//{
+			//	SplineMeshComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+			//	SplineMeshComponent->RegisterComponent();
+			//}
+			// 
+			// 
+			// 
+				//RootComponent->AttachToComponent(ActorComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	/*		FName TemplateName = FName("SM_Projectile");
+			UActorComponent* ActorComponent= this->AddComponent(TemplateName,true,  FTransform(), nullptr, false);
+			FVector SplineLocation= Projectile_Path->GetLocationAtSplinePoint(i, ESplineCoordinateSpace::Local);
+			FVector SplineTangent= Projectile_Path->GetTangentAtSplinePoint(i, ESplineCoordinateSpace::Local);
+			Cast<USplineMeshComponent>(ActorComponent)->SetStartAndEnd(SplineLocation, SplineTangent, SplineLocation, SplineTangent, true);
+			SplineMeshComponents.Add(Cast<USplineMeshComponent>(ActorComponent));*/
+		}
+		//FLatentActionInfo LatentInfo;
+		//UKismetSystemLibrary::Delay(GetWorld(), UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), LatentInfo);
+		//ShowProjectilePath();
+	}
+	else
+	{
+		ProjectileCircle->SetVisibility(false);
+	}
 }
-
-//void ASPCharacterPlayer::CheckFalling()
-//{
-//	AActor* HitActor = outHitResult.GetActor();
-//	UE_LOG(LogTemp, Log, TEXT("CheckFalling"));
-//	if (HitActor)
-//	{
-//		FVector Location = HitActor->GetActorLocation();
-//		FVector Start = Location;
-//		FVector End = Location - FVector(0, 0, 100);
-//		FHitResult HitResult;
-//		FCollisionQueryParams Params;
-//		Params.AddIgnoredActor(this);
-//		bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, Params);
-//		if (bHit)
-//		{
-//			if (HitResult.Component->ComponentHasTag(FName("Floor")))
-//			{
-//				UE_LOG(LogTemp, Log, TEXT("ComponentHasTag!!"));
-//				outHitResult.Component->SetSimulatePhysics(false); //시뮬레이션 끄기 
-//			}
-//		}
-//	}
-//}
-
 
 void ASPCharacterPlayer::QuaterMove(const FInputActionValue& Value)
 {

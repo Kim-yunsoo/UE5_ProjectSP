@@ -35,7 +35,6 @@ void ASPObject::OnExplosionHit(float Damage)
 		bHasBeenCalled = true;
 	}
 }
-
 // Called every frame
 void ASPObject::Tick(float DeltaTime)
 {
@@ -57,6 +56,5 @@ void ASPObject::Tick(float DeltaTime)
 	{
 		ObjectLocation = GetActorLocation();
 	}
-
 }
 

@@ -129,7 +129,7 @@ protected:
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stat, Meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UAnimMontage> ThrowMontage ; //带瘤扁 根鸥林
+	TObjectPtr<class UAnimMontage> ThrowMontage; //带瘤扁 根鸥林
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
@@ -163,16 +163,35 @@ protected:
 
 	float HitDistance;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, Meta = (AllowPrivateAccess = "ture"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UArrowComponent> GravityArrow;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Object, Meta = (AllowPrivateAccess = "ture"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Object, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class ASPBlackPotion> BlackPotion;
 
 	UFUNCTION()
 	void HandleMontageAnimNotify(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload);
 
-	//单漠
+//单漠
+protected:
 	void ShowProjectilePath();
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile", Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class USplineComponent> Projectile_Path;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile", Meta = (AllowPrivateAccess = "true"))
+	TArray<class USplineMeshComponent*> SplineMeshComponents;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile", Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class USceneComponent> PotionThrowStartLocation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile", Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UStaticMeshComponent> ProjectileCircle;
+
+	UPROPERTY()
+	//TObjectPtr<class USplineMeshComponent> SplineCoin;
+	TArray<class USplineMeshComponent*> SplineCompArray;
+
+	UPROPERTY()
+	UStaticMesh* StaticMeshforSpline;
 
 };
