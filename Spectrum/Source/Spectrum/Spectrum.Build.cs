@@ -10,7 +10,7 @@ public class Spectrum : ModuleRules
 
 		PublicIncludePaths.AddRange(new string[] { "Spectrum" });
 
-        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "Sockets", "Networking", "EnhancedInput" });
+        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "Sockets", "Networking", "EnhancedInput", "UMG"});
          
 		PrivateDependencyModuleNames.AddRange(new string[] { "ProtobufCore" });
 
