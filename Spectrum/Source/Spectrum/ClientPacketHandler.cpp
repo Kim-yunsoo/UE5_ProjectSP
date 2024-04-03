@@ -21,7 +21,7 @@ bool Handle_S_LOGIN(PacketSessionRef& session, Protocol::S_LOGIN& pkt)
 
 	for (int32 i = 0; i < pkt.players_size(); i++)
 	{
-		const Protocol::PlayerInfo& Player = pkt.players(i);
+		const Protocol::ObjectInfo& Player = pkt.players(i);
 	}
 
 	// 나중에 로그인 DB에 없으면 회원가입되도록 수정

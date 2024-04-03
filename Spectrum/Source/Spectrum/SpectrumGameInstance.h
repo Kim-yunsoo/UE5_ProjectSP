@@ -31,7 +31,7 @@ public:
 
 
 public:
-	void HandleSpawn(const Protocol::PlayerInfo& PlayerInfo, bool IsMine);			// 플레이어 정보로 스폰	
+	void HandleSpawn(const Protocol::ObjectInfo& ObjectInfo, bool IsMine);			// 플레이어 정보로 스폰	
 	void HandleSpawn(const Protocol::S_ENTER_GAME& EnterGamePkt);		// 내가 컨트롤
 	void HandleSpawn(const Protocol::S_SPAWN& SpawnPkt);				// 남이 컨트롤
 

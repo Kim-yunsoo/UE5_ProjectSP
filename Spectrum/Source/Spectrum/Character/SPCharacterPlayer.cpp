@@ -228,7 +228,7 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 
 		// 현재 상태 정보를 패킷에 담아서 서버로 전송
 		{
-			Protocol::PlayerInfo* Info = MovePkt.mutable_info();
+			Protocol::PositionInfo* Info = MovePkt.mutable_info();
 			Info->CopyFrom(*PlayerInfo);
 			Info->set_yaw(DesiredYaw);
 			Info->set_state(GetMoveState());

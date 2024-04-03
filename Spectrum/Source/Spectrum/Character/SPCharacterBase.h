@@ -38,13 +38,13 @@ public:
 
 public:
 	void SetMoveState(Protocol::MoveState State);
-	void SetPlayerInfo(const Protocol::PlayerInfo& Info);
-	void SetDestInfo(const Protocol::PlayerInfo& Info);
-	Protocol::PlayerInfo* GetPlayerInfo() { return PlayerInfo; }
+	void SetPostionInfo(const Protocol::PositionInfo& Info);
+	void SetDestInfo(const Protocol::PositionInfo& Info);
+	Protocol::PositionInfo* GetPlayerInfo() { return PlayerInfo; }
 
 protected:
-	class Protocol::PlayerInfo* PlayerInfo; // 현재 위치
-	class Protocol::PlayerInfo* DestInfo;	// 가려는 위치
+	class Protocol::PositionInfo* PlayerInfo; // 현재 위치
+	class Protocol::PositionInfo* DestInfo;	// 가려는 위치
 
 protected:
 	// 시점변환

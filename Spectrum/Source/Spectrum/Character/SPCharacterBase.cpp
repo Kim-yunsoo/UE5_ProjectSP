@@ -13,8 +13,8 @@
 ASPCharacterBase::ASPCharacterBase()
 {
 
-	PlayerInfo = new Protocol::PlayerInfo();
-	DestInfo = new Protocol::PlayerInfo();
+	PlayerInfo = new Protocol::PositionInfo();
+	DestInfo = new Protocol::PositionInfo();
 
 	
 	//Pawn
@@ -214,7 +214,7 @@ void ASPCharacterBase::SetMoveState(Protocol::MoveState State)
 	// 나중에 상태에 따른 애니메이션 변경 추가할수도..?
 }
 
-void ASPCharacterBase::SetPlayerInfo(const Protocol::PlayerInfo& Info)
+void ASPCharacterBase::SetPostionInfo(const Protocol::PositionInfo& Info)
 {
 	if (PlayerInfo->object_id() != 0)
 	{
@@ -227,7 +227,7 @@ void ASPCharacterBase::SetPlayerInfo(const Protocol::PlayerInfo& Info)
 	SetActorLocation(Location);
 }
 
-void ASPCharacterBase::SetDestInfo(const Protocol::PlayerInfo& Info)
+void ASPCharacterBase::SetDestInfo(const Protocol::PositionInfo& Info)
 {
 	if (PlayerInfo->object_id() != 0)
 	{

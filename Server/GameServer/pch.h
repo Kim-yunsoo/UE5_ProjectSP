@@ -22,6 +22,10 @@
 USING_SHARED_PTR(GameSession);
 USING_SHARED_PTR(Player);
 USING_SHARED_PTR(Room);
+USING_SHARED_PTR(Object);
+USING_SHARED_PTR(Cteature);
+USING_SHARED_PTR(Thing);
+
 
 #define SEND_PACKET(pkt)													\
 	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);	\
