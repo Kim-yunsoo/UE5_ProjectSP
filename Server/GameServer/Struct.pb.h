@@ -188,6 +188,9 @@ class PositionInfo final :
     kZFieldNumber = 4,
     kYawFieldNumber = 5,
     kStateFieldNumber = 6,
+    kIsAimingFieldNumber = 7,
+    kIsHoldingFieldNumber = 8,
+    kIsJumpingFieldNumber = 9,
   };
   // uint64 object_id = 1;
   void clear_object_id();
@@ -243,6 +246,33 @@ class PositionInfo final :
   void _internal_set_state(::Protocol::MoveState value);
   public:
 
+  // bool is_aiming = 7;
+  void clear_is_aiming();
+  bool is_aiming() const;
+  void set_is_aiming(bool value);
+  private:
+  bool _internal_is_aiming() const;
+  void _internal_set_is_aiming(bool value);
+  public:
+
+  // bool is_holding = 8;
+  void clear_is_holding();
+  bool is_holding() const;
+  void set_is_holding(bool value);
+  private:
+  bool _internal_is_holding() const;
+  void _internal_set_is_holding(bool value);
+  public:
+
+  // bool is_jumping = 9;
+  void clear_is_jumping();
+  bool is_jumping() const;
+  void set_is_jumping(bool value);
+  private:
+  bool _internal_is_jumping() const;
+  void _internal_set_is_jumping(bool value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Protocol.PositionInfo)
  private:
   class _Internal;
@@ -257,6 +287,9 @@ class PositionInfo final :
     float z_;
     float yaw_;
     int state_;
+    bool is_aiming_;
+    bool is_holding_;
+    bool is_jumping_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -570,6 +603,66 @@ inline void PositionInfo::_internal_set_state(::Protocol::MoveState value) {
 inline void PositionInfo::set_state(::Protocol::MoveState value) {
   _internal_set_state(value);
   // @@protoc_insertion_point(field_set:Protocol.PositionInfo.state)
+}
+
+// bool is_aiming = 7;
+inline void PositionInfo::clear_is_aiming() {
+  _impl_.is_aiming_ = false;
+}
+inline bool PositionInfo::_internal_is_aiming() const {
+  return _impl_.is_aiming_;
+}
+inline bool PositionInfo::is_aiming() const {
+  // @@protoc_insertion_point(field_get:Protocol.PositionInfo.is_aiming)
+  return _internal_is_aiming();
+}
+inline void PositionInfo::_internal_set_is_aiming(bool value) {
+  
+  _impl_.is_aiming_ = value;
+}
+inline void PositionInfo::set_is_aiming(bool value) {
+  _internal_set_is_aiming(value);
+  // @@protoc_insertion_point(field_set:Protocol.PositionInfo.is_aiming)
+}
+
+// bool is_holding = 8;
+inline void PositionInfo::clear_is_holding() {
+  _impl_.is_holding_ = false;
+}
+inline bool PositionInfo::_internal_is_holding() const {
+  return _impl_.is_holding_;
+}
+inline bool PositionInfo::is_holding() const {
+  // @@protoc_insertion_point(field_get:Protocol.PositionInfo.is_holding)
+  return _internal_is_holding();
+}
+inline void PositionInfo::_internal_set_is_holding(bool value) {
+  
+  _impl_.is_holding_ = value;
+}
+inline void PositionInfo::set_is_holding(bool value) {
+  _internal_set_is_holding(value);
+  // @@protoc_insertion_point(field_set:Protocol.PositionInfo.is_holding)
+}
+
+// bool is_jumping = 9;
+inline void PositionInfo::clear_is_jumping() {
+  _impl_.is_jumping_ = false;
+}
+inline bool PositionInfo::_internal_is_jumping() const {
+  return _impl_.is_jumping_;
+}
+inline bool PositionInfo::is_jumping() const {
+  // @@protoc_insertion_point(field_get:Protocol.PositionInfo.is_jumping)
+  return _internal_is_jumping();
+}
+inline void PositionInfo::_internal_set_is_jumping(bool value) {
+  
+  _impl_.is_jumping_ = value;
+}
+inline void PositionInfo::set_is_jumping(bool value) {
+  _internal_set_is_jumping(value);
+  // @@protoc_insertion_point(field_set:Protocol.PositionInfo.is_jumping)
 }
 
 // -------------------------------------------------------------------

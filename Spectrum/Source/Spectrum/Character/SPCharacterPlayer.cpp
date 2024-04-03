@@ -147,8 +147,8 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 
 	CurrentCharacterControlType = ECharacterControlType::Shoulder;
 	LastInput = FVector2D::ZeroVector;
-	bIsAiming = false;
-	bIsHolding = false;
+	//bIsAiming = false;
+	//bIsHolding = false;
 	HitComponent = nullptr;
 	bIsSpawn = false;
 	bIsThrowReady = false;
@@ -192,31 +192,7 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 		SetMoveState(Protocol::MOVE_STATE_RUN);
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("RUN")));
 	}
-	/*if (DesiredInput.SizeSquared() <= KINDA_SMALL_NUMBER)
-		SetMoveState(Protocol::MOVE_STATE_IDLE);
-	else
-		SetMoveState(Protocol::MOVE_STATE_RUN);*/
-
-		// 이전 입력과 현재 입력이 다른지 비교
-		//if (DesiredInput == LastInput)
-		//	SetMoveState(Protocol::MOVE_STATE_IDLE);
-		//else
-		//	SetMoveState(Protocol::MOVE_STATE_RUN);
-
-		//LastInput = DesiredInput; // 현재 입력을 다음 비교를 위해 저장
-
-		//if (!(DesiredInput == FVector2D::Zero()) && !(LastInput == DesiredInput))
-		//{
-		//	SetMoveState(Protocol::MOVE_STATE_RUN);
-		//}
-		//else if (DesiredInput == FVector2D::Zero() || DesiredInput == FVector2D::Zero())
-		//{
-		//	SetMoveState(Protocol::MOVE_STATE_IDLE);
-		//}
-
-		//LastInput = DesiredInput;
-
-
+	
 		// 0.1초마다 서버로 이동 패킷을 전송
 	MovePacketSendTimer -= DeltaTime * 10;
 
@@ -232,12 +208,20 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 			Info->CopyFrom(*PlayerInfo);
 			Info->set_yaw(DesiredYaw);
 			Info->set_state(GetMoveState());
+			Info->set_is_aiming(bIsAiming);
+			Info->set_is_holding(bIsHolding);
+			Info->set_is_jumping(bIsJumping);
 
 			////Info 창에 출력
 			//if(GetMoveState()== Protocol::MOVE_STATE_IDLE)
 			//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("IDLE")));
 			//else if(GetMoveState() == Protocol::MOVE_STATE_RUN)
 			//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("RUN")));
+
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("%f %f %f"),
+				GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z));
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, FString::Printf(TEXT("%f %f %f"),
+				PlayerInfo->x(), PlayerInfo->y(), PlayerInfo->z()));
 		}
 
 		SEND_PACKET(MovePkt);
@@ -257,7 +241,7 @@ void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Player
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
 	{
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::Jumping);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ASPCharacterPlayer::StopJumping);
 
 		EnhancedInputComponent->BindAction(ChangeControlAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::ChangeCharacterControl);
 
@@ -346,6 +330,8 @@ void ASPCharacterPlayer::ShoulderMove(const FInputActionValue& Value)
 
 	if (Controller != nullptr)
 	{
+		
+
 		const FRotator Rotation = Controller->GetControlRotation();
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
 
@@ -565,6 +551,20 @@ void ASPCharacterPlayer::Jumping(const FInputActionValue& Value)
 		bPressedJump = true;
 		JumpKeyHoldTime = 0.0f;
 	}
+	// 무브 스테이트 설정
+	SetMoveState(Protocol::MOVE_STATE_JUMP);
+	SetJumping();
+}
+
+void ASPCharacterPlayer::StopJumping(const FInputActionValue& Value)
+{
+	bPressedJump = false;
+	ResetJumpState();
+	/*bIsJumping = false;*/
+
+	// 무브 스테이트 설정
+	//SetMoveState(Protocol::MOVE_STATE_IDLE);
+	ResetJumping();
 }
 
 void ASPCharacterPlayer::BlackPotionSpawn(const FInputActionValue& Value)

@@ -63,8 +63,8 @@ int main()
 		//auto sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
 
 		//GSessionManager.Broadcast(sendBuffer);
-		GRoom->updateTick();
-		this_thread::sleep_for(1s);
+		//GRoom->updateTick();
+		this_thread::sleep_for(0.1s);
 	}
 
 	GThreadManager->Join();

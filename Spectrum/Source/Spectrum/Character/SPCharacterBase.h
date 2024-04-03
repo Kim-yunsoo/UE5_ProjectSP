@@ -53,6 +53,19 @@ protected:
 	UPROPERTY(EditAnywhere, Category = CharacterControl, Meta = (AllowPrivateAccess = "true"))
 	TMap<ECharacterControlType, class USPCharacterControlData*> CharacterControlManager;
 
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	uint8 bIsAiming : 1; //조준 
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	uint8 bIsHolding : 1; //잡는지 판단
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	uint8 bIsJumping : 1; //점프하는지
+
+
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	TObjectPtr<class USkeletalMeshComponent>Face;
@@ -75,5 +88,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gravity Gun")
 	TObjectPtr<class UPhysicsHandleComponent> PhysicsHandleComponent;
 
-	
+
+public:
+	const uint8 GetIsAiming() { return bIsAiming; };
+	const uint8 GetIsHolding() { return bIsHolding; };
+	const uint8 GetIsJumping() { return bIsJumping; };
+
+	void SetJumping();
+	void ResetJumping();
 };

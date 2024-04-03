@@ -29,6 +29,9 @@ PROTOBUF_CONSTEXPR PositionInfo::PositionInfo(
   , /*decltype(_impl_.z_)*/0
   , /*decltype(_impl_.yaw_)*/0
   , /*decltype(_impl_.state_)*/0
+  , /*decltype(_impl_.is_aiming_)*/false
+  , /*decltype(_impl_.is_holding_)*/false
+  , /*decltype(_impl_.is_jumping_)*/false
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct PositionInfoDefaultTypeInternal {
   PROTOBUF_CONSTEXPR PositionInfoDefaultTypeInternal()
@@ -72,6 +75,9 @@ const uint32_t TableStruct_Struct_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(p
   PROTOBUF_FIELD_OFFSET(::Protocol::PositionInfo, _impl_.z_),
   PROTOBUF_FIELD_OFFSET(::Protocol::PositionInfo, _impl_.yaw_),
   PROTOBUF_FIELD_OFFSET(::Protocol::PositionInfo, _impl_.state_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::PositionInfo, _impl_.is_aiming_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::PositionInfo, _impl_.is_holding_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::PositionInfo, _impl_.is_jumping_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Protocol::ObjectInfo, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -84,7 +90,7 @@ const uint32_t TableStruct_Struct_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(p
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::Protocol::PositionInfo)},
-  { 12, -1, -1, sizeof(::Protocol::ObjectInfo)},
+  { 15, -1, -1, sizeof(::Protocol::ObjectInfo)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -93,20 +99,22 @@ static const ::_pb::Message* const file_default_instances[] = {
 };
 
 const char descriptor_table_protodef_Struct_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
-  "\n\014Struct.proto\022\010Protocol\032\nEnum.proto\"s\n\014"
-  "PositionInfo\022\021\n\tobject_id\030\001 \001(\004\022\t\n\001x\030\002 \001"
-  "(\002\022\t\n\001y\030\003 \001(\002\022\t\n\001z\030\004 \001(\002\022\013\n\003yaw\030\005 \001(\002\022\"\n"
-  "\005state\030\006 \001(\0162\023.Protocol.MoveState\"t\n\nObj"
-  "ectInfo\022\021\n\tobject_id\030\001 \001(\004\022)\n\013object_typ"
-  "e\030\002 \001(\0162\024.Protocol.ObjectType\022(\n\010pos_inf"
-  "o\030\003 \001(\0132\026.Protocol.PositionInfob\006proto3"
+  "\n\014Struct.proto\022\010Protocol\032\nEnum.proto\"\256\001\n"
+  "\014PositionInfo\022\021\n\tobject_id\030\001 \001(\004\022\t\n\001x\030\002 "
+  "\001(\002\022\t\n\001y\030\003 \001(\002\022\t\n\001z\030\004 \001(\002\022\013\n\003yaw\030\005 \001(\002\022\""
+  "\n\005state\030\006 \001(\0162\023.Protocol.MoveState\022\021\n\tis"
+  "_aiming\030\007 \001(\010\022\022\n\nis_holding\030\010 \001(\010\022\022\n\nis_"
+  "jumping\030\t \001(\010\"t\n\nObjectInfo\022\021\n\tobject_id"
+  "\030\001 \001(\004\022)\n\013object_type\030\002 \001(\0162\024.Protocol.O"
+  "bjectType\022(\n\010pos_info\030\003 \001(\0132\026.Protocol.P"
+  "ositionInfob\006proto3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Struct_2eproto_deps[1] = {
   &::descriptor_table_Enum_2eproto,
 };
 static ::_pbi::once_flag descriptor_table_Struct_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Struct_2eproto = {
-    false, false, 279, descriptor_table_protodef_Struct_2eproto,
+    false, false, 339, descriptor_table_protodef_Struct_2eproto,
     "Struct.proto",
     &descriptor_table_Struct_2eproto_once, descriptor_table_Struct_2eproto_deps, 1, 2,
     schemas, file_default_instances, TableStruct_Struct_2eproto::offsets,
@@ -143,12 +151,15 @@ PositionInfo::PositionInfo(const PositionInfo& from)
     , decltype(_impl_.z_){}
     , decltype(_impl_.yaw_){}
     , decltype(_impl_.state_){}
+    , decltype(_impl_.is_aiming_){}
+    , decltype(_impl_.is_holding_){}
+    , decltype(_impl_.is_jumping_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   ::memcpy(&_impl_.object_id_, &from._impl_.object_id_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.state_) -
-    reinterpret_cast<char*>(&_impl_.object_id_)) + sizeof(_impl_.state_));
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.is_jumping_) -
+    reinterpret_cast<char*>(&_impl_.object_id_)) + sizeof(_impl_.is_jumping_));
   // @@protoc_insertion_point(copy_constructor:Protocol.PositionInfo)
 }
 
@@ -163,6 +174,9 @@ inline void PositionInfo::SharedCtor(
     , decltype(_impl_.z_){0}
     , decltype(_impl_.yaw_){0}
     , decltype(_impl_.state_){0}
+    , decltype(_impl_.is_aiming_){false}
+    , decltype(_impl_.is_holding_){false}
+    , decltype(_impl_.is_jumping_){false}
     , /*decltype(_impl_._cached_size_)*/{}
   };
 }
@@ -191,8 +205,8 @@ void PositionInfo::Clear() {
   (void) cached_has_bits;
 
   ::memset(&_impl_.object_id_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&_impl_.state_) -
-      reinterpret_cast<char*>(&_impl_.object_id_)) + sizeof(_impl_.state_));
+      reinterpret_cast<char*>(&_impl_.is_jumping_) -
+      reinterpret_cast<char*>(&_impl_.object_id_)) + sizeof(_impl_.is_jumping_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -248,6 +262,30 @@ const char* PositionInfo::_InternalParse(const char* ptr, ::_pbi::ParseContext* 
           uint64_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
           _internal_set_state(static_cast<::Protocol::MoveState>(val));
+        } else
+          goto handle_unusual;
+        continue;
+      // bool is_aiming = 7;
+      case 7:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 56)) {
+          _impl_.is_aiming_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // bool is_holding = 8;
+      case 8:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 64)) {
+          _impl_.is_holding_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // bool is_jumping = 9;
+      case 9:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 72)) {
+          _impl_.is_jumping_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
         } else
           goto handle_unusual;
         continue;
@@ -333,6 +371,24 @@ uint8_t* PositionInfo::_InternalSerialize(
       6, this->_internal_state(), target);
   }
 
+  // bool is_aiming = 7;
+  if (this->_internal_is_aiming() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(7, this->_internal_is_aiming(), target);
+  }
+
+  // bool is_holding = 8;
+  if (this->_internal_is_holding() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(8, this->_internal_is_holding(), target);
+  }
+
+  // bool is_jumping = 9;
+  if (this->_internal_is_jumping() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(9, this->_internal_is_jumping(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -396,6 +452,21 @@ size_t PositionInfo::ByteSizeLong() const {
       ::_pbi::WireFormatLite::EnumSize(this->_internal_state());
   }
 
+  // bool is_aiming = 7;
+  if (this->_internal_is_aiming() != 0) {
+    total_size += 1 + 1;
+  }
+
+  // bool is_holding = 8;
+  if (this->_internal_is_holding() != 0) {
+    total_size += 1 + 1;
+  }
+
+  // bool is_jumping = 9;
+  if (this->_internal_is_jumping() != 0) {
+    total_size += 1 + 1;
+  }
+
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
@@ -448,6 +519,15 @@ void PositionInfo::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::P
   if (from._internal_state() != 0) {
     _this->_internal_set_state(from._internal_state());
   }
+  if (from._internal_is_aiming() != 0) {
+    _this->_internal_set_is_aiming(from._internal_is_aiming());
+  }
+  if (from._internal_is_holding() != 0) {
+    _this->_internal_set_is_holding(from._internal_is_holding());
+  }
+  if (from._internal_is_jumping() != 0) {
+    _this->_internal_set_is_jumping(from._internal_is_jumping());
+  }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
@@ -466,8 +546,8 @@ void PositionInfo::InternalSwap(PositionInfo* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(PositionInfo, _impl_.state_)
-      + sizeof(PositionInfo::_impl_.state_)
+      PROTOBUF_FIELD_OFFSET(PositionInfo, _impl_.is_jumping_)
+      + sizeof(PositionInfo::_impl_.is_jumping_)
       - PROTOBUF_FIELD_OFFSET(PositionInfo, _impl_.object_id_)>(
           reinterpret_cast<char*>(&_impl_.object_id_),
           reinterpret_cast<char*>(&other->_impl_.object_id_));

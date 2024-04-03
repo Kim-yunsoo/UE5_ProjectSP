@@ -54,6 +54,7 @@ protected: // 카메라
 	void ThrowPotion(const FInputActionValue& Value);
 
 	void Jumping(const FInputActionValue& Value);
+	void StopJumping(const FInputActionValue& Value);
 
 	void BlackPotionSpawn(const FInputActionValue& Value);
 
@@ -132,11 +133,10 @@ protected:
 	TObjectPtr<class UAnimMontage> ThrowMontage; //던지기 몽타주
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-	uint8 bIsAiming : 1; //조준 
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-	uint8 bIsHolding : 1; //잡는지 판단
+
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	//uint8 bIsHolding : 1; //잡는지 판단
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	FVector UILocation; //위치
@@ -151,9 +151,7 @@ protected:
 	FVector UIRotator; //회전값
 
 
-public:
-	const uint8 GetIsAiming() { return bIsAiming; };
-	const uint8 GetIsHolding() { return bIsHolding; };
+
 
 protected:
 	UPrimitiveComponent* HitComponent;
