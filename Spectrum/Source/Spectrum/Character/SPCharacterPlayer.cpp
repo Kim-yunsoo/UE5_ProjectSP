@@ -19,7 +19,7 @@
 #include "Components/SplineComponent.h"
 #include "Components/SplineMeshComponent.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
-
+#include "Components/WidgetComponent.h"
 
 ASPCharacterPlayer::ASPCharacterPlayer()
 {
@@ -141,6 +141,8 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 	{
 		StaticMeshforSpline = SplineCoinRef.Object;
 	}
+
+	
 
 	//static ConstructorHelpers::FObjectFinder<UStaticMesh> SplineCoinRef(TEXT("/Script/Engine.StaticMesh'/Game/Spectrum/Prop/SM_Projectile.SM_Projectile'"));
 	//SplineCoin->SetStaticMesh(SplineCoinRef.Object);
@@ -516,6 +518,7 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::StopGraping(const FInputActionValue& Value)
 {
+
 	if (bIsHolding && HitComponent->IsSimulatingPhysics())
 	{
 		bIsHolding = false;
@@ -675,7 +678,7 @@ void ASPCharacterPlayer::ShowProjectilePath()
 			NewSplineMeshComp->SetStaticMesh(StaticMeshforSpline);
 			NewSplineMeshComp->SetMobility(EComponentMobility::Movable);
 			NewSplineMeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-			NewSplineMeshComp->SetCollisionProfileName(TEXT("SplineCollision")); 
+			//NewSplineMeshComp->SetCollisionProfileName(TEXT("SplineCollision")); 
 			NewSplineMeshComp->SetGenerateOverlapEvents(true);
 			/*if (StaticMeshforSpline)
 			{
@@ -723,7 +726,7 @@ void ASPCharacterPlayer::ShowProjectilePath()
 					false,
 					5.0f, 0, 5);*/
 			}
-			FVector Location = NewSplineMeshComp->K2_GetComponentLocation();
+			//FVector Location = NewSplineMeshComp->K2_GetComponentLocation();
 			//DrawDebugSphere(GetWorld(), Location, Radius, 20, Color3, false, 5.0f);
 			SplineCompArray.Emplace(NewSplineMeshComp);
 			NewSplineMeshComp->RegisterComponent();

@@ -2,6 +2,16 @@
 
 
 #include "Player/SPPlayerController.h"
+#include "UI/SPHUDWidget.h"
+
+ASPPlayerController::ASPPlayerController()
+{
+	static ConstructorHelpers::FClassFinder<USPHUDWidget> SPHUDWidgetRef(TEXT("/Game/Spectrum/UMG/WBP_SPHUD.WBP_SPHUD_C"));
+	if (SPHUDWidgetRef.Class)
+	{
+		SPHUDWidgetClass = SPHUDWidgetRef.Class;
+	}
+}
 
 void ASPPlayerController::BeginPlay()
 {
@@ -10,4 +20,9 @@ void ASPPlayerController::BeginPlay()
 	FInputModeGameOnly GameOblyInputMode;
 	SetInputMode(GameOblyInputMode);
 
+	SPHUDWidget = CreateWidget<USPHUDWidget>(this, SPHUDWidgetClass);
+	if (SPHUDWidget)
+	{
+		SPHUDWidget->AddToViewport();
+	}
 }
