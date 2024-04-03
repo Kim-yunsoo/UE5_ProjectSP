@@ -69,7 +69,7 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 		GravityArrow->SetRelativeRotation(FRotator(0, 0, 0));
 	}
 
-	// Ä«¸Þ¶ó ½ÃÁ¡¿¡ µû¸¥ ¿¡¼Â ·Îµå
+	// Ä«ï¿½Þ¶ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Îµï¿½
 	// Input
 	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionJumpRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_Jump.IA_SP_Jump'"));
 	if (nullptr != InputActionJumpRef.Object)
@@ -136,10 +136,10 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 		ThrowMontage = ThrowMontageRef.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> SplineCoinRef(TEXT("/Script/Engine.StaticMesh'/Game/Spectrum/Prop/SM_TEST.SM_TEST'"));
-	if (SplineCoinRef.Object)
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticMeshforSplineRef(TEXT("/Script/Engine.StaticMesh'/Game/Spectrum/Prop/SM_TEST.SM_TEST'"));
+	if (StaticMeshforSplineRef.Object)
 	{
-		StaticMeshforSpline = SplineCoinRef.Object;
+		StaticMeshforSpline = StaticMeshforSplineRef.Object;
 	}
 
 	
@@ -176,7 +176,7 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// º¸³»´Â°Ô ¸Â´ÂÁö ÆÇÁ¤
+	// ï¿½ï¿½ï¿½ï¿½ï¿½Â°ï¿½ ï¿½Â´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	bool ForceSendPacket = false;
 
 	if (LastDesiredInput != DesiredInput)
@@ -185,7 +185,7 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 		LastDesiredInput = DesiredInput;
 	}
 
-	// º¸³¾ »óÅÂ Á¤º¸(¿òÁ÷ÀÌ°í ÀÖ´ÂÁö, ¾Æ´ÑÁö)
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½Ì°ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½, ï¿½Æ´ï¿½ï¿½ï¿½)
 	if (DesiredInput == FVector2D::Zero()) {
 		SetMoveState(Protocol::MOVE_STATE_IDLE);
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("IDLE")));
@@ -199,13 +199,13 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 	else
 		SetMoveState(Protocol::MOVE_STATE_RUN);*/
 
-		// ÀÌÀü ÀÔ·Â°ú ÇöÀç ÀÔ·ÂÀÌ ´Ù¸¥Áö ºñ±³
+		// ï¿½ï¿½ï¿½ï¿½ ï¿½Ô·Â°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ô·ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ï¿½ï¿½ ï¿½ï¿½
 		//if (DesiredInput == LastInput)
 		//	SetMoveState(Protocol::MOVE_STATE_IDLE);
 		//else
 		//	SetMoveState(Protocol::MOVE_STATE_RUN);
 
-		//LastInput = DesiredInput; // ÇöÀç ÀÔ·ÂÀ» ´ÙÀ½ ºñ±³¸¦ À§ÇØ ÀúÀå
+		//LastInput = DesiredInput; // ï¿½ï¿½ï¿½ï¿½ ï¿½Ô·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ñ±³¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
 		//if (!(DesiredInput == FVector2D::Zero()) && !(LastInput == DesiredInput))
 		//{
@@ -219,7 +219,7 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 		//LastInput = DesiredInput;
 
 
-		// 0.1ÃÊ¸¶´Ù ¼­¹ö·Î ÀÌµ¿ ÆÐÅ¶À» Àü¼Û
+		// 0.1ï¿½Ê¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ ï¿½ï¿½Å¶ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	MovePacketSendTimer -= DeltaTime * 10;
 
 	if (MovePacketSendTimer <= 0 || ForceSendPacket)
@@ -228,14 +228,14 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 
 		Protocol::C_MOVE MovePkt;
 
-		// ÇöÀç »óÅÂ Á¤º¸¸¦ ÆÐÅ¶¿¡ ´ã¾Æ¼­ ¼­¹ö·Î Àü¼Û
+		// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¶ï¿½ï¿½ ï¿½ï¿½Æ¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		{
 			Protocol::PlayerInfo* Info = MovePkt.mutable_info();
 			Info->CopyFrom(*PlayerInfo);
 			Info->set_yaw(DesiredYaw);
 			Info->set_state(GetMoveState());
 
-			////Info Ã¢¿¡ Ãâ·Â
+			////Info Ã¢ï¿½ï¿½ ï¿½ï¿½ï¿½
 			//if(GetMoveState()== Protocol::MOVE_STATE_IDLE)
 			//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("IDLE")));
 			//else if(GetMoveState() == Protocol::MOVE_STATE_RUN)
@@ -245,7 +245,7 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 		SEND_PACKET(MovePkt);
 	}
 
-	// Áß·ÂÃÑ Å¬¶óÀÌ¾ðÆ® ÄÚµå 
+	// ï¿½ß·ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ® ï¿½Úµï¿½ 
 	if (bIsHolding)
 	{
 		PhysicsHandleComponent->SetTargetLocation(GravityArrow->K2_GetComponentLocation());
@@ -357,11 +357,11 @@ void ASPCharacterPlayer::ShoulderMove(const FInputActionValue& Value)
 		AddMovementInput(ForwardDirection, MovementVector.X);
 		AddMovementInput(RightDirection, MovementVector.Y);
 
-		// ¼­¹ö·Î ÀÌµ¿ ÆÐÅ¶À» Àü¼ÛÇÏ±â À§ÇØ ÃÖÁ¾ °á°ú¹° ÀúÀå
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ ï¿½ï¿½Å¶ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		{
 			DesiredInput = MovementVector;
 
-			// ÃÖÁ¾ÀûÀ¸·Î ¹Ù¶óº¸´Â ¹æÇâÀ» °è»ê
+			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¶óº¸´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 			DesiredMoveDirection = FVector::ZeroVector;
 			DesiredMoveDirection -= ForwardDirection * MovementVector.Y;
 			DesiredMoveDirection += RightDirection * MovementVector.X;
@@ -406,7 +406,7 @@ void ASPCharacterPlayer::Aiming(const FInputActionValue& Value)
 		CameraMove();
 
 	}
-	else // bIsHolding == trueÀÎ °æ¿ì
+	else // bIsHolding == trueï¿½ï¿½ ï¿½ï¿½ï¿½
 	{
 		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, true);
 		FollowCamera->AttachToComponent(CameraBoom, AttachmentRules, NAME_None);
@@ -456,16 +456,16 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 			bool HitSuccess = GetWorld()->LineTraceSingleByChannel(outHitResult, SphereLocationStart, SphereLocationEnd, ECC_GameTraceChannel1, Params);
 			if (HitSuccess && outHitResult.Component->Mobility == EComponentMobility::Movable)
 			{
-				outHitResult.Component->SetSimulatePhysics(true); //½Ã¹Ä·¹ÀÌ¼Ç ÄÑ±â 
+				outHitResult.Component->SetSimulatePhysics(true); //ï¿½Ã¹Ä·ï¿½ï¿½Ì¼ï¿½ ï¿½Ñ±ï¿½ 
 				HitComponent = outHitResult.GetComponent();
 
-				// UE_LOG ¸ÅÅ©·Î¸¦ »ç¿ëÇÏ¿© ·Î±×¸¦ Ãâ·ÂÇÕ´Ï´Ù.
+				// UE_LOG ï¿½ï¿½Å©ï¿½Î¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½Î±×¸ï¿½ ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½.
 
 				if (HitComponent && HitComponent->IsSimulatingPhysics())
 				{
 					PhysicsHandleComponent->GrabComponentAtLocation(
-						HitComponent,      // ÀâÀ» ÄÄÆ÷³ÍÆ®
-						NAME_None,         // º» ÀÌ¸§ (ÀÌ °æ¿ì ºó °ª)
+						HitComponent,      // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
+						NAME_None,         // ï¿½ï¿½ ï¿½Ì¸ï¿½ (ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½)
 						HitComponent->K2_GetComponentLocation()
 					);
 
@@ -478,33 +478,33 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 
 			const FColor LineColor = HitSuccess ? FColor::Green : FColor::Red;
 
-			// ¶óÀÎ Æ®·¹ÀÌ½º °æ·Î µð¹ö±× ¶óÀÎ ±×¸®±â
+			// ï¿½ï¿½ï¿½ï¿½ Æ®ï¿½ï¿½ï¿½Ì½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½×¸ï¿½ï¿½ï¿½
 			DrawDebugLine(
 				GetWorld(),
 				SphereLocationStart,
 				SphereLocationEnd,
 				LineColor,
-				false, // Áö¼Ó ½Ã°£ µ¿¾È Á¸ÀçÇÏÁö ¾ÊÀ½
-				5.0f, // 5ÃÊ µ¿¾È Ç¥½Ã
-				0, // µª½º ¿ì¼±¼øÀ§
-				1.0f // ¶óÀÎ ±½±â
+				false, // ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+				5.0f, // 5ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½
+				0, // ï¿½ï¿½ï¿½ï¿½ ï¿½ì¼±ï¿½ï¿½ï¿½ï¿½
+				1.0f // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			);
 
-			// Ãæµ¹ÀÌ ¹ß»ýÇß´Ù¸é, Ãæµ¹ ÁöÁ¡¿¡ µð¹ö±× Æ÷ÀÎÆ® ±×¸®±â
+			// ï¿½æµ¹ï¿½ï¿½ ï¿½ß»ï¿½ï¿½ß´Ù¸ï¿½, ï¿½æµ¹ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½×¸ï¿½ï¿½ï¿½
 			if (HitSuccess)
 			{
 				DrawDebugPoint(
 					GetWorld(),
-					outHitResult.ImpactPoint, // Ãæµ¹ ÁöÁ¡
-					10.0f, // Æ÷ÀÎÆ® Å©±â
-					FColor::Blue, // Æ÷ÀÎÆ® »ö»ó
-					false, // Áö¼Ó ½Ã°£ µ¿¾È Á¸ÀçÇÏÁö ¾ÊÀ½
-					5.0f // 5ÃÊ µ¿¾È Ç¥½Ã
+					outHitResult.ImpactPoint, // ï¿½æµ¹ ï¿½ï¿½ï¿½ï¿½
+					10.0f, // ï¿½ï¿½ï¿½ï¿½Æ® Å©ï¿½ï¿½
+					FColor::Blue, // ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
+					false, // ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+					5.0f // 5ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½
 				);
 			}
 		}
 	}
-	else // bIsHolding == trueÀÎ °æ¿ì 
+	else // bIsHolding == trueï¿½ï¿½ ï¿½ï¿½ï¿½ 
 	{
 		bIsHolding = false;
 		if (HitComponent && HitComponent->IsSimulatingPhysics())
@@ -575,7 +575,7 @@ void ASPCharacterPlayer::BlackPotionSpawn(const FInputActionValue& Value)
 	if (false == bIsSpawn)
 	{
 		FVector ItemLocation = GetMesh()->GetSocketLocation("Item_Socket");
-		// ¾×ÅÍ Å¸ÀÔ Ä³½ºÆÃ 
+		// ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ 
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
@@ -587,7 +587,7 @@ void ASPCharacterPlayer::BlackPotionSpawn(const FInputActionValue& Value)
 			BlackPotion->AttachToComponent(this->GetMesh(), AttachmentRules, FName{ "Item_Socket" });
 		}
 	}
-	else // bIsSpawn == trueÀÎ °æ¿ì
+	else // bIsSpawn == trueï¿½ï¿½ ï¿½ï¿½ï¿½
 	{
 		if (BlackPotion)
 		{
@@ -619,27 +619,26 @@ void ASPCharacterPlayer::ShowProjectilePath()
 		FPredictProjectilePathParams PredictParams;
 		FPredictProjectilePathResult PredictResult;
 
-		// ÆÄ¶ó¹ÌÅÍ ¼³Á¤
+		// ï¿½Ä¶ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		FHitResult OutHit;
 		TArray<FVector> OutPathPositions;
 		FVector OutLastTraceDestination;
 
 		FVector StartPos = PotionThrowStartLocation->GetComponentLocation();
 		//GetController()->GetControlRotation();
-		//FVector LaunchVelocity = ; // ¹ß»ç ¼Óµµ
+		//FVector LaunchVelocity = ; // ï¿½ß»ï¿½ ï¿½Óµï¿½
 		FVector LaunchVelocity = (UKismetMathLibrary::GetForwardVector(GetController()->GetControlRotation())
 			+ FVector{ 0.0f,0.0f,0.4f }) * 1500.0f;
 		//(ForwardVector + FVector{ 0.0f,0.0f,0.4f })* Mul
 		float ProjectileRadius = 0.0f;
-		TEnumAsByte<ECollisionChannel> TraceChannel = ECollisionChannel::ECC_Camera; // Ãæµ¹ Ã¤³Î
-		TArray<AActor*> ActorsToIgnore; // ¹«½ÃÇÒ ¾×ÅÍµé
-		AActor* SelfActor = GetOwner();
-		ActorsToIgnore.Add(SelfActor);
-		EDrawDebugTrace::Type DrawDebugType = EDrawDebugTrace::None; // µð¹ö±× Á¤º¸ Å¸ÀÔ
-		float DrawDebugTime = 0.0f; // µð¹ö±× Á¤º¸ Ç¥½Ã ½Ã°£
-		float SimFrequency = 15.0f; // ½Ã¹Ä·¹ÀÌ¼Ç ÁÖÆÄ¼ö
-		float MaxSimTime = 2.0f; // ÃÖ´ë ½Ã¹Ä·¹ÀÌ¼Ç ½Ã°£
-		float OverrideGravityZ = 0.0; // Áß·Â °ª
+		TEnumAsByte<ECollisionChannel> TraceChannel = ECollisionChannel::ECC_Camera; // ï¿½æµ¹ Ã¤ï¿½ï¿½
+		TArray<AActor*> ActorsToIgnore; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Íµï¿½
+		ActorsToIgnore.Add(this);
+		EDrawDebugTrace::Type DrawDebugType = EDrawDebugTrace::None; // ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½
+		float DrawDebugTime = 0.0f; // ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½ ï¿½Ã°ï¿½
+		float SimFrequency = 15.0f; // ï¿½Ã¹Ä·ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½Ä¼ï¿½
+		float MaxSimTime = 2.0f; // ï¿½Ö´ï¿½ ï¿½Ã¹Ä·ï¿½ï¿½Ì¼ï¿½ ï¿½Ã°ï¿½
+		float OverrideGravityZ = 0.0; // ï¿½ß·ï¿½ ï¿½ï¿½
 
 		UGameplayStatics::Blueprint_PredictProjectilePath_ByTraceChannel(GetWorld(), OutHit, OutPathPositions,
 			OutLastTraceDestination, StartPos, LaunchVelocity, true, ProjectileRadius, TraceChannel, false, ActorsToIgnore,
@@ -677,9 +676,8 @@ void ASPCharacterPlayer::ShowProjectilePath()
 			//NewSplineMeshComp->SetupAttachment(RootComponent);
 			NewSplineMeshComp->SetStaticMesh(StaticMeshforSpline);
 			NewSplineMeshComp->SetMobility(EComponentMobility::Movable);
-			NewSplineMeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-			//NewSplineMeshComp->SetCollisionProfileName(TEXT("SplineCollision")); 
-			NewSplineMeshComp->SetGenerateOverlapEvents(true);
+			NewSplineMeshComp->SetCollisionProfileName(TEXT("SplineCollision")); 
+			//NewSplineMeshComp->SetGenerateOverlapEvents(true);
 			/*if (StaticMeshforSpline)
 			{
 				UE_LOG(LogTemp, Log, TEXT("MeshName: [%s]"), *GetNameSafe(StaticMeshforSpline));
@@ -710,13 +708,11 @@ void ASPCharacterPlayer::ShowProjectilePath()
 			{
 				NewSplineMeshComp->SetStartAndEnd(StartPointLocation, StartPointTangent, EndPointLocation, EndPointTangent, true);
 
-				//NewSplineMeshComp->SetWorldLocation(StartPointLocation);
-
-				FColor BeautyfulColor = FColor(
+			/*	FColor BeautyfulColor = FColor(
 					FMath::RandRange(30, 200),
 					FMath::RandRange(30, 200),
 					FMath::RandRange(30, 200),
-					1.f);
+					1.f);*/
 				/*FVector StartPointLocation, EndPointLocation;*/
 			/*	DrawDebugLine(
 					GetWorld(),
@@ -749,9 +745,9 @@ void ASPCharacterPlayer::ShowProjectilePath()
 			SplineMeshComponents.Add(Cast<USplineMeshComponent>(ActorComponent));*/
 		}
 		FTimerHandle TimerHandle;
-		float DelayTime = 0.05f;
+		float DelayTime = 0.01f;
 
-		// FTimerManager¸¦ ÀÌ¿ëÇÏ¿© Delay
+		// FTimerManagerï¿½ï¿½ ï¿½Ì¿ï¿½ï¿½Ï¿ï¿½ Delay
 		GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this]() {
 			ShowProjectilePath();
 			}, DelayTime, false);
@@ -790,11 +786,11 @@ void ASPCharacterPlayer::QuaterMove(const FInputActionValue& Value)
 	AddMovementInput(MoveDirection, MovementVectorSize);
 
 
-	// ¼­¹ö·Î ÀÌµ¿ ÆÐÅ¶À» Àü¼ÛÇÏ±â À§ÇØ ÃÖÁ¾ °á°ú¹° ÀúÀå
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ ï¿½ï¿½Å¶ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	{
 		DesiredInput = MovementVector;
 
-		// ÃÖÁ¾ÀûÀ¸·Î ¹Ù¶óº¸´Â ¹æÇâÀ» °è»ê
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¶óº¸´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 		DesiredMoveDirection = FVector::ZeroVector;
 		DesiredMoveDirection += ForwardDirection * MovementVector.Y;
 		DesiredMoveDirection += RightDirection * MovementVector.X;
