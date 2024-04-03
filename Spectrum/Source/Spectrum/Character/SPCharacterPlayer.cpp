@@ -136,10 +136,10 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 		ThrowMontage = ThrowMontageRef.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> SplineCoinRef(TEXT("/Script/Engine.StaticMesh'/Game/Spectrum/Prop/SM_TEST.SM_TEST'"));
-	if (SplineCoinRef.Object)
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticMeshforSplineRef(TEXT("/Script/Engine.StaticMesh'/Game/Spectrum/Prop/SM_TEST.SM_TEST'"));
+	if (StaticMeshforSplineRef.Object)
 	{
-		StaticMeshforSpline = SplineCoinRef.Object;
+		StaticMeshforSpline = StaticMeshforSplineRef.Object;
 	}
 
 	//static ConstructorHelpers::FObjectFinder<UStaticMesh> SplineCoinRef(TEXT("/Script/Engine.StaticMesh'/Game/Spectrum/Prop/SM_Projectile.SM_Projectile'"));
@@ -630,8 +630,7 @@ void ASPCharacterPlayer::ShowProjectilePath()
 		float ProjectileRadius = 0.0f;
 		TEnumAsByte<ECollisionChannel> TraceChannel = ECollisionChannel::ECC_Camera; // 충돌 채널
 		TArray<AActor*> ActorsToIgnore; // 무시할 액터들
-		AActor* SelfActor = GetOwner();
-		ActorsToIgnore.Add(SelfActor);
+		ActorsToIgnore.Add(this);
 		EDrawDebugTrace::Type DrawDebugType = EDrawDebugTrace::None; // 디버그 정보 타입
 		float DrawDebugTime = 0.0f; // 디버그 정보 표시 시간
 		float SimFrequency = 15.0f; // 시뮬레이션 주파수
@@ -674,9 +673,8 @@ void ASPCharacterPlayer::ShowProjectilePath()
 			//NewSplineMeshComp->SetupAttachment(RootComponent);
 			NewSplineMeshComp->SetStaticMesh(StaticMeshforSpline);
 			NewSplineMeshComp->SetMobility(EComponentMobility::Movable);
-			NewSplineMeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 			NewSplineMeshComp->SetCollisionProfileName(TEXT("SplineCollision")); 
-			NewSplineMeshComp->SetGenerateOverlapEvents(true);
+			//NewSplineMeshComp->SetGenerateOverlapEvents(true);
 			/*if (StaticMeshforSpline)
 			{
 				UE_LOG(LogTemp, Log, TEXT("MeshName: [%s]"), *GetNameSafe(StaticMeshforSpline));
@@ -707,13 +705,11 @@ void ASPCharacterPlayer::ShowProjectilePath()
 			{
 				NewSplineMeshComp->SetStartAndEnd(StartPointLocation, StartPointTangent, EndPointLocation, EndPointTangent, true);
 
-				//NewSplineMeshComp->SetWorldLocation(StartPointLocation);
-
-				FColor BeautyfulColor = FColor(
+			/*	FColor BeautyfulColor = FColor(
 					FMath::RandRange(30, 200),
 					FMath::RandRange(30, 200),
 					FMath::RandRange(30, 200),
-					1.f);
+					1.f);*/
 				/*FVector StartPointLocation, EndPointLocation;*/
 			/*	DrawDebugLine(
 					GetWorld(),
@@ -723,7 +719,7 @@ void ASPCharacterPlayer::ShowProjectilePath()
 					false,
 					5.0f, 0, 5);*/
 			}
-			FVector Location = NewSplineMeshComp->K2_GetComponentLocation();
+			//FVector Location = NewSplineMeshComp->K2_GetComponentLocation();
 			//DrawDebugSphere(GetWorld(), Location, Radius, 20, Color3, false, 5.0f);
 			SplineCompArray.Emplace(NewSplineMeshComp);
 			NewSplineMeshComp->RegisterComponent();
@@ -746,7 +742,7 @@ void ASPCharacterPlayer::ShowProjectilePath()
 			SplineMeshComponents.Add(Cast<USplineMeshComponent>(ActorComponent));*/
 		}
 		FTimerHandle TimerHandle;
-		float DelayTime = 0.05f;
+		float DelayTime = 0.01f;
 
 		// FTimerManager를 이용하여 Delay
 		GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this]() {
