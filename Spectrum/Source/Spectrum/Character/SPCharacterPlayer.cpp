@@ -136,7 +136,7 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 		ThrowMontage = ThrowMontageRef.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticMeshforSplineRef(TEXT("/Script/Engine.StaticMesh'/Game/Spectrum/Prop/SM_TEST.SM_TEST'"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticMeshforSplineRef(TEXT("/Script/Engine.StaticMesh'/Game/Spectrum/SM_MERGED_StaticMeshActor_90.SM_MERGED_StaticMeshActor_90'"));
 	if (StaticMeshforSplineRef.Object)
 	{
 		StaticMeshforSpline = StaticMeshforSplineRef.Object;
@@ -626,19 +626,19 @@ void ASPCharacterPlayer::ShowProjectilePath()
 
 		FVector StartPos = PotionThrowStartLocation->GetComponentLocation();
 		//GetController()->GetControlRotation();
-		//FVector LaunchVelocity = ; // �߻� �ӵ�
+		//FVector LaunchVelocity = ; 
 		FVector LaunchVelocity = (UKismetMathLibrary::GetForwardVector(GetController()->GetControlRotation())
 			+ FVector{ 0.0f,0.0f,0.4f }) * 1500.0f;
 		//(ForwardVector + FVector{ 0.0f,0.0f,0.4f })* Mul
 		float ProjectileRadius = 0.0f;
 		TEnumAsByte<ECollisionChannel> TraceChannel = ECollisionChannel::ECC_Camera; // �浹 ä��
-		TArray<AActor*> ActorsToIgnore; // ������ ���͵�
+		TArray<AActor*> ActorsToIgnore; 
 		ActorsToIgnore.Add(this);
-		EDrawDebugTrace::Type DrawDebugType = EDrawDebugTrace::None; // ����� ���� Ÿ��
-		float DrawDebugTime = 0.0f; // ����� ���� ǥ�� �ð�
-		float SimFrequency = 15.0f; // �ùķ��̼� ���ļ�
-		float MaxSimTime = 2.0f; // �ִ� �ùķ��̼� �ð�
-		float OverrideGravityZ = 0.0; // �߷� ��
+		EDrawDebugTrace::Type DrawDebugType = EDrawDebugTrace::None;
+		float DrawDebugTime = 0.0f; 
+		float SimFrequency = 15.0f; 
+		float MaxSimTime = 2.0f; 
+		float OverrideGravityZ = 0.0; 
 
 		UGameplayStatics::Blueprint_PredictProjectilePath_ByTraceChannel(GetWorld(), OutHit, OutPathPositions,
 			OutLastTraceDestination, StartPos, LaunchVelocity, true, ProjectileRadius, TraceChannel, false, ActorsToIgnore,
