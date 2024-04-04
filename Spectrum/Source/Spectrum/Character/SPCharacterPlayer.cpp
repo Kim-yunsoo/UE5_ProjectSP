@@ -11,6 +11,7 @@
 #include "SPCharacterControlData.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Spectrum.h"
+#include "Object/SPObject.h"
 #include "Components/SceneComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Components/ArrowComponent.h"
@@ -218,10 +219,10 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 			//else if(GetMoveState() == Protocol::MOVE_STATE_RUN)
 			//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("RUN")));
 
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("%f %f %f"),
-				GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z));
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, FString::Printf(TEXT("%f %f %f"),
-				PlayerInfo->x(), PlayerInfo->y(), PlayerInfo->z()));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("%f %f %f"),
+			//	GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, FString::Printf(TEXT("%f %f %f"),
+			//	PlayerInfo->x(), PlayerInfo->y(), PlayerInfo->z()));
 		}
 
 		SEND_PACKET(MovePkt);
@@ -231,6 +232,7 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 	if (bIsHolding)
 	{
 		PhysicsHandleComponent->SetTargetLocation(GravityArrow->K2_GetComponentLocation());
+
 	}
 }
 
@@ -443,6 +445,26 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 				outHitResult.Component->SetSimulatePhysics(true); //시뮬레이션 켜기 
 				HitComponent = outHitResult.GetComponent();
 
+				// 물건의 정보 수정
+				AActor* OwnerActor = HitComponent->GetOwner();
+				ASPObject* MyActor = static_cast<ASPObject*>(OwnerActor);
+				if (MyActor)
+				{
+					// 캐스팅 성공, MyActor를 사용해 로직 수행
+					MyActor->ObjectInfo->set_is_holding(true);
+					MyActor->ObjectInfo->set_x(MyActor->K2_GetActorLocation().X);
+					MyActor->ObjectInfo->set_y(MyActor->K2_GetActorLocation().Y);
+					MyActor->ObjectInfo->set_z(MyActor->K2_GetActorLocation().Z);
+				}
+				else
+				{
+					// 캐스팅 실패, 에러 로깅 또는 대체 로직 수행
+					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, FString::Printf(TEXT("cast fail")));
+				}
+
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, FString::Printf(TEXT("%f %f %f"),
+				//	GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z));
+
 				// UE_LOG 매크로를 사용하여 로그를 출력합니다.
 
 				if (HitComponent && HitComponent->IsSimulatingPhysics())
@@ -508,6 +530,11 @@ void ASPCharacterPlayer::StopGraping(const FInputActionValue& Value)
 		PhysicsHandleComponent->ReleaseComponent();
 		HitComponent->AddImpulse(FollowCamera->GetForwardVector() * HitDistance, NAME_None, true);
 		HitComponent = nullptr;
+
+		// 물건 놨을 때 --> 여기서 HitComponent의  is_holding 끄기
+		//AActor* OwnerActor = HitComponent->GetOwner();
+		//ASPObject* MyActor = Cast<ASPObject>(OwnerActor);
+		//MyActor->ObjectInfo->set_is_holding(false);
 	}
 }
 

@@ -18,6 +18,8 @@ enum
 
 void DoWorkerJob(ServerServiceRef& service)
 {
+
+
 	while (true)
 	{
 		LEndTickCount = ::GetTickCount64() + WORKER_TICK;
@@ -54,18 +56,50 @@ int main()
 	}
 
 	// Main Thread
-	//DoWorkerJob(service);
+	DoWorkerJob(service);
+
+	/*Protocol::S_O_SPAWN pkt;
+
+	Protocol::PositionInfo* posInfo = new Protocol::PositionInfo();
+	posInfo->set_x(1.f);
+	posInfo->set_y(2.f);
+	posInfo->set_z(3.f);
+	posInfo->set_yaw(4.f);
+	posInfo->set_object_id(333);
+
+	pkt.set_allocated_objects(posInfo);
+	auto sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
+
+	GSessionManager.Broadcast(sendBuffer);*/
+
 
 	while (true)
 	{
-		//Protocol::S_CHAT pkt;
-		//pkt.set_msg("HelloWorld");
+		/*Protocol::S_O_SPAWN pkt;
+		pkt.set_msg("HelloWorld");
+		auto sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
+
+		GSessionManager.Broadcast(sendBuffer);*/
+		//GRoom->updateTick();
+
+		//Protocol::S_O_SPAWN pkt;
+
+		//Protocol::PositionInfo* posInfo = new Protocol::PositionInfo();
+		//posInfo->set_x(1.f);
+		//posInfo->set_y(2.f);
+		//posInfo->set_z(3.f);
+		//posInfo->set_yaw(4.f);
+		//posInfo->set_object_id(20);
+
+		//pkt.set_allocated_objects(posInfo);
 		//auto sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
 
 		//GSessionManager.Broadcast(sendBuffer);
-		//GRoom->updateTick();
-		this_thread::sleep_for(0.1s);
+
+		Sleep(1);
 	}
+
+	
 
 	GThreadManager->Join();
 }

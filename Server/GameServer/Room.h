@@ -15,6 +15,7 @@ public:
 	bool HandleLeavePlayerLocked(PlayerRef player);
 
 	void HandleMoveLocked(Protocol::C_MOVE& pkt);
+	void HandleMoveLocked(Protocol::C_O_MOVE& pkt);
 
 	void updateTick();
 
@@ -24,7 +25,7 @@ private:
 
 	USE_LOCK;
 
-private:
+public:
 	void Broadcast(SendBufferRef sendBuffer, uint64 exceptId = 0);
 
 private:

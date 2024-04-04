@@ -6,6 +6,7 @@
 #include "Room.h"
 #include "GameSession.h"
 #include "Player.h"
+#include "Thing.h"
 
 PacketHandlerFunc GPacketHandler[UINT16_MAX];
 
@@ -47,6 +48,26 @@ bool Handle_C_ENTER_GAME(PacketSessionRef& session, Protocol::C_ENTER_GAME& pkt)
 	// 방에 입장
 	GRoom->HandleEnterPlayerLocked(player);
 
+	// 물건 생성
+	ThingRef thing = ObjectUtils::CreateThing();
+	//GRoom->EnterRoom(thing);
+	
+	Protocol::S_O_SPAWN Opkt;
+
+	Protocol::PositionInfo* posInfo = new Protocol::PositionInfo();
+	posInfo->set_x(1.f);
+	posInfo->set_y(2.f);
+	posInfo->set_z(3.f);
+	posInfo->set_yaw(4.f);
+	posInfo->set_object_id(thing->posInfo->object_id());
+
+	Opkt.set_allocated_objects(posInfo);
+	auto sendBuffer = ServerPacketHandler::MakeSendBuffer(Opkt);
+
+
+	GRoom->Broadcast(sendBuffer, player->objectInfo->object_id());
+
+
 	return true;
 }
 
@@ -80,6 +101,23 @@ bool Handle_C_MOVE(PacketSessionRef& session, Protocol::C_MOVE& pkt)
 		return false;
 
 	// TODO
+
+	room->HandleMoveLocked(pkt);
+
+	return true;
+}
+
+bool Handle_C_O_MOVE(PacketSessionRef& session, Protocol::C_O_MOVE& pkt)
+{
+	auto gameSession = static_pointer_cast<GameSession>(session);
+
+	PlayerRef player = gameSession->player.load();
+	if (player == nullptr)
+		return false;
+
+	RoomRef room = player->room.load().lock();
+	if (room == nullptr)
+		return false;
 
 	room->HandleMoveLocked(pkt);
 

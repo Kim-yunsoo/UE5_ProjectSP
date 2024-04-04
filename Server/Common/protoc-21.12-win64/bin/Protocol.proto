@@ -46,12 +46,32 @@ message S_DESPAWN
 	repeated uint64 object_ids = 1;
 }
 
+message S_O_SPAWN
+{
+	PositionInfo objects = 1;
+}
+
+message S_O_DESPAWN
+{
+	uint64 object_ids = 1;
+}
+
 message C_MOVE
 {
 	PositionInfo info = 1;
 }
 
 message S_MOVE
+{
+	PositionInfo info = 1;
+}
+
+message C_O_MOVE
+{
+	PositionInfo info = 1;
+}
+
+message S_O_MOVE
 {
 	PositionInfo info = 1;
 }

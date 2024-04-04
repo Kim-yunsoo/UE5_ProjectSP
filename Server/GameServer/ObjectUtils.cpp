@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "ObjectUtils.h"
 #include "Player.h"
+#include "Thing.h"
 #include "GameSession.h"
 
 atomic<int64> ObjectUtils::s_idGenerator = 1;
@@ -18,4 +19,19 @@ PlayerRef ObjectUtils::CreatePlayer(GameSessionRef session)
 	session->player.store(player);
 
 	return player;
+}
+
+ThingRef ObjectUtils::CreateThing()
+{
+	// ID »ý¼º±â
+	const int64 newId = s_idGenerator.fetch_add(1);
+
+	ThingRef thing = make_shared<Thing>();
+	thing->objectInfo->set_object_id(newId);
+	thing->posInfo->set_object_id(newId);
+
+	//thing->session = session;
+	//session->thing.store(player);
+
+	return thing;
 }

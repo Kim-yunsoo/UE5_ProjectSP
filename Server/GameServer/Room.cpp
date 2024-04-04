@@ -236,6 +236,24 @@ void Room::HandleMoveLocked(Protocol::C_MOVE& pkt)
 	}
 }
 
+void Room::HandleMoveLocked(Protocol::C_O_MOVE& pkt)
+{
+	WRITE_LOCK;
+
+	// ÀÌµ¿ 
+	{
+		Protocol::S_O_MOVE movePkt;
+		{
+			Protocol::PositionInfo* info = movePkt.mutable_info();
+			info->CopyFrom(pkt.info());
+		}
+
+		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(movePkt);
+		Broadcast(sendBuffer);
+	}
+
+}
+
 void Room::updateTick()
 {
 	cout<<"Room::updateTick"<<endl;

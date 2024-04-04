@@ -29,20 +29,21 @@ static constexpr ::_pbi::MigrationSchema* schemas = nullptr;
 static constexpr ::_pb::Message* const* file_default_instances = nullptr;
 
 const char descriptor_table_protodef_Enum_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
-  "\n\nEnum.proto\022\010Protocol*<\n\nObjectType\022\024\n\020"
-  "OBJECT_TYPE_NONE\020\000\022\030\n\024OBJECT_TYPE_CREATU"
-  "RE\020\001*Y\n\014CreatureType\022\026\n\022CREATURE_TYPE_NO"
-  "NE\020\000\022\030\n\024CREATURE_TYPE_PLAYER\020\001\022\027\n\023CREATU"
-  "RE_TYPE_THING\020\002*h\n\nPlayerType\022\024\n\020PLAYER_"
-  "TYPE_NONE\020\000\022\026\n\022PLAYER_TYPE_KNIGHT\020\001\022\024\n\020P"
-  "LAYER_TYPE_MAGE\020\002\022\026\n\022PLAYER_TYPE_ARCHER\020"
-  "\003*^\n\tMoveState\022\023\n\017MOVE_STATE_NONE\020\000\022\023\n\017M"
-  "OVE_STATE_IDLE\020\001\022\022\n\016MOVE_STATE_RUN\020\002\022\023\n\017"
-  "MOVE_STATE_JUMP\020\003b\006proto3"
+  "\n\nEnum.proto\022\010Protocol*Q\n\nObjectType\022\024\n\020"
+  "OBJECT_TYPE_NONE\020\000\022\026\n\022OBJECT_TYPE_PLAYER"
+  "\020\001\022\025\n\021OBJECT_TYPE_THING\020\002*Y\n\014CreatureTyp"
+  "e\022\026\n\022CREATURE_TYPE_NONE\020\000\022\030\n\024CREATURE_TY"
+  "PE_PLAYER\020\001\022\027\n\023CREATURE_TYPE_THING\020\002*h\n\n"
+  "PlayerType\022\024\n\020PLAYER_TYPE_NONE\020\000\022\026\n\022PLAY"
+  "ER_TYPE_KNIGHT\020\001\022\024\n\020PLAYER_TYPE_MAGE\020\002\022\026"
+  "\n\022PLAYER_TYPE_ARCHER\020\003*^\n\tMoveState\022\023\n\017M"
+  "OVE_STATE_NONE\020\000\022\023\n\017MOVE_STATE_IDLE\020\001\022\022\n"
+  "\016MOVE_STATE_RUN\020\002\022\023\n\017MOVE_STATE_JUMP\020\003b\006"
+  "proto3"
   ;
 static ::_pbi::once_flag descriptor_table_Enum_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Enum_2eproto = {
-    false, false, 385, descriptor_table_protodef_Enum_2eproto,
+    false, false, 406, descriptor_table_protodef_Enum_2eproto,
     "Enum.proto",
     &descriptor_table_Enum_2eproto_once, nullptr, 0, 0,
     schemas, file_default_instances, TableStruct_Enum_2eproto::offsets,
@@ -64,6 +65,7 @@ bool ObjectType_IsValid(int value) {
   switch (value) {
     case 0:
     case 1:
+    case 2:
       return true;
     default:
       return false;
