@@ -20,6 +20,7 @@
 #include "Components/SplineMeshComponent.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "Components/WidgetComponent.h"
+#include "UI/SPHUDWidget.h"
 
 ASPCharacterPlayer::ASPCharacterPlayer()
 {
@@ -401,6 +402,7 @@ void ASPCharacterPlayer::Aiming(const FInputActionValue& Value)
 {
 	if (false == bIsHolding) {
 		bIsAiming = true;
+		OnAimingChanged.Broadcast(bIsAiming);
 		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, true);
 		FollowCamera->AttachToComponent(SpringArm, AttachmentRules, NAME_None);
 		CameraMove();
@@ -416,7 +418,9 @@ void ASPCharacterPlayer::Aiming(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::StopAiming(const FInputActionValue& Value)
 {
+
 	bIsAiming = false;
+	OnAimingChanged.Broadcast(bIsAiming);
 	FollowCamera->K2_AttachToComponent(CameraBoom, NAME_None, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, true);
 	FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, true);
 	FollowCamera->AttachToComponent(CameraBoom, AttachmentRules, NAME_None);
@@ -425,7 +429,6 @@ void ASPCharacterPlayer::StopAiming(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 {
-
 	if (false == bIsHolding)
 	{
 		//FVector SphereLocationStart = Sphere->K2_GetComponentLocation();
@@ -755,6 +758,16 @@ void ASPCharacterPlayer::ShowProjectilePath()
 	else
 	{
 		ProjectileCircle->SetVisibility(false);
+	}
+}
+
+void ASPCharacterPlayer::CheckTargetUI(class USPHUDWidget* InHUDWidget)
+{
+	if (InHUDWidget)
+	{
+		UE_LOG(LogTemp, Log, TEXT("CheckTargetUI"));
+		InHUDWidget->UpdateTargetUI(bIsAiming);
+		//OnAimingChanged.ADDUObject(InHUDWidget, &USPHUDWidget::UpdateTargetUI);
 	}
 }
 

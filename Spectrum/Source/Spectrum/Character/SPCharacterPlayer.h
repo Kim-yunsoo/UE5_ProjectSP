@@ -5,14 +5,17 @@
 #include "CoreMinimal.h"
 #include "Potion/SPBlackPotion.h" 
 #include "Character/SPCharacterBase.h"
+#include "Interface/SPCharacterHUDInterface.h"
 #include "InputActionValue.h"
 #include "SPCharacterPlayer.generated.h"
 
 /**
  *
  */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAimingChangedDelegate, bool, bIsAiming);
+
 UCLASS()
-class SPECTRUM_API ASPCharacterPlayer : public ASPCharacterBase
+class SPECTRUM_API ASPCharacterPlayer : public ASPCharacterBase, public ISPCharacterHUDInterface
 {
 	GENERATED_BODY()
 
@@ -194,4 +197,9 @@ protected:
 	UPROPERTY()
 	UStaticMesh* StaticMeshforSpline;
 
+	//UI
+protected:
+	virtual void CheckTargetUI(class USPHUDWidget* InHUDWidget) override;
+public:
+	FOnAimingChangedDelegate OnAimingChanged;
 };

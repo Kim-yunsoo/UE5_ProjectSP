@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Character/SPCharacterPlayer.h"
 #include "SPHUDWidget.generated.h"
 
 /**
@@ -13,5 +14,18 @@ UCLASS()
 class SPECTRUM_API USPHUDWidget : public UUserWidget
 {
 	GENERATED_BODY()
-	
+public:
+	USPHUDWidget(const FObjectInitializer& ObjectInitializer);
+
+public:
+	void UpdateTargetUI(bool Iswidget);
+	void BindToPlayer(ASPCharacterPlayer* Player);
+
+protected:
+	virtual void NativeConstruct() override;
+
+
+protected:
+	UPROPERTY()
+	TObjectPtr<class USPTargetUI> TargetUI;
 };

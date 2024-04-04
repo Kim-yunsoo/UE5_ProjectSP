@@ -24,5 +24,6 @@ void ASPPlayerController::BeginPlay()
 	if (SPHUDWidget)
 	{
 		SPHUDWidget->AddToViewport();
+		SPHUDWidget->SetVisibility(ESlateVisibility::Hidden);
 	}
 }
