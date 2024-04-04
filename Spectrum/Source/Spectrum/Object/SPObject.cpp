@@ -30,8 +30,8 @@ void ASPObject::OnExplosionHit(float Damage)
 	if (false == bHasBeenCalled)
 	{
 		ObjectMesh->SetHiddenInGame(true);
-		ObjectMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		this->SetLifeSpan(1.0f);
+		//ObjectMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		//this->SetLifeSpan(1.0f);
 		bHasBeenCalled = true;
 	}
 }
@@ -47,6 +47,7 @@ void ASPObject::Tick(float DeltaTime)
 	}
 	DelayTime = 1.0;
 	bool Equal = UKismetMathLibrary::EqualEqual_VectorVector(ObjectLocation, GetActorLocation(), 0.0);
+	//UE_LOG(LogTemp, Log, TEXT("%s"), *GetActorLocation().ToString());
 	if (Equal)
 	{
 		ObjectMesh->SetSimulatePhysics(false);

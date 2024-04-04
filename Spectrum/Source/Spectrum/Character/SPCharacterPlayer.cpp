@@ -42,8 +42,7 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 	FollowCamera->bUsePawnControlRotation = false;
 
 	PotionThrowStartLocation = CreateDefaultSubobject<USceneComponent>(TEXT("PotionThrowStartLocation"));
-	PotionThrowStartLocation->SetupAttachment(RootComponent);
-	PotionThrowStartLocation->SetRelativeLocation(FVector(0.0, -48.566387, 67.547544));
+	PotionThrowStartLocation->SetupAttachment(GetMesh(),FName(TEXT("Item_Socket")));
 
 	Projectile_Path = CreateDefaultSubobject<USplineComponent>(TEXT("Projectile_Path"));
 	Projectile_Path->SetupAttachment(RootComponent);
@@ -142,7 +141,11 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 		StaticMeshforSpline = StaticMeshforSplineRef.Object;
 	}
 
-	
+	static ConstructorHelpers::FObjectFinder<UMaterialInterface> DecalMaterialRef(TEXT("/Script/Engine.MaterialInstanceConstant'/Game/Box/MagicCircle/Material/MI_MagicCircleDecal_16.MI_MagicCircleDecal_16'"));
+	if (DecalMaterialRef.Object)
+	{
+		DecalMaterial = DecalMaterialRef.Object;
+	}
 
 	//static ConstructorHelpers::FObjectFinder<UStaticMesh> SplineCoinRef(TEXT("/Script/Engine.StaticMesh'/Game/Spectrum/Prop/SM_Projectile.SM_Projectile'"));
 	//SplineCoin->SetStaticMesh(SplineCoinRef.Object);
@@ -176,7 +179,6 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// �����°� �´��� ����
 	bool ForceSendPacket = false;
 
 	if (LastDesiredInput != DesiredInput)
@@ -185,7 +187,6 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 		LastDesiredInput = DesiredInput;
 	}
 
-	// ���� ���� ����(�����̰� �ִ���, �ƴ���)
 	if (DesiredInput == FVector2D::Zero()) {
 		SetMoveState(Protocol::MOVE_STATE_IDLE);
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("IDLE")));
@@ -199,13 +200,12 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 	else
 		SetMoveState(Protocol::MOVE_STATE_RUN);*/
 
-		// ���� �Է°� ���� �Է��� �ٸ��� ��
 		//if (DesiredInput == LastInput)
 		//	SetMoveState(Protocol::MOVE_STATE_IDLE);
 		//else
 		//	SetMoveState(Protocol::MOVE_STATE_RUN);
 
-		//LastInput = DesiredInput; // ���� �Է��� ���� �񱳸� ���� ����
+		//LastInput = DesiredInput; 
 
 		//if (!(DesiredInput == FVector2D::Zero()) && !(LastInput == DesiredInput))
 		//{
@@ -219,7 +219,6 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 		//LastInput = DesiredInput;
 
 
-		// 0.1�ʸ��� ������ �̵� ��Ŷ�� ����
 	MovePacketSendTimer -= DeltaTime * 10;
 
 	if (MovePacketSendTimer <= 0 || ForceSendPacket)
@@ -228,7 +227,6 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 
 		Protocol::C_MOVE MovePkt;
 
-		// ���� ���� ������ ��Ŷ�� ��Ƽ� ������ ����
 		{
 			Protocol::PlayerInfo* Info = MovePkt.mutable_info();
 			Info->CopyFrom(*PlayerInfo);
@@ -245,7 +243,6 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 		SEND_PACKET(MovePkt);
 	}
 
-	// �߷��� Ŭ���̾�Ʈ �ڵ� 
 	if (bIsHolding)
 	{
 		PhysicsHandleComponent->SetTargetLocation(GravityArrow->K2_GetComponentLocation());
@@ -284,7 +281,6 @@ void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Player
 
 		EnhancedInputComponent->BindAction(ThrowCtrl, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::AimPotion);
 		EnhancedInputComponent->BindAction(ThrowCtrl, ETriggerEvent::Completed, this, &ASPCharacterPlayer::ThrowPotion);
-
 	}
 }
 
@@ -357,11 +353,9 @@ void ASPCharacterPlayer::ShoulderMove(const FInputActionValue& Value)
 		AddMovementInput(ForwardDirection, MovementVector.X);
 		AddMovementInput(RightDirection, MovementVector.Y);
 
-		// ������ �̵� ��Ŷ�� �����ϱ� ���� ���� ����� ����
 		{
 			DesiredInput = MovementVector;
 
-			// ���������� �ٶ󺸴� ������ ���
 			DesiredMoveDirection = FVector::ZeroVector;
 			DesiredMoveDirection -= ForwardDirection * MovementVector.Y;
 			DesiredMoveDirection += RightDirection * MovementVector.X;
@@ -387,7 +381,8 @@ void ASPCharacterPlayer::ShoulderLook(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::SpeedUp(const FInputActionValue& Value)
 {
-	if (false == bIsAiming && false == bIsHolding) {
+	if (false == bIsAiming && false == bIsHolding) 
+	{
 		GetCharacterMovement()->MaxWalkSpeed = 900.f;
 	}
 }
@@ -406,7 +401,7 @@ void ASPCharacterPlayer::Aiming(const FInputActionValue& Value)
 		CameraMove();
 
 	}
-	else // bIsHolding == true�� ���
+	else 
 	{
 		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, true);
 		FollowCamera->AttachToComponent(CameraBoom, AttachmentRules, NAME_None);
@@ -456,16 +451,33 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 			bool HitSuccess = GetWorld()->LineTraceSingleByChannel(outHitResult, SphereLocationStart, SphereLocationEnd, ECC_GameTraceChannel1, Params);
 			if (HitSuccess && outHitResult.Component->Mobility == EComponentMobility::Movable)
 			{
-				outHitResult.Component->SetSimulatePhysics(true); //�ùķ��̼� �ѱ� 
+				outHitResult.Component->SetSimulatePhysics(true); 
 				HitComponent = outHitResult.GetComponent();
 
-				// UE_LOG ��ũ�θ� ����Ͽ� �α׸� ����մϴ�.
+				//여기서 주변 물체의 SetSimulatePhysics(true);
+				FVector SphereTracePoint = HitComponent->K2_GetComponentLocation();
+				float Radius = 100.f;
+				TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
+				ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldDynamic));
+				TArray<AActor*> ActorsToIgnore;
+				TArray<FHitResult> OutHits;
+				FLinearColor GreenColor(0.0f, 1.0f, 0.0f);
+				FLinearColor RedColor(1.0f, 0.0f, 0.0f);
+				float DrawTime = 5.0f;
+				bool Success = UKismetSystemLibrary::SphereTraceMultiForObjects(GetWorld(), SphereTracePoint, SphereTracePoint, Radius, ObjectTypes, false, ActorsToIgnore, EDrawDebugTrace::ForDuration, OutHits, true, GreenColor, RedColor, DrawTime);
+				
+				if (Success)
+				{
+
+
+				}
+
 
 				if (HitComponent && HitComponent->IsSimulatingPhysics())
 				{
 					PhysicsHandleComponent->GrabComponentAtLocation(
-						HitComponent,      // ���� ������Ʈ
-						NAME_None,         // �� �̸� (�� ��� �� ��)
+						HitComponent,      
+						NAME_None,         
 						HitComponent->K2_GetComponentLocation()
 					);
 
@@ -478,33 +490,31 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 
 			const FColor LineColor = HitSuccess ? FColor::Green : FColor::Red;
 
-			// ���� Ʈ���̽� ��� ����� ���� �׸���
 			DrawDebugLine(
 				GetWorld(),
 				SphereLocationStart,
 				SphereLocationEnd,
 				LineColor,
-				false, // ���� �ð� ���� �������� ����
-				5.0f, // 5�� ���� ǥ��
-				0, // ���� �켱����
-				1.0f // ���� ����
+				false, 
+				5.0f,
+				0,
+				1.0f 
 			);
 
-			// �浹�� �߻��ߴٸ�, �浹 ������ ����� ����Ʈ �׸���
 			if (HitSuccess)
 			{
 				DrawDebugPoint(
 					GetWorld(),
-					outHitResult.ImpactPoint, // �浹 ����
-					10.0f, // ����Ʈ ũ��
-					FColor::Blue, // ����Ʈ ����
-					false, // ���� �ð� ���� �������� ����
-					5.0f // 5�� ���� ǥ��
+					outHitResult.ImpactPoint, 
+					10.0f, 
+					FColor::Blue, 
+					false,
+					5.0f 
 				);
 			}
 		}
 	}
-	else // bIsHolding == true�� ��� 
+	else 
 	{
 		bIsHolding = false;
 		if (HitComponent && HitComponent->IsSimulatingPhysics())
@@ -575,7 +585,6 @@ void ASPCharacterPlayer::BlackPotionSpawn(const FInputActionValue& Value)
 	if (false == bIsSpawn)
 	{
 		FVector ItemLocation = GetMesh()->GetSocketLocation("Item_Socket");
-		// ���� Ÿ�� ĳ���� 
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
@@ -584,7 +593,7 @@ void ASPCharacterPlayer::BlackPotionSpawn(const FInputActionValue& Value)
 		if (BlackPotion)
 		{
 			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
-			BlackPotion->AttachToComponent(this->GetMesh(), AttachmentRules, FName{ "Item_Socket" });
+			BlackPotion->AttachToComponent(GetMesh(), AttachmentRules, FName{ "Item_Socket" });
 		}
 	}
 	else // bIsSpawn == true�� ���
@@ -592,7 +601,7 @@ void ASPCharacterPlayer::BlackPotionSpawn(const FInputActionValue& Value)
 		if (BlackPotion)
 		{
 			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
-			BlackPotion->AttachToComponent(this->GetMesh(), AttachmentRules, FName{ "Item_Socket" });
+			BlackPotion->AttachToComponent(GetMesh(), AttachmentRules, FName{ "Item_Socket" });
 		}
 	}
 }
@@ -645,8 +654,12 @@ void ASPCharacterPlayer::ShowProjectilePath()
 			DrawDebugType, DrawDebugTime, SimFrequency, MaxSimTime, OverrideGravityZ);
 
 		FHitResult SweepHitResult;
-		ProjectileCircle->SetWorldLocation(OutHit.Location, false, &SweepHitResult, ETeleportType::None);
-		ProjectileCircle->SetVisibility(true, false);
+		/*ProjectileCircle->SetWorldLocation(OutHit.Location, false, &SweepHitResult, ETeleportType::None);
+		ProjectileCircle->SetVisibility(true, false);*/
+		FVector DecalSize{100,200,200};
+		UGameplayStatics::SpawnDecalAtLocation(GetWorld(), DecalMaterial, DecalSize, OutHit.Location, GetControlRotation(), 0.1);
+
+		
 
 		for (int i = 0; i < OutPathPositions.Num(); i++)
 		{
@@ -747,14 +760,13 @@ void ASPCharacterPlayer::ShowProjectilePath()
 		FTimerHandle TimerHandle;
 		float DelayTime = 0.01f;
 
-		// FTimerManager�� �̿��Ͽ� Delay
 		GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this]() {
 			ShowProjectilePath();
 			}, DelayTime, false);
 	}
 	else
 	{
-		ProjectileCircle->SetVisibility(false);
+		//ProjectileCircle->SetVisibility(false);
 	}
 }
 
@@ -786,11 +798,9 @@ void ASPCharacterPlayer::QuaterMove(const FInputActionValue& Value)
 	AddMovementInput(MoveDirection, MovementVectorSize);
 
 
-	// ������ �̵� ��Ŷ�� �����ϱ� ���� ���� ����� ����
 	{
 		DesiredInput = MovementVector;
 
-		// ���������� �ٶ󺸴� ������ ���
 		DesiredMoveDirection = FVector::ZeroVector;
 		DesiredMoveDirection += ForwardDirection * MovementVector.Y;
 		DesiredMoveDirection += RightDirection * MovementVector.X;

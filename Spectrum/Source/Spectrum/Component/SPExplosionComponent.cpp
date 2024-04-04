@@ -24,7 +24,7 @@ USPExplosionComponent::USPExplosionComponent()
 void USPExplosionComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	this->SetAutoActivate(false);
+	//this->SetAutoActivate(false);
 }
 
 void USPExplosionComponent::Explode()
@@ -70,6 +70,7 @@ void USPExplosionComponent::Explode()
 					ISPDamageInterface* DamageInterface = Cast<ISPDamageInterface>(HitActor);
 					if (DamageInterface)
 					{
+
 						DamageInterface->OnExplosionHit(Damage);
 					}
 				}

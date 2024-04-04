@@ -28,6 +28,7 @@ public:
 public:
 	//UPROPERTY(EditAnywhere);
 	//TObjectPtr<UStaticMeshComponent> MeshComponent;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	bool bHasBeenCalled;
 
 protected:

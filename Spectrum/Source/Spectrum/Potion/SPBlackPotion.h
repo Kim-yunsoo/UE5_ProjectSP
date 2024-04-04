@@ -49,4 +49,6 @@ public:
 	void Throw(const FVector& PotionDirection);
 
 	void MoveTo();
+
+protected:
 };

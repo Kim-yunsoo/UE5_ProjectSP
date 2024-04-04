@@ -194,4 +194,7 @@ protected:
 	UPROPERTY()
 	UStaticMesh* StaticMeshforSpline;
 
+	//µ¥Ä® 
+	UPROPERTY()
+	UMaterialInterface* DecalMaterial ;
 };
