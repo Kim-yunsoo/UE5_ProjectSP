@@ -50,5 +50,4 @@ public:
 
 	void MoveTo();
 
-protected:
 };
