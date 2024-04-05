@@ -302,3 +302,17 @@ void Room::Broadcast(SendBufferRef sendBuffer, uint64 exceptId)
 			session->Send(sendBuffer);
 	}
 }
+
+void Room::ObjectBroadcast(SendBufferRef sendBuffer)
+{	// 플레이어한테만 전송
+	for (auto& item : _objects)
+	{
+		PlayerRef player = dynamic_pointer_cast<Player>(item.second);		// 플레이어로 바꿔서 얘네한테만 처리
+		if (player == nullptr)
+			continue;
+
+
+		if (GameSessionRef session = player->session.lock())
+			session->Send(sendBuffer);
+	}
+}

@@ -27,6 +27,7 @@ private:
 
 public:
 	void Broadcast(SendBufferRef sendBuffer, uint64 exceptId = 0);
+	void ObjectBroadcast(SendBufferRef sendBuffer);
 
 private:
 	//unordered_map<uint64, PlayerRef> _players;

@@ -38,9 +38,9 @@ void ASPObject::BeginPlay()
 	//ObjectInfo->set_object_id(20);
 
 	{// 처음 위치를 설정해줌
-		ObjectInfo->set_x(ObjectLocation.X);
-		ObjectInfo->set_y(ObjectLocation.Y);
-		ObjectInfo->set_z(ObjectLocation.Z);
+		//ObjectInfo->set_x(ObjectLocation.X);
+		//ObjectInfo->set_y(ObjectLocation.Y);
+		//ObjectInfo->set_z(ObjectLocation.Z);
 		ObjectInfo->set_is_aiming(false);
 		ObjectInfo->set_is_jumping(false);
 		ObjectInfo->set_is_holding(false);
@@ -78,24 +78,42 @@ void ASPObject::Tick(float DeltaTime)
 	{
 		ObjectMesh->SetSimulatePhysics(false);
 		ObjectLocation = GetActorLocation();
+		ObjectInfo->set_is_holding(false);
+
 	}
 	else
 	{
 		ObjectLocation = GetActorLocation();
+		ObjectInfo->set_x(ObjectLocation.X);
+		ObjectInfo->set_y(ObjectLocation.Y);
+		ObjectInfo->set_z(ObjectLocation.Z);
+		ObjectInfo->set_yaw(GetActorRotation().Yaw);
 
-		//Protocol::C_O_MOVE MovePkt;
-		//{
-		//	Protocol::PositionInfo* Info = MovePkt.mutable_info();
-		//	Info->CopyFrom(*ObjectInfo);
-		//}
 
-		//SEND_PACKET(MovePkt);
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("%lld %f %f %f"),
+		//	ObjectInfo->object_id(), ObjectInfo->x(), ObjectInfo->y(), ObjectInfo->z()));
+	}
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, FString::Printf(TEXT("%lld"), ObjectInfo->object_id()));
+
+
+	if (ObjectInfo->is_holding()) {
+
+		Protocol::C_O_MOVE MovePkt;
+		{
+			Protocol::PositionInfo* Info = MovePkt.mutable_info();
+			Info->CopyFrom(*ObjectInfo);
+		}
+
+		SEND_PACKET(MovePkt);
+
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("%lld %f %f %f"),
+			ObjectInfo->object_id(), ObjectInfo->x(), ObjectInfo->y(), ObjectInfo->z()));
 
 	}
-
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, FString::Printf(TEXT("%lld"), ObjectInfo->object_id()));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("%f %f %f"), 
-		ObjectInfo->x(), ObjectInfo->y(), ObjectInfo->z()));
+		
+	else
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%lld %f %f %f"),
+						ObjectInfo->object_id(), ObjectInfo->x(), ObjectInfo->y(), ObjectInfo->z()));
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, FString::Printf(TEXT("%f %f %f"),
 	//	GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z));
 

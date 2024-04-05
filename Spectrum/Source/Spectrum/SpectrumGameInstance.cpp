@@ -245,6 +245,6 @@ void USpectrumGameInstance::HandleOMove(const Protocol::S_O_MOVE& MovePkt)
 	ASPObject* Object = (*FindActor);
 
 	const Protocol::PositionInfo& Info = MovePkt.info();
-	//Player->SetPlayerInfo(Info);
-	Object->SetDestInfo(Info);		// 이동 보정때문에 DestInfo에 저장
+	Object->SetPostionInfo(Info);
+	//Object->SetDestInfo(Info);		// 이동 보정때문에 DestInfo에 저장
 }

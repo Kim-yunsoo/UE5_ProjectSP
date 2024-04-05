@@ -455,6 +455,11 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 					MyActor->ObjectInfo->set_x(MyActor->K2_GetActorLocation().X);
 					MyActor->ObjectInfo->set_y(MyActor->K2_GetActorLocation().Y);
 					MyActor->ObjectInfo->set_z(MyActor->K2_GetActorLocation().Z);
+					
+
+					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, FString::Printf(TEXT("%lld"), 
+						MyActor->ObjectInfo->object_id()));
+
 				}
 				else
 				{
@@ -515,6 +520,11 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 		bIsHolding = false;
 		if (HitComponent && HitComponent->IsSimulatingPhysics())
 		{
+			// 물건 놨을 때 --> 여기서 HitComponent의  is_holding 끄기
+			AActor* OwnerActor = HitComponent->GetOwner();
+			ASPObject* MyActor = Cast<ASPObject>(OwnerActor);
+			MyActor->ObjectInfo->set_is_holding(false);
+
 			PhysicsHandleComponent->ReleaseComponent();
 			HitComponent->AddImpulse(FollowCamera->GetForwardVector() * HitDistance, NAME_None, true);
 			HitComponent = nullptr;
@@ -532,9 +542,9 @@ void ASPCharacterPlayer::StopGraping(const FInputActionValue& Value)
 		HitComponent = nullptr;
 
 		// 물건 놨을 때 --> 여기서 HitComponent의  is_holding 끄기
-		//AActor* OwnerActor = HitComponent->GetOwner();
-		//ASPObject* MyActor = Cast<ASPObject>(OwnerActor);
-		//MyActor->ObjectInfo->set_is_holding(false);
+		AActor* OwnerActor = HitComponent->GetOwner();
+		ASPObject* MyActor = Cast<ASPObject>(OwnerActor);
+		MyActor->ObjectInfo->set_is_holding(false);
 	}
 }
 
