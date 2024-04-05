@@ -197,4 +197,7 @@ protected:
 	//µ¥Ä® 
 	UPROPERTY()
 	UMaterialInterface* DecalMaterial ;
+
+	UPROPERTY(VisibleAnywhere)
+	TArray<UPrimitiveComponent*>ActorPrimitiveArray;
 };

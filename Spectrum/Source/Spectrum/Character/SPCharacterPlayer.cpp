@@ -42,7 +42,7 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 	FollowCamera->bUsePawnControlRotation = false;
 
 	PotionThrowStartLocation = CreateDefaultSubobject<USceneComponent>(TEXT("PotionThrowStartLocation"));
-	PotionThrowStartLocation->SetupAttachment(GetMesh(),FName(TEXT("Item_Socket")));
+	PotionThrowStartLocation->SetupAttachment(GetMesh(), FName(TEXT("Item_Socket")));
 
 	Projectile_Path = CreateDefaultSubobject<USplineComponent>(TEXT("Projectile_Path"));
 	Projectile_Path->SetupAttachment(RootComponent);
@@ -381,7 +381,7 @@ void ASPCharacterPlayer::ShoulderLook(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::SpeedUp(const FInputActionValue& Value)
 {
-	if (false == bIsAiming && false == bIsHolding) 
+	if (false == bIsAiming && false == bIsHolding)
 	{
 		GetCharacterMovement()->MaxWalkSpeed = 900.f;
 	}
@@ -401,7 +401,7 @@ void ASPCharacterPlayer::Aiming(const FInputActionValue& Value)
 		CameraMove();
 
 	}
-	else 
+	else
 	{
 		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, true);
 		FollowCamera->AttachToComponent(CameraBoom, AttachmentRules, NAME_None);
@@ -451,33 +451,53 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 			bool HitSuccess = GetWorld()->LineTraceSingleByChannel(outHitResult, SphereLocationStart, SphereLocationEnd, ECC_GameTraceChannel1, Params);
 			if (HitSuccess && outHitResult.Component->Mobility == EComponentMobility::Movable)
 			{
-				outHitResult.Component->SetSimulatePhysics(true); 
+				outHitResult.Component->SetSimulatePhysics(true);
 				HitComponent = outHitResult.GetComponent();
 
 				//여기서 주변 물체의 SetSimulatePhysics(true);
 				FVector SphereTracePoint = HitComponent->K2_GetComponentLocation();
-				float Radius = 100.f;
+				float Radius = 150.f;
 				TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
 				ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldDynamic));
 				TArray<AActor*> ActorsToIgnore;
+				ActorsToIgnore.Add(this);
 				TArray<FHitResult> OutHits;
-				FLinearColor GreenColor(0.0f, 1.0f, 0.0f);
-				FLinearColor RedColor(1.0f, 0.0f, 0.0f);
-				float DrawTime = 5.0f;
-				bool Success = UKismetSystemLibrary::SphereTraceMultiForObjects(GetWorld(), SphereTracePoint, SphereTracePoint, Radius, ObjectTypes, false, ActorsToIgnore, EDrawDebugTrace::ForDuration, OutHits, true, GreenColor, RedColor, DrawTime);
+				FLinearColor GreenColor1(0.0f, 1.0f, 0.0f);
+				FLinearColor RedColor1(1.0f, 0.0f, 0.0f);
+				float DrawTime1 = 5.0f;
+				
+				bool Success = UKismetSystemLibrary::SphereTraceMultiForObjects(GetWorld(), SphereTracePoint, SphereTracePoint, Radius, ObjectTypes, false, ActorsToIgnore, EDrawDebugTrace::ForDuration, OutHits, true, GreenColor1, RedColor1, DrawTime1);
+				
+				ActorPrimitiveArray.Empty();
 				
 				if (Success)
 				{
-
-
+					for (const FHitResult& HitResult : OutHits)
+					{
+						AActor* Hit = HitResult.GetActor();
+						UPrimitiveComponent* PrimitiveHit = Cast<UPrimitiveComponent>(Hit->GetRootComponent());
+						if (PrimitiveHit)
+						{
+							ActorPrimitiveArray.AddUnique(PrimitiveHit);
+						}
+					}
+					if (ActorPrimitiveArray.Num() > 0)
+					{
+						for (UPrimitiveComponent*& HitPrimitive : ActorPrimitiveArray)
+						{
+							if (HitPrimitive->Mobility == EComponentMobility::Movable)
+							{
+								HitPrimitive->SetSimulatePhysics(true);
+								
+							}
+						}
+					}
 				}
-
-
 				if (HitComponent && HitComponent->IsSimulatingPhysics())
 				{
 					PhysicsHandleComponent->GrabComponentAtLocation(
-						HitComponent,      
-						NAME_None,         
+						HitComponent,
+						NAME_None,
 						HitComponent->K2_GetComponentLocation()
 					);
 
@@ -495,26 +515,26 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 				SphereLocationStart,
 				SphereLocationEnd,
 				LineColor,
-				false, 
+				false,
 				5.0f,
 				0,
-				1.0f 
+				1.0f
 			);
 
 			if (HitSuccess)
 			{
 				DrawDebugPoint(
 					GetWorld(),
-					outHitResult.ImpactPoint, 
-					10.0f, 
-					FColor::Blue, 
+					outHitResult.ImpactPoint,
+					10.0f,
+					FColor::Blue,
 					false,
-					5.0f 
+					5.0f
 				);
 			}
 		}
 	}
-	else 
+	else
 	{
 		bIsHolding = false;
 		if (HitComponent && HitComponent->IsSimulatingPhysics())
@@ -628,7 +648,6 @@ void ASPCharacterPlayer::ShowProjectilePath()
 		FPredictProjectilePathParams PredictParams;
 		FPredictProjectilePathResult PredictResult;
 
-		// �Ķ���� ����
 		FHitResult OutHit;
 		TArray<FVector> OutPathPositions;
 		FVector OutLastTraceDestination;
@@ -641,13 +660,13 @@ void ASPCharacterPlayer::ShowProjectilePath()
 		//(ForwardVector + FVector{ 0.0f,0.0f,0.4f })* Mul
 		float ProjectileRadius = 0.0f;
 		TEnumAsByte<ECollisionChannel> TraceChannel = ECollisionChannel::ECC_Camera; // �浹 ä��
-		TArray<AActor*> ActorsToIgnore; 
+		TArray<AActor*> ActorsToIgnore;
 		ActorsToIgnore.Add(this);
 		EDrawDebugTrace::Type DrawDebugType = EDrawDebugTrace::None;
-		float DrawDebugTime = 0.0f; 
-		float SimFrequency = 15.0f; 
-		float MaxSimTime = 2.0f; 
-		float OverrideGravityZ = 0.0; 
+		float DrawDebugTime = 0.0f;
+		float SimFrequency = 15.0f;
+		float MaxSimTime = 2.0f;
+		float OverrideGravityZ = 0.0;
 
 		UGameplayStatics::Blueprint_PredictProjectilePath_ByTraceChannel(GetWorld(), OutHit, OutPathPositions,
 			OutLastTraceDestination, StartPos, LaunchVelocity, true, ProjectileRadius, TraceChannel, false, ActorsToIgnore,
@@ -656,10 +675,10 @@ void ASPCharacterPlayer::ShowProjectilePath()
 		FHitResult SweepHitResult;
 		/*ProjectileCircle->SetWorldLocation(OutHit.Location, false, &SweepHitResult, ETeleportType::None);
 		ProjectileCircle->SetVisibility(true, false);*/
-		FVector DecalSize{100,200,200};
-		UGameplayStatics::SpawnDecalAtLocation(GetWorld(), DecalMaterial, DecalSize, OutHit.Location, GetControlRotation(), 0.1);
+		//FVector DecalSize{ 100,200,200 };
+		//UGameplayStatics::SpawnDecalAtLocation(GetWorld(), DecalMaterial, DecalSize, OutHit.Location, GetControlRotation(), 0.1);
 
-		
+
 
 		for (int i = 0; i < OutPathPositions.Num(); i++)
 		{
@@ -689,7 +708,7 @@ void ASPCharacterPlayer::ShowProjectilePath()
 			//NewSplineMeshComp->SetupAttachment(RootComponent);
 			NewSplineMeshComp->SetStaticMesh(StaticMeshforSpline);
 			NewSplineMeshComp->SetMobility(EComponentMobility::Movable);
-			NewSplineMeshComp->SetCollisionProfileName(TEXT("SplineCollision")); 
+			NewSplineMeshComp->SetCollisionProfileName(TEXT("SplineCollision"));
 			//NewSplineMeshComp->SetGenerateOverlapEvents(true);
 			/*if (StaticMeshforSpline)
 			{
@@ -720,42 +739,11 @@ void ASPCharacterPlayer::ShowProjectilePath()
 			if (bIsSuccessStart && bIsSuccessEnd)
 			{
 				NewSplineMeshComp->SetStartAndEnd(StartPointLocation, StartPointTangent, EndPointLocation, EndPointTangent, true);
-
-			/*	FColor BeautyfulColor = FColor(
-					FMath::RandRange(30, 200),
-					FMath::RandRange(30, 200),
-					FMath::RandRange(30, 200),
-					1.f);*/
-				/*FVector StartPointLocation, EndPointLocation;*/
-			/*	DrawDebugLine(
-					GetWorld(),
-					StartPointLocation,
-					EndPointLocation,
-					BeautyfulColor,
-					false,
-					5.0f, 0, 5);*/
 			}
-			//FVector Location = NewSplineMeshComp->K2_GetComponentLocation();
-			//DrawDebugSphere(GetWorld(), Location, Radius, 20, Color3, false, 5.0f);
 			SplineCompArray.Emplace(NewSplineMeshComp);
 			NewSplineMeshComp->RegisterComponent();
 
-			//UActorComponent* ActorComponent= AddComponentByClass(USplineMeshComponent::StaticClass(),true, RelativeTransform,false);
-			//if (/*USplineMeshComponent* SplineMeshComponent = Cast<USplineMeshComponent>(ActorComponent)*/)
-			//{
-			//	SplineMeshComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
-			//	SplineMeshComponent->RegisterComponent();
-			//}
-			// 
-			// 
-			// 
-				//RootComponent->AttachToComponent(ActorComponent, FAttachmentTransformRules::KeepRelativeTransform);
-	/*		FName TemplateName = FName("SM_Projectile");
-			UActorComponent* ActorComponent= this->AddComponent(TemplateName,true,  FTransform(), nullptr, false);
-			FVector SplineLocation= Projectile_Path->GetLocationAtSplinePoint(i, ESplineCoordinateSpace::Local);
-			FVector SplineTangent= Projectile_Path->GetTangentAtSplinePoint(i, ESplineCoordinateSpace::Local);
-			Cast<USplineMeshComponent>(ActorComponent)->SetStartAndEnd(SplineLocation, SplineTangent, SplineLocation, SplineTangent, true);
-			SplineMeshComponents.Add(Cast<USplineMeshComponent>(ActorComponent));*/
+		
 		}
 		FTimerHandle TimerHandle;
 		float DelayTime = 0.01f;
