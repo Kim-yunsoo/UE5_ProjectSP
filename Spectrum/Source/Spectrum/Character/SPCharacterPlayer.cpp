@@ -20,7 +20,7 @@
 #include "Components/SplineMeshComponent.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "Components/WidgetComponent.h"
-#include "UI/SPHUDWidget.h"
+//#include "UI/SPHUDWidget.h"
 
 ASPCharacterPlayer::ASPCharacterPlayer()
 {
@@ -397,7 +397,7 @@ void ASPCharacterPlayer::Aiming(const FInputActionValue& Value)
 {
 	if (false == bIsHolding) {
 		bIsAiming = true;
-		OnAimingChanged.Broadcast(bIsAiming);
+		//OnAimingChanged.Broadcast(bIsAiming);
 		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, true);
 		FollowCamera->AttachToComponent(SpringArm, AttachmentRules, NAME_None);
 		CameraMove();
@@ -415,7 +415,7 @@ void ASPCharacterPlayer::StopAiming(const FInputActionValue& Value)
 {
 
 	bIsAiming = false;
-	OnAimingChanged.Broadcast(bIsAiming);
+	//OnAimingChanged.Broadcast(bIsAiming);
 	FollowCamera->K2_AttachToComponent(CameraBoom, NAME_None, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, true);
 	FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, true);
 	FollowCamera->AttachToComponent(CameraBoom, AttachmentRules, NAME_None);
@@ -464,10 +464,10 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 				ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldDynamic));
 				TArray<AActor*> ActorsToIgnore;
 				TArray<FHitResult> OutHits;
-				FLinearColor GreenColor(0.0f, 1.0f, 0.0f);
-				FLinearColor RedColor(1.0f, 0.0f, 0.0f);
-				float DrawTime = 5.0f;
-				bool Success = UKismetSystemLibrary::SphereTraceMultiForObjects(GetWorld(), SphereTracePoint, SphereTracePoint, Radius, ObjectTypes, false, ActorsToIgnore, EDrawDebugTrace::ForDuration, OutHits, true, GreenColor, RedColor, DrawTime);
+				FLinearColor GreenColor1(0.0f, 1.0f, 0.0f);
+				FLinearColor RedColor1(1.0f, 0.0f, 0.0f);
+				float DrawTime1 = 5.0f;
+				bool Success = UKismetSystemLibrary::SphereTraceMultiForObjects(GetWorld(), SphereTracePoint, SphereTracePoint, Radius, ObjectTypes, false, ActorsToIgnore, EDrawDebugTrace::ForDuration, OutHits, true, GreenColor1, RedColor1, DrawTime1);
 				
 				if (Success)
 				{
@@ -773,15 +773,15 @@ void ASPCharacterPlayer::ShowProjectilePath()
 	}
 }
 
-void ASPCharacterPlayer::CheckTargetUI(class USPHUDWidget* InHUDWidget)
-{
-	if (InHUDWidget)
-	{
-		UE_LOG(LogTemp, Log, TEXT("CheckTargetUI"));
-		InHUDWidget->UpdateTargetUI(bIsAiming);
-		//OnAimingChanged.ADDUObject(InHUDWidget, &USPHUDWidget::UpdateTargetUI);
-	}
-}
+//void ASPCharacterPlayer::CheckTargetUI(class USPHUDWidget* InHUDWidget)
+//{
+//	if (InHUDWidget)
+//	{
+//		UE_LOG(LogTemp, Log, TEXT("CheckTargetUI"));
+//		InHUDWidget->UpdateTargetUI(bIsAiming);
+//		//OnAimingChanged.ADDUObject(InHUDWidget, &USPHUDWidget::UpdateTargetUI);
+//	}
+//}
 
 void ASPCharacterPlayer::QuaterMove(const FInputActionValue& Value)
 {

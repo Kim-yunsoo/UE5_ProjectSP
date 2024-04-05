@@ -12,10 +12,10 @@
 /**
  *
  */
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAimingChangedDelegate, bool, bIsAiming);
+//DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAimingChangedDelegate, bool, bIsAiming);
 
 UCLASS()
-class SPECTRUM_API ASPCharacterPlayer : public ASPCharacterBase, public ISPCharacterHUDInterface
+class SPECTRUM_API ASPCharacterPlayer : public ASPCharacterBase
 {
 	GENERATED_BODY()
 

@@ -40,6 +40,6 @@ void USPHUDWidget::BindToPlayer(ASPCharacterPlayer* Player)
 	if (Player)
 	{
 		// Delegate에 함수 바인딩
-		Player->OnAimingChanged.AddUObject(this, &USPHUDWidget::USPHUDWidget);
+		//Player->OnAimingChanged.AddUObject(this, &USPHUDWidget::USPHUDWidget);
 	}
 }
