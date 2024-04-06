@@ -276,7 +276,7 @@ void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Player
 
 		EnhancedInputComponent->BindAction(ShoulderLookAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::ShoulderLook);
 		//EnhancedInputComponent->BindAction(ShoulderLookAction, ETriggerEvent::Ongoing, this, &ASPCharacterPlayer::ShoulderLook);
-		EnhancedInputComponent->BindAction(ShoulderLookAction, ETriggerEvent::None, this, &ASPCharacterPlayer::Test);
+		EnhancedInputComponent->BindAction(ShoulderLookAction, ETriggerEvent::None, this, &ASPCharacterPlayer::StopShoulderLook);
 
 		EnhancedInputComponent->BindAction(QuaterMoveAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::QuaterMove);
 		EnhancedInputComponent->BindAction(QuaterMoveAction, ETriggerEvent::Completed, this, &ASPCharacterPlayer::QuaterMove);
