@@ -38,6 +38,7 @@ protected: // 墨皋扼
 
 	void ShoulderMove(const FInputActionValue& Value);
 	void ShoulderLook(const FInputActionValue& Value);
+	void StopShoulderLook(const FInputActionValue& Value);
 
 	void QuaterMove(const FInputActionValue& Value);
 
@@ -127,6 +128,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* LookAction;
 
+	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
+	//TObjectPtr<class UInputAction> Test; //付快胶 哭率
+
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stat, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UAnimMontage> ThrowMontage; //带瘤扁 根鸥林
@@ -172,7 +176,7 @@ protected:
 	UFUNCTION()
 	void HandleMontageAnimNotify(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload);
 
-//单漠
+	//单漠
 protected:
 	void ShowProjectilePath();
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile", Meta = (AllowPrivateAccess = "true"))
@@ -196,8 +200,21 @@ protected:
 
 	//单漠 
 	UPROPERTY()
-	UMaterialInterface* DecalMaterial ;
+	UMaterialInterface* DecalMaterial;
 
 	UPROPERTY(VisibleAnywhere)
 	TArray<UPrimitiveComponent*>ActorPrimitiveArray;
+	//turn in place
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
+	uint8 bIsTurnRight : 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
+	uint8 bIsTurnLeft : 1; 
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
+	uint8 bIsTurnReady:1; // TurnReady?
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
+	float PreControlYawRotation ; 
 };
