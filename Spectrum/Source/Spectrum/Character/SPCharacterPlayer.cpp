@@ -678,8 +678,9 @@ void ASPCharacterPlayer::ShowProjectilePath()
 		FHitResult SweepHitResult;
 		/*ProjectileCircle->SetWorldLocation(OutHit.Location, false, &SweepHitResult, ETeleportType::None);
 		ProjectileCircle->SetVisibility(true, false);*/
-		//FVector DecalSize{ 100,200,200 };
-		//UGameplayStatics::SpawnDecalAtLocation(GetWorld(), DecalMaterial, DecalSize, OutHit.Location, GetControlRotation(), 0.1);
+		FVector DecalSize{ 100,200,200 };
+		//FRotator DecalRotate{ 0,0,90 };
+		UGameplayStatics::SpawnDecalAtLocation(GetWorld(), DecalMaterial, DecalSize, OutHit.Location,GetControlRotation(), 0.1);
 
 
 
