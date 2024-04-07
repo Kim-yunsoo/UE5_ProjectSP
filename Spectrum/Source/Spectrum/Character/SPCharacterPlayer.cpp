@@ -236,7 +236,7 @@ void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Player
 		EnhancedInputComponent->BindAction(ShoulderMoveAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::ShoulderMove);
 
 		EnhancedInputComponent->BindAction(ShoulderLookAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::ShoulderLook);
-		//EnhancedInputComponent->BindAction(ShoulderLookAction, ETriggerEvent::None, this, &ASPCharacterPlayer::StopShoulderLook);
+		EnhancedInputComponent->BindAction(ShoulderLookAction, ETriggerEvent::None, this, &ASPCharacterPlayer::StopShoulderLook);
 
 		EnhancedInputComponent->BindAction(QuaterMoveAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::QuaterMove);
 		EnhancedInputComponent->BindAction(QuaterMoveAction, ETriggerEvent::Completed, this, &ASPCharacterPlayer::QuaterMove);
@@ -459,26 +459,26 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 				HitComponent = outHitResult.GetComponent();
 
 				// ������ ���� ����
-				AActor* OwnerActor = HitComponent->GetOwner();
-				ASPObject* MyActor = static_cast<ASPObject*>(OwnerActor);
-				if (MyActor)
-				{
-					// ĳ���� ����, MyActor�� ����� ���� ����
-					MyActor->ObjectInfo->set_is_holding(true);
-					MyActor->ObjectInfo->set_x(MyActor->K2_GetActorLocation().X);
-					MyActor->ObjectInfo->set_y(MyActor->K2_GetActorLocation().Y);
-					MyActor->ObjectInfo->set_z(MyActor->K2_GetActorLocation().Z);
-					
+				//AActor* OwnerActor = HitComponent->GetOwner();
+				//ASPObject* MyActor = Cast<ASPObject>(OwnerActor);
+				//if (MyActor)
+				//{
+				//	// ĳ���� ����, MyActor�� ����� ���� ����
+				//	MyActor->ObjectInfo->set_is_holding(true);
+				//	MyActor->ObjectInfo->set_x(MyActor->K2_GetActorLocation().X);
+				//	MyActor->ObjectInfo->set_y(MyActor->K2_GetActorLocation().Y);
+				//	MyActor->ObjectInfo->set_z(MyActor->K2_GetActorLocation().Z);
+				//	
 
-					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, FString::Printf(TEXT("%lld"), 
-						MyActor->ObjectInfo->object_id()));
+				//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, FString::Printf(TEXT("%lld"), 
+				//		MyActor->ObjectInfo->object_id()));
 
-				}
-				else
-				{
-					// ĳ���� ����, ���� �α� �Ǵ� ��ü ���� ����
-					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, FString::Printf(TEXT("cast fail")));
-				}
+				//}
+				//else
+				//{
+				//	// ĳ���� ����, ���� �α� �Ǵ� ��ü ���� ����
+				//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, FString::Printf(TEXT("cast fail")));
+				//}
 
 				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, FString::Printf(TEXT("%f %f %f"),
 				//	GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z));
@@ -570,9 +570,9 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 		if (HitComponent && HitComponent->IsSimulatingPhysics())
 		{
 			// ���� ���� �� --> ���⼭ HitComponent��  is_holding ����
-			AActor* OwnerActor = HitComponent->GetOwner();
+			/*AActor* OwnerActor = HitComponent->GetOwner();
 			ASPObject* MyActor = Cast<ASPObject>(OwnerActor);
-			MyActor->ObjectInfo->set_is_holding(false);
+			MyActor->ObjectInfo->set_is_holding(false);*/
 
 			PhysicsHandleComponent->ReleaseComponent();
 			HitComponent->AddImpulse(FollowCamera->GetForwardVector() * HitDistance, NAME_None, true);
@@ -592,9 +592,9 @@ void ASPCharacterPlayer::StopGraping(const FInputActionValue& Value)
 		HitComponent = nullptr;
 
 		// ���� ���� �� --> ���⼭ HitComponent��  is_holding ����
-		AActor* OwnerActor = HitComponent->GetOwner();
-		ASPObject* MyActor = Cast<ASPObject>(OwnerActor);
-		MyActor->ObjectInfo->set_is_holding(false);
+		//AActor* OwnerActor = HitComponent->GetOwner();
+		//ASPObject* MyActor = Cast<ASPObject>(OwnerActor);
+		//MyActor->ObjectInfo->set_is_holding(false);
 	}
 }
 
