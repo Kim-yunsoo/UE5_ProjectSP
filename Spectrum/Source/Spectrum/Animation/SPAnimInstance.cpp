@@ -14,6 +14,9 @@ USPAnimInstance::USPAnimInstance()
 	JumpingThreshould = 100.0f;
 	bIsAiming = false;
 	bIsHolding = false;
+	bIsTurnRight = false;
+	bIsTurnLeft = false;
+	bIsTurnReady = false;	
 	DeltaY = 0;
 	DeltaZ = 0;
 }
@@ -42,6 +45,9 @@ void USPAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		bIsJumping = bIsFalling & (Velocity.Z > JumpingThreshould);
 		bIsAiming = Owner->GetIsAiming();
 		bIsHolding = Owner->GetIsHolding();
+		bIsTurnRight = Owner->bIsTurnRight;
+		bIsTurnLeft = Owner->bIsTurnLeft;
+		bIsTurnReady= Owner->bIsTurnReady;
 
 
 		FRotator ControlRotation = Owner->GetControlRotation();
@@ -56,7 +62,7 @@ void USPAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		UKismetMathLibrary::BreakRotator(RInterp, foo, DeltaY, DeltaZ);
 
 		DeltaY = UKismetMathLibrary::ClampAngle(DeltaY, -90, 90);
-		DeltaZ = UKismetMathLibrary::ClampAngle(DeltaZ, -160, 160);
+		DeltaZ = UKismetMathLibrary::ClampAngle(DeltaZ, -0, 0);
 
 	}
 }

@@ -13,6 +13,7 @@
 // Sets default values
 ASPBlackPotion::ASPBlackPotion()
 {
+
 	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
 	SphereComponent->SetupAttachment(RootComponent);
 	SphereComponent->SetSphereRadius(35.460735f);
@@ -43,10 +44,9 @@ void ASPBlackPotion::BeginPlay()
 
 void ASPBlackPotion::HandleActorHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
 {
-	UE_LOG(LogTemp, Log, TEXT("HandleActorHit"));
+	//UE_LOG(LogTemp, Log, TEXT("HandleActorHit"));
 	ExplosionComponent->Explode();
-	UGameplayStatics::ApplyRadialDamage(GetWorld(), 100.0f, Hit.Component->K2_GetComponentLocation(), 100.0f, nullptr, TArray<AActor*>(), this, nullptr, true, ECollisionChannel::ECC_Pawn);
-	BlackPotionMesh->SetVisibility(false);
+	UGameplayStatics::ApplyRadialDamage(GetWorld(), 100.0f, Hit.Component->K2_GetComponentLocation(), 100.0f, nullptr, TArray<AActor*>(), this, nullptr, true, ECollisionChannel::ECC_WorldDynamic);
 	this->SetLifeSpan(0.1f);
 }
 

@@ -14,6 +14,7 @@ ASPObject::ASPObject()
 	bHasBeenCalled = false; // 한번만 실행하기 위한 변수
 	//MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
 	ObjectMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ObjectMesh"));
+	ObjectMesh->SetCollisionProfileName(TEXT("PropCollision"));
 	ObjectMesh->SetMobility(EComponentMobility::Movable);
 }
 
@@ -30,8 +31,8 @@ void ASPObject::OnExplosionHit(float Damage)
 	if (false == bHasBeenCalled)
 	{
 		ObjectMesh->SetHiddenInGame(true);
-		ObjectMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		this->SetLifeSpan(1.0f);
+		//ObjectMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		//this->SetLifeSpan(1.0f);
 		bHasBeenCalled = true;
 	}
 }
@@ -47,6 +48,7 @@ void ASPObject::Tick(float DeltaTime)
 	}
 	DelayTime = 1.0;
 	bool Equal = UKismetMathLibrary::EqualEqual_VectorVector(ObjectLocation, GetActorLocation(), 0.0);
+	//UE_LOG(LogTemp, Log, TEXT("%s"), *GetActorLocation().ToString());
 	if (Equal)
 	{
 		ObjectMesh->SetSimulatePhysics(false);
@@ -57,4 +59,6 @@ void ASPObject::Tick(float DeltaTime)
 		ObjectLocation = GetActorLocation();
 	}
 }
+
+
 

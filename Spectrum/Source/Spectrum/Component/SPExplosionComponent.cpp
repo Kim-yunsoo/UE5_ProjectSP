@@ -24,7 +24,7 @@ USPExplosionComponent::USPExplosionComponent()
 void USPExplosionComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	this->SetAutoActivate(false);
+	//this->SetAutoActivate(false);
 }
 
 void USPExplosionComponent::Explode()
@@ -34,9 +34,9 @@ void USPExplosionComponent::Explode()
 		//Spawn Emitter at Location을 위한 설정
 		FVector ActorLocation = GetOwner()->GetActorLocation(); //소유한 액터의 위치 
 		FVector Location = ActorLocation;
-		FRotator Rotation = FRotator(0.0f,0.0f,0.0f);
-		FVector Scale{1.0f,1.0f,1.0f};
-		FTransform SpawnTransform{ Rotation,Location,Scale};
+		FRotator Rotation = FRotator(0.0f, 0.0f, 0.0f);
+		FVector Scale{ 1.0f,1.0f,1.0f };
+		FTransform SpawnTransform{ Rotation,Location,Scale };
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), Effect, SpawnTransform, true, EPSCPoolMethod::None, true);
 
 		//Multi Sphere Trace For Object
@@ -50,7 +50,7 @@ void USPExplosionComponent::Explode()
 		FLinearColor GreenColor(0.0f, 1.0f, 0.0f);
 		FLinearColor RedColor(1.0f, 0.0f, 0.0f);
 		float DrawTime = 5.0f;
-		bool Success =UKismetSystemLibrary::SphereTraceMultiForObjects(GetWorld(), SphereTracePoint, SphereTracePoint, Radius, ObjectTypes,false, ActorsToIgnore, EDrawDebugTrace::ForDuration, OutHits,true, GreenColor,RedColor, DrawTime);
+		bool Success = UKismetSystemLibrary::SphereTraceMultiForObjects(GetWorld(), SphereTracePoint, SphereTracePoint, Radius, ObjectTypes, false, ActorsToIgnore, EDrawDebugTrace::ForDuration, OutHits, true, GreenColor, RedColor, DrawTime);
 		if (Success)
 		{
 			//for each loop 구현
@@ -70,11 +70,12 @@ void USPExplosionComponent::Explode()
 					ISPDamageInterface* DamageInterface = Cast<ISPDamageInterface>(HitActor);
 					if (DamageInterface)
 					{
+
 						DamageInterface->OnExplosionHit(Damage);
 					}
 				}
 			}
-			bHasExecutedOnce= true;
+			bHasExecutedOnce = true;
 		}
 	}
 }

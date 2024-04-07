@@ -24,14 +24,14 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-	virtual void Tick(float DeltaTime) override;	// Á¸ÀçÇÏ°í ÀÖ´ÂÁö ¿©ºÎ¸¦ ¾Ë ¼ö ÀÖÀ½
+	virtual void Tick(float DeltaTime) override;	// ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î¸ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
 
 public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 
-protected: // Ä«¸Þ¶ó
+protected: // Ä«ï¿½Þ¶ï¿½
 	void ChangeCharacterControl();
 	void SetCharacterControl(ECharacterControlType NewCharacterControlType);
 	virtual void SetCharacterControlData(const class USPCharacterControlData* CharacterControlData) override;
@@ -41,6 +41,7 @@ protected: // Ä«¸Þ¶ó
 
 	void ShoulderMove(const FInputActionValue& Value);
 	void ShoulderLook(const FInputActionValue& Value);
+	void StopShoulderLook(const FInputActionValue& Value);
 
 	void QuaterMove(const FInputActionValue& Value);
 
@@ -63,18 +64,18 @@ protected: // Ä«¸Þ¶ó
 	ECharacterControlType CurrentCharacterControlType;
 
 protected:
-	const float MOVE_PACKET_SEND_DELAY = 0.2f;				// ÇÁ·¹ÀÓ´ç ÀÌµ¿ ÆÐÅ¶ Àü¼Û µô·¹ÀÌ
+	const float MOVE_PACKET_SEND_DELAY = 0.2f;				// ï¿½ï¿½ï¿½ï¿½ï¿½Ó´ï¿½ ï¿½Ìµï¿½ ï¿½ï¿½Å¶ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	float MovePacketSendTimer = MOVE_PACKET_SEND_DELAY;
 
-	// ÃÖÁ¾ÀûÀ¸·Î Àü¼ÛÇÒ »óÅÂ°ª
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â°ï¿½
 	FVector2D DesiredInput;
 	FVector DesiredMoveDirection;
 	float DesiredYaw;
 
-	FVector2D LastInput; // ÀÌÀü ÇÁ·¹ÀÓÀÇ ÀÔ·Â °ªÀ» ÀúÀåÇÏ´Â ¸â¹ö º¯¼ö
-	float LastMoveTime; // ¸â¹ö º¯¼ö·Î ¸¶Áö¸·À¸·Î ¿òÁ÷ÀÎ ½Ã°£À» ±â·ÏÇÕ´Ï´Ù.
+	FVector2D LastInput; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô·ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	float LastMoveTime; // ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½.
 
-	// Á÷Àü ¹æÇâ°ª(Å×½ºÆ®¿ë)
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½â°ª(ï¿½×½ï¿½Æ®ï¿½ï¿½)
 	FVector2D LastDesiredInput;
 
 
@@ -113,16 +114,16 @@ protected:
 	TObjectPtr<class UInputAction> SpeedUpAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UInputAction> MouseRight;//¸¶¿ì½º ¿À¸¥ÂÊ
+	TObjectPtr<class UInputAction> MouseRight;//ï¿½ï¿½ï¿½ì½º ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UInputAction> MouseLeft; //¸¶¿ì½º ¿ÞÂÊ
+	TObjectPtr<class UInputAction> MouseLeft; //ï¿½ï¿½ï¿½ì½º ï¿½ï¿½ï¿½ï¿½
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UInputAction> BlackFour; //4¹ø ´­·¶À» ¶§ ÀÛµ¿ 
+	TObjectPtr<class UInputAction> BlackFour; //4ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ûµï¿½ 
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UInputAction> ThrowCtrl; //´øÁö±â Å°
+	TObjectPtr<class UInputAction> ThrowCtrl; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å°
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputMappingContext* DefaultMappingContext;
@@ -130,19 +131,22 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* LookAction;
 
-protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stat, Meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UAnimMontage> ThrowMontage; //´øÁö±â ¸ùÅ¸ÁÖ
+	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
+	//TObjectPtr<class UInputAction> Test; //ï¿½ï¿½ï¿½ì½º ï¿½ï¿½ï¿½ï¿½
 
 protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UAnimMontage> ThrowMontage; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¸ï¿½ï¿½
+
+protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-	uint8 bIsAiming : 1; //Á¶ÁØ 
+	uint8 bIsAiming : 1; //ï¿½ï¿½ï¿½ï¿½ 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-	uint8 bIsHolding : 1; //Àâ´ÂÁö ÆÇ´Ü
+	uint8 bIsHolding : 1; //ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ç´ï¿½
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-	FVector UILocation; //À§Ä¡
+	FVector UILocation; //ï¿½ï¿½Ä¡
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	uint8 bIsSpawn : 1; //Spawn check
@@ -151,7 +155,7 @@ protected:
 	uint8 bIsThrowReady : 1; //Throw Ready? 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-	FVector UIRotator; //È¸Àü°ª
+	FVector UIRotator; //È¸ï¿½ï¿½ï¿½ï¿½
 
 
 public:
@@ -175,7 +179,7 @@ protected:
 	UFUNCTION()
 	void HandleMontageAnimNotify(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload);
 
-//µ¥Ä®
+	//ï¿½ï¿½Ä®
 protected:
 	void ShowProjectilePath();
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile", Meta = (AllowPrivateAccess = "true"))
@@ -187,9 +191,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile", Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class USceneComponent> PotionThrowStartLocation;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile", Meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UStaticMeshComponent> ProjectileCircle;
-
 	UPROPERTY()
 	//TObjectPtr<class USplineMeshComponent> SplineCoin;
 	TArray<class USplineMeshComponent*> SplineCompArray;
@@ -197,9 +198,22 @@ protected:
 	UPROPERTY()
 	UStaticMesh* StaticMeshforSpline;
 
-	//UI
-protected:
-	virtual void CheckTargetUI(class USPHUDWidget* InHUDWidget) override;
+	UPROPERTY()
+	UMaterialInterface* DecalMaterial;
+
+	UPROPERTY(VisibleAnywhere)
+	TArray<UPrimitiveComponent*>ActorPrimitiveArray;
+	//turn in place
 public:
-	FOnAimingChangedDelegate OnAimingChanged;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
+	uint8 bIsTurnRight : 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
+	uint8 bIsTurnLeft : 1; 
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
+	uint8 bIsTurnReady:1; // TurnReady?
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
+	float PreControlYawRotation ; 
 };
