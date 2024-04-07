@@ -201,10 +201,19 @@ protected:
 	UPROPERTY()
 	UStaticMesh* StaticMeshforSpline;
 
-	UPROPERTY()
-	UMaterialInterface* DecalMaterial;
-
 	UPROPERTY(VisibleAnywhere)
 	TArray<UPrimitiveComponent*>ActorPrimitiveArray;
+
+// Decal
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Decal")
+	TObjectPtr<class UMaterialInterface> Decal;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Decal", Meta = (AllowPrivateAccess = "true"))
+	uint8 bIsDecal : 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Decal", Meta = (AllowPrivateAccess = "true"))
+	FVector TestDecalLocation;
 
 };

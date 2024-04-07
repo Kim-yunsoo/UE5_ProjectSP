@@ -133,12 +133,6 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 		StaticMeshforSpline = StaticMeshforSplineRef.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UMaterialInterface> DecalMaterialRef(TEXT("/Script/Engine.MaterialInstanceConstant'/Game/Box/MagicCircle/Material/MI_MagicCircleDecal_16.MI_MagicCircleDecal_16'"));
-	if (DecalMaterialRef.Object)
-	{
-		DecalMaterial = DecalMaterialRef.Object;
-	}
-
 	CurrentCharacterControlType = ECharacterControlType::Shoulder;
 	LastInput = FVector2D::ZeroVector;
 	//bIsAiming = false;
@@ -736,6 +730,7 @@ void ASPCharacterPlayer::ShowProjectilePath()
 	{
 		SplineCompArray[i]->DestroyComponent();
 	}
+	bIsDecal = false;
 	SplineCompArray.Empty();
 	if (bIsThrowReady)
 	{
@@ -769,9 +764,17 @@ void ASPCharacterPlayer::ShowProjectilePath()
 		FHitResult SweepHitResult;
 		/*ProjectileCircle->SetWorldLocation(OutHit.Location, false, &SweepHitResult, ETeleportType::None);
 		ProjectileCircle->SetVisibility(true, false);*/
-		FVector DecalSize{ 100,200,200 };
-		UGameplayStatics::SpawnDecalAtLocation(GetWorld(), DecalMaterial, DecalSize, OutHit.Location, GetControlRotation(), 0.1);
+		
+		//FVector DecalSize{ 100,200,200 };
+		//UGameplayStatics::SpawnDecalAtLocation(GetWorld(), Decal, DecalSize, OutHit.Location, GetControlRotation(), 0.1);
+		//UE_LOG(LogTemp, Log, TEXT("TEST"));
 
+		if (!bIsDecal)
+		{
+			bIsDecal = true;
+			TestDecalLocation = OutHit.Location;
+			//UE_LOG(LogTemp, Log, TEXT("DecalLocation: [%s]"), *TestDecalLocation.ToString());
+		}
 
 
 		for (int i = 0; i < OutPathPositions.Num(); i++)
