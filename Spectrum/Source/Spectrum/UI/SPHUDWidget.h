@@ -1,18 +1,18 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#pragma once
-
-#include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
-#include "Character/SPCharacterPlayer.h"
-#include "SPHUDWidget.generated.h"
-
-/**
- * 
- */
-UCLASS()
-class SPECTRUM_API USPHUDWidget : public UUserWidget
-{
-	GENERATED_BODY()
-
-};
+//#pragma once
+//
+//#include "CoreMinimal.h"
+//#include "Blueprint/UserWidget.h"
+//#include "Character/SPCharacterPlayer.h"
+//#include "SPHUDWidget.generated.h"
+//
+///**
+// * 
+// */
+//UCLASS()
+//class SPECTRUM_API USPHUDWidget : public UUserWidget
+//{
+//	GENERATED_BODY()
+//
+//};
