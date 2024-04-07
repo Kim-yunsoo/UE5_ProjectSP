@@ -482,7 +482,6 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 				}
 				else
 				{
-					// ĳ���� ����, ���� �α� �Ǵ� ��ü ���� ����
 					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, FString::Printf(TEXT("cast fail")));
 				}
 
@@ -613,7 +612,6 @@ void ASPCharacterPlayer::AimPotion(const FInputActionValue& Value)
 		GetCharacterMovement()->bOrientRotationToMovement = false;
 		GetCharacterMovement()->bUseControllerDesiredRotation = true;
 		bIsTurnReady = true;
-
 	}
 }
 
@@ -852,16 +850,6 @@ void ASPCharacterPlayer::ShowProjectilePath()
 	}
 }
 
-//void ASPCharacterPlayer::CheckTargetUI(class USPHUDWidget* InHUDWidget)
-//{
-//	if (InHUDWidget)
-//	{
-//		UE_LOG(LogTemp, Log, TEXT("CheckTargetUI"));
-//		InHUDWidget->UpdateTargetUI(bIsAiming);
-//		//OnAimingChanged.ADDUObject(InHUDWidget, &USPHUDWidget::UpdateTargetUI);
-//	}
-//}
-
 void ASPCharacterPlayer::QuaterMove(const FInputActionValue& Value)
 {
 	FVector2D MovementVector = Value.Get<FVector2D>();
@@ -904,84 +892,3 @@ void ASPCharacterPlayer::QuaterMove(const FInputActionValue& Value)
 	}
 }
 
-//void ASPCharacterPlayer::PlayTurn(UAnimMontage* MontagetoPlay, float PlayRate, float Duration)
-//{
-//	if (!bIsTurning)
-//	{
-//		bIsTurning = true;
-//		PlayAnimMontage(MontagetoPlay, PlayRate);
-//		// Declare the FTimerHandle within the function
-//		FTimerHandle TimerHandle;
-//
-//		// Set up the timer to call the ResetTurning function after 0.2 seconds
-//		GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this]()
-//			{
-//				this->bIsTurning = false;
-//			}, Duration, false);
-//
-//		bIsTurning = false;
-//	}
-//}
-//
-//void ASPCharacterPlayer::TurnRight90()
-//{
-//	PlayTurn(TurnRight_90, 1.5f, 0.5f);
-//}
-//
-//void ASPCharacterPlayer::TurnLeft90()
-//{
-//	PlayTurn(TurnLeft_90, 1.5f, 0.5f);
-//}
-//
-//void ASPCharacterPlayer::TurnRight180()
-//{
-//	PlayTurn(TurnRight_180, 1.7f, 0.6f);
-//
-//}
-//
-//void ASPCharacterPlayer::TurnLeft180()
-//{
-//	PlayTurn(TurnLeft_180, 1.7f, 0.6f);
-//
-//}
-//
-//void ASPCharacterPlayer::ClearTurnInPlace(float Force)
-//{
-//	if (Force != 0.0f)
-//	{
-//		ClearMotion();
-//	}
-//}
-//
-//void ASPCharacterPlayer::ClearMotion()
-//{
-//	if (IsPlayingRootMotion())
-//	{
-//		StopAnimMontage(GetCurrentMontage());
-//	}
-//}
-//
-//void ASPCharacterPlayer::TurnInPlace()
-//{
-//	float VelocityXY = GetCharacterMovement()->Velocity.Size2D();
-//	if (!(GetCharacterMovement()->IsFalling()) && !(VelocityXY > 0.0f))
-//	{
-//		FRotator DeltaRotation = GetActorRotation() - GetBaseAimRotation();
-//		//FRotator DeltaRotation = GetActorRotation() - GetBaseAimRotation();
-//		DeltaRotation.Normalize();
-//		float DeltaYaw = DeltaRotation.Yaw * -1.0f;
-//
-//		if ((DeltaYaw > 45.f) || (DeltaYaw < -45.f))
-//		{
-//			UE_LOG(LogTemp, Log, TEXT("%f"), DeltaYaw);
-//			if (DeltaYaw > 135.f)
-//				TurnRight180();
-//			else if (DeltaYaw < -135.f)
-//				TurnLeft180();
-//			else if (DeltaYaw > 45.f)
-//				TurnRight90();
-//			else if (DeltaYaw < -45.f)
-//				TurnLeft90();
-//		}
-//	}
-//}

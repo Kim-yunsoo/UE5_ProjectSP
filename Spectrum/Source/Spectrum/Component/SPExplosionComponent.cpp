@@ -70,7 +70,6 @@ void USPExplosionComponent::Explode()
 					ISPDamageInterface* DamageInterface = Cast<ISPDamageInterface>(HitActor);
 					if (DamageInterface)
 					{
-
 						DamageInterface->OnExplosionHit(Damage);
 					}
 				}
