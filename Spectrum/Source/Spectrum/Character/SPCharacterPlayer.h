@@ -140,11 +140,11 @@ protected:
 	TObjectPtr<class UAnimMontage> ThrowMontage; //������ ��Ÿ��
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-	uint8 bIsAiming : 1; //���� 
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	//uint8 bIsAiming : 1; //���� 
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-	uint8 bIsHolding : 1; //����� �Ǵ�
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	//uint8 bIsHolding : 1; //����� �Ǵ�
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	FVector UILocation; //��ġ
@@ -202,17 +202,5 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	TArray<UPrimitiveComponent*>ActorPrimitiveArray;
-	//turn in place
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
-	uint8 bIsTurnRight : 1;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
-	uint8 bIsTurnLeft : 1; 
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
-	uint8 bIsTurnReady:1; // TurnReady?
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
-	float PreControlYawRotation ; 
 };

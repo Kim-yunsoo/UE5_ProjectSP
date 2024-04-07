@@ -152,23 +152,23 @@ void ASPCharacterBase::Tick(float DeltaSeconds)
 	if (IsMyPlayer() == false)		// 내 플레이어가 아닌 경우에만 DestInfo를 이용하여 이동
 	{								// 야금야금 이동하도록 보정
 
-		FVector Location = GetActorLocation();
-		FVector DestLocation = FVector(DestInfo->x(), DestInfo->y(), DestInfo->z());
+		//FVector Location = GetActorLocation();
+		//FVector DestLocation = FVector(DestInfo->x(), DestInfo->y(), DestInfo->z());
 
-		FVector MoveDir = (DestLocation - Location);
-		////const float DistToDest = MoveDir.Length();
-		//MoveDir.Length();
-		//MoveDir.Normalize();
+		//FVector MoveDir = (DestLocation - Location);
+		//////const float DistToDest = MoveDir.Length();
+		////MoveDir.Length();
+		////MoveDir.Normalize();
 
-		//FRotator Rotator = MoveDir.Rotation();
-		//float DestLook = Rotator.Yaw;
-		////float LastLook;
+		////FRotator Rotator = MoveDir.Rotation();
+		////float DestLook = Rotator.Yaw;
+		//////float LastLook;
 
-		////float MoveDist = (MoveDir * 600.f * DeltaSeconds).Length();
-		////MoveDist = FMath::Min(MoveDist, DistToDest);	//오버해서 가지 않게 제한
-		////FVector NextLocation = Location + MoveDir* MoveDist;
+		//////float MoveDist = (MoveDir * 600.f * DeltaSeconds).Length();
+		//////MoveDist = FMath::Min(MoveDist, DistToDest);	//오버해서 가지 않게 제한
+		//////FVector NextLocation = Location + MoveDir* MoveDist;
 
-		SetActorLocation(DestLocation);
+		//SetActorLocation(DestLocation);
 
 
 		if (bIsAiming)
@@ -182,14 +182,14 @@ void ASPCharacterBase::Tick(float DeltaSeconds)
 			SetActorRotation(FRotator(0, DestInfo->yaw() - 90.0f, 0));
 			AddMovementInput(GetActorForwardVector());
 
-			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("RUN")));
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("RUN")));
 			//LastLook = DestLook;
 		}
 		else if (State == Protocol::MOVE_STATE_IDLE)
 		{
 			//SetActorRotation(FRotator(0, LastLook, 0));
 			//AddMovementInput(GetActorForwardVector());
-			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("IDLE")));
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("IDLE")));
 
 		}
 

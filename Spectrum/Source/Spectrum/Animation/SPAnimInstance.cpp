@@ -53,6 +53,7 @@ void USPAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 		bIsAiming = Owner->GetIsAiming();
 		bIsHolding = Owner->GetIsHolding();
+
 		bIsTurnRight = Owner->bIsTurnRight;
 		bIsTurnLeft = Owner->bIsTurnLeft;
 		bIsTurnReady= Owner->bIsTurnReady;

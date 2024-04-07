@@ -165,17 +165,24 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 		LastDesiredInput = DesiredInput;
 	}
 
-	if (DesiredInput == FVector2D::Zero()) {
-		SetMoveState(Protocol::MOVE_STATE_IDLE);
-		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("IDLE")));
-	}
-	else {
+	//if (DesiredInput == FVector2D::Zero()) {
+	//	SetMoveState(Protocol::MOVE_STATE_IDLE);
+	//	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("IDLE")));
+	//}
+	//else {
+	//	SetMoveState(Protocol::MOVE_STATE_RUN);
+	//	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("RUN")));
+	//}
+
+
+	FVector Velocity = GetVelocity();
+	if (!Velocity.IsNearlyZero())
 		SetMoveState(Protocol::MOVE_STATE_RUN);
-		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("RUN")));
-	}
+	else
+		SetMoveState(Protocol::MOVE_STATE_IDLE);
 	
-		// 0.1�ʸ��� ������ �̵� ��Ŷ�� ����
-	MovePacketSendTimer -= DeltaTime * 10;
+		// 0.1
+	MovePacketSendTimer -= DeltaTime*10;
 
 	if (MovePacketSendTimer <= 0 || ForceSendPacket)
 	{
@@ -228,7 +235,7 @@ void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Player
 		EnhancedInputComponent->BindAction(ShoulderMoveAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::ShoulderMove);
 
 		EnhancedInputComponent->BindAction(ShoulderLookAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::ShoulderLook);
-		EnhancedInputComponent->BindAction(ShoulderLookAction, ETriggerEvent::None, this, &ASPCharacterPlayer::StopShoulderLook);
+		//EnhancedInputComponent->BindAction(ShoulderLookAction, ETriggerEvent::None, this, &ASPCharacterPlayer::StopShoulderLook);
 
 		EnhancedInputComponent->BindAction(QuaterMoveAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::QuaterMove);
 		EnhancedInputComponent->BindAction(QuaterMoveAction, ETriggerEvent::Completed, this, &ASPCharacterPlayer::QuaterMove);
@@ -639,7 +646,7 @@ void ASPCharacterPlayer::Jumping(const FInputActionValue& Value)
 		JumpKeyHoldTime = 0.0f;
 	}
 	// ���� ������Ʈ ����
-	SetMoveState(Protocol::MOVE_STATE_JUMP);
+	//SetMoveState(Protocol::MOVE_STATE_JUMP);
 	SetJumping();
 }
 
@@ -812,15 +819,15 @@ void ASPCharacterPlayer::ShowProjectilePath()
 	}
 }
 
-void ASPCharacterPlayer::CheckTargetUI(class USPHUDWidget* InHUDWidget)
-{
-	if (InHUDWidget)
-	{
-		UE_LOG(LogTemp, Log, TEXT("CheckTargetUI"));
-		InHUDWidget->UpdateTargetUI(bIsAiming);
-		//OnAimingChanged.ADDUObject(InHUDWidget, &USPHUDWidget::UpdateTargetUI);
-	}
-}
+//void ASPCharacterPlayer::CheckTargetUI(class USPHUDWidget* InHUDWidget)
+//{
+//	if (InHUDWidget)
+//	{
+//		UE_LOG(LogTemp, Log, TEXT("CheckTargetUI"));
+//		InHUDWidget->UpdateTargetUI(bIsAiming);
+//		//OnAimingChanged.ADDUObject(InHUDWidget, &USPHUDWidget::UpdateTargetUI);
+//	}
+//}
 
 void ASPCharacterPlayer::QuaterMove(const FInputActionValue& Value)
 {

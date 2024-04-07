@@ -87,7 +87,19 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gravity Gun")
 	TObjectPtr<class UPhysicsHandleComponent> PhysicsHandleComponent;
+	//turn in place
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
+	uint8 bIsTurnRight : 1;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
+	uint8 bIsTurnLeft : 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
+	uint8 bIsTurnReady : 1; // TurnReady?
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
+	float PreControlYawRotation;
 
 public:
 	const uint8 GetIsAiming() { return bIsAiming; };
