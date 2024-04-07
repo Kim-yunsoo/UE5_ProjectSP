@@ -10,6 +10,8 @@
 #include "Job.h"
 #include "Protocol.pb.h"
 #include "Room.h"
+#include "ObjectUtils.h"
+#include "Thing.h"
 
 enum
 {
@@ -56,30 +58,29 @@ int main()
 	}
 
 	// Main Thread
-	DoWorkerJob(service);
+	//DoWorkerJob(service);
 
-	/*Protocol::S_O_SPAWN pkt;
+	// 배치될 물건들 정보 저장
+	ThingRef thing = ObjectUtils::CreateThing();
 
 	Protocol::PositionInfo* posInfo = new Protocol::PositionInfo();
-	posInfo->set_x(1.f);
-	posInfo->set_y(2.f);
-	posInfo->set_z(3.f);
+	posInfo->set_x(700.f);
+	posInfo->set_y(-180.f);
+	posInfo->set_z(120.f);
 	posInfo->set_yaw(4.f);
-	posInfo->set_object_id(333);
-
-	pkt.set_allocated_objects(posInfo);
-	auto sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
-
-	GSessionManager.Broadcast(sendBuffer);*/
-
+	posInfo->set_object_id(thing->posInfo->object_id());
+	cout << thing->posInfo->object_id() << endl;
+	thing->posInfo = posInfo;
+	
+	GRoom->_objects.insert(make_pair(thing->posInfo->object_id(), thing));
 
 	while (true)
 	{
-		/*Protocol::S_O_SPAWN pkt;
-		pkt.set_msg("HelloWorld");
-		auto sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
+		//Protocol::S_O_SPAWN pkt;
+		//pkt.set_msg("HelloWorld");
+		//auto sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
 
-		GSessionManager.Broadcast(sendBuffer);*/
+		//GSessionManager.Broadcast(sendBuffer);
 		//GRoom->updateTick();
 
 		//Protocol::S_O_SPAWN pkt;
@@ -96,7 +97,7 @@ int main()
 
 		//GSessionManager.Broadcast(sendBuffer);
 
-		Sleep(1);
+		Sleep(0.1);
 	}
 
 	

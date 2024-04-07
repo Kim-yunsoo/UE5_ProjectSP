@@ -2,11 +2,14 @@
 #include "Room.h"
 #include "Player.h"
 #include "GameSession.h"
+#include "ObjectUtils.h"
+#include "Thing.h"
 
 RoomRef GRoom = make_shared<Room>();
 
 Room::Room()
 {
+	//createAllObject();
 
 }
 
@@ -63,7 +66,7 @@ bool Room::EnterRoom(ObjectRef object, bool randPos)
 	{
 		Protocol::S_SPAWN spawnPkt;
 
-		for (auto& item : _objects)
+		for (auto& item : _player)
 		{
 			if (item.second->IsPlayer() == false)		// 플레이어한테만 전송. 물건들한테는 보낼 필요 없으니까!
 				continue;
@@ -121,7 +124,7 @@ bool Room::HandleEnterPlayerLocked(PlayerRef player)
 
 	bool success = EnterObject(player);
 
-	// 랜덤 위치
+	// 플레이어 위치
 	player->posInfo->set_x(-159.f);
 	player->posInfo->set_y(0.f);
 	player->posInfo->set_z(92.f);
@@ -157,9 +160,9 @@ bool Room::HandleEnterPlayerLocked(PlayerRef player)
 	{
 		Protocol::S_SPAWN spawnPkt;
 
-		for (auto& item : _objects)
+		for (auto& item : _player)
 		{
-			if(item.second->IsPlayer() == false)		// 플레이어한테만 전송. 물건들한테는 보낼 필요 없으니까!
+			if(item.second->IsPlayer() == false)		// 플레이어 정보만 보내줌. 물건들 정보는 뒤에서 따로
 				continue;
 
 			Protocol::ObjectInfo* playerInfo = spawnPkt.add_players();
@@ -169,6 +172,26 @@ bool Room::HandleEnterPlayerLocked(PlayerRef player)
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(spawnPkt);
 		if (auto session = player->session.lock())
 			session->Send(sendBuffer);
+	}
+
+		//// 맵에 배치될 물건들 정보 전송
+	{
+		// _objects에 있는 물건들 정보 전송
+		{
+			Protocol::S_O_SPAWN Opkt;
+
+			for (auto& item : _objects)
+			{
+				Protocol::PositionInfo* posInfo = new Protocol::PositionInfo();
+				posInfo->CopyFrom(*item.second->posInfo);
+				Opkt.set_allocated_objects(posInfo);
+
+				auto sendBuffer = ServerPacketHandler::MakeSendBuffer(Opkt);
+				if (auto session = player->session.lock())
+					session->Send(sendBuffer);
+			}
+		}
+
 	}
 
 	return success;
@@ -216,11 +239,11 @@ void Room::HandleMoveLocked(Protocol::C_MOVE& pkt)
 	WRITE_LOCK;
 
 	const uint64 objectId = pkt.info().object_id();
-	if (_objects.find(objectId) == _objects.end())
+	if (_player.find(objectId) == _player.end())
 		return;
 
 	// 적용
-	PlayerRef player = dynamic_pointer_cast<Player>(_objects[objectId]);
+	PlayerRef player = dynamic_pointer_cast<Player>(_player[objectId]);
 	player->posInfo->CopyFrom(pkt.info());
 
 	// 이동 
@@ -259,13 +282,35 @@ void Room::updateTick()
 	cout<<"Room::updateTick"<<endl;
 }
 
+void Room::createAllObject() // 배치될 물건 생성해서 _objects에 저장해둠
+{
+	//ThingRef thing = ObjectUtils::CreateThing();
+
+	//// 물건의 위치, id 설정
+	//Protocol::PositionInfo* posInfo = new Protocol::PositionInfo();
+	//posInfo->set_x(700.f);
+	//posInfo->set_y(-180.f);
+	//posInfo->set_z(120.f);
+	//posInfo->set_yaw(4.f);
+	//posInfo->set_object_id(thing->posInfo->object_id());		//
+
+	////EnterObject(thing);
+	//if (_objects.find(thing->objectInfo->object_id()) != _objects.end())
+	//	cout << " 이미 있는 오브젝트 재생성 " << endl;
+	//else
+	//	_objects.insert(make_pair(thing->posInfo->object_id(), thing));
+
+	//cout << thing->posInfo->object_id() << endl;
+
+}
+
 bool Room::EnterObject(ObjectRef object)
 {
 	// 있다면 문제가 있다.
-	if (_objects.find(object->objectInfo->object_id()) != _objects.end())
+	if (_player.find(object->objectInfo->object_id()) != _player.end())
 		return false;
 
-	_objects.insert(make_pair(object->objectInfo->object_id(), object));
+	_player.insert(make_pair(object->objectInfo->object_id(), object));
 	
 	object->room.store(shared_from_this());
 
@@ -276,20 +321,20 @@ bool Room::EnterObject(ObjectRef object)
 bool Room::LeaveObject(uint64 objectId)
 {
 	// 없다면 문제가 있다.
-	if (_objects.find(objectId) == _objects.end())
+	if (_player.find(objectId) == _player.end())
 		return false;
 
-	ObjectRef object = _objects[objectId];
+	ObjectRef object = _player[objectId];
 	object->room.store(weak_ptr<Room>());
 
-	_objects.erase(objectId);
+	_player.erase(objectId);
 
 	return true;
 }
 
 void Room::Broadcast(SendBufferRef sendBuffer, uint64 exceptId)
 {	// 플레이어한테만 전송
-	for (auto& item : _objects)
+	for (auto& item : _player)
 	{
 		PlayerRef player = dynamic_pointer_cast<Player>(item.second);		// 플레이어로 바꿔서 얘네한테만 처리
 		if(player == nullptr)
@@ -305,12 +350,11 @@ void Room::Broadcast(SendBufferRef sendBuffer, uint64 exceptId)
 
 void Room::ObjectBroadcast(SendBufferRef sendBuffer)
 {	// 플레이어한테만 전송
-	for (auto& item : _objects)
+	for (auto& item : _player)
 	{
 		PlayerRef player = dynamic_pointer_cast<Player>(item.second);		// 플레이어로 바꿔서 얘네한테만 처리
 		if (player == nullptr)
 			continue;
-
 
 		if (GameSessionRef session = player->session.lock())
 			session->Send(sendBuffer);

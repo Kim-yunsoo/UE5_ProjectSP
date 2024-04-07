@@ -2,7 +2,7 @@
 #include "Creature.h"
 class Thing :public Creature
 {
-	public:
+public:
 	Thing();
 	virtual ~Thing();
 };

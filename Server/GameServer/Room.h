@@ -19,6 +19,8 @@ public:
 
 	void updateTick();
 
+	void createAllObject();
+
 private:
 	bool EnterObject(ObjectRef object);
 	bool LeaveObject(uint64 objectId);
@@ -29,8 +31,9 @@ public:
 	void Broadcast(SendBufferRef sendBuffer, uint64 exceptId = 0);
 	void ObjectBroadcast(SendBufferRef sendBuffer);
 
-private:
-	//unordered_map<uint64, PlayerRef> _players;
+//private:
+public:
+	unordered_map<uint64, ObjectRef> _player;
 	unordered_map<uint64, ObjectRef> _objects;
 };
 

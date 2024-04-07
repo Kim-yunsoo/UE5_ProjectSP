@@ -48,25 +48,8 @@ bool Handle_C_ENTER_GAME(PacketSessionRef& session, Protocol::C_ENTER_GAME& pkt)
 	// 방에 입장
 	GRoom->HandleEnterPlayerLocked(player);
 
-	// 물건 생성
-	ThingRef thing = ObjectUtils::CreateThing();
-	//GRoom->EnterRoom(thing);
 	
-	Protocol::S_O_SPAWN Opkt;
-
-	Protocol::PositionInfo* posInfo = new Protocol::PositionInfo();
-	posInfo->set_x(700.f);
-	posInfo->set_y(-180.f);
-	posInfo->set_z(120.f);
-	posInfo->set_yaw(4.f);
-	posInfo->set_object_id(thing->posInfo->object_id());
-	cout << thing->posInfo->object_id() << endl;
-
-	Opkt.set_allocated_objects(posInfo);
-	auto sendBuffer = ServerPacketHandler::MakeSendBuffer(Opkt);
-
-
-	GRoom->ObjectBroadcast(sendBuffer);
+	
 
 
 	return true;
