@@ -26,19 +26,17 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->SetupAttachment(RootComponent);
 	SpringArm->TargetArmLength = 150.f;
-	SpringArm->SetRelativeLocation(FVector(0.0, 0.0, 50.0));
 	SpringArm->SocketOffset.Set(0.0, 30, 10);
 	SpringArm->bUsePawnControlRotation = true;
 
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
-	CameraBoom->TargetArmLength = 400.f;
-	CameraBoom->SetRelativeLocation(FVector(0.0, 0.0, 63.990518));
+	CameraBoom->TargetArmLength = 500.f;
+	CameraBoom->SetRelativeRotation(FRotator(0.0f, -50.f, 0.0f));
 	CameraBoom->bUsePawnControlRotation = true;
 
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
-	CameraBoom->SetRelativeLocation(FVector(0.0, 29.020852, 11.28551));
 	FollowCamera->bUsePawnControlRotation = false;
 
 	PotionThrowStartLocation = CreateDefaultSubobject<USceneComponent>(TEXT("PotionThrowStartLocation"));
@@ -47,29 +45,14 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 	Projectile_Path = CreateDefaultSubobject<USplineComponent>(TEXT("Projectile_Path"));
 	Projectile_Path->SetupAttachment(RootComponent);
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> CircleRef(TEXT("/Script/Engine.StaticMesh'/Game/Spectrum/Prop/SM_Circle.SM_Circle'"));
-	if (CircleRef.Object)
-	{
-		ProjectileCircle = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ProjectileCircle"));
-		ProjectileCircle->SetStaticMesh(CircleRef.Object);
-		ProjectileCircle->SetupAttachment(RootComponent);
-		ProjectileCircle->SetRelativeLocation(FVector(0.0, 0.0, 0.0));
-		ProjectileCircle->SetVisibility(false);
-	}
-
-
-
 
 	GravityArrow = CreateDefaultSubobject<UArrowComponent>(TEXT("GravityArrow"));
 	if (GravityArrow)
 	{
-		GravityArrow->SetupAttachment(FollowCamera);
-		GravityArrow->SetRelativeLocation(FVector(811.303858, 62.924746, 64.091908));
+		GravityArrow->SetupAttachment(GetMesh());
 		GravityArrow->SetRelativeRotation(FRotator(0, 0, 0));
 	}
 
-	// ī�޶� ������ ���� ���� �ε�
-	// Input
 	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionJumpRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_Jump.IA_SP_Jump'"));
 	if (nullptr != InputActionJumpRef.Object)
 	{
@@ -129,11 +112,11 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 		ThrowCtrl = ThrowCtrlRef.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UAnimMontage> ThrowMontageRef(TEXT("/Script/Engine.AnimMontage'/Game/Spectrum/Animation/AniMeta/Man/AM_SP_Throw.AM_SP_Throw'"));
+	/*static ConstructorHelpers::FObjectFinder<UAnimMontage> ThrowMontageRef(TEXT("/Script/Engine.AnimMontage'/Game/Spectrum/Animation/AniMeta/Man/AM_SP_Throw.AM_SP_Throw'"));
 	if (ThrowMontageRef.Object)
 	{
 		ThrowMontage = ThrowMontageRef.Object;
-	}
+	}*/
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticMeshforSplineRef(TEXT("/Script/Engine.StaticMesh'/Game/Spectrum/SM_MERGED_StaticMeshActor_90.SM_MERGED_StaticMeshActor_90'"));
 	if (StaticMeshforSplineRef.Object)
@@ -146,16 +129,6 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 	{
 		DecalMaterial = DecalMaterialRef.Object;
 	}
-
-
-	/*static ConstructorHelpers::FObjectFinder<UInputAction> TestRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/Test.Test'"));
-	if (nullptr != TestRef.Object)
-	{
-		Test = TestRef.Object;
-	}*/
-
-	//static ConstructorHelpers::FObjectFinder<UStaticMesh> SplineCoinRef(TEXT("/Script/Engine.StaticMesh'/Game/Spectrum/Prop/SM_Projectile.SM_Projectile'"));
-	//SplineCoin->SetStaticMesh(SplineCoinRef.Object);
 
 	CurrentCharacterControlType = ECharacterControlType::Shoulder;
 	LastInput = FVector2D::ZeroVector;
@@ -175,14 +148,6 @@ void ASPCharacterPlayer::BeginPlay()
 	Super::BeginPlay();
 	SetCharacterControl(CurrentCharacterControlType);
 	GetMesh()->GetAnimInstance()->OnPlayMontageNotifyBegin.AddDynamic(this, &ASPCharacterPlayer::HandleMontageAnimNotify);
-	//Add Input Mapping Context
-	//if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
-	//{
-	//	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-	//	{
-	//		Subsystem->AddMappingContext(DefaultMappingContext, 0);
-	//	}
-	//}
 }
 
 void ASPCharacterPlayer::Tick(float DeltaTime)
@@ -272,10 +237,8 @@ void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Player
 		EnhancedInputComponent->BindAction(ChangeControlAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::ChangeCharacterControl);
 
 		EnhancedInputComponent->BindAction(ShoulderMoveAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::ShoulderMove);
-		//EnhancedInputComponent->BindAction(ShoulderMoveAction, ETriggerEvent::Completed, this, &ASPCharacterPlayer::ShoulderMove);
 
 		EnhancedInputComponent->BindAction(ShoulderLookAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::ShoulderLook);
-		//EnhancedInputComponent->BindAction(ShoulderLookAction, ETriggerEvent::Ongoing, this, &ASPCharacterPlayer::ShoulderLook);
 		EnhancedInputComponent->BindAction(ShoulderLookAction, ETriggerEvent::None, this, &ASPCharacterPlayer::StopShoulderLook);
 
 		EnhancedInputComponent->BindAction(QuaterMoveAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::QuaterMove);
@@ -294,12 +257,6 @@ void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Player
 
 		EnhancedInputComponent->BindAction(ThrowCtrl, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::AimPotion);
 		EnhancedInputComponent->BindAction(ThrowCtrl, ETriggerEvent::Completed, this, &ASPCharacterPlayer::ThrowPotion);
-
-		FInputAxisBinding MouseYawBinding;
-		//MouseYawBinding.AxisName = TEXT("Test"); // 입력 축의 이름 설정
-		//EnhancedInputComponent->AxisBindings.Add(MouseYawBinding);
-		//EnhancedInputComponent->BindAxis(TEXT("TurnRightLeft"),this, &APawn::AddControllerYawInput);
-		//EnhancedInputComponent->BindAxis();
 
 	}
 }
@@ -672,7 +629,7 @@ void ASPCharacterPlayer::BlackPotionSpawn(const FInputActionValue& Value)
 			BlackPotion->AttachToComponent(GetMesh(), AttachmentRules, FName{ "Item_Socket" });
 		}
 	}
-	else // bIsSpawn == true�� ���
+	else 
 	{
 		if (BlackPotion)
 		{
@@ -715,7 +672,7 @@ void ASPCharacterPlayer::ShowProjectilePath()
 			+ FVector{ 0.0f,0.0f,0.4f }) * 1500.0f;
 		//(ForwardVector + FVector{ 0.0f,0.0f,0.4f })* Mul
 		float ProjectileRadius = 0.0f;
-		TEnumAsByte<ECollisionChannel> TraceChannel = ECollisionChannel::ECC_Camera; // �浹 ä��
+		TEnumAsByte<ECollisionChannel> TraceChannel = ECollisionChannel::ECC_Camera;
 		TArray<AActor*> ActorsToIgnore;
 		ActorsToIgnore.Add(this);
 		EDrawDebugTrace::Type DrawDebugType = EDrawDebugTrace::None;
@@ -731,8 +688,8 @@ void ASPCharacterPlayer::ShowProjectilePath()
 		FHitResult SweepHitResult;
 		/*ProjectileCircle->SetWorldLocation(OutHit.Location, false, &SweepHitResult, ETeleportType::None);
 		ProjectileCircle->SetVisibility(true, false);*/
-		//FVector DecalSize{ 100,200,200 };
-		//UGameplayStatics::SpawnDecalAtLocation(GetWorld(), DecalMaterial, DecalSize, OutHit.Location, GetControlRotation(), 0.1);
+		FVector DecalSize{ 100,200,200 };
+		UGameplayStatics::SpawnDecalAtLocation(GetWorld(), DecalMaterial, DecalSize, OutHit.Location, GetControlRotation(), 0.1);
 
 
 

@@ -56,13 +56,13 @@ void USPAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 		float  foo = 0.f;
 
-	/*	FRotator NewRotator = UKismetMathLibrary::MakeRotator(0, DeltaY, DeltaZ);
+		FRotator NewRotator = UKismetMathLibrary::MakeRotator(0, DeltaY, DeltaZ);
 
 		FRotator RInterp = UKismetMathLibrary::RInterpTo(NewRotator, DeltaRotation, DeltaSeconds, 3);
 		UKismetMathLibrary::BreakRotator(RInterp, foo, DeltaY, DeltaZ);
 
 		DeltaY = UKismetMathLibrary::ClampAngle(DeltaY, -90, 90);
-		DeltaZ = UKismetMathLibrary::ClampAngle(DeltaZ, -160, 160);*/
+		DeltaZ = UKismetMathLibrary::ClampAngle(DeltaZ, -0, 0);
 
 	}
 }

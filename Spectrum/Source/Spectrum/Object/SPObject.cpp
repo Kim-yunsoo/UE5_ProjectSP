@@ -14,6 +14,7 @@ ASPObject::ASPObject()
 	bHasBeenCalled = false; // 한번만 실행하기 위한 변수
 	//MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
 	ObjectMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ObjectMesh"));
+	ObjectMesh->SetCollisionProfileName(TEXT("PropCollision"));
 	ObjectMesh->SetMobility(EComponentMobility::Movable);
 }
 

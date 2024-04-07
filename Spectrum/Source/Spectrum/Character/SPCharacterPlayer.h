@@ -132,7 +132,7 @@ protected:
 	//TObjectPtr<class UInputAction> Test; //付快胶 哭率
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stat, Meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UAnimMontage> ThrowMontage; //带瘤扁 根鸥林
 
 protected:
@@ -187,9 +187,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile", Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class USceneComponent> PotionThrowStartLocation;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile", Meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UStaticMeshComponent> ProjectileCircle;
 
 	UPROPERTY()
 	//TObjectPtr<class USplineMeshComponent> SplineCoin;
