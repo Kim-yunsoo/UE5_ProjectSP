@@ -468,8 +468,8 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 					MyActor->ObjectInfo->set_z(MyActor->K2_GetActorLocation().Z);
 					
 
-					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, FString::Printf(TEXT("%lld"), 
-						MyActor->ObjectInfo->object_id()));
+				//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, FString::Printf(TEXT("%lld"), 
+				//		MyActor->ObjectInfo->object_id()));
 
 				}
 				else
