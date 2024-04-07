@@ -198,9 +198,6 @@ protected:
 	UPROPERTY()
 	UStaticMesh* StaticMeshforSpline;
 
-	UPROPERTY()
-	UMaterialInterface* DecalMaterial;
-
 	UPROPERTY(VisibleAnywhere)
 	TArray<UPrimitiveComponent*>ActorPrimitiveArray;
 	//turn in place
@@ -216,4 +213,20 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
 	float PreControlYawRotation ; 
+
+
+
+
+// Decal
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Decal")
+	TObjectPtr<class UMaterialInterface> Decal;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Decal", Meta = (AllowPrivateAccess = "true"))
+	uint8 bIsDecal : 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Decal", Meta = (AllowPrivateAccess = "true"))
+	FVector TestDecalLocation;
+
 };
