@@ -27,19 +27,17 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->SetupAttachment(RootComponent);
 	SpringArm->TargetArmLength = 150.f;
-	SpringArm->SetRelativeLocation(FVector(0.0, 0.0, 50.0));
 	SpringArm->SocketOffset.Set(0.0, 30, 10);
 	SpringArm->bUsePawnControlRotation = true;
 
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
-	CameraBoom->TargetArmLength = 400.f;
-	CameraBoom->SetRelativeLocation(FVector(0.0, 0.0, 63.990518));
+	CameraBoom->TargetArmLength = 500.f;
+	CameraBoom->SetRelativeRotation(FRotator(0.0f, -50.f, 0.0f));
 	CameraBoom->bUsePawnControlRotation = true;
 
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
-	CameraBoom->SetRelativeLocation(FVector(0.0, 29.020852, 11.28551));
 	FollowCamera->bUsePawnControlRotation = false;
 
 	PotionThrowStartLocation = CreateDefaultSubobject<USceneComponent>(TEXT("PotionThrowStartLocation"));
@@ -48,29 +46,14 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 	Projectile_Path = CreateDefaultSubobject<USplineComponent>(TEXT("Projectile_Path"));
 	Projectile_Path->SetupAttachment(RootComponent);
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> CircleRef(TEXT("/Script/Engine.StaticMesh'/Game/Spectrum/Prop/SM_Circle.SM_Circle'"));
-	if (CircleRef.Object)
-	{
-		ProjectileCircle = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ProjectileCircle"));
-		ProjectileCircle->SetStaticMesh(CircleRef.Object);
-		ProjectileCircle->SetupAttachment(RootComponent);
-		ProjectileCircle->SetRelativeLocation(FVector(0.0, 0.0, 0.0));
-		ProjectileCircle->SetVisibility(false);
-	}
-
-
-
 
 	GravityArrow = CreateDefaultSubobject<UArrowComponent>(TEXT("GravityArrow"));
 	if (GravityArrow)
 	{
-		GravityArrow->SetupAttachment(FollowCamera);
-		GravityArrow->SetRelativeLocation(FVector(811.303858, 62.924746, 64.091908));
+		GravityArrow->SetupAttachment(GetMesh());
 		GravityArrow->SetRelativeRotation(FRotator(0, 0, 0));
 	}
 
-	// ī�޶� ������ ���� ���� �ε�
-	// Input
 	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionJumpRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_Jump.IA_SP_Jump'"));
 	if (nullptr != InputActionJumpRef.Object)
 	{
@@ -130,11 +113,11 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 		ThrowCtrl = ThrowCtrlRef.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UAnimMontage> ThrowMontageRef(TEXT("/Script/Engine.AnimMontage'/Game/Spectrum/Animation/AniMeta/Man/AM_SP_Throw.AM_SP_Throw'"));
+	/*static ConstructorHelpers::FObjectFinder<UAnimMontage> ThrowMontageRef(TEXT("/Script/Engine.AnimMontage'/Game/Spectrum/Animation/AniMeta/Man/AM_SP_Throw.AM_SP_Throw'"));
 	if (ThrowMontageRef.Object)
 	{
 		ThrowMontage = ThrowMontageRef.Object;
-	}
+	}*/
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticMeshforSplineRef(TEXT("/Script/Engine.StaticMesh'/Game/Spectrum/SM_MERGED_StaticMeshActor_90.SM_MERGED_StaticMeshActor_90'"));
 	if (StaticMeshforSplineRef.Object)
@@ -148,9 +131,6 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 		DecalMaterial = DecalMaterialRef.Object;
 	}
 
-	//static ConstructorHelpers::FObjectFinder<UStaticMesh> SplineCoinRef(TEXT("/Script/Engine.StaticMesh'/Game/Spectrum/Prop/SM_Projectile.SM_Projectile'"));
-	//SplineCoin->SetStaticMesh(SplineCoinRef.Object);
-
 	CurrentCharacterControlType = ECharacterControlType::Shoulder;
 	LastInput = FVector2D::ZeroVector;
 	bIsAiming = false;
@@ -158,6 +138,9 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 	HitComponent = nullptr;
 	bIsSpawn = false;
 	bIsThrowReady = false;
+	bIsTurnReady = false;
+	bIsTurnLeft = false;
+	bIsTurnReady = false;
 	HitDistance = 1200.f;
 }
 
@@ -166,19 +149,12 @@ void ASPCharacterPlayer::BeginPlay()
 	Super::BeginPlay();
 	SetCharacterControl(CurrentCharacterControlType);
 	GetMesh()->GetAnimInstance()->OnPlayMontageNotifyBegin.AddDynamic(this, &ASPCharacterPlayer::HandleMontageAnimNotify);
-	//Add Input Mapping Context
-	//if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
-	//{
-	//	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-	//	{
-	//		Subsystem->AddMappingContext(DefaultMappingContext, 0);
-	//	}
-	//}
 }
 
 void ASPCharacterPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
 
 	bool ForceSendPacket = false;
 
@@ -262,9 +238,9 @@ void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Player
 		EnhancedInputComponent->BindAction(ChangeControlAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::ChangeCharacterControl);
 
 		EnhancedInputComponent->BindAction(ShoulderMoveAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::ShoulderMove);
-		EnhancedInputComponent->BindAction(ShoulderMoveAction, ETriggerEvent::Completed, this, &ASPCharacterPlayer::ShoulderMove);
 
 		EnhancedInputComponent->BindAction(ShoulderLookAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::ShoulderLook);
+		EnhancedInputComponent->BindAction(ShoulderLookAction, ETriggerEvent::None, this, &ASPCharacterPlayer::StopShoulderLook);
 
 		EnhancedInputComponent->BindAction(QuaterMoveAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::QuaterMove);
 		EnhancedInputComponent->BindAction(QuaterMoveAction, ETriggerEvent::Completed, this, &ASPCharacterPlayer::QuaterMove);
@@ -282,6 +258,7 @@ void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Player
 
 		EnhancedInputComponent->BindAction(ThrowCtrl, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::AimPotion);
 		EnhancedInputComponent->BindAction(ThrowCtrl, ETriggerEvent::Completed, this, &ASPCharacterPlayer::ThrowPotion);
+
 	}
 }
 
@@ -367,6 +344,8 @@ void ASPCharacterPlayer::ShoulderMove(const FInputActionValue& Value)
 			DesiredYaw = Rotator.Yaw;
 		}
 
+		/*	ClearTurnInPlace(MovementVector.X);
+			ClearTurnInPlace(MovementVector.Y);*/
 	}
 }
 
@@ -377,7 +356,26 @@ void ASPCharacterPlayer::ShoulderLook(const FInputActionValue& Value)
 	{
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
+
+		if (GetControlRotation().Yaw > PreControlYawRotation)
+		{
+			//UE_LOG(LogTemp, Log, TEXT("TEST1"));
+			bIsTurnRight = true;
+			bIsTurnLeft = false;
+		}
+		else
+		{
+				bIsTurnRight = false;
+				bIsTurnLeft = true;
+		}
+		PreControlYawRotation = GetControlRotation().Yaw;
 	}
+}
+
+void ASPCharacterPlayer::StopShoulderLook(const FInputActionValue& Value)
+{
+		bIsTurnRight = false;
+		bIsTurnLeft = false;
 }
 
 void ASPCharacterPlayer::SpeedUp(const FInputActionValue& Value)
@@ -397,14 +395,18 @@ void ASPCharacterPlayer::Aiming(const FInputActionValue& Value)
 {
 	if (false == bIsHolding) {
 		bIsAiming = true;
-		//OnAimingChanged.Broadcast(bIsAiming);
+		GetCharacterMovement()->bOrientRotationToMovement = false;
+		GetCharacterMovement()->bUseControllerDesiredRotation = true;
 		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, true);
 		FollowCamera->AttachToComponent(SpringArm, AttachmentRules, NAME_None);
 		CameraMove();
 
+
 	}
 	else
 	{
+		GetCharacterMovement()->bOrientRotationToMovement = true;
+		GetCharacterMovement()->bUseControllerDesiredRotation = false;
 		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, true);
 		FollowCamera->AttachToComponent(CameraBoom, AttachmentRules, NAME_None);
 		CameraMove();
@@ -415,7 +417,8 @@ void ASPCharacterPlayer::StopAiming(const FInputActionValue& Value)
 {
 
 	bIsAiming = false;
-	//OnAimingChanged.Broadcast(bIsAiming);
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->bUseControllerDesiredRotation = false;
 	FollowCamera->K2_AttachToComponent(CameraBoom, NAME_None, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, true);
 	FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, true);
 	FollowCamera->AttachToComponent(CameraBoom, AttachmentRules, NAME_None);
@@ -468,11 +471,11 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 				FLinearColor GreenColor1(0.0f, 1.0f, 0.0f);
 				FLinearColor RedColor1(1.0f, 0.0f, 0.0f);
 				float DrawTime1 = 5.0f;
-				
+
 				bool Success = UKismetSystemLibrary::SphereTraceMultiForObjects(GetWorld(), SphereTracePoint, SphereTracePoint, Radius, ObjectTypes, false, ActorsToIgnore, EDrawDebugTrace::ForDuration, OutHits, true, GreenColor1, RedColor1, DrawTime1);
-				
+
 				ActorPrimitiveArray.Empty();
-				
+
 				if (Success)
 				{
 					for (const FHitResult& HitResult : OutHits)
@@ -491,7 +494,7 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 							if (HitPrimitive->Mobility == EComponentMobility::Movable)
 							{
 								HitPrimitive->SetSimulatePhysics(true);
-								
+
 							}
 						}
 					}
@@ -567,6 +570,10 @@ void ASPCharacterPlayer::AimPotion(const FInputActionValue& Value)
 	{
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 		AnimInstance->Montage_Play(ThrowMontage, 1.0f);
+		GetCharacterMovement()->bOrientRotationToMovement = false;
+		GetCharacterMovement()->bUseControllerDesiredRotation = true;
+		bIsTurnReady = true;
+
 	}
 }
 
@@ -584,6 +591,10 @@ void ASPCharacterPlayer::ThrowPotion(const FInputActionValue& Value)
 			float Mul = 1500.0f;
 			BlackPotion->Throw((ForwardVector + FVector{ 0.0f,0.0f,0.4f }) * Mul);
 		}
+
+		GetCharacterMovement()->bOrientRotationToMovement = true;
+		GetCharacterMovement()->bUseControllerDesiredRotation = false;
+		bIsTurnReady = false;
 		bIsSpawn = false;
 		BlackPotion = nullptr;
 	}
@@ -619,7 +630,7 @@ void ASPCharacterPlayer::BlackPotionSpawn(const FInputActionValue& Value)
 			BlackPotion->AttachToComponent(GetMesh(), AttachmentRules, FName{ "Item_Socket" });
 		}
 	}
-	else // bIsSpawn == true�� ���
+	else 
 	{
 		if (BlackPotion)
 		{
@@ -662,7 +673,7 @@ void ASPCharacterPlayer::ShowProjectilePath()
 			+ FVector{ 0.0f,0.0f,0.4f }) * 1500.0f;
 		//(ForwardVector + FVector{ 0.0f,0.0f,0.4f })* Mul
 		float ProjectileRadius = 0.0f;
-		TEnumAsByte<ECollisionChannel> TraceChannel = ECollisionChannel::ECC_Camera; // �浹 ä��
+		TEnumAsByte<ECollisionChannel> TraceChannel = ECollisionChannel::ECC_Camera;
 		TArray<AActor*> ActorsToIgnore;
 		ActorsToIgnore.Add(this);
 		EDrawDebugTrace::Type DrawDebugType = EDrawDebugTrace::None;
@@ -679,8 +690,7 @@ void ASPCharacterPlayer::ShowProjectilePath()
 		/*ProjectileCircle->SetWorldLocation(OutHit.Location, false, &SweepHitResult, ETeleportType::None);
 		ProjectileCircle->SetVisibility(true, false);*/
 		FVector DecalSize{ 100,200,200 };
-		//FRotator DecalRotate{ 0,0,90 };
-		UGameplayStatics::SpawnDecalAtLocation(GetWorld(), DecalMaterial, DecalSize, OutHit.Location,GetControlRotation(), 0.1);
+		UGameplayStatics::SpawnDecalAtLocation(GetWorld(), DecalMaterial, DecalSize, OutHit.Location, GetControlRotation(), 0.1);
 
 
 
@@ -747,7 +757,7 @@ void ASPCharacterPlayer::ShowProjectilePath()
 			SplineCompArray.Emplace(NewSplineMeshComp);
 			NewSplineMeshComp->RegisterComponent();
 
-		
+
 		}
 		FTimerHandle TimerHandle;
 		float DelayTime = 0.01f;
@@ -814,3 +824,84 @@ void ASPCharacterPlayer::QuaterMove(const FInputActionValue& Value)
 	}
 }
 
+//void ASPCharacterPlayer::PlayTurn(UAnimMontage* MontagetoPlay, float PlayRate, float Duration)
+//{
+//	if (!bIsTurning)
+//	{
+//		bIsTurning = true;
+//		PlayAnimMontage(MontagetoPlay, PlayRate);
+//		// Declare the FTimerHandle within the function
+//		FTimerHandle TimerHandle;
+//
+//		// Set up the timer to call the ResetTurning function after 0.2 seconds
+//		GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this]()
+//			{
+//				this->bIsTurning = false;
+//			}, Duration, false);
+//
+//		bIsTurning = false;
+//	}
+//}
+//
+//void ASPCharacterPlayer::TurnRight90()
+//{
+//	PlayTurn(TurnRight_90, 1.5f, 0.5f);
+//}
+//
+//void ASPCharacterPlayer::TurnLeft90()
+//{
+//	PlayTurn(TurnLeft_90, 1.5f, 0.5f);
+//}
+//
+//void ASPCharacterPlayer::TurnRight180()
+//{
+//	PlayTurn(TurnRight_180, 1.7f, 0.6f);
+//
+//}
+//
+//void ASPCharacterPlayer::TurnLeft180()
+//{
+//	PlayTurn(TurnLeft_180, 1.7f, 0.6f);
+//
+//}
+//
+//void ASPCharacterPlayer::ClearTurnInPlace(float Force)
+//{
+//	if (Force != 0.0f)
+//	{
+//		ClearMotion();
+//	}
+//}
+//
+//void ASPCharacterPlayer::ClearMotion()
+//{
+//	if (IsPlayingRootMotion())
+//	{
+//		StopAnimMontage(GetCurrentMontage());
+//	}
+//}
+//
+//void ASPCharacterPlayer::TurnInPlace()
+//{
+//	float VelocityXY = GetCharacterMovement()->Velocity.Size2D();
+//	if (!(GetCharacterMovement()->IsFalling()) && !(VelocityXY > 0.0f))
+//	{
+//		FRotator DeltaRotation = GetActorRotation() - GetBaseAimRotation();
+//		//FRotator DeltaRotation = GetActorRotation() - GetBaseAimRotation();
+//		DeltaRotation.Normalize();
+//		float DeltaYaw = DeltaRotation.Yaw * -1.0f;
+//
+//		if ((DeltaYaw > 45.f) || (DeltaYaw < -45.f))
+//		{
+//			UE_LOG(LogTemp, Log, TEXT("%f"), DeltaYaw);
+//			if (DeltaYaw > 135.f)
+//				TurnRight180();
+//			else if (DeltaYaw < -135.f)
+//				TurnLeft180();
+//			else if (DeltaYaw > 45.f)
+//				TurnRight90();
+//			else if (DeltaYaw < -45.f)
+//				TurnLeft90();
+//		}
+//	}
+//}

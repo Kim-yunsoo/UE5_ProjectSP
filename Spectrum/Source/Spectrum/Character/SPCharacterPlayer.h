@@ -41,6 +41,7 @@ protected: // ī�޶�
 
 	void ShoulderMove(const FInputActionValue& Value);
 	void ShoulderLook(const FInputActionValue& Value);
+	void StopShoulderLook(const FInputActionValue& Value);
 
 	void QuaterMove(const FInputActionValue& Value);
 
@@ -130,8 +131,11 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* LookAction;
 
+	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
+	//TObjectPtr<class UInputAction> Test; //���콺 ����
+
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stat, Meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UAnimMontage> ThrowMontage; //������ ��Ÿ��
 
 protected:
@@ -175,7 +179,7 @@ protected:
 	UFUNCTION()
 	void HandleMontageAnimNotify(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload);
 
-//��Į
+	//��Į
 protected:
 	void ShowProjectilePath();
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile", Meta = (AllowPrivateAccess = "true"))
@@ -187,9 +191,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile", Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class USceneComponent> PotionThrowStartLocation;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile", Meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UStaticMeshComponent> ProjectileCircle;
-
 	UPROPERTY()
 	//TObjectPtr<class USplineMeshComponent> SplineCoin;
 	TArray<class USplineMeshComponent*> SplineCompArray;
@@ -197,10 +198,22 @@ protected:
 	UPROPERTY()
 	UStaticMesh* StaticMeshforSpline;
 
-	//��Į 
 	UPROPERTY()
-	UMaterialInterface* DecalMaterial ;
+	UMaterialInterface* DecalMaterial;
 
 	UPROPERTY(VisibleAnywhere)
 	TArray<UPrimitiveComponent*>ActorPrimitiveArray;
+	//turn in place
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
+	uint8 bIsTurnRight : 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
+	uint8 bIsTurnLeft : 1; 
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
+	uint8 bIsTurnReady:1; // TurnReady?
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
+	float PreControlYawRotation ; 
 };
