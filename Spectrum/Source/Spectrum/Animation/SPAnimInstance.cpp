@@ -15,6 +15,9 @@ USPAnimInstance::USPAnimInstance()
 	bIsAiming = false;
 	bIsHolding = false;
 	bIsJumping = false;
+	bIsTurnRight = false;
+	bIsTurnLeft = false;
+	bIsTurnReady = false;	
 	DeltaY = 0;
 	DeltaZ = 0;
 }
@@ -22,7 +25,7 @@ USPAnimInstance::USPAnimInstance()
 void USPAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
-	//GetOwningActor() ÇöÀç ¼ÒÀ¯ÁßÀÎ ¾×ÅÍÁ¤º¸¸¦ ¾òÀ» ¼ö ÀÖ´Ù. ¸®ÅÏ Å¸ÀÔÀÌ ¾×ÅÍ¶ó Ä³¸¯ÅÍ·Î Çüº¯È¯
+	//GetOwningActor() ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Í¶ï¿½ Ä³ï¿½ï¿½ï¿½Í·ï¿½ ï¿½ï¿½ï¿½ï¿½È¯
 	Owner = Cast<ASPCharacterBase>(GetOwningActor());
 	if (Owner)
 	{
@@ -50,6 +53,9 @@ void USPAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 		bIsAiming = Owner->GetIsAiming();
 		bIsHolding = Owner->GetIsHolding();
+		bIsTurnRight = Owner->bIsTurnRight;
+		bIsTurnLeft = Owner->bIsTurnLeft;
+		bIsTurnReady= Owner->bIsTurnReady;
 
 		
 		//if (Owner->IsMyPlayer() == false && bIsJumping == true) {
@@ -73,7 +79,7 @@ void USPAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		UKismetMathLibrary::BreakRotator(RInterp, foo, DeltaY, DeltaZ);
 
 		DeltaY = UKismetMathLibrary::ClampAngle(DeltaY, -90, 90);
-		DeltaZ = UKismetMathLibrary::ClampAngle(DeltaZ, -160, 160);
+		DeltaZ = UKismetMathLibrary::ClampAngle(DeltaZ, -0, 0);
 
 	}
 }

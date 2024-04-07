@@ -12,9 +12,10 @@ ASPObject::ASPObject()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	SetActorEnableCollision(true);
 	PrimaryActorTick.bCanEverTick = true;
-	bHasBeenCalled = false; // ÇÑ¹ø¸¸ ½ÇÇàÇÏ±â À§ÇÑ º¯¼ö
+	bHasBeenCalled = false; // ï¿½Ñ¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	//MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
 	ObjectMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ObjectMesh"));
+	ObjectMesh->SetCollisionProfileName(TEXT("PropCollision"));
 	ObjectMesh->SetMobility(EComponentMobility::Movable);
 
 	ObjectInfo = new Protocol::PositionInfo();
@@ -37,7 +38,7 @@ void ASPObject::BeginPlay()
 	ObjectLocation = GetActorLocation();
 	//ObjectInfo->set_object_id(20);
 
-	{// Ã³À½ À§Ä¡¸¦ ¼³Á¤ÇØÁÜ
+	{// Ã³ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		//ObjectInfo->set_x(ObjectLocation.X);
 		//ObjectInfo->set_y(ObjectLocation.Y);
 		//ObjectInfo->set_z(ObjectLocation.Z);
@@ -57,8 +58,8 @@ void ASPObject::OnExplosionHit(float Damage)
 	if (false == bHasBeenCalled)
 	{
 		ObjectMesh->SetHiddenInGame(true);
-		ObjectMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		this->SetLifeSpan(1.0f);
+		//ObjectMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		//this->SetLifeSpan(1.0f);
 		bHasBeenCalled = true;
 	}
 }
@@ -74,6 +75,7 @@ void ASPObject::Tick(float DeltaTime)
 	}
 	DelayTime = 1.0;
 	bool Equal = UKismetMathLibrary::EqualEqual_VectorVector(ObjectLocation, GetActorLocation(), 0.0);
+	//UE_LOG(LogTemp, Log, TEXT("%s"), *GetActorLocation().ToString());
 	if (Equal)
 	{
 		ObjectMesh->SetSimulatePhysics(false);
@@ -146,7 +148,7 @@ void ASPObject::SetDestInfo(const Protocol::PositionInfo& Info)
 	//	assert(PlayerInfo->object_id() == Info.object_id());
 	//}
 
-	//// Dest¿¡ ÃÖÁ¾ »óÅÂ º¹»ç
+	//// Destï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	//DestInfo->CopyFrom(Info);
 	//bIsAiming = Info.is_aiming();
 	////bIsJumping = Info.is_jumping();
@@ -160,6 +162,6 @@ void ASPObject::SetDestInfo(const Protocol::PositionInfo& Info)
 	//	ResetJumping();
 	//}
 
-	//// »óÅÂ¸¸ ¹Ù·Î Àû¿ë!
+	//// ï¿½ï¿½ï¿½Â¸ï¿½ ï¿½Ù·ï¿½ ï¿½ï¿½ï¿½ï¿½!
 	//SetMoveState(Info.state());
 }

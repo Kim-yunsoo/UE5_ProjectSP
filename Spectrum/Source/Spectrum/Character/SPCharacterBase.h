@@ -29,7 +29,7 @@ class SPECTRUM_API ASPCharacterBase : public ACharacter
 protected:
 
 	virtual void BeginPlay();
-	virtual void Tick(float DeltaSeconds) override;			// ¸Å ÇÁ·¹ÀÓ¸¶´Ù °»½ÅµÇ¾î¾ß ÇÏ´Â °Íµé ¿©±â¿¡  ¿Í¶ö¤©¶ó
+	virtual void Tick(float DeltaSeconds) override;			// ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ó¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ÅµÇ¾ï¿½ï¿½ ï¿½Ï´ï¿½ ï¿½Íµï¿½ ï¿½ï¿½ï¿½â¿¡  ï¿½Í¶ï¿½ï¿½ï¿½ï¿½ï¿½
 
 public:
 	bool IsMyPlayer();
@@ -43,11 +43,11 @@ public:
 	Protocol::PositionInfo* GetPlayerInfo() { return PlayerInfo; }
 
 protected:
-	class Protocol::PositionInfo* PlayerInfo; // ÇöÀç À§Ä¡
-	class Protocol::PositionInfo* DestInfo;	// °¡·Á´Â À§Ä¡
+	class Protocol::PositionInfo* PlayerInfo; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡
+	class Protocol::PositionInfo* DestInfo;	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡
 
 protected:
-	// ½ÃÁ¡º¯È¯
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯
 	virtual void SetCharacterControlData(const class USPCharacterControlData* CharacterControlData);
 
 	UPROPERTY(EditAnywhere, Category = CharacterControl, Meta = (AllowPrivateAccess = "true"))
@@ -56,14 +56,14 @@ protected:
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-	uint8 bIsAiming : 1; //Á¶ÁØ 
+	uint8 bIsAiming : 1; //ï¿½ï¿½ï¿½ï¿½ 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-	uint8 bIsHolding : 1; //Àâ´ÂÁö ÆÇ´Ü
+	uint8 bIsHolding : 1; //ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ç´ï¿½
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-	uint8 bIsJumping : 1; //Á¡ÇÁÇÏ´ÂÁö
+	uint8 bIsJumping : 1; //ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ï¿½ï¿½
 
 
 public:

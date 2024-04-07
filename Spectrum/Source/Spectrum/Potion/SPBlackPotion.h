@@ -45,8 +45,12 @@ public:
 		const FHitResult& Hit
 	);
 
+
+	UPROPERTY(VisibleAnywhere)
+	TArray<AActor*>ActorArray;
 public:
 	void Throw(const FVector& PotionDirection);
 
 	void MoveTo();
+
 };
