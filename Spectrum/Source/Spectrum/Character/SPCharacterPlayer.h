@@ -57,6 +57,7 @@ protected: // 카메라
 	void Jumping(const FInputActionValue& Value);
 
 	void BlackPotionSpawn(const FInputActionValue& Value);
+	void GreenPotionSpawn(const FInputActionValue& Value);
 
 	ECharacterControlType CurrentCharacterControlType;
 
@@ -118,6 +119,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> BlackFour; //4번 눌렀을 때 작동 
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> GreenOne; //1번 눌렀을 때 초록색 스폰 작동 
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> ThrowCtrl; //던지기 키
@@ -171,7 +175,7 @@ protected:
 	TObjectPtr<class UArrowComponent> GravityArrow;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Object, Meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class ASPBlackPotion> BlackPotion;
+	TObjectPtr<class ASPPotionBase> Potion;
 
 	UFUNCTION()
 	void HandleMontageAnimNotify(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload);

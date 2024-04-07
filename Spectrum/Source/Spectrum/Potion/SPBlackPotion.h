@@ -5,12 +5,11 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Component/SPExplosionComponent.h"
-#include "Components/SphereComponent.h"
-#include "GameFramework/ProjectileMovementComponent.h"
+#include "Potion/SPPotionBase.h"
 #include "SPBlackPotion.generated.h"
 
 UCLASS()
-class SPECTRUM_API ASPBlackPotion : public AActor
+class SPECTRUM_API ASPBlackPotion : public ASPPotionBase
 {
 	GENERATED_BODY()
 	
@@ -28,29 +27,10 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USPExplosionComponent> ExplosionComponent ;
 
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UProjectileMovementComponent> MovementComponent;
-
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<USphereComponent> SphereComponent;
-
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<UStaticMeshComponent> BlackPotionMesh;
-	bool bHasExecutedOnce;
-
 	UFUNCTION()
 	void HandleActorHit(AActor* SelfActor,
 		AActor* OtherActor,
 		FVector NormalImpulse,
 		const FHitResult& Hit
 	);
-
-
-	UPROPERTY(VisibleAnywhere)
-	TArray<AActor*>ActorArray;
-public:
-	void Throw(const FVector& PotionDirection);
-
-	void MoveTo();
-
 };
