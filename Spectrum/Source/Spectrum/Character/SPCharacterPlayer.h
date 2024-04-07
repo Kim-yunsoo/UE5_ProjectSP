@@ -66,18 +66,16 @@ protected: // ī�޶�
 	ECharacterControlType CurrentCharacterControlType;
 
 protected:
-	const float MOVE_PACKET_SEND_DELAY = 0.2f;				// �����Ӵ� �̵� ��Ŷ ���� ������
+	const float MOVE_PACKET_SEND_DELAY = 0.2f;				
 	float MovePacketSendTimer = MOVE_PACKET_SEND_DELAY;
 
-	// ���������� ������ ���°�
 	FVector2D DesiredInput;
 	FVector DesiredMoveDirection;
 	float DesiredYaw;
 
-	FVector2D LastInput; // ���� �������� �Է� ���� �����ϴ� ��� ����
-	float LastMoveTime; // ��� ������ ���������� ������ �ð��� ����մϴ�.
+	FVector2D LastInput;
+	float LastMoveTime; 
 
-	// ���� ���Ⱚ(�׽�Ʈ��)
 	FVector2D LastDesiredInput;
 
 

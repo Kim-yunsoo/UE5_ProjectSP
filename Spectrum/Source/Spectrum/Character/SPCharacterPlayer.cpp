@@ -596,7 +596,6 @@ void ASPCharacterPlayer::StopGraping(const FInputActionValue& Value)
 		HitComponent->AddImpulse(FollowCamera->GetForwardVector() * HitDistance, NAME_None, true);
 		HitComponent = nullptr;
 
-		// ���� ���� �� --> ���⼭ HitComponent��  is_holding ����
 		AActor* OwnerActor = HitComponent->GetOwner();
 		ASPObject* MyActor = Cast<ASPObject>(OwnerActor);
 		MyActor->ObjectInfo->set_is_holding(false);
