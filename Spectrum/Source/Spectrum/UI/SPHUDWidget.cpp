@@ -39,7 +39,7 @@ void USPHUDWidget::BindToPlayer(ASPCharacterPlayer* Player)
 {
 	if (Player)
 	{
-		// Delegate¿¡ ÇÔ¼ö ¹ÙÀÎµù
+		// Delegateï¿½ï¿½ ï¿½Ô¼ï¿½ ï¿½ï¿½ï¿½Îµï¿½
 		//Player->OnAimingChanged.AddUObject(this, &USPHUDWidget::USPHUDWidget);
 	}
 }

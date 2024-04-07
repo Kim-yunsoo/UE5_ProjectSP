@@ -11,6 +11,7 @@
 #include "SPCharacterControlData.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Spectrum.h"
+#include "Object/SPObject.h"
 #include "Components/SceneComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Components/ArrowComponent.h"
@@ -133,8 +134,8 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 
 	CurrentCharacterControlType = ECharacterControlType::Shoulder;
 	LastInput = FVector2D::ZeroVector;
-	bIsAiming = false;
-	bIsHolding = false;
+	//bIsAiming = false;
+	//bIsHolding = false;
 	HitComponent = nullptr;
 	bIsSpawn = false;
 	bIsThrowReady = false;
@@ -164,39 +165,24 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 		LastDesiredInput = DesiredInput;
 	}
 
-	if (DesiredInput == FVector2D::Zero()) {
-		SetMoveState(Protocol::MOVE_STATE_IDLE);
-		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("IDLE")));
-	}
-	else {
+	//if (DesiredInput == FVector2D::Zero()) {
+	//	SetMoveState(Protocol::MOVE_STATE_IDLE);
+	//	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("IDLE")));
+	//}
+	//else {
+	//	SetMoveState(Protocol::MOVE_STATE_RUN);
+	//	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("RUN")));
+	//}
+
+
+	FVector Velocity = GetVelocity();
+	if (!Velocity.IsNearlyZero())
 		SetMoveState(Protocol::MOVE_STATE_RUN);
-		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("RUN")));
-	}
-	/*if (DesiredInput.SizeSquared() <= KINDA_SMALL_NUMBER)
-		SetMoveState(Protocol::MOVE_STATE_IDLE);
 	else
-		SetMoveState(Protocol::MOVE_STATE_RUN);*/
-
-		//if (DesiredInput == LastInput)
-		//	SetMoveState(Protocol::MOVE_STATE_IDLE);
-		//else
-		//	SetMoveState(Protocol::MOVE_STATE_RUN);
-
-		//LastInput = DesiredInput; 
-
-		//if (!(DesiredInput == FVector2D::Zero()) && !(LastInput == DesiredInput))
-		//{
-		//	SetMoveState(Protocol::MOVE_STATE_RUN);
-		//}
-		//else if (DesiredInput == FVector2D::Zero() || DesiredInput == FVector2D::Zero())
-		//{
-		//	SetMoveState(Protocol::MOVE_STATE_IDLE);
-		//}
-
-		//LastInput = DesiredInput;
-
-
-	MovePacketSendTimer -= DeltaTime * 10;
+		SetMoveState(Protocol::MOVE_STATE_IDLE);
+	
+		// 0.1
+	MovePacketSendTimer -= DeltaTime*10;
 
 	if (MovePacketSendTimer <= 0 || ForceSendPacket)
 	{
@@ -205,16 +191,24 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 		Protocol::C_MOVE MovePkt;
 
 		{
-			Protocol::PlayerInfo* Info = MovePkt.mutable_info();
+			Protocol::PositionInfo* Info = MovePkt.mutable_info();
 			Info->CopyFrom(*PlayerInfo);
 			Info->set_yaw(DesiredYaw);
 			Info->set_state(GetMoveState());
+			Info->set_is_aiming(bIsAiming);
+			Info->set_is_holding(bIsHolding);
+			Info->set_is_jumping(bIsJumping);
 
 			////Info â�� ���
 			//if(GetMoveState()== Protocol::MOVE_STATE_IDLE)
 			//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("IDLE")));
 			//else if(GetMoveState() == Protocol::MOVE_STATE_RUN)
 			//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("RUN")));
+
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("%f %f %f"),
+			//	GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, FString::Printf(TEXT("%f %f %f"),
+			//	PlayerInfo->x(), PlayerInfo->y(), PlayerInfo->z()));
 		}
 
 		SEND_PACKET(MovePkt);
@@ -223,6 +217,7 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 	if (bIsHolding)
 	{
 		PhysicsHandleComponent->SetTargetLocation(GravityArrow->K2_GetComponentLocation());
+
 	}
 }
 
@@ -233,14 +228,14 @@ void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Player
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
 	{
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::Jumping);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ASPCharacterPlayer::StopJumping);
 
 		EnhancedInputComponent->BindAction(ChangeControlAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::ChangeCharacterControl);
 
 		EnhancedInputComponent->BindAction(ShoulderMoveAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::ShoulderMove);
 
 		EnhancedInputComponent->BindAction(ShoulderLookAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::ShoulderLook);
-		EnhancedInputComponent->BindAction(ShoulderLookAction, ETriggerEvent::None, this, &ASPCharacterPlayer::StopShoulderLook);
+		//EnhancedInputComponent->BindAction(ShoulderLookAction, ETriggerEvent::None, this, &ASPCharacterPlayer::StopShoulderLook);
 
 		EnhancedInputComponent->BindAction(QuaterMoveAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::QuaterMove);
 		EnhancedInputComponent->BindAction(QuaterMoveAction, ETriggerEvent::Completed, this, &ASPCharacterPlayer::QuaterMove);
@@ -322,6 +317,8 @@ void ASPCharacterPlayer::ShoulderMove(const FInputActionValue& Value)
 
 	if (Controller != nullptr)
 	{
+		
+
 		const FRotator Rotation = Controller->GetControlRotation();
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
 
@@ -460,6 +457,32 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 				outHitResult.Component->SetSimulatePhysics(true);
 				HitComponent = outHitResult.GetComponent();
 
+				// ������ ���� ����
+				AActor* OwnerActor = HitComponent->GetOwner();
+				ASPObject* MyActor = static_cast<ASPObject*>(OwnerActor);
+				if (MyActor)
+				{
+					// ĳ���� ����, MyActor�� ����� ���� ����
+					MyActor->ObjectInfo->set_is_holding(true);
+					MyActor->ObjectInfo->set_x(MyActor->K2_GetActorLocation().X);
+					MyActor->ObjectInfo->set_y(MyActor->K2_GetActorLocation().Y);
+					MyActor->ObjectInfo->set_z(MyActor->K2_GetActorLocation().Z);
+					
+
+					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, FString::Printf(TEXT("%lld"), 
+						MyActor->ObjectInfo->object_id()));
+
+				}
+				else
+				{
+					// ĳ���� ����, ���� �α� �Ǵ� ��ü ���� ����
+					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, FString::Printf(TEXT("cast fail")));
+				}
+
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, FString::Printf(TEXT("%f %f %f"),
+				//	GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z));
+
+				// UE_LOG ��ũ�θ� ����Ͽ� �α׸� ����մϴ�.
 				//여기서 주변 물체의 SetSimulatePhysics(true);
 				FVector SphereTracePoint = HitComponent->K2_GetComponentLocation();
 				float Radius = 150.f;
@@ -545,6 +568,11 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 		bIsHolding = false;
 		if (HitComponent && HitComponent->IsSimulatingPhysics())
 		{
+			// ���� ���� �� --> ���⼭ HitComponent��  is_holding ����
+			AActor* OwnerActor = HitComponent->GetOwner();
+			ASPObject* MyActor = Cast<ASPObject>(OwnerActor);
+			MyActor->ObjectInfo->set_is_holding(false);
+
 			PhysicsHandleComponent->ReleaseComponent();
 			HitComponent->AddImpulse(FollowCamera->GetForwardVector() * HitDistance, NAME_None, true);
 			HitComponent = nullptr;
@@ -561,6 +589,11 @@ void ASPCharacterPlayer::StopGraping(const FInputActionValue& Value)
 		PhysicsHandleComponent->ReleaseComponent();
 		HitComponent->AddImpulse(FollowCamera->GetForwardVector() * HitDistance, NAME_None, true);
 		HitComponent = nullptr;
+
+		// ���� ���� �� --> ���⼭ HitComponent��  is_holding ����
+		AActor* OwnerActor = HitComponent->GetOwner();
+		ASPObject* MyActor = Cast<ASPObject>(OwnerActor);
+		MyActor->ObjectInfo->set_is_holding(false);
 	}
 }
 
@@ -612,6 +645,20 @@ void ASPCharacterPlayer::Jumping(const FInputActionValue& Value)
 		bPressedJump = true;
 		JumpKeyHoldTime = 0.0f;
 	}
+	// ���� ������Ʈ ����
+	//SetMoveState(Protocol::MOVE_STATE_JUMP);
+	SetJumping();
+}
+
+void ASPCharacterPlayer::StopJumping(const FInputActionValue& Value)
+{
+	bPressedJump = false;
+	ResetJumpState();
+	/*bIsJumping = false;*/
+
+	// ���� ������Ʈ ����
+	//SetMoveState(Protocol::MOVE_STATE_IDLE);
+	ResetJumping();
 }
 
 void ASPCharacterPlayer::BlackPotionSpawn(const FInputActionValue& Value)

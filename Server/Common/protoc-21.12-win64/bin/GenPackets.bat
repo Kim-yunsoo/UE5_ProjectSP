@@ -17,21 +17,13 @@ XCOPY /Y Protocol.pb.h "../../../GameServer"
 XCOPY /Y Protocol.pb.cc "../../../GameServer"
 XCOPY /Y ServerPacketHandler.h "../../../GameServer"
 
-XCOPY /Y Enum.pb.h "../../../DummyClient"
-XCOPY /Y Enum.pb.cc "../../../DummyClient"
-XCOPY /Y Struct.pb.h "../../../DummyClient"
-XCOPY /Y Struct.pb.cc "../../../DummyClient"
-XCOPY /Y Protocol.pb.h "../../../DummyClient"
-XCOPY /Y Protocol.pb.cc "../../../DummyClient"
-XCOPY /Y ClientPacketHandler.h "../../../DummyClient"
-
-XCOPY /Y Enum.pb.h "../../../../S1/Source/S1/Network"
-XCOPY /Y Enum.pb.cc "../../../../S1/Source/S1/Network"
-XCOPY /Y Struct.pb.h "../../../../S1/Source/S1/Network"
-XCOPY /Y Struct.pb.cc "../../../../S1/Source/S1/Network"
-XCOPY /Y Protocol.pb.h "../../../../S1/Source/S1/Network"
-XCOPY /Y Protocol.pb.cc "../../../../S1/Source/S1/Network"
-XCOPY /Y ClientPacketHandler.h "../../../../S1/Source/S1"
+XCOPY /Y Enum.pb.h "../../../../Spectrum/Source/Spectrum/Network"
+XCOPY /Y Enum.pb.cc "../../../../Spectrum/Source/Spectrum/Network"
+XCOPY /Y Struct.pb.h "../../../../Spectrum/Source/Spectrum/Network"
+XCOPY /Y Struct.pb.cc "../../../../Spectrum/Source/Spectrum/Network"
+XCOPY /Y Protocol.pb.h "../../../../Spectrum/Source/Spectrum/Network"
+XCOPY /Y Protocol.pb.cc "../../../../Spectrum/Source/Spectrum/Network"
+XCOPY /Y ClientPacketHandler.h "../../../../Spectrum/Source/Spectrum"
 
 DEL /Q /F *.pb.h
 DEL /Q /F *.pb.cc

@@ -9,7 +9,7 @@
 #include "PacketSession.h"
 #include "Protocol.pb.h"
 #include "ClientPacketHandler.h"
-#include "TestMyPlayer.h"
+#include "Object/SPObject.h"
 #include "Character/SPCharacterPlayer.h"
 
 void USpectrumGameInstance::ConnectToGameServer()
@@ -95,7 +95,7 @@ void USpectrumGameInstance::SendPacket(SendBufferRef SendBuffer)
 }
 
 
-void USpectrumGameInstance::HandleSpawn(const Protocol::PlayerInfo& PlayerInfo, bool IsMine)
+void USpectrumGameInstance::HandleSpawn(const Protocol::ObjectInfo& ObjectInfo, bool IsMine)
 {
 	if (Socket == nullptr || GameServerSession == nullptr)
 		return;
@@ -105,11 +105,11 @@ void USpectrumGameInstance::HandleSpawn(const Protocol::PlayerInfo& PlayerInfo, 
 		return;
 
 	// 중복 처리 체크
-	const uint64 ObjectId = PlayerInfo.object_id();
+	const uint64 ObjectId = ObjectInfo.object_id();
 	if (Players.Find(ObjectId) != nullptr)
 		return;
 
-	FVector SpawnLocation(PlayerInfo.x(), PlayerInfo.y(), PlayerInfo.z());
+	FVector SpawnLocation(ObjectInfo.pos_info().x(), ObjectInfo.pos_info().y(), ObjectInfo.pos_info().z());
 
 	if (IsMine)
 	{
@@ -118,16 +118,16 @@ void USpectrumGameInstance::HandleSpawn(const Protocol::PlayerInfo& PlayerInfo, 
 		if (Player == nullptr)
 			return;
 
-		Player->SetPlayerInfo(PlayerInfo);
+		Player->SetPostionInfo(ObjectInfo.pos_info());
 
 		MyPlayer = Player;
-		Players.Add(PlayerInfo.object_id(), Player);
+		Players.Add(ObjectInfo.object_id(), Player);
 	}
 	else
 	{
 		ASPCharacterBase* Player = Cast<ASPCharacterBase>(World->SpawnActor(OtherPlayerClass, &SpawnLocation));
-		Player->SetPlayerInfo(PlayerInfo);
-		Players.Add(PlayerInfo.object_id(), Player);
+		Player->SetPostionInfo(ObjectInfo.pos_info());
+		Players.Add(ObjectInfo.object_id(), Player);
 	}
 
 }
@@ -171,6 +171,37 @@ void USpectrumGameInstance::HandleDespawn(const Protocol::S_DESPAWN& DespawnPkt)
 	}
 }
 
+void USpectrumGameInstance::HandleOSpawn(const Protocol::S_O_SPAWN& OSpawnPkt)
+{
+	auto& Object = OSpawnPkt.objects();
+
+	HandleOSpawn(Object, false);
+}
+
+void USpectrumGameInstance::HandleOSpawn(const Protocol::PositionInfo& positionInfo, bool IsMine)
+{
+	if (Socket == nullptr || GameServerSession == nullptr)
+		return;
+
+	auto* World = GetWorld();
+	if (World == nullptr)
+		return;
+
+	// 중복 처리 체크
+	const uint64 ObjectId = positionInfo.object_id();
+	if (Objects.Find(ObjectId) != nullptr)
+		return;
+
+	FVector SpawnLocation(positionInfo.x(), positionInfo.y(), positionInfo.z());
+
+	ASPObject* Object = Cast<ASPObject>(World->SpawnActor(ObjectsClass, &SpawnLocation));
+	Object->SetPostionInfo(positionInfo);
+	Objects.Add(positionInfo.object_id(), Object);
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%lld"), positionInfo.object_id()));
+
+}
+
 void USpectrumGameInstance::HandleMove(const Protocol::S_MOVE& MovePkt)
 {
 
@@ -190,8 +221,30 @@ void USpectrumGameInstance::HandleMove(const Protocol::S_MOVE& MovePkt)
 	if (Player->IsMyPlayer())
 		return;
 
-	const Protocol::PlayerInfo& Info = MovePkt.info();
+	const Protocol::PositionInfo& Info = MovePkt.info();
 	//Player->SetPlayerInfo(Info);
 	Player->SetDestInfo(Info);
 
+}
+
+void USpectrumGameInstance::HandleOMove(const Protocol::S_O_MOVE& MovePkt)
+{
+
+	if (Socket == nullptr || GameServerSession == nullptr)
+		return;
+
+	auto* World = GetWorld();
+	if (World == nullptr)
+		return;
+
+	const uint64 ObjectId = MovePkt.info().object_id();
+	ASPObject** FindActor = Objects.Find(ObjectId);
+	if (FindActor == nullptr)
+		return;
+
+	ASPObject* Object = (*FindActor);
+
+	const Protocol::PositionInfo& Info = MovePkt.info();
+	Object->SetPostionInfo(Info);
+	//Object->SetDestInfo(Info);		// 이동 보정때문에 DestInfo에 저장
 }

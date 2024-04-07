@@ -8,6 +8,7 @@
 #include "SpectrumGameInstance.generated.h"
 
 class ASPCharacterBase;
+class ASPObject;
 /**
  * 
  */
@@ -31,14 +32,19 @@ public:
 
 
 public:
-	void HandleSpawn(const Protocol::PlayerInfo& PlayerInfo, bool IsMine);			// 플레이어 정보로 스폰	
+	void HandleSpawn(const Protocol::ObjectInfo& ObjectInfo, bool IsMine);			// 플레이어 정보로 스폰	
 	void HandleSpawn(const Protocol::S_ENTER_GAME& EnterGamePkt);		// 내가 컨트롤
 	void HandleSpawn(const Protocol::S_SPAWN& SpawnPkt);				// 남이 컨트롤
 
 	void HandleDespawn(uint64 ObjectId);								// 오브젝트 아이디로 삭제
 	void HandleDespawn(const Protocol::S_DESPAWN& DespawnPkt);			// 패킷으로 삭제
+	
+	
+	void HandleOSpawn(const Protocol::S_O_SPAWN& OSpawnPkt);			// 패킷으로 삭제
+	void HandleOSpawn(const Protocol::PositionInfo& positionInfo, bool IsMine);
 
 	void HandleMove(const Protocol::S_MOVE& MovePkt);					// 이동
+	void HandleOMove(const Protocol::S_O_MOVE& MovePkt);					// 이동
 
 
 public:
@@ -53,6 +59,10 @@ public:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<ASPCharacterBase> OtherPlayerClass;
 
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<ASPObject> ObjectsClass;
+
 	ASPCharacterBase* MyPlayer;
 	TMap<uint64, ASPCharacterBase*> Players;
+	TMap<uint64, ASPObject*> Objects;
 };

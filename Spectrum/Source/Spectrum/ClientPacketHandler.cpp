@@ -21,7 +21,7 @@ bool Handle_S_LOGIN(PacketSessionRef& session, Protocol::S_LOGIN& pkt)
 
 	for (int32 i = 0; i < pkt.players_size(); i++)
 	{
-		const Protocol::PlayerInfo& Player = pkt.players(i);
+		const Protocol::ObjectInfo& Player = pkt.players(i);
 	}
 
 	// 나중에 로그인 DB에 없으면 회원가입되도록 수정
@@ -75,6 +75,34 @@ bool Handle_S_DESPAWN(PacketSessionRef& session, Protocol::S_DESPAWN& pkt)
 	return true;
 }
 
+bool Handle_S_O_SPAWN(PacketSessionRef& session, Protocol::S_O_SPAWN& pkt)
+{
+	if (auto* GameInstance = Cast<USpectrumGameInstance>(GWorld->GetGameInstance()))
+	{
+		Protocol::PositionInfo posInfo = pkt.objects();
+		posInfo.set_object_id(pkt.objects().object_id());
+
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("%lld"), posInfo.object_id()));
+
+		GameInstance->HandleOSpawn(posInfo, false);
+
+	}
+
+	auto* GameInstance = Cast<USpectrumGameInstance>(GWorld->GetGameInstance());
+	Protocol::PositionInfo posInfo = pkt.objects();
+	posInfo.set_object_id(pkt.objects().object_id());
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("%lld"), posInfo.object_id()));
+	//GameInstance->HandleOSpawn(posInfo, false);
+
+	return true;
+}
+
+bool Handle_S_O_DESPAWN(PacketSessionRef& session, Protocol::S_O_DESPAWN& pkt)
+{
+	return false;
+}
+
 bool Handle_S_MOVE(PacketSessionRef& session, Protocol::S_MOVE& pkt)
 {
 	if (auto* GameInstance = Cast<USpectrumGameInstance>(GWorld->GetGameInstance()))
@@ -85,9 +113,23 @@ bool Handle_S_MOVE(PacketSessionRef& session, Protocol::S_MOVE& pkt)
 	return true;
 }
 
+bool Handle_S_O_MOVE(PacketSessionRef& session, Protocol::S_O_MOVE& pkt) {
+
+	if (auto* GameInstance = Cast<USpectrumGameInstance>(GWorld->GetGameInstance()))
+	{
+		GameInstance->HandleOMove(pkt);
+	}
+
+	return true;
+
+
+}
+
 bool Handle_S_CHAT(PacketSessionRef& session, Protocol::S_CHAT& pkt)
 {
 	auto Msg = pkt.msg();
 	
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Msg")));
+
 	return true;
 }

@@ -49,15 +49,14 @@ namespace Protocol {
 
 enum ObjectType : int {
   OBJECT_TYPE_NONE = 0,
-  OBJECT_TYPE_CREATURE = 1,
-  OBJECT_TYPE_PROJECTILE = 2,
-  OBJECT_TYPE_ENV = 3,
+  OBJECT_TYPE_PLAYER = 1,
+  OBJECT_TYPE_THING = 2,
   ObjectType_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
   ObjectType_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
 };
 bool ObjectType_IsValid(int value);
 constexpr ObjectType ObjectType_MIN = OBJECT_TYPE_NONE;
-constexpr ObjectType ObjectType_MAX = OBJECT_TYPE_ENV;
+constexpr ObjectType ObjectType_MAX = OBJECT_TYPE_THING;
 constexpr int ObjectType_ARRAYSIZE = ObjectType_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* ObjectType_descriptor();
@@ -77,14 +76,13 @@ inline bool ObjectType_Parse(
 enum CreatureType : int {
   CREATURE_TYPE_NONE = 0,
   CREATURE_TYPE_PLAYER = 1,
-  CREATURE_TYPE_MONSTER = 2,
-  CREATURE_TYPE_NPC = 3,
+  CREATURE_TYPE_THING = 2,
   CreatureType_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
   CreatureType_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
 };
 bool CreatureType_IsValid(int value);
 constexpr CreatureType CreatureType_MIN = CREATURE_TYPE_NONE;
-constexpr CreatureType CreatureType_MAX = CREATURE_TYPE_NPC;
+constexpr CreatureType CreatureType_MAX = CREATURE_TYPE_THING;
 constexpr int CreatureType_ARRAYSIZE = CreatureType_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* CreatureType_descriptor();
@@ -133,13 +131,12 @@ enum MoveState : int {
   MOVE_STATE_IDLE = 1,
   MOVE_STATE_RUN = 2,
   MOVE_STATE_JUMP = 3,
-  MOVE_STATE_SKILL = 4,
   MoveState_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
   MoveState_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
 };
 bool MoveState_IsValid(int value);
 constexpr MoveState MoveState_MIN = MOVE_STATE_NONE;
-constexpr MoveState MoveState_MAX = MOVE_STATE_SKILL;
+constexpr MoveState MoveState_MAX = MOVE_STATE_JUMP;
 constexpr int MoveState_ARRAYSIZE = MoveState_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* MoveState_descriptor();

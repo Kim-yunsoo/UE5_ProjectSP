@@ -13,8 +13,8 @@
 ASPCharacterBase::ASPCharacterBase()
 {
 
-	PlayerInfo = new Protocol::PlayerInfo();
-	DestInfo = new Protocol::PlayerInfo();
+	PlayerInfo = new Protocol::PositionInfo();
+	DestInfo = new Protocol::PositionInfo();
 
 	
 	//Pawn
@@ -108,6 +108,9 @@ ASPCharacterBase::ASPCharacterBase()
 		PhysicsHandleComponent->SetInterpolationSpeed(5.0);
 	}
 
+
+
+	bIsAiming = false;
 }
 
 ASPCharacterBase::~ASPCharacterBase()
@@ -149,40 +152,44 @@ void ASPCharacterBase::Tick(float DeltaSeconds)
 	if (IsMyPlayer() == false)		// 내 플레이어가 아닌 경우에만 DestInfo를 이용하여 이동
 	{								// 야금야금 이동하도록 보정
 
-		FVector Location = GetActorLocation();
-		FVector DestLocation = FVector(DestInfo->x(), DestInfo->y(), DestInfo->z());
+		//FVector Location = GetActorLocation();
+		//FVector DestLocation = FVector(DestInfo->x(), DestInfo->y(), DestInfo->z());
 
-		FVector MoveDir = (DestLocation - Location);
-		//const float DistToDest = MoveDir.Length();
-		MoveDir.Length();
-		MoveDir.Normalize();
+		//FVector MoveDir = (DestLocation - Location);
+		//////const float DistToDest = MoveDir.Length();
+		////MoveDir.Length();
+		////MoveDir.Normalize();
 
-		FRotator Rotator = MoveDir.Rotation();
-		float DestLook = Rotator.Yaw;
-		//float LastLook;
+		////FRotator Rotator = MoveDir.Rotation();
+		////float DestLook = Rotator.Yaw;
+		//////float LastLook;
 
-		//float MoveDist = (MoveDir * 600.f * DeltaSeconds).Length();
-		//MoveDist = FMath::Min(MoveDist, DistToDest);	//오버해서 가지 않게 제한
-		//FVector NextLocation = Location + MoveDir* MoveDist;
+		//////float MoveDist = (MoveDir * 600.f * DeltaSeconds).Length();
+		//////MoveDist = FMath::Min(MoveDist, DistToDest);	//오버해서 가지 않게 제한
+		//////FVector NextLocation = Location + MoveDir* MoveDist;
 
-		SetActorLocation(DestLocation);
+		//SetActorLocation(DestLocation);
+
+
+		if (bIsAiming)
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("aim!!!!")));
 
 		const Protocol::MoveState State = PlayerInfo->state();
 
 		if (State == Protocol::MOVE_STATE_RUN)
 		{
 			//SetActorRotation(FRotator(0, DestLook, 0));
-			SetActorRotation(FRotator(0, DestInfo->yaw() - 90.f, 0));
+			SetActorRotation(FRotator(0, DestInfo->yaw() - 90.0f, 0));
 			AddMovementInput(GetActorForwardVector());
 
-			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("RUN")));
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("RUN")));
 			//LastLook = DestLook;
 		}
 		else if (State == Protocol::MOVE_STATE_IDLE)
 		{
 			//SetActorRotation(FRotator(0, LastLook, 0));
 			//AddMovementInput(GetActorForwardVector());
-			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("IDLE")));
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("IDLE")));
 
 		}
 
@@ -194,6 +201,12 @@ void ASPCharacterBase::Tick(float DeltaSeconds)
 		//	* 보정해서 가게 할지
 		//	* 아니면 그냥 무시할지
 		//	*/
+		//}
+
+		//// 중력총 클라이언트 코드 
+		//if (bIsHolding)
+		//{
+		//	PhysicsHandleComponent->SetTargetLocation(GravityArrow->K2_GetComponentLocation());
 		//}
 	}
 }
@@ -214,7 +227,7 @@ void ASPCharacterBase::SetMoveState(Protocol::MoveState State)
 	// 나중에 상태에 따른 애니메이션 변경 추가할수도..?
 }
 
-void ASPCharacterBase::SetPlayerInfo(const Protocol::PlayerInfo& Info)
+void ASPCharacterBase::SetPostionInfo(const Protocol::PositionInfo& Info)
 {
 	if (PlayerInfo->object_id() != 0)
 	{
@@ -222,12 +235,23 @@ void ASPCharacterBase::SetPlayerInfo(const Protocol::PlayerInfo& Info)
 	}
 
 	PlayerInfo->CopyFrom(Info);
+	bIsAiming = Info.is_aiming();
+	bIsJumping = Info.is_jumping();
+	bIsHolding = Info.is_holding();
+
+	if (IsMyPlayer() == false && Info.is_jumping() == true) {
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Jump signal 2")));
+		SetJumping();
+	}
+	else if (IsMyPlayer() == false && Info.is_jumping() == false) {
+		ResetJumping();
+	}
 
 	FVector Location(Info.x(), Info.y(), Info.z());
 	SetActorLocation(Location);
 }
 
-void ASPCharacterBase::SetDestInfo(const Protocol::PlayerInfo& Info)
+void ASPCharacterBase::SetDestInfo(const Protocol::PositionInfo& Info)
 {
 	if (PlayerInfo->object_id() != 0)
 	{
@@ -236,6 +260,17 @@ void ASPCharacterBase::SetDestInfo(const Protocol::PlayerInfo& Info)
 
 	// Dest에 최종 상태 복사
 	DestInfo->CopyFrom(Info);
+	bIsAiming = Info.is_aiming();
+	//bIsJumping = Info.is_jumping();
+	bIsHolding = Info.is_holding();
+
+	if (IsMyPlayer() == false && Info.is_jumping() == true) {
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Jump signal 2")));
+		SetJumping();
+	}
+	else if (IsMyPlayer() == false && Info.is_jumping() == false) {
+		ResetJumping();
+	}
 
 	// 상태만 바로 적용!
 	SetMoveState(Info.state());
@@ -250,6 +285,16 @@ void ASPCharacterBase::SetCharacterControlData(const USPCharacterControlData* Ch
 	GetCharacterMovement()->bOrientRotationToMovement = CharacterControlData->bOrientRotationToMovement;
 	GetCharacterMovement()->bUseControllerDesiredRotation = CharacterControlData->bUseControllerDesiredRotation;
 	GetCharacterMovement()->RotationRate = CharacterControlData->RotationRate;
+}
+
+void ASPCharacterBase::SetJumping()
+{
+	bIsJumping = true;
+}
+
+void ASPCharacterBase::ResetJumping()
+{
+	bIsJumping = false;
 }
 
 
