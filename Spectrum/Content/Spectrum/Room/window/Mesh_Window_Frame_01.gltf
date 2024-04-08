@@ -1,0 +1,294 @@
+{
+	"asset":
+	{
+		"version": "2.0",
+		"generator": "Unreal Engine 5.3.2"
+	},
+	"scene": 0,
+	"accessors": [
+		{
+			"bufferView": 0,
+			"count": 12,
+			"type": "SCALAR",
+			"componentType": 5121
+		},
+		{
+			"bufferView": 1,
+			"count": 8,
+			"type": "VEC3",
+			"componentType": 5126,
+			"min": [ -0.0230000615, 1.12500083, 0.0782850608 ],
+			"max": [ -0.0169998575, 2.07171512, 1.12171507 ]
+		},
+		{
+			"bufferView": 2,
+			"count": 8,
+			"type": "VEC3",
+			"componentType": 5126
+		},
+		{
+			"bufferView": 3,
+			"count": 8,
+			"type": "VEC4",
+			"componentType": 5126
+		},
+		{
+			"bufferView": 4,
+			"count": 8,
+			"type": "VEC2",
+			"componentType": 5126
+		},
+		{
+			"bufferView": 5,
+			"count": 8,
+			"type": "VEC2",
+			"componentType": 5126
+		},
+		{
+			"bufferView": 6,
+			"count": 1122,
+			"type": "SCALAR",
+			"componentType": 5123
+		},
+		{
+			"bufferView": 7,
+			"count": 608,
+			"type": "VEC3",
+			"componentType": 5126,
+			"min": [ -0.31536895, -0.199999988, -0.200000525 ],
+			"max": [ 1.44000001e-06, 2.40000081, 1.39999998 ]
+		},
+		{
+			"bufferView": 8,
+			"count": 608,
+			"type": "VEC3",
+			"componentType": 5126
+		},
+		{
+			"bufferView": 9,
+			"count": 608,
+			"type": "VEC4",
+			"componentType": 5126
+		},
+		{
+			"bufferView": 10,
+			"count": 608,
+			"type": "VEC2",
+			"componentType": 5126
+		},
+		{
+			"bufferView": 11,
+			"count": 608,
+			"type": "VEC2",
+			"componentType": 5126
+		}
+	],
+	"buffers": [
+		{
+			"uri": "Mesh_Window_Frame_01.bin",
+			"byteLength": 36752
+		}
+	],
+	"bufferViews": [
+		{
+			"buffer": 0,
+			"byteLength": 12,
+			"target": 34963
+		},
+		{
+			"buffer": 0,
+			"byteLength": 96,
+			"byteOffset": 12,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 96,
+			"byteOffset": 108,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 128,
+			"byteOffset": 204,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 64,
+			"byteOffset": 332,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 64,
+			"byteOffset": 396,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 2244,
+			"byteOffset": 460,
+			"target": 34963
+		},
+		{
+			"buffer": 0,
+			"byteLength": 7296,
+			"byteOffset": 2704,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 7296,
+			"byteOffset": 10000,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 9728,
+			"byteOffset": 17296,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 4864,
+			"byteOffset": 27024,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 4864,
+			"byteOffset": 31888,
+			"target": 34962
+		}
+	],
+	"images": [
+		{
+			"uri": "Inst_Glass_01_MetallicRoughness.png"
+		},
+		{
+			"uri": "Inst_Window_01_BaseColor.png"
+		},
+		{
+			"uri": "Inst_Window_01_MetallicRoughness.png"
+		},
+		{
+			"uri": "Inst_Window_01_Normal.png"
+		},
+		{
+			"uri": "T_Window_ARM_01.png"
+		}
+	],
+	"materials": [
+		{
+			"name": "Inst_Glass_01",
+			"pbrMetallicRoughness":
+			{
+				"baseColorFactor": [ 1, 1, 1, 0.25 ],
+				"metallicRoughnessTexture":
+				{
+					"index": 0
+				}
+			},
+			"alphaMode": "BLEND"
+		},
+		{
+			"name": "Inst_Window_01",
+			"pbrMetallicRoughness":
+			{
+				"baseColorTexture":
+				{
+					"index": 1
+				},
+				"metallicRoughnessTexture":
+				{
+					"index": 2
+				}
+			},
+			"normalTexture":
+			{
+				"index": 3
+			},
+			"occlusionTexture":
+			{
+				"index": 4
+			},
+			"alphaMode": "MASK",
+			"alphaCutoff": 0.333299994
+		}
+	],
+	"meshes": [
+		{
+			"name": "Mesh_Window_Frame_01",
+			"primitives": [
+				{
+					"attributes":
+					{
+						"POSITION": 1,
+						"NORMAL": 2,
+						"TANGENT": 3,
+						"TEXCOORD_0": 4,
+						"TEXCOORD_1": 5
+					},
+					"indices": 0,
+					"material": 0
+				},
+				{
+					"attributes":
+					{
+						"POSITION": 7,
+						"NORMAL": 8,
+						"TANGENT": 9,
+						"TEXCOORD_0": 10,
+						"TEXCOORD_1": 11
+					},
+					"indices": 6,
+					"material": 1
+				}
+			]
+		}
+	],
+	"nodes": [
+		{
+			"mesh": 0
+		}
+	],
+	"samplers": [
+		{
+			"minFilter": 9987,
+			"magFilter": 9729
+		}
+	],
+	"scenes": [
+		{
+			"nodes": [ 0 ]
+		}
+	],
+	"textures": [
+		{
+			"name": "Inst_Glass_01_MetallicRoughness",
+			"sampler": 0,
+			"source": 0
+		},
+		{
+			"name": "Inst_Window_01_BaseColor",
+			"sampler": 0,
+			"source": 1
+		},
+		{
+			"name": "Inst_Window_01_MetallicRoughness",
+			"sampler": 0,
+			"source": 2
+		},
+		{
+			"name": "Inst_Window_01_Normal",
+			"sampler": 0,
+			"source": 3
+		},
+		{
+			"name": "T_Window_ARM_01",
+			"sampler": 0,
+			"source": 4
+		}
+	]
+}
