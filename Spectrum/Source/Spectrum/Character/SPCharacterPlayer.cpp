@@ -458,15 +458,15 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 				outHitResult.Component->SetSimulatePhysics(true);
 				HitComponent = outHitResult.GetComponent();
 
-				/*AActor* OwnerActor = HitComponent->GetOwner();
-				ASPObject* MyActor = Cast<ASPObject>(OwnerActor);
-				if (MyActor)
-				{
-					MyActor->ObjectInfo->set_is_holding(true);
-					MyActor->ObjectInfo->set_x(MyActor->K2_GetActorLocation().X);
-					MyActor->ObjectInfo->set_y(MyActor->K2_GetActorLocation().Y);
-					MyActor->ObjectInfo->set_z(MyActor->K2_GetActorLocation().Z);
-					
+				//AActor* OwnerActor = HitComponent->GetOwner();
+				//ASPObject* MyActor = Cast<ASPObject>(OwnerActor);
+				//if (MyActor)
+				//{
+				//	MyActor->ObjectInfo->set_is_holding(true);
+				//	MyActor->ObjectInfo->set_x(MyActor->K2_GetActorLocation().X);
+				//	MyActor->ObjectInfo->set_y(MyActor->K2_GetActorLocation().Y);
+				//	MyActor->ObjectInfo->set_z(MyActor->K2_GetActorLocation().Z);
+				//	
 
 				//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, FString::Printf(TEXT("%lld"), 
 				//		MyActor->ObjectInfo->object_id()));
