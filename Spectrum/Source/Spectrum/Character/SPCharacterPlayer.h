@@ -66,18 +66,16 @@ protected: // ī�޶�
 	ECharacterControlType CurrentCharacterControlType;
 
 protected:
-	const float MOVE_PACKET_SEND_DELAY = 0.2f;				// �����Ӵ� �̵� ��Ŷ ���� ������
+	const float MOVE_PACKET_SEND_DELAY = 0.2f;				
 	float MovePacketSendTimer = MOVE_PACKET_SEND_DELAY;
 
-	// ���������� ������ ���°�
 	FVector2D DesiredInput;
 	FVector DesiredMoveDirection;
 	float DesiredYaw;
 
-	FVector2D LastInput; // ���� �������� �Է� ���� �����ϴ� ��� ����
-	float LastMoveTime; // ��� ������ ���������� ������ �ð��� ����մϴ�.
+	FVector2D LastInput;
+	float LastMoveTime; 
 
-	// ���� ���Ⱚ(�׽�Ʈ��)
 	FVector2D LastDesiredInput;
 
 
@@ -116,19 +114,19 @@ protected:
 	TObjectPtr<class UInputAction> SpeedUpAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UInputAction> MouseRight;//���콺 ������
+	TObjectPtr<class UInputAction> MouseRight;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UInputAction> MouseLeft; //���콺 ����
+	TObjectPtr<class UInputAction> MouseLeft; 
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UInputAction> BlackFour; //4�� ������ �� �۵� 
+	TObjectPtr<class UInputAction> BlackFour; 
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UInputAction> GreenOne; //1�� ������ �� �ʷϻ� ���� �۵� 
+	TObjectPtr<class UInputAction> GreenOne; 
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UInputAction> ThrowCtrl; //������ Ű
+	TObjectPtr<class UInputAction> ThrowCtrl;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputMappingContext* DefaultMappingContext;
@@ -148,10 +146,10 @@ protected:
 	//uint8 bIsAiming : 1; //���� 
 
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-	//uint8 bIsHolding : 1; //����� �Ǵ�
+	//uint8 bIsHolding : 1; 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-	FVector UILocation; //��ġ
+	FVector UILocation; 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	uint8 bIsSpawn : 1; //Spawn check
@@ -160,7 +158,7 @@ protected:
 	uint8 bIsThrowReady : 1; //Throw Ready? 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-	FVector UIRotator; //ȸ����
+	FVector UIRotator;
 
 
 
