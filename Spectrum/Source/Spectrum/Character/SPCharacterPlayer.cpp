@@ -458,17 +458,15 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 				outHitResult.Component->SetSimulatePhysics(true);
 				HitComponent = outHitResult.GetComponent();
 
-				// ������ ���� ����
-				//AActor* OwnerActor = HitComponent->GetOwner();
-				//ASPObject* MyActor = Cast<ASPObject>(OwnerActor);
-				//if (MyActor)
-				//{
-				//	// ĳ���� ����, MyActor�� ����� ���� ����
-				//	MyActor->ObjectInfo->set_is_holding(true);
-				//	MyActor->ObjectInfo->set_x(MyActor->K2_GetActorLocation().X);
-				//	MyActor->ObjectInfo->set_y(MyActor->K2_GetActorLocation().Y);
-				//	MyActor->ObjectInfo->set_z(MyActor->K2_GetActorLocation().Z);
-				//	
+				/*AActor* OwnerActor = HitComponent->GetOwner();
+				ASPObject* MyActor = Cast<ASPObject>(OwnerActor);
+				if (MyActor)
+				{
+					MyActor->ObjectInfo->set_is_holding(true);
+					MyActor->ObjectInfo->set_x(MyActor->K2_GetActorLocation().X);
+					MyActor->ObjectInfo->set_y(MyActor->K2_GetActorLocation().Y);
+					MyActor->ObjectInfo->set_z(MyActor->K2_GetActorLocation().Z);
+					
 
 				//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, FString::Printf(TEXT("%lld"), 
 				//		MyActor->ObjectInfo->object_id()));
@@ -482,8 +480,7 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 
 				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, FString::Printf(TEXT("%f %f %f"),
 				//	GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z));
-
-				// UE_LOG ��ũ�θ� ����Ͽ� �α׸� ����մϴ�.
+// 
 				//여기서 주변 물체의 SetSimulatePhysics(true);
 				FVector SphereTracePoint = HitComponent->K2_GetComponentLocation();
 				float Radius = 150.f;
@@ -569,7 +566,6 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 		bIsHolding = false;
 		if (HitComponent && HitComponent->IsSimulatingPhysics())
 		{
-			// ���� ���� �� --> ���⼭ HitComponent��  is_holding ����
 			/*AActor* OwnerActor = HitComponent->GetOwner();
 			ASPObject* MyActor = Cast<ASPObject>(OwnerActor);
 			MyActor->ObjectInfo->set_is_holding(false);*/
