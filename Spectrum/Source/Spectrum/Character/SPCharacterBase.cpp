@@ -56,7 +56,7 @@ ASPCharacterBase::ASPCharacterBase()
 	Feet->SetupAttachment(GetMesh());
 
 	//staff Mesh
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> StaffMeshRef(TEXT("/Script/Engine.StaticMesh'/Game/Spectrum/Staff/G_Staff/G_Staff.G_Staff'"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> StaffMeshRef(TEXT("/Script/Engine.StaticMesh'/Game/Spectrum/Assets/Staff/G_Staff/G_Staff.G_Staff'"));
 	Staff = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Staff"));
 	if (StaffMeshRef.Object)
 	{
