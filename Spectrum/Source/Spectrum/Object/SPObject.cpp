@@ -65,26 +65,29 @@ void ASPObject::OnExplosionHit(float Damage)
 {
 	if (bHasBeenCalled)
 	{
-		ObjectMesh->SetHiddenInGame(true);
-		ObjectMesh->SetSimulatePhysics(true);
-		ObjectMesh->SetCollisionProfileName(TEXT("DestructionCollision"));
-		//FName ComponentName = FName(TEXT("GC_Cone"));
-		UGeometryCollectionComponent* Geometry = NewObject<UGeometryCollectionComponent>(this, UGeometryCollectionComponent::StaticClass(), TEXT("GeometryComponent"));
-		if (Geometry)
-		{
-			Geometry->SetupAttachment(RootComponent);
-			Geometry->SetRestCollection(GeometryCollection);
-			Geometry->SetCollisionProfileName(TEXT("DestructionCollision"));
-			Geometry->RegisterComponent();
-			Geometry->AddImpulse(FVector(0.0f, 0.0f, 125.f));
-			FTimerHandle ChangeCollisionProfileTimer;
-			float DelayInSeconds = 1.0f;
-			GetWorld()->GetTimerManager().SetTimer(ChangeCollisionProfileTimer, [this, Geometry]() {
-				Geometry->SetCollisionProfileName(TEXT("OnlyStaticCollision"));
-				ObjectMesh->SetCollisionProfileName(TEXT("OnlyStaticCollision"));
-				}, DelayInSeconds, false);
-			this->SetLifeSpan(5.0f);
-		}
+
+		bIsFrist = true;
+		//ObjectMesh->SetHiddenInGame(true);
+		//ObjectMesh->SetSimulatePhysics(true);
+		//ObjectMesh->SetCollisionProfileName(TEXT("DestructionCollision"));
+		////FName ComponentName = FName(TEXT("GC_Cone"));
+		//UGeometryCollectionComponent* Geometry = NewObject<UGeometryCollectionComponent>(this, UGeometryCollectionComponent::StaticClass(), TEXT("GeometryComponent"));
+		//if (Geometry)
+		//{
+		//	Geometry->SetupAttachment(RootComponent);
+		//	Geometry->SetRestCollection(GeometryCollection);
+		//	Geometry->SetCollisionProfileName(TEXT("DestructionCollision"));
+		//	Geometry->RegisterComponent();
+		//	Geometry->AddImpulse(FVector(0.0f, 0.0f, 125.f));
+		//	FTimerHandle ChangeCollisionProfileTimer;
+		//	float DelayInSeconds = 1.0f;
+		//	GetWorld()->GetTimerManager().SetTimer(ChangeCollisionProfileTimer, [this, Geometry]() {
+		//		Geometry->SetCollisionProfileName(TEXT("OnlyStaticCollision"));
+		//		ObjectMesh->SetCollisionProfileName(TEXT("OnlyStaticCollision"));
+		//		}, DelayInSeconds, false);
+		//	this->SetLifeSpan(5.0f);
+		//}
+
 		bHasBeenCalled = false;
 	}
 }
@@ -93,15 +96,12 @@ void ASPObject::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// ?úÑÏπ? Î≥¥Ï†ï
-	//if(bIsMoving == true)	// ?ïúÎ≤àÏù¥?ùº?èÑ ?ù¥?èô?ñà?úºÎ©?
 	{
 		SetActorRotation(FRotator(0, DestInfo->yaw(), 0));
 		FVector Location(DestInfo->x(), DestInfo->y(), DestInfo->z());
-		FVector TargetLocation = Location;// Î™©Ìëú ?úÑÏπ?
-		float InterpSpeed = 1.0f; // Î≥¥Í∞Ñ ?Üç?èÑ
+		FVector TargetLocation = Location;
+		float InterpSpeed = 1.0f; 
 
-		// ?òÑ?û¨ ?úÑÏπòÏ?? Î™©Ìëú ?úÑÏπ? ?Ç¨?ù¥Î•? Î≥¥Í∞Ñ?ïò?ó¨ Î∂??ìú?ü¨?ö¥ ?ù¥?èô?ùÑ Íµ¨ÌòÑ
 		FVector NewLocation = FMath::Lerp(GetActorLocation(), TargetLocation, DeltaTime * InterpSpeed);
 		SetActorLocation(NewLocation);
 
@@ -136,8 +136,6 @@ void ASPObject::Tick(float DeltaTime)
 
 	MovePacketSendTimer -= DeltaTime;
 	if (!Equal && MovePacketSendTimer <= 0&& bIsFrist == false)	
-		// 0.1Ï¥àÎßà?ã§ Î¨ºÍ±¥?ùò ?úÑÏπòÍ?? ?ã§Î•¥Î©¥ C_O_MOVE ?å®?Ç∑	?†Ñ?Ü°
-		// ?Ñ∞Ïß?Ïß? ?ïä?ïò?ùÑ ?ïåÎß?
 	{
 		Protocol::C_O_MOVE MovePkt;
 		{
@@ -154,7 +152,26 @@ void ASPObject::Tick(float DeltaTime)
 	if (bIsFrist == true)
 	{
 		ObjectMesh->SetHiddenInGame(true);
-		bHasBeenCalled = true;
+		ObjectMesh->SetSimulatePhysics(true);
+		ObjectMesh->SetCollisionProfileName(TEXT("DestructionCollision"));
+		//FName ComponentName = FName(TEXT("GC_Cone"));
+		UGeometryCollectionComponent* Geometry = NewObject<UGeometryCollectionComponent>(this, UGeometryCollectionComponent::StaticClass(), TEXT("GeometryComponent"));
+		if (Geometry)
+		{
+			Geometry->SetupAttachment(RootComponent);
+			Geometry->SetRestCollection(GeometryCollection);
+			Geometry->SetCollisionProfileName(TEXT("DestructionCollision"));
+			Geometry->RegisterComponent();
+			Geometry->AddImpulse(FVector(0.0f, 0.0f, 125.f));
+			FTimerHandle ChangeCollisionProfileTimer;
+			float DelayInSeconds = 1.0f;
+			GetWorld()->GetTimerManager().SetTimer(ChangeCollisionProfileTimer, [this, Geometry]() {
+				Geometry->SetCollisionProfileName(TEXT("OnlyStaticCollision"));
+				ObjectMesh->SetCollisionProfileName(TEXT("OnlyStaticCollision"));
+				}, DelayInSeconds, false);
+			this->SetLifeSpan(5.0f);
+		}
+
 
 		Protocol::C_O_BURST BurstPkt;
 		{
@@ -165,6 +182,8 @@ void ASPObject::Tick(float DeltaTime)
 
 		SEND_PACKET(BurstPkt);
 
+		bIsFrist = false;
+		bHasBeenCalled = false;
 	}
 }
 
@@ -203,6 +222,9 @@ void ASPObject::SetDestInfo(const Protocol::PositionInfo& Info)
 
 void ASPObject::SetBurst(const bool burst)
 {
-	bHasBeenCalled = burst;
-	bIsFrist = burst;
+	if (bHasBeenCalled == true)
+	{
+		bHasBeenCalled = false;
+		bIsFrist = burst;
+	}
 }
