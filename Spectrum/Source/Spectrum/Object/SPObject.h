@@ -14,10 +14,11 @@
 UENUM()
 enum class ColorType :uint8
 {
-	None,
-	Green,
-	Orange,
-	Purple
+	
+	Green=0,
+	Orange=1,
+	Purple=2,
+	None
 };
 
 
@@ -80,9 +81,12 @@ protected://DynamicMaterial
 	ColorType MyColorType;
 
 	UPROPERTY()
-	FLinearColor GreenLinearColor{0.03f,1.0f,0.181f,1.0f};
-	UPROPERTY()
-	FLinearColor OrangeLinearColor{ 0.942f ,0.0266f ,0.0f,1.0f};
-	UPROPERTY()
-	FLinearColor PurpleLinearColor{ 0.263f,0.0f,0.6f,1.0f};
+	TArray<FLinearColor> LinearColors;
+
+	// UPROPERTY()
+	// FLinearColor GreenLinearColor{0.03f,1.0f,0.181f,1.0f};
+	// UPROPERTY()
+	// FLinearColor OrangeLinearColor{ 0.942f ,0.0266f ,0.0f,1.0f};
+	// UPROPERTY()
+	// FLinearColor PurpleLinearColor{ 0.263f,0.0f,0.6f,1.0f};
 };

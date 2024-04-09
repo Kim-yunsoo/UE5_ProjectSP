@@ -23,6 +23,11 @@ ASPObject::ASPObject()
 	ObjectMesh->SetCollisionProfileName(TEXT("PropCollision"));
 	ObjectMesh->SetMobility(EComponentMobility::Movable);
 	bHasBeenCalled = true;
+
+	LinearColors.Add(FLinearColor(0.03f, 1.0f, 0.181f, 1.0f));   // Green
+	LinearColors.Add(FLinearColor(0.942f, 0.0266f, 0.0f, 1.0f)); // Orange
+	LinearColors.Add(FLinearColor(0.263f, 0.0f, 0.6f, 1.0f));    // Purple
+	
 	ObjectInfo = new Protocol::PositionInfo();
 	DestInfo = new Protocol::PositionInfo();
 }
@@ -87,7 +92,7 @@ void ASPObject::OnExplosionHit()
 			Geometry->SetMaterial(0, ChaosDynamic);
 			if(MyColorType!=ColorType::None)
 			{
-				ChaosDynamic->SetVectorParameterValue(FName(TEXT("Base Color Tint")),GreenLinearColor);
+				ChaosDynamic->SetVectorParameterValue(FName(TEXT("Base Color Tint")),LinearColors[static_cast<uint8>(MyColorType)]);
 			}
 			Geometry->RegisterComponent();
 			Geometry->AddImpulse(FVector(0.0f, 0.0f, 125.f));
@@ -106,14 +111,8 @@ void ASPObject::OnChangeColorGreen()
 {
 	if(ObjectDynamic)
 	{
-		ObjectDynamic->SetVectorParameterValue(FName(TEXT("Base Color Tint")),GreenLinearColor);
 		MyColorType=ColorType::Green;
-	}
-	if(ChaosDynamic)
-	{
-		// UE_LOG(LogTemp,Log,TEXT("ChaosDynamic is here"));
-		ChaosDynamic->SetVectorParameterValue(FName(TEXT("Base Color Tint")),GreenLinearColor);
-		MyColorType=ColorType::Green;
+		ObjectDynamic->SetVectorParameterValue(FName(TEXT("Base Color Tint")),LinearColors[static_cast<uint8>(MyColorType)]);
 	}
 }
 // Called every frame
