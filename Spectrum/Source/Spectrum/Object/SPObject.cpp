@@ -6,6 +6,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 //#include "GeometryCollection/GeometryCollection.h"
 //D:\UE_5.3\Engine\Source\Runtime\Experimental\GeometryCollectionEngine\Public\GeometryCollection\GeometryCollectionComponent.h
+#include "GeometryCollection/GeometryCollectionObject.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "GeometryCollection\GeometryCollectionComponent.h"
 
@@ -62,8 +63,11 @@ void ASPObject::BeginPlay()
 
 	//CreatDynamicMaterialInstance
 	int32 ElementIndex = 0;
-	DynamicInstance = ObjectMesh->CreateDynamicMaterialInstance(ElementIndex, nullptr, FName(TEXT("None")));
+	ObjectDynamic = ObjectMesh->CreateDynamicMaterialInstance(ElementIndex, nullptr, FName(TEXT("None")));
+	ChaosDynamic = UMaterialInstanceDynamic::Create(GeometryCollection->Materials[ElementIndex], nullptr, NAME_None); //다이나믹으로 생성
 
+	// GeometryCollection;
+	//CreateDynamicMaterialInstance(ElementIndex, nullptr, FName(TEXT("None")));
 }
 
 void ASPObject::OnExplosionHit()
@@ -80,6 +84,11 @@ void ASPObject::OnExplosionHit()
 			Geometry->SetupAttachment(RootComponent);
 			Geometry->SetRestCollection(GeometryCollection);
 			Geometry->SetCollisionProfileName(TEXT("DestructionCollision"));
+			Geometry->SetMaterial(0, ChaosDynamic);
+			if(MyColorType!=ColorType::None)
+			{
+				ChaosDynamic->SetVectorParameterValue(FName(TEXT("Base Color Tint")),GreenLinearColor);
+			}
 			Geometry->RegisterComponent();
 			Geometry->AddImpulse(FVector(0.0f, 0.0f, 125.f));
 			FTimerHandle ChangeCollisionProfileTimer;
@@ -95,9 +104,15 @@ void ASPObject::OnExplosionHit()
 }
 void ASPObject::OnChangeColorGreen()
 {
-	if(DynamicInstance)
+	if(ObjectDynamic)
 	{
-		DynamicInstance->SetVectorParameterValue(FName(TEXT("Base Color Tint")),GreenLinearColor);
+		ObjectDynamic->SetVectorParameterValue(FName(TEXT("Base Color Tint")),GreenLinearColor);
+		MyColorType=ColorType::Green;
+	}
+	if(ChaosDynamic)
+	{
+		// UE_LOG(LogTemp,Log,TEXT("ChaosDynamic is here"));
+		ChaosDynamic->SetVectorParameterValue(FName(TEXT("Base Color Tint")),GreenLinearColor);
 		MyColorType=ColorType::Green;
 	}
 }

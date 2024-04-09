@@ -70,16 +70,19 @@ protected:// chaos distruction
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<class UGeometryCollection> GeometryCollection;
 protected://DynamicMaterial
-	UPROPERTY(EditAnywhere,BlueprintReadOnly)
-	TObjectPtr<class UMaterialInstanceDynamic> DynamicInstance ;
+	UPROPERTY()
+	TObjectPtr<class UMaterialInstanceDynamic> ObjectDynamic ;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY()
+	TObjectPtr<class UMaterialInstanceDynamic> ChaosDynamic ;
+	
+	UPROPERTY()
 	ColorType MyColorType;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY()
 	FLinearColor GreenLinearColor{0.03f,1.0f,0.181f,1.0f};
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY()
 	FLinearColor OrangeLinearColor{ 0.942f ,0.0266f ,0.0f,1.0f};
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY()
 	FLinearColor PurpleLinearColor{ 0.263f,0.0f,0.6f,1.0f};
 };
