@@ -78,13 +78,12 @@ void ASPObject::OnExplosionHit(float Damage)
 			Geometry->AddImpulse(FVector(0.0f, 0.0f, 125.f));
 			FTimerHandle ChangeCollisionProfileTimer;
 			float DelayInSeconds = 1.0f;
-			GetWorld()->GetTimerManager().SetTimer(ChangeCollisionProfileTimer, [this]() {
-				// 타이머 콜백에서 콜리전 프로필을 변경합니다.
+			GetWorld()->GetTimerManager().SetTimer(ChangeCollisionProfileTimer, [this, Geometry]() {
+				Geometry->SetCollisionProfileName(TEXT("OnlyStaticCollision"));
 				ObjectMesh->SetCollisionProfileName(TEXT("OnlyStaticCollision"));
 				}, DelayInSeconds, false);
 			this->SetLifeSpan(5.0f);
 		}
-
 		bHasBeenCalled = false;
 	}
 }
