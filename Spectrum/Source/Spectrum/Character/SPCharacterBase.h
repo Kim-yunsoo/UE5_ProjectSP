@@ -25,11 +25,10 @@ class SPECTRUM_API ASPCharacterBase : public ACharacter
 	ASPCharacterBase();
 	virtual ~ASPCharacterBase();
 
-
 protected:
 
 	virtual void BeginPlay();
-	virtual void Tick(float DeltaSeconds) override;			// �� �����Ӹ��� ���ŵǾ�� �ϴ� �͵� ���⿡  �Ͷ�����
+	virtual void Tick(float DeltaSeconds) override;			
 
 public:
 	bool IsMyPlayer();

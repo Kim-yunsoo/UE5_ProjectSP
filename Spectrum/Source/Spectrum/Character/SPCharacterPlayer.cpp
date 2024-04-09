@@ -177,12 +177,20 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 
 
 	FVector Velocity = GetVelocity();
-	if (!Velocity.IsNearlyZero())
-		SetMoveState(Protocol::MOVE_STATE_RUN);
+	if (!Velocity.IsNearlyZero()) {
+		if(bIsJumping == true)
+		{
+			SetMoveState(Protocol::MOVE_STATE_JUMP);
+		}
+		else
+		{
+			SetMoveState(Protocol::MOVE_STATE_RUN);
+		}
+	}
 	else
 		SetMoveState(Protocol::MOVE_STATE_IDLE);
 	
-		// 0.1
+		// send C_MOVE by 0.1s
 	MovePacketSendTimer -= DeltaTime*10;
 
 	if (MovePacketSendTimer <= 0 || ForceSendPacket)
@@ -200,7 +208,7 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 			Info->set_is_holding(bIsHolding);
 			Info->set_is_jumping(bIsJumping);
 
-			////Info â�� ���
+			////Info 
 			//if(GetMoveState()== Protocol::MOVE_STATE_IDLE)
 			//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("IDLE")));
 			//else if(GetMoveState() == Protocol::MOVE_STATE_RUN)
@@ -458,29 +466,7 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 				outHitResult.Component->SetSimulatePhysics(true);
 				HitComponent = outHitResult.GetComponent();
 
-				//AActor* OwnerActor = HitComponent->GetOwner();
-				//ASPObject* MyActor = Cast<ASPObject>(OwnerActor);
-				//if (MyActor)
-				//{
-				//	MyActor->ObjectInfo->set_is_holding(true);
-				//	MyActor->ObjectInfo->set_x(MyActor->K2_GetActorLocation().X);
-				//	MyActor->ObjectInfo->set_y(MyActor->K2_GetActorLocation().Y);
-				//	MyActor->ObjectInfo->set_z(MyActor->K2_GetActorLocation().Z);
-				//	
 
-				//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, FString::Printf(TEXT("%lld"), 
-				//		MyActor->ObjectInfo->object_id()));
-
-				//}
-				//else
-				//{
-				//	// ĳ���� ����, ���� �α� �Ǵ� ��ü ���� ����
-				//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, FString::Printf(TEXT("cast fail")));
-				//}
-
-				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, FString::Printf(TEXT("%f %f %f"),
-				//	GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z));
-// 
 				//여기서 주변 물체의 SetSimulatePhysics(true);
 				FVector SphereTracePoint = HitComponent->K2_GetComponentLocation();
 				float Radius = 150.f;
@@ -566,10 +552,6 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 		bIsHolding = false;
 		if (HitComponent && HitComponent->IsSimulatingPhysics())
 		{
-			/*AActor* OwnerActor = HitComponent->GetOwner();
-			ASPObject* MyActor = Cast<ASPObject>(OwnerActor);
-			MyActor->ObjectInfo->set_is_holding(false);*/
-
 			PhysicsHandleComponent->ReleaseComponent();
 			HitComponent->AddImpulse(FollowCamera->GetForwardVector() * HitDistance, NAME_None, true);
 			HitComponent = nullptr;
@@ -586,11 +568,6 @@ void ASPCharacterPlayer::StopGraping(const FInputActionValue& Value)
 		PhysicsHandleComponent->ReleaseComponent();
 		HitComponent->AddImpulse(FollowCamera->GetForwardVector() * HitDistance, NAME_None, true);
 		HitComponent = nullptr;
-
-		// ���� ���� �� --> ���⼭ HitComponent��  is_holding ����
-		//AActor* OwnerActor = HitComponent->GetOwner();
-		//ASPObject* MyActor = Cast<ASPObject>(OwnerActor);
-		//MyActor->ObjectInfo->set_is_holding(false);
 	}
 }
 
@@ -641,8 +618,9 @@ void ASPCharacterPlayer::Jumping(const FInputActionValue& Value)
 		bPressedJump = true;
 		JumpKeyHoldTime = 0.0f;
 	}
-	// ���� ������Ʈ ����
-	//SetMoveState(Protocol::MOVE_STATE_JUMP);
+
+	bIsJumping = true;
+	SetMoveState(Protocol::MOVE_STATE_JUMP);
 	SetJumping();
 }
 
@@ -650,9 +628,8 @@ void ASPCharacterPlayer::StopJumping(const FInputActionValue& Value)
 {
 	bPressedJump = false;
 	ResetJumpState();
-	/*bIsJumping = false;*/
 
-	// ���� ������Ʈ ����
+	bIsJumping = false;
 	//SetMoveState(Protocol::MOVE_STATE_IDLE);
 	ResetJumping();
 }

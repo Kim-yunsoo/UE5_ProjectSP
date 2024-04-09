@@ -12,6 +12,8 @@
 #include "Object/SPObject.h"
 #include "Character/SPCharacterPlayer.h"
 
+
+
 void USpectrumGameInstance::ConnectToGameServer()
 {
 	// 소켓 생성
@@ -51,6 +53,23 @@ void USpectrumGameInstance::ConnectToGameServer()
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("connection failed")));
 	}
+
+	//static ConstructorHelpers::FClassFinder<ASPCharacterBase> 
+	//	ActorBPClass(TEXT("/Script/Engine.Blueprint'/Game/Spectrum/BluePrint/BP_SPCharacterOther.BP_SPCharacterOther'"));
+	//if (ActorBPClass.Succeeded())
+	//{
+	//	// 찾은 클래스를 멤버 변수에 할당
+	//	OtherPlayerClass = ActorBPClass.Class;
+	//}
+
+	//// ObjectsClass에 블루프린트 클래스 할당하기
+	//static ConstructorHelpers::FClassFinder<ASPObject> 
+	//	ObjectClassFinder(TEXT("/Script/Engine.Blueprint'/Game/Gamemode/Test.Test'"));
+	//if (ObjectClassFinder.Succeeded())
+	//{
+	//	ObjectsClass = ObjectClassFinder.Class;
+	//}
+
 }
 
 void USpectrumGameInstance::DisconnectToGameServer()
@@ -198,8 +217,12 @@ void USpectrumGameInstance::HandleOSpawn(const Protocol::PositionInfo& positionI
 	Object->SetPostionInfo(positionInfo);
 	Objects.Add(positionInfo.object_id(), Object);
 
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%lld"), positionInfo.object_id()));
+	if (Object)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("ok")));
 
+	}
+	
 }
 
 void USpectrumGameInstance::HandleMove(const Protocol::S_MOVE& MovePkt)
@@ -245,6 +268,6 @@ void USpectrumGameInstance::HandleOMove(const Protocol::S_O_MOVE& MovePkt)
 	ASPObject* Object = (*FindActor);
 
 	const Protocol::PositionInfo& Info = MovePkt.info();
-	Object->SetPostionInfo(Info);
-	//Object->SetDestInfo(Info);		// 이동 보정때문에 DestInfo에 저장
+	//Object->SetPostionInfo(Info);
+	Object->SetDestInfo(Info);		// 이동 보정때문에 DestInfo에 저장
 }

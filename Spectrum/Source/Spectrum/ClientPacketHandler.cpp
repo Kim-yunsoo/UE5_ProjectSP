@@ -83,16 +83,18 @@ bool Handle_S_O_SPAWN(PacketSessionRef& session, Protocol::S_O_SPAWN& pkt)
 		posInfo.set_object_id(pkt.objects().object_id());
 
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("%lld"), posInfo.object_id()));
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("%f %f %f"), 
+			posInfo.x(), posInfo.y(), posInfo.z()));
 
 		GameInstance->HandleOSpawn(posInfo, false);
 
 	}
 
-	auto* GameInstance = Cast<USpectrumGameInstance>(GWorld->GetGameInstance());
-	Protocol::PositionInfo posInfo = pkt.objects();
-	posInfo.set_object_id(pkt.objects().object_id());
+	//auto* GameInstance = Cast<USpectrumGameInstance>(GWorld->GetGameInstance());
+	//Protocol::PositionInfo posInfo = pkt.objects();
+	//posInfo.set_object_id(pkt.objects().object_id());
 
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("%lld"), posInfo.object_id()));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("%lld"), posInfo.object_id()));
 	//GameInstance->HandleOSpawn(posInfo, false);
 
 	return true;

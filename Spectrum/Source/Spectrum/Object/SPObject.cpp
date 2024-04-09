@@ -17,9 +17,10 @@ ASPObject::ASPObject()
 	ObjectMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ObjectMesh"));
 	ObjectMesh->SetCollisionProfileName(TEXT("PropCollision"));
 	ObjectMesh->SetMobility(EComponentMobility::Movable);
-
+	RootComponent = ObjectMesh;
 	ObjectInfo = new Protocol::PositionInfo();
 	DestInfo = new Protocol::PositionInfo();
+
 }
 
 ASPObject::~ASPObject()
@@ -38,10 +39,10 @@ void ASPObject::BeginPlay()
 	ObjectLocation = GetActorLocation();
 	//ObjectInfo->set_object_id(20);
 
-	{// ó�� ��ġ�� ��������
-		//ObjectInfo->set_x(ObjectLocation.X);
-		//ObjectInfo->set_y(ObjectLocation.Y);
-		//ObjectInfo->set_z(ObjectLocation.Z);
+	{// 
+		ObjectInfo->set_x(ObjectLocation.X);
+		ObjectInfo->set_y(ObjectLocation.Y);
+		ObjectInfo->set_z(ObjectLocation.Z);
 		ObjectInfo->set_is_aiming(false);
 		ObjectInfo->set_is_jumping(false);
 		ObjectInfo->set_is_holding(false);
@@ -49,7 +50,6 @@ void ASPObject::BeginPlay()
 		DestInfo->set_x(ObjectLocation.X);
 		DestInfo->set_y(ObjectLocation.Y);
 		DestInfo->set_z(ObjectLocation.Z);
-
 	}
 }
 
@@ -67,6 +67,23 @@ void ASPObject::OnExplosionHit(float Damage)
 void ASPObject::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	// 위치 보정
+	//if(bIsMoving == true)	// 한번이라도 이동했으면
+	{
+		SetActorRotation(FRotator(0, DestInfo->yaw(), 0));
+		FVector Location(DestInfo->x(), DestInfo->y(), DestInfo->z());
+		FVector TargetLocation = Location;// 목표 위치
+		float InterpSpeed = 1.0f; // 보간 속도
+
+		// 현재 위치와 목표 위치 사이를 보간하여 부드러운 이동을 구현
+		FVector NewLocation = FMath::Lerp(GetActorLocation(), TargetLocation, DeltaTime * InterpSpeed);
+		SetActorLocation(NewLocation);
+
+		FRotator Rotation(0, DestInfo->yaw(), 0);
+		SetActorRotation(Rotation);
+	}
+
 	static float DelayTime = 1.0;
 	DelayTime -= DeltaTime;
 	if (DelayTime > 0.0f)
@@ -81,7 +98,6 @@ void ASPObject::Tick(float DeltaTime)
 		ObjectMesh->SetSimulatePhysics(false);
 		ObjectLocation = GetActorLocation();
 		ObjectInfo->set_is_holding(false);
-
 	}
 	else
 	{
@@ -91,15 +107,11 @@ void ASPObject::Tick(float DeltaTime)
 		ObjectInfo->set_z(ObjectLocation.Z);
 		ObjectInfo->set_yaw(GetActorRotation().Yaw);
 
-
-		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("%lld %f %f %f"),
-		//	ObjectInfo->object_id(), ObjectInfo->x(), ObjectInfo->y(), ObjectInfo->z()));
 	}
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, FString::Printf(TEXT("%lld"), ObjectInfo->object_id()));
 
-
-	if (ObjectInfo->is_holding()) {
-
+	MovePacketSendTimer -= DeltaTime;
+	if (!Equal && MovePacketSendTimer <= 0)	// 0.1초마다 물건의 위치가 다르면 C_O_MOVE 패킷	전송
+	{
 		Protocol::C_O_MOVE MovePkt;
 		{
 			Protocol::PositionInfo* Info = MovePkt.mutable_info();
@@ -110,17 +122,14 @@ void ASPObject::Tick(float DeltaTime)
 
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("%lld %f %f %f"),
 			ObjectInfo->object_id(), ObjectInfo->x(), ObjectInfo->y(), ObjectInfo->z()));
-
 	}
-		
+
 	//else
 	//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%lld %f %f %f"),
 	//					ObjectInfo->object_id(), ObjectInfo->x(), ObjectInfo->y(), ObjectInfo->z()));
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, FString::Printf(TEXT("%f %f %f"),
 	//	GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z));
-
 	//UE_LOG(LogTemp, Log, TEXT("%s"), *ObjectLocation.ToString());
-
 
 }
 
@@ -137,31 +146,22 @@ void ASPObject::SetPostionInfo(const Protocol::PositionInfo& Info)
 	//bIsJumping = Info.is_jumping();
 	//bIsHolding = Info.is_holding();
 
-	FVector Location(Info.x(), Info.y(), Info.z());
-	SetActorLocation(Location);
+	//FVector Location(Info.x(), Info.y(), Info.z());
+	//SetActorLocation(Location);
+	//FRotator Rotation(0, Info.yaw(), 0);
+	//SetActorRotation(Rotation);
+
 }
 
 void ASPObject::SetDestInfo(const Protocol::PositionInfo& Info)
 {
-	//if (PlayerInfo->object_id() != 0)
-	//{
-	//	assert(PlayerInfo->object_id() == Info.object_id());
-	//}
+	if (ObjectInfo->object_id() != 0)
+	{
+		assert(ObjectInfo->object_id() == Info.object_id());
+	}
 
-	//// Dest�� ���� ���� ����
-	//DestInfo->CopyFrom(Info);
-	//bIsAiming = Info.is_aiming();
-	////bIsJumping = Info.is_jumping();
-	//bIsHolding = Info.is_holding();
-
-	//if (IsMyPlayer() == false && Info.is_jumping() == true) {
-	//	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Jump signal 2")));
-	//	SetJumping();
-	//}
-	//else if (IsMyPlayer() == false && Info.is_jumping() == false) {
-	//	ResetJumping();
-	//}
-
-	//// ���¸� �ٷ� ����!
+	DestInfo->CopyFrom(Info);
+	
+	//// Apply status right now
 	//SetMoveState(Info.state());
 }

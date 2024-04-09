@@ -171,25 +171,23 @@ void ASPCharacterBase::Tick(float DeltaSeconds)
 		//SetActorLocation(DestLocation);
 
 
-		if (bIsAiming)
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("aim!!!!")));
+		//if (bIsAiming)
+		//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("aim!!!!")));
 
-		const Protocol::MoveState State = PlayerInfo->state();
+		const Protocol::MoveState State = DestInfo->state();
 
-		if (State == Protocol::MOVE_STATE_RUN)
+		if (State == Protocol::MOVE_STATE_RUN && !bIsJumping)
 		{
 			//SetActorRotation(FRotator(0, DestLook, 0));
 			SetActorRotation(FRotator(0, DestInfo->yaw() - 90.0f, 0));
 			AddMovementInput(GetActorForwardVector());
 
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("RUN")));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("RUN")));
 			//LastLook = DestLook;
 		}
 		else if (State == Protocol::MOVE_STATE_IDLE)
 		{
-			//SetActorRotation(FRotator(0, LastLook, 0));
-			//AddMovementInput(GetActorForwardVector());
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("IDLE")));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("IDLE")));
 
 		}
 

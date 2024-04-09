@@ -23,6 +23,7 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void OnExplosionHit(float Damage);
 
+
 public:
 	class Protocol::PositionInfo* ObjectInfo; // 현재 위치
 	class Protocol::PositionInfo* DestInfo;	// 가려는 위치
@@ -39,6 +40,9 @@ public:
 	void SetPostionInfo(const Protocol::PositionInfo& Info);
 	void SetDestInfo(const Protocol::PositionInfo& Info);
 
+protected:
+	const float MOVE_PACKET_SEND_DELAY = 0.2f;
+	float MovePacketSendTimer = MOVE_PACKET_SEND_DELAY;
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (AllowPrivateAccess = "ture"))
