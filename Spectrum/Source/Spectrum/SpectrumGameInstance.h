@@ -64,11 +64,6 @@ public:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<ASPObject> ObjectsClass;
 
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Custom Classes")
-	//TSubclassOf<ASPCharacterBase> OtherPlayerClass;
-
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Custom Classes")
-	//TSubclassOf<ASPObject> ObjectsClass;
 
 	ASPCharacterBase* MyPlayer;
 	TMap<uint64, ASPCharacterBase*> Players;

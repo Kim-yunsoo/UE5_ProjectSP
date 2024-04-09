@@ -54,22 +54,6 @@ void USpectrumGameInstance::ConnectToGameServer()
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("connection failed")));
 	}
 
-	//static ConstructorHelpers::FClassFinder<ASPCharacterBase> 
-	//	ActorBPClass(TEXT("/Script/Engine.Blueprint'/Game/Spectrum/BluePrint/BP_SPCharacterOther.BP_SPCharacterOther'"));
-	//if (ActorBPClass.Succeeded())
-	//{
-	//	// 찾은 클래스를 멤버 변수에 할당
-	//	OtherPlayerClass = ActorBPClass.Class;
-	//}
-
-	//// ObjectsClass에 블루프린트 클래스 할당하기
-	//static ConstructorHelpers::FClassFinder<ASPObject> 
-	//	ObjectClassFinder(TEXT("/Script/Engine.Blueprint'/Game/Gamemode/Test.Test'"));
-	//if (ObjectClassFinder.Succeeded())
-	//{
-	//	ObjectsClass = ObjectClassFinder.Class;
-	//}
-
 }
 
 void USpectrumGameInstance::DisconnectToGameServer()
