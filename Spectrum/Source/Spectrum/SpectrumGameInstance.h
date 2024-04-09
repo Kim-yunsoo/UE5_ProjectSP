@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -18,7 +18,7 @@ class SPECTRUM_API USpectrumGameInstance : public UGameInstance
 	GENERATED_BODY()
 	
 public:
-	// ¼­¹ö ¿¬°á ÇÔ¼ö, ¿¬°á ÇØÁ¦ ÇÔ¼ö
+	// ì„œë²„ ì—°ê²° í•¨ìˆ˜, ì—°ê²° í•´ì œ í•¨ìˆ˜
 	UFUNCTION(BlueprintCallable)
 	void ConnectToGameServer();
 
@@ -32,34 +32,35 @@ public:
 
 
 public:
-	void HandleSpawn(const Protocol::ObjectInfo& ObjectInfo, bool IsMine);			// ÇÃ·¹ÀÌ¾î Á¤º¸·Î ½ºÆù	
-	void HandleSpawn(const Protocol::S_ENTER_GAME& EnterGamePkt);		// ³»°¡ ÄÁÆ®·Ñ
-	void HandleSpawn(const Protocol::S_SPAWN& SpawnPkt);				// ³²ÀÌ ÄÁÆ®·Ñ
+	void HandleSpawn(const Protocol::ObjectInfo& ObjectInfo, bool IsMine);			// í”Œë ˆì´ì–´ ì •ë³´ë¡œ ìŠ¤í°	
+	void HandleSpawn(const Protocol::S_ENTER_GAME& EnterGamePkt);		// ë‚´ê°€ ì»¨íŠ¸ë¡¤
+	void HandleSpawn(const Protocol::S_SPAWN& SpawnPkt);				// ë‚¨ì´ ì»¨íŠ¸ë¡¤
 
-	void HandleDespawn(uint64 ObjectId);								// ¿ÀºêÁ§Æ® ¾ÆÀÌµğ·Î »èÁ¦
-	void HandleDespawn(const Protocol::S_DESPAWN& DespawnPkt);			// ÆĞÅ¶À¸·Î »èÁ¦
+	void HandleDespawn(uint64 ObjectId);								// ì˜¤ë¸Œì íŠ¸ ì•„ì´ë””ë¡œ ì‚­ì œ
+	void HandleDespawn(const Protocol::S_DESPAWN& DespawnPkt);			// íŒ¨í‚·ìœ¼ë¡œ ì‚­ì œ
 	
 	
-	void HandleOSpawn(const Protocol::S_O_SPAWN& OSpawnPkt);			// ÆĞÅ¶À¸·Î »èÁ¦
+	void HandleOSpawn(const Protocol::S_O_SPAWN& OSpawnPkt);			// íŒ¨í‚·ìœ¼ë¡œ ì‚­ì œ
 	void HandleOSpawn(const Protocol::PositionInfo& positionInfo, bool IsMine);
 
-	void HandleMove(const Protocol::S_MOVE& MovePkt);					// ÀÌµ¿
-	void HandleOMove(const Protocol::S_O_MOVE& MovePkt);					// ÀÌµ¿
+	void HandleMove(const Protocol::S_MOVE& MovePkt);					// ì´ë™
+	void HandleOMove(const Protocol::S_O_MOVE& MovePkt);					// ì´ë™
 
-	void HandleOBurst(const Protocol::S_O_BURST& BurstPkt);				// Æø¹ß
+	void HandleOBurst(const Protocol::S_O_BURST& BurstPkt);				// í­ë°œ
 
 public:
-	// ¼­¹ö ¼ÒÄÏ, ip
+	// ì„œë²„ ì†Œì¼“, ip
 	class FSocket* Socket;
 	FString IpAddress = TEXT("127.0.0.1");
 	int16 Port = 7777;
-	TSharedPtr<class PacketSession> GameServerSession;	// °ÔÀÓ ¼­¹ö ¸¸µë
+	TSharedPtr<class PacketSession> GameServerSession;	// ê²Œì„ ì„œë²„ ë§Œë“¬
 
 
 public:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<ASPCharacterBase> OtherPlayerClass;
 
+	// ë‚˜ì¤‘ì— ì˜¤ë¸Œì íŠ¸ ë³„ë¡œ í´ë˜ìŠ¤ ë§Œë“¤ì–´ì„œ ë„£ì–´ì£¼ê¸°
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<ASPObject> ObjectsClass;
 

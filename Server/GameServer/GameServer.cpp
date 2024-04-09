@@ -58,7 +58,7 @@ int main()
 	}
 
 	// Main Thread
-	//DoWorkerJob(service);
+	// DoWorkerJob(service);
 
 	// 배치될 물건들 정보 저장
 	ThingRef thing = ObjectUtils::CreateThing();
