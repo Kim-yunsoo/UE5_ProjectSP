@@ -48,6 +48,7 @@ public:
 
 	void HandleOBurst(const Protocol::S_O_BURST& BurstPkt);				// 폭발
 
+	void HandleOPotion(const Protocol::S_O_POTION& PotionPkt);			// 포션
 public:
 	// 서버 소켓, ip
 	class FSocket* Socket;

@@ -26,8 +26,10 @@ enum : uint16
 	PKT_S_O_MOVE = 1013,
 	PKT_C_O_BURST = 1014,
 	PKT_S_O_BURST = 1015,
-	PKT_C_CHAT = 1016,
-	PKT_S_CHAT = 1017,
+	PKT_C_O_POTION = 1016,
+	PKT_S_O_POTION = 1017,
+	PKT_C_CHAT = 1018,
+	PKT_S_CHAT = 1019,
 };
 
 // Custom Handlers
@@ -42,6 +44,7 @@ bool Handle_S_O_DESPAWN(PacketSessionRef& session, Protocol::S_O_DESPAWN& pkt);
 bool Handle_S_MOVE(PacketSessionRef& session, Protocol::S_MOVE& pkt);
 bool Handle_S_O_MOVE(PacketSessionRef& session, Protocol::S_O_MOVE& pkt);
 bool Handle_S_O_BURST(PacketSessionRef& session, Protocol::S_O_BURST& pkt);
+bool Handle_S_O_POTION(PacketSessionRef& session, Protocol::S_O_POTION& pkt);
 bool Handle_S_CHAT(PacketSessionRef& session, Protocol::S_CHAT& pkt);
 
 class ClientPacketHandler
@@ -61,6 +64,7 @@ public:
 		GPacketHandler[PKT_S_MOVE] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::S_MOVE>(Handle_S_MOVE, session, buffer, len); };
 		GPacketHandler[PKT_S_O_MOVE] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::S_O_MOVE>(Handle_S_O_MOVE, session, buffer, len); };
 		GPacketHandler[PKT_S_O_BURST] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::S_O_BURST>(Handle_S_O_BURST, session, buffer, len); };
+		GPacketHandler[PKT_S_O_POTION] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::S_O_POTION>(Handle_S_O_POTION, session, buffer, len); };
 		GPacketHandler[PKT_S_CHAT] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::S_CHAT>(Handle_S_CHAT, session, buffer, len); };
 	}
 
@@ -75,6 +79,7 @@ public:
 	static SendBufferRef MakeSendBuffer(Protocol::C_MOVE& pkt) { return MakeSendBuffer(pkt, PKT_C_MOVE); }
 	static SendBufferRef MakeSendBuffer(Protocol::C_O_MOVE& pkt) { return MakeSendBuffer(pkt, PKT_C_O_MOVE); }
 	static SendBufferRef MakeSendBuffer(Protocol::C_O_BURST& pkt) { return MakeSendBuffer(pkt, PKT_C_O_BURST); }
+	static SendBufferRef MakeSendBuffer(Protocol::C_O_POTION& pkt) { return MakeSendBuffer(pkt, PKT_C_O_POTION); }
 	static SendBufferRef MakeSendBuffer(Protocol::C_CHAT& pkt) { return MakeSendBuffer(pkt, PKT_C_CHAT); }
 
 private:

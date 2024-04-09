@@ -18,6 +18,7 @@ public:
 	void HandleMoveLocked(Protocol::C_O_MOVE& pkt);
 
 	void HandleBurstLocked(Protocol::C_O_BURST& pkt);
+	void HandlePotionLocked(Protocol::C_O_POTION& pkt);
 
 	void updateTick();
 

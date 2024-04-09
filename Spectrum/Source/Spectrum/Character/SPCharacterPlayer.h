@@ -68,13 +68,13 @@ protected: // ī�޶�
 	void Graping(const FInputActionValue& Value);
 	void StopGraping(const FInputActionValue& Value);
 
-	void AimPotion(const FInputActionValue& Value);
-	void ThrowPotion(const FInputActionValue& Value);
+	//void AimPotion(const FInputActionValue& Value);
+	//void ThrowPotion(const FInputActionValue& Value);
 
 	void Jumping(const FInputActionValue& Value);
 	void StopJumping(const FInputActionValue& Value);
 
-	void BlackPotionSpawn(const FInputActionValue& Value);
+	//void BlackPotionSpawn(const FInputActionValue& Value);
 	void GreenPotionSpawn(const FInputActionValue& Value);
 
 	ECharacterControlType CurrentCharacterControlType;
@@ -151,8 +151,8 @@ protected:
 	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	//TObjectPtr<class UInputAction> Test; 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat, Meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UAnimMontage> ThrowMontage; //������ ��Ÿ��
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat, Meta = (AllowPrivateAccess = "true"))
+	//TObjectPtr<class UAnimMontage> ThrowMontage; 
 
 protected:
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
@@ -164,11 +164,11 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	FVector UILocation; 
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-	uint8 bIsSpawn : 1; //Spawn check
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	//uint8 bIsSpawn : 1; //Spawn check
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-	uint8 bIsThrowReady : 1; //Throw Ready? 
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	//uint8 bIsThrowReady : 1; //Throw Ready? 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	FVector UIRotator;
@@ -187,8 +187,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UArrowComponent> GravityArrow;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Object, Meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class ASPPotionBase> Potion;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Object, Meta = (AllowPrivateAccess = "true"))
+	//TObjectPtr<class ASPPotionBase> Potion;
 
 	UFUNCTION()
 	void HandleMontageAnimNotify(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload);

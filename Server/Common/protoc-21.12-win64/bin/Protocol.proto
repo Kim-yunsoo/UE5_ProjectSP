@@ -88,6 +88,16 @@ message S_O_BURST
 	BurstInfo info = 1;
 }
 
+message C_O_POTION
+{
+	PlayerPotionInfo info = 1;
+}
+
+message S_O_POTION
+{
+	PlayerPotionInfo info = 1;
+}
+
 message C_CHAT
 {
 	string msg = 1;
@@ -98,3 +108,4 @@ message S_CHAT
 	uint64 playerId = 1;
 	string msg = 2;
 }
+

@@ -295,6 +295,22 @@ void Room::HandleBurstLocked(Protocol::C_O_BURST& pkt)
 	}
 }
 
+void Room::HandlePotionLocked(Protocol::C_O_POTION& pkt)
+{
+	WRITE_LOCK;
+
+	{
+		Protocol::S_O_POTION potionPkt;
+		{
+			Protocol::PlayerPotionInfo* info = potionPkt.mutable_info();
+			info->CopyFrom(pkt.info());
+		}
+
+		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(potionPkt);
+		Broadcast(sendBuffer);
+	}
+}
+
 void Room::updateTick()
 {
 	cout<<"Room::updateTick"<<endl;

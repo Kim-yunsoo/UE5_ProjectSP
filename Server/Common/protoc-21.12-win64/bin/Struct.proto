@@ -30,3 +30,10 @@ message BurstInfo
 	uint64 object_id = 1;
 	bool is_burst = 2;
 }
+
+message PlayerPotionInfo
+{
+	uint64 object_id = 1;
+	bool is_blackspawn = 2;
+	bool is_throwready = 3;
+}

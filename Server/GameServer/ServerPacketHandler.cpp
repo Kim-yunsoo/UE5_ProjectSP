@@ -125,6 +125,23 @@ bool Handle_C_O_BURST(PacketSessionRef& session, Protocol::C_O_BURST& pkt)
 	return true;
 }
 
+bool Handle_C_O_POTION(PacketSessionRef& session, Protocol::C_O_POTION& pkt)
+{
+	auto gameSession = static_pointer_cast<GameSession>(session);
+
+	PlayerRef player = gameSession->player.load();
+	if (player == nullptr)
+		return false;
+
+	RoomRef room = player->room.load().lock();
+	if (room == nullptr)
+		return false;
+
+	room->HandlePotionLocked(pkt);
+
+	return true;
+}
+
 bool Handle_C_CHAT(PacketSessionRef& session, Protocol::C_CHAT& pkt)
 {
 	return true;

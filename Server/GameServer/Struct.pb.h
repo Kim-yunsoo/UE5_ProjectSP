@@ -52,6 +52,9 @@ extern BurstInfoDefaultTypeInternal _BurstInfo_default_instance_;
 class ObjectInfo;
 struct ObjectInfoDefaultTypeInternal;
 extern ObjectInfoDefaultTypeInternal _ObjectInfo_default_instance_;
+class PlayerPotionInfo;
+struct PlayerPotionInfoDefaultTypeInternal;
+extern PlayerPotionInfoDefaultTypeInternal _PlayerPotionInfo_default_instance_;
 class PositionInfo;
 struct PositionInfoDefaultTypeInternal;
 extern PositionInfoDefaultTypeInternal _PositionInfo_default_instance_;
@@ -59,6 +62,7 @@ extern PositionInfoDefaultTypeInternal _PositionInfo_default_instance_;
 PROTOBUF_NAMESPACE_OPEN
 template<> ::Protocol::BurstInfo* Arena::CreateMaybeMessage<::Protocol::BurstInfo>(Arena*);
 template<> ::Protocol::ObjectInfo* Arena::CreateMaybeMessage<::Protocol::ObjectInfo>(Arena*);
+template<> ::Protocol::PlayerPotionInfo* Arena::CreateMaybeMessage<::Protocol::PlayerPotionInfo>(Arena*);
 template<> ::Protocol::PositionInfo* Arena::CreateMaybeMessage<::Protocol::PositionInfo>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace Protocol {
@@ -659,6 +663,176 @@ class BurstInfo final :
   union { Impl_ _impl_; };
   friend struct ::TableStruct_Struct_2eproto;
 };
+// -------------------------------------------------------------------
+
+class PlayerPotionInfo final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.PlayerPotionInfo) */ {
+ public:
+  inline PlayerPotionInfo() : PlayerPotionInfo(nullptr) {}
+  ~PlayerPotionInfo() override;
+  explicit PROTOBUF_CONSTEXPR PlayerPotionInfo(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  PlayerPotionInfo(const PlayerPotionInfo& from);
+  PlayerPotionInfo(PlayerPotionInfo&& from) noexcept
+    : PlayerPotionInfo() {
+    *this = ::std::move(from);
+  }
+
+  inline PlayerPotionInfo& operator=(const PlayerPotionInfo& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline PlayerPotionInfo& operator=(PlayerPotionInfo&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const PlayerPotionInfo& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const PlayerPotionInfo* internal_default_instance() {
+    return reinterpret_cast<const PlayerPotionInfo*>(
+               &_PlayerPotionInfo_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    3;
+
+  friend void swap(PlayerPotionInfo& a, PlayerPotionInfo& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(PlayerPotionInfo* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(PlayerPotionInfo* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  PlayerPotionInfo* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<PlayerPotionInfo>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const PlayerPotionInfo& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const PlayerPotionInfo& from) {
+    PlayerPotionInfo::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(PlayerPotionInfo* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.PlayerPotionInfo";
+  }
+  protected:
+  explicit PlayerPotionInfo(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kObjectIdFieldNumber = 1,
+    kIsBlackspawnFieldNumber = 2,
+    kIsThrowreadyFieldNumber = 3,
+  };
+  // uint64 object_id = 1;
+  void clear_object_id();
+  uint64_t object_id() const;
+  void set_object_id(uint64_t value);
+  private:
+  uint64_t _internal_object_id() const;
+  void _internal_set_object_id(uint64_t value);
+  public:
+
+  // bool is_blackspawn = 2;
+  void clear_is_blackspawn();
+  bool is_blackspawn() const;
+  void set_is_blackspawn(bool value);
+  private:
+  bool _internal_is_blackspawn() const;
+  void _internal_set_is_blackspawn(bool value);
+  public:
+
+  // bool is_throwready = 3;
+  void clear_is_throwready();
+  bool is_throwready() const;
+  void set_is_throwready(bool value);
+  private:
+  bool _internal_is_throwready() const;
+  void _internal_set_is_throwready(bool value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:Protocol.PlayerPotionInfo)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    uint64_t object_id_;
+    bool is_blackspawn_;
+    bool is_throwready_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_Struct_2eproto;
+};
 // ===================================================================
 
 
@@ -1068,9 +1242,75 @@ inline void BurstInfo::set_is_burst(bool value) {
   // @@protoc_insertion_point(field_set:Protocol.BurstInfo.is_burst)
 }
 
+// -------------------------------------------------------------------
+
+// PlayerPotionInfo
+
+// uint64 object_id = 1;
+inline void PlayerPotionInfo::clear_object_id() {
+  _impl_.object_id_ = uint64_t{0u};
+}
+inline uint64_t PlayerPotionInfo::_internal_object_id() const {
+  return _impl_.object_id_;
+}
+inline uint64_t PlayerPotionInfo::object_id() const {
+  // @@protoc_insertion_point(field_get:Protocol.PlayerPotionInfo.object_id)
+  return _internal_object_id();
+}
+inline void PlayerPotionInfo::_internal_set_object_id(uint64_t value) {
+  
+  _impl_.object_id_ = value;
+}
+inline void PlayerPotionInfo::set_object_id(uint64_t value) {
+  _internal_set_object_id(value);
+  // @@protoc_insertion_point(field_set:Protocol.PlayerPotionInfo.object_id)
+}
+
+// bool is_blackspawn = 2;
+inline void PlayerPotionInfo::clear_is_blackspawn() {
+  _impl_.is_blackspawn_ = false;
+}
+inline bool PlayerPotionInfo::_internal_is_blackspawn() const {
+  return _impl_.is_blackspawn_;
+}
+inline bool PlayerPotionInfo::is_blackspawn() const {
+  // @@protoc_insertion_point(field_get:Protocol.PlayerPotionInfo.is_blackspawn)
+  return _internal_is_blackspawn();
+}
+inline void PlayerPotionInfo::_internal_set_is_blackspawn(bool value) {
+  
+  _impl_.is_blackspawn_ = value;
+}
+inline void PlayerPotionInfo::set_is_blackspawn(bool value) {
+  _internal_set_is_blackspawn(value);
+  // @@protoc_insertion_point(field_set:Protocol.PlayerPotionInfo.is_blackspawn)
+}
+
+// bool is_throwready = 3;
+inline void PlayerPotionInfo::clear_is_throwready() {
+  _impl_.is_throwready_ = false;
+}
+inline bool PlayerPotionInfo::_internal_is_throwready() const {
+  return _impl_.is_throwready_;
+}
+inline bool PlayerPotionInfo::is_throwready() const {
+  // @@protoc_insertion_point(field_get:Protocol.PlayerPotionInfo.is_throwready)
+  return _internal_is_throwready();
+}
+inline void PlayerPotionInfo::_internal_set_is_throwready(bool value) {
+  
+  _impl_.is_throwready_ = value;
+}
+inline void PlayerPotionInfo::set_is_throwready(bool value) {
+  _internal_set_is_throwready(value);
+  // @@protoc_insertion_point(field_set:Protocol.PlayerPotionInfo.is_throwready)
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

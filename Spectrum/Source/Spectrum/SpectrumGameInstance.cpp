@@ -276,3 +276,30 @@ void USpectrumGameInstance::HandleOBurst(const Protocol::S_O_BURST& BurstPkt)
 	Object->SetBurst(Info.is_burst());
 
 }
+
+void USpectrumGameInstance::HandleOPotion(const Protocol::S_O_POTION& PotionPkt)
+{
+
+	if (Socket == nullptr || GameServerSession == nullptr)
+		return;
+
+	auto* World = GetWorld();
+	if (World == nullptr)
+		return;
+
+	const uint64 ObjectId = PotionPkt.info().object_id();
+	ASPCharacterBase** FindActor = Players.Find(ObjectId);
+	if (FindActor == nullptr)
+		return;
+
+	ASPCharacterBase* Player = (*FindActor);
+	if (Player->IsMyPlayer())
+		return;
+
+	const Protocol::PlayerPotionInfo& Info = PotionPkt.info();
+
+	if(Info.is_blackspawn() == true)
+	{
+		Player->SetBlackFour();
+	}
+}

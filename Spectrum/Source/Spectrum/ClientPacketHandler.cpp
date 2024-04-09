@@ -137,6 +137,16 @@ bool Handle_S_O_BURST(PacketSessionRef& session, Protocol::S_O_BURST& pkt)
 	return true;
 }
 
+bool Handle_S_O_POTION(PacketSessionRef& session, Protocol::S_O_POTION& pkt)
+{
+	if (auto* GameInstance = Cast<USpectrumGameInstance>(GWorld->GetGameInstance()))
+	{
+		GameInstance->HandleOPotion(pkt);
+	}
+
+	return true;
+}
+
 bool Handle_S_CHAT(PacketSessionRef& session, Protocol::S_CHAT& pkt)
 {
 	auto Msg = pkt.msg();
