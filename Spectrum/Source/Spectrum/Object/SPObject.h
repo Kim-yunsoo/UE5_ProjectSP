@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Interface/SPDamageInterface.h"
+//D:\UE_5.3\Engine\Source\Runtime\Experimental\GeometryCollectionEngine\Public\GeometryCollection\GeometryCollectionObject.h
+//#include "GeometryCollection\GeometryCollectionObject.h"GeometryCollectionEngine
 #include "Protocol.pb.h"
 #include "SPObject.generated.h"
 
@@ -23,6 +25,8 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void OnExplosionHit(float Damage);
 
+
+	//TObjectPtr<class UGeometryCollection> GeometryCollection ;
 
 public:
 	class Protocol::PositionInfo* ObjectInfo; // 현재 위치
@@ -52,4 +56,8 @@ protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (AllowPrivateAccess = "ture"))
 	FVector ObjectLocation;
+
+protected:// chaos distruction
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<class UGeometryCollection> GeometryCollection;
 };

@@ -42,7 +42,7 @@ void USPExplosionComponent::Explode()
 		//Multi Sphere Trace For Object
 		//Start & End
 		FVector SphereTracePoint = GetOwner()->GetRootComponent()->GetComponentLocation();
-		float Radius = 100.f;
+		float Radius = 125.f;
 		TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
 		ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldDynamic));
 		TArray<AActor*> ActorsToIgnore;
@@ -74,8 +74,8 @@ void USPExplosionComponent::Explode()
 					}
 				}
 			}
-			bHasExecutedOnce = true;
 		}
+			bHasExecutedOnce = true;
 	}
 }
 

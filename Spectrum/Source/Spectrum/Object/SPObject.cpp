@@ -4,7 +4,10 @@
 #include "Object/SPObject.h"
 #include "Spectrum.h"
 #include "Kismet/KismetSystemLibrary.h"
+//#include "GeometryCollection/GeometryCollection.h"
+//D:\UE_5.3\Engine\Source\Runtime\Experimental\GeometryCollectionEngine\Public\GeometryCollection\GeometryCollectionComponent.h
 #include "Kismet/KismetMathLibrary.h"
+#include "GeometryCollection\GeometryCollectionComponent.h"
 
 // Sets default values
 ASPObject::ASPObject()
@@ -12,12 +15,12 @@ ASPObject::ASPObject()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	SetActorEnableCollision(true);
 	PrimaryActorTick.bCanEverTick = true;
-	bHasBeenCalled = false; // 
+	//bHasBeenCalled = false; 
 	//MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
 	ObjectMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ObjectMesh"));
 	ObjectMesh->SetCollisionProfileName(TEXT("PropCollision"));
 	ObjectMesh->SetMobility(EComponentMobility::Movable);
-	RootComponent = ObjectMesh;
+	bHasBeenCalled = true;
 	ObjectInfo = new Protocol::PositionInfo();
 	DestInfo = new Protocol::PositionInfo();
 	bIsFrist = false;
@@ -36,6 +39,10 @@ ASPObject::~ASPObject()
 void ASPObject::BeginPlay()
 {
 	Super::BeginPlay();
+	//UE_LOG(LogTemp,Log,TEXT("MyActor's name is: %s, and its mesh is: %s"),*GetName(), *GetMesh()->GetName());
+	//UE_LOG(LogTemp,Log,TEXT("MyActor's name is : %s, and its mesh is: %s"),*GetName(),*(ObjectMesh->GetStaticMesh()->GetName()));
+	//UE_LOG(LogTemp,Log,TEXT("It was called from C++"));
+	//GEngine->AddOnScreenDebugMessage(1,10,FColor::Blue,TEXT("It was called from C++"));
 	RootComponent->SetMobility(EComponentMobility::Movable);
 	ObjectLocation = GetActorLocation();
 	//ObjectInfo->set_object_id(20);
@@ -56,30 +63,45 @@ void ASPObject::BeginPlay()
 
 void ASPObject::OnExplosionHit(float Damage)
 {
-	//if (false == bHasBeenCalled)
-	//{
-	//	ObjectMesh->SetHiddenInGame(true);
-	//	//ObjectMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	//	//this->SetLifeSpan(1.0f);
-	//	bHasBeenCalled = true;
-		//bIsFrist = true;	// í•´ë‹¹ ë³€ìˆ˜ë§Œ ì¼œê³  ì²˜ë¦¬ëŠ” Tickì—ì„œ ì²˜ë¦¬
-		SetBurst(true);
-	//}
+	if (bHasBeenCalled)
+	{
+		ObjectMesh->SetHiddenInGame(true);
+		ObjectMesh->SetSimulatePhysics(true);
+		ObjectMesh->SetCollisionProfileName(TEXT("DestructionCollision"));
+		//FName ComponentName = FName(TEXT("GC_Cone"));
+		UGeometryCollectionComponent* Geometry = NewObject<UGeometryCollectionComponent>(this, UGeometryCollectionComponent::StaticClass(), TEXT("GeometryComponent"));
+		if (Geometry)
+		{
+			Geometry->SetupAttachment(RootComponent);
+			Geometry->SetRestCollection(GeometryCollection);
+			Geometry->SetCollisionProfileName(TEXT("DestructionCollision"));
+			Geometry->RegisterComponent();
+			Geometry->AddImpulse(FVector(0.0f, 0.0f, 125.f));
+			FTimerHandle ChangeCollisionProfileTimer;
+			float DelayInSeconds = 1.0f;
+			GetWorld()->GetTimerManager().SetTimer(ChangeCollisionProfileTimer, [this, Geometry]() {
+				Geometry->SetCollisionProfileName(TEXT("OnlyStaticCollision"));
+				ObjectMesh->SetCollisionProfileName(TEXT("OnlyStaticCollision"));
+				}, DelayInSeconds, false);
+			this->SetLifeSpan(5.0f);
+		}
+		bHasBeenCalled = false;
+	}
 }
 // Called every frame
 void ASPObject::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// ìœ„ì¹˜ ë³´ì •
-	//if(bIsMoving == true)	// í•œë²ˆì´ë¼ë„ ì´ë™í–ˆìœ¼ë©´
+	// ?œ„ì¹? ë³´ì •
+	//if(bIsMoving == true)	// ?•œë²ˆì´?¼?„ ?´?™?–ˆ?œ¼ë©?
 	{
 		SetActorRotation(FRotator(0, DestInfo->yaw(), 0));
 		FVector Location(DestInfo->x(), DestInfo->y(), DestInfo->z());
-		FVector TargetLocation = Location;// ëª©í‘œ ìœ„ì¹˜
-		float InterpSpeed = 1.0f; // ë³´ê°„ ì†ë„
+		FVector TargetLocation = Location;// ëª©í‘œ ?œ„ì¹?
+		float InterpSpeed = 1.0f; // ë³´ê°„ ?†?„
 
-		// í˜„ì¬ ìœ„ì¹˜ì™€ ëª©í‘œ ìœ„ì¹˜ ì‚¬ì´ë¥¼ ë³´ê°„í•˜ì—¬ ë¶€ë“œëŸ¬ìš´ ì´ë™ì„ êµ¬í˜„
+		// ?˜„?¬ ?œ„ì¹˜ì?? ëª©í‘œ ?œ„ì¹? ?‚¬?´ë¥? ë³´ê°„?•˜?—¬ ë¶??“œ?Ÿ¬?š´ ?´?™?„ êµ¬í˜„
 		FVector NewLocation = FMath::Lerp(GetActorLocation(), TargetLocation, DeltaTime * InterpSpeed);
 		SetActorLocation(NewLocation);
 
@@ -114,8 +136,8 @@ void ASPObject::Tick(float DeltaTime)
 
 	MovePacketSendTimer -= DeltaTime;
 	if (!Equal && MovePacketSendTimer <= 0&& bIsFrist == false)	
-		// 0.1ì´ˆë§ˆë‹¤ ë¬¼ê±´ì˜ ìœ„ì¹˜ê°€ ë‹¤ë¥´ë©´ C_O_MOVE íŒ¨í‚·	ì „ì†¡
-		// í„°ì§€ì§€ ì•Šì•˜ì„ ë•Œë§Œ
+		// 0.1ì´ˆë§ˆ?‹¤ ë¬¼ê±´?˜ ?œ„ì¹˜ê?? ?‹¤ë¥´ë©´ C_O_MOVE ?Œ¨?‚·	? „?†¡
+		// ?„°ì§?ì§? ?•Š?•˜?„ ?•Œë§?
 	{
 		Protocol::C_O_MOVE MovePkt;
 		{

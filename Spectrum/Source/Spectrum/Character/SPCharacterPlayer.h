@@ -14,6 +14,20 @@
  */
 //DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAimingChangedDelegate, bool, bIsAiming);
 
+UENUM()
+enum class EDecalMesh : uint8
+{
+	SphereBlack,
+	DecalBlack,
+	SphereGreen,
+	DecalGreen,
+	SphereOrange,
+	DecalOrange,
+	SpherePurple,
+	DecalPurple
+};
+
+
 UCLASS()
 class SPECTRUM_API ASPCharacterPlayer : public ASPCharacterBase
 {
@@ -135,8 +149,7 @@ protected:
 	class UInputAction* LookAction;
 
 	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
-	//TObjectPtr<class UInputAction> Test; //���콺 ����
-
+	//TObjectPtr<class UInputAction> Test; 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UAnimMontage> ThrowMontage; //������ ��Ÿ��
@@ -180,7 +193,7 @@ protected:
 	UFUNCTION()
 	void HandleMontageAnimNotify(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload);
 
-	//��Į
+
 protected:
 	void ShowProjectilePath();
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile", Meta = (AllowPrivateAccess = "true"))
@@ -205,13 +218,17 @@ protected:
 // Decal
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Decal")
-	TObjectPtr<class UMaterialInterface> Decal;
+	TObjectPtr<class UDecalComponent> MyDecal;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Decal")
+	TObjectPtr<class UStaticMeshComponent> DecalSphere;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Decal", Meta = (AllowPrivateAccess = "true"))
-	uint8 bIsDecal : 1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Decal")
+	TArray<UStaticMesh*> MeshArray;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Decal", Meta = (AllowPrivateAccess = "true"))
+	//uint8 bIsDecal : 1;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Decal", Meta = (AllowPrivateAccess = "true"))
-	FVector TestDecalLocation;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Decal", Meta = (AllowPrivateAccess = "true"))
+	//FVector TestDecalLocation;
 
 };

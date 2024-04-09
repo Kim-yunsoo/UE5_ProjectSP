@@ -22,6 +22,8 @@
 #include "Components/SplineMeshComponent.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "Components/WidgetComponent.h"
+#include "Components/SceneComponent.h"
+#include "Components/DecalComponent.h"
 //#include "UI/SPHUDWidget.h"
 
 ASPCharacterPlayer::ASPCharacterPlayer()
@@ -119,7 +121,7 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 	{
 		GreenOne = GreenOneRef.Object;
 	}
-	
+
 
 	/*static ConstructorHelpers::FObjectFinder<UAnimMontage> ThrowMontageRef(TEXT("/Script/Engine.AnimMontage'/Game/Spectrum/Animation/AniMeta/Man/AM_SP_Throw.AM_SP_Throw'"));
 	if (ThrowMontageRef.Object)
@@ -132,6 +134,54 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 	{
 		StaticMeshforSpline = StaticMeshforSplineRef.Object;
 	}
+
+
+
+	DecalSphere = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DecalSphere"));
+	if (DecalSphere)
+	{
+		DecalSphere->SetupAttachment(RootComponent);
+		DecalSphere->SetWorldScale3D(FVector(3.0, 3.0, 3.0));
+		DecalSphere->SetCollisionProfileName(TEXT("NoCollision"));
+	}
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> DecalSphereRef(TEXT("/Script/Engine.StaticMesh'/Engine/BasicShapes/Sphere.Sphere'"));
+	if (DecalSphereRef.Succeeded())
+	{
+		DecalSphere->SetStaticMesh(DecalSphereRef.Object);
+	}
+
+	MyDecal = CreateDefaultSubobject<UDecalComponent>(TEXT("Decal"));
+	if (MyDecal)
+	{
+		MyDecal->SetupAttachment(DecalSphere);
+		MyDecal->SetWorldScale3D(FVector(1.0, 0.3, 0.3));
+		MyDecal->SetRelativeRotation(FRotator(90.f, 0.f, 0.f));
+	}
+
+	//static ConstructorHelpers::FObjectFinder<UDecalComponent> DecalRef(TEXT("/Script/Engine.Material'/Game/Spectrum/Assets/Decal/M_Circle_Decal.M_Circle_Decal'"));
+	//if (DecalSphereRef.Succeeded())
+	//{
+	//	Decal->SetDecal(DecalRef.Object);
+	//}
+
+	static ConstructorHelpers::FObjectFinder<UMaterialInterface> MeshFinder1(TEXT("/Script/Engine.Material'/Game/Spectrum/Assets/Decal/M_Decal_Sphere_Black.M_Decal_Sphere_Black'"));
+	if (MeshFinder1.Succeeded())
+	{
+		DecalSphere->SetMaterial(0, MeshFinder1.Object);
+		// 필요에 따라 추가적인 MeshFinder 사용하여 다른 메시 로드 및 추가
+	}
+
+	static ConstructorHelpers::FObjectFinder<UMaterialInterface> MeshFinder2(TEXT("/Script/Engine.Material'/Game/Spectrum/Assets/Decal/M_Decal_Black.M_Decal_Black'"));
+	if (MeshFinder2.Succeeded())
+	{
+		MyDecal->SetMaterial(0, MeshFinder2.Object);
+		// 필요에 따라 추가적인 MeshFinder 사용하여 다른 메시 로드 및 추가
+	}
+
+	DecalSphere->SetVisibility(false);
+	MyDecal->SetVisibility(false);
+
+
 
 	CurrentCharacterControlType = ECharacterControlType::Shoulder;
 	LastInput = FVector2D::ZeroVector;
@@ -669,6 +719,9 @@ void ASPCharacterPlayer::GreenPotionSpawn(const FInputActionValue& Value)
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
 		Potion = GetWorld()->SpawnActor<ASPGreenPotion>(ASPGreenPotion::StaticClass(), GetMesh()->GetSocketLocation("Item_Socket"), FRotator{ 0.0f, 0.0f, 0.0f }, SpawnParams);
+		//Potion->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+		//Potion->SetupAttachment(RootComponent);
+		//Potion->RegisterComponent();
 		bIsSpawn = true;
 		if (Potion)
 		{
@@ -702,7 +755,6 @@ void ASPCharacterPlayer::ShowProjectilePath()
 	{
 		SplineCompArray[i]->DestroyComponent();
 	}
-	bIsDecal = false;
 	SplineCompArray.Empty();
 	if (bIsThrowReady)
 	{
@@ -740,14 +792,18 @@ void ASPCharacterPlayer::ShowProjectilePath()
 		//FVector DecalSize{ 100,200,200 };
 		//UGameplayStatics::SpawnDecalAtLocation(GetWorld(), Decal, DecalSize, OutHit.Location, GetControlRotation(), 0.1);
 		//UE_LOG(LogTemp, Log, TEXT("TEST"));
+		//DecalSphere->SetStaticMesh();
+		//DecalSphere->SetStaticMesh(MeshArray[1]);
 
-		if (!bIsDecal)
-		{
-			bIsDecal = true;
-			TestDecalLocation = OutHit.Location;
-			//UE_LOG(LogTemp, Log, TEXT("DecalLocation: [%s]"), *TestDecalLocation.ToString());
-		}
+		//DecalSphere->SetVisibility(true);
 
+		//Decal->SetVisibility(true);
+		//DecalSphere->SetWorldLocation(OutHit.Location, false, &SweepHitResult, ETeleportType::None);
+		//DecalSphere->SetVisibility(true, false);
+
+		DecalSphere->SetVisibility(true);
+		MyDecal->SetVisibility(true);
+		DecalSphere->SetWorldLocation(OutHit.Location, false, &SweepHitResult, ETeleportType::TeleportPhysics);
 
 		for (int i = 0; i < OutPathPositions.Num(); i++)
 		{
@@ -824,6 +880,8 @@ void ASPCharacterPlayer::ShowProjectilePath()
 	else
 	{
 		//ProjectileCircle->SetVisibility(false);
+		DecalSphere->SetVisibility(false);
+		MyDecal->SetVisibility(false);
 	}
 }
 
