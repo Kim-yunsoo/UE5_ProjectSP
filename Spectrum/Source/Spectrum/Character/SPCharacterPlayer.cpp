@@ -164,14 +164,14 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 	//	Decal->SetDecal(DecalRef.Object);
 	//}
 
-	static ConstructorHelpers::FObjectFinder<UMaterialInterface> MeshFinder1(TEXT("/Script/Engine.Material'/Game/Spectrum/Assets/Decal/M_Decal_Black.M_Decal_Black'"));
+	static ConstructorHelpers::FObjectFinder<UMaterialInterface> MeshFinder1(TEXT("/Script/Engine.Material'/Game/Spectrum/Assets/Decal/M_Decal_Sphere_Black.M_Decal_Sphere_Black'"));
 	if (MeshFinder1.Succeeded())
 	{
 		DecalSphere->SetMaterial(0, MeshFinder1.Object);
 		// 필요에 따라 추가적인 MeshFinder 사용하여 다른 메시 로드 및 추가
 	}
 
-	static ConstructorHelpers::FObjectFinder<UMaterialInterface> MeshFinder2(TEXT("/Script/Engine.MaterialInstanceConstant'/Game/Spectrum/Assets/Decal/MI_MagicCircleDecal_16.MI_MagicCircleDecal_16'"));
+	static ConstructorHelpers::FObjectFinder<UMaterialInterface> MeshFinder2(TEXT("/Script/Engine.Material'/Game/Spectrum/Assets/Decal/M_Decal_Black.M_Decal_Black'"));
 	if (MeshFinder2.Succeeded())
 	{
 		MyDecal->SetMaterial(0, MeshFinder2.Object);
