@@ -23,4 +23,5 @@ class SPECTRUM_API ISPDamageInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	virtual void OnExplosionHit(float Damage) = 0;
+	//virtual void OnChangeColorGreen() = 0;
 };

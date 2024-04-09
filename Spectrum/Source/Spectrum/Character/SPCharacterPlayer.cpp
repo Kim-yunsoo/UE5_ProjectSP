@@ -692,6 +692,9 @@ void ASPCharacterPlayer::GreenPotionSpawn(const FInputActionValue& Value)
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
 		Potion = GetWorld()->SpawnActor<ASPGreenPotion>(ASPGreenPotion::StaticClass(), GetMesh()->GetSocketLocation("Item_Socket"), FRotator{ 0.0f, 0.0f, 0.0f }, SpawnParams);
+		//Potion->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+		//Potion->SetupAttachment(RootComponent);
+		//Potion->RegisterComponent();
 		bIsSpawn = true;
 		if (Potion)
 		{
