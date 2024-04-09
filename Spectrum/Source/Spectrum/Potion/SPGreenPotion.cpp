@@ -8,7 +8,7 @@
 ASPGreenPotion::ASPGreenPotion()
 {
 	SphereComponent->SetSphereRadius(35.46f);
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> PotionMeshRef(TEXT("/Script/Engine.StaticMesh'/Game/Spectrum/Potion/G_Potion/G_Potion1.G_Potion1'"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> PotionMeshRef(TEXT("/Script/Engine.StaticMesh'/Game/Spectrum/Assets/Potion/G_Potion/G_Potion1.G_Potion1'"));
 
 	if (PotionMeshRef.Object)
 	{

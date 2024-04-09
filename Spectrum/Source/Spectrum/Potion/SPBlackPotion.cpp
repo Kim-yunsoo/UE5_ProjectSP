@@ -7,7 +7,7 @@
 ASPBlackPotion::ASPBlackPotion()
 {
 	SphereComponent->SetSphereRadius(35.46f);
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> PotionMeshRef(TEXT("/Script/Engine.StaticMesh'/Game/Spectrum/Potion/B_Potion/B_Potion.B_Potion'"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> PotionMeshRef(TEXT("/Script/Engine.StaticMesh'/Game/Spectrum/Assets/Potion/B_Potion/B_Potion.B_Potion'"));
 
 	if (PotionMeshRef.Object)
 	{

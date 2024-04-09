@@ -14,6 +14,20 @@
  */
 //DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAimingChangedDelegate, bool, bIsAiming);
 
+UENUM()
+enum class EDecalMesh : uint8
+{
+	SphereBlack,
+	DecalBlack,
+	SphereGreen,
+	DecalGreen,
+	SphereOrange,
+	DecalOrange,
+	SpherePurple,
+	DecalPurple
+};
+
+
 UCLASS()
 class SPECTRUM_API ASPCharacterPlayer : public ASPCharacterBase
 {
@@ -205,13 +219,17 @@ protected:
 // Decal
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Decal")
-	TObjectPtr<class UMaterialInterface> Decal;
+	TObjectPtr<class UDecalComponent> MyDecal;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Decal")
+	TObjectPtr<class UStaticMeshComponent> DecalSphere;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Decal", Meta = (AllowPrivateAccess = "true"))
-	uint8 bIsDecal : 1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Decal")
+	TArray<UStaticMesh*> MeshArray;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Decal", Meta = (AllowPrivateAccess = "true"))
+	//uint8 bIsDecal : 1;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Decal", Meta = (AllowPrivateAccess = "true"))
-	FVector TestDecalLocation;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Decal", Meta = (AllowPrivateAccess = "true"))
+	//FVector TestDecalLocation;
 
 };
