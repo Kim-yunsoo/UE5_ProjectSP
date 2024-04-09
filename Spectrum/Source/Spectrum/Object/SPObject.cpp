@@ -4,7 +4,10 @@
 #include "Object/SPObject.h"
 #include "Spectrum.h"
 #include "Kismet/KismetSystemLibrary.h"
+//#include "GeometryCollection/GeometryCollection.h"
+//D:\UE_5.3\Engine\Source\Runtime\Experimental\GeometryCollectionEngine\Public\GeometryCollection\GeometryCollectionComponent.h
 #include "Kismet/KismetMathLibrary.h"
+#include "GeometryCollection\GeometryCollectionComponent.h"
 
 // Sets default values
 ASPObject::ASPObject()
@@ -12,12 +15,12 @@ ASPObject::ASPObject()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	SetActorEnableCollision(true);
 	PrimaryActorTick.bCanEverTick = true;
-	bHasBeenCalled = false; // �ѹ��� �����ϱ� ���� ����
+	//bHasBeenCalled = false; 
 	//MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
 	ObjectMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ObjectMesh"));
 	ObjectMesh->SetCollisionProfileName(TEXT("PropCollision"));
 	ObjectMesh->SetMobility(EComponentMobility::Movable);
-
+	bHasBeenCalled = true;
 	ObjectInfo = new Protocol::PositionInfo();
 	DestInfo = new Protocol::PositionInfo();
 }
@@ -34,11 +37,15 @@ ASPObject::~ASPObject()
 void ASPObject::BeginPlay()
 {
 	Super::BeginPlay();
+	//UE_LOG(LogTemp,Log,TEXT("MyActor's name is: %s, and its mesh is: %s"),*GetName(), *GetMesh()->GetName());
+	//UE_LOG(LogTemp,Log,TEXT("MyActor's name is : %s, and its mesh is: %s"),*GetName(),*(ObjectMesh->GetStaticMesh()->GetName()));
+	//UE_LOG(LogTemp,Log,TEXT("It was called from C++"));
+	//GEngine->AddOnScreenDebugMessage(1,10,FColor::Blue,TEXT("It was called from C++"));
 	RootComponent->SetMobility(EComponentMobility::Movable);
 	ObjectLocation = GetActorLocation();
 	//ObjectInfo->set_object_id(20);
 
-	{// ó�� ��ġ�� ��������
+	{
 		//ObjectInfo->set_x(ObjectLocation.X);
 		//ObjectInfo->set_y(ObjectLocation.Y);
 		//ObjectInfo->set_z(ObjectLocation.Z);
@@ -55,12 +62,29 @@ void ASPObject::BeginPlay()
 
 void ASPObject::OnExplosionHit(float Damage)
 {
-	if (false == bHasBeenCalled)
+	if (bHasBeenCalled)
 	{
 		ObjectMesh->SetHiddenInGame(true);
-		//ObjectMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		//this->SetLifeSpan(1.0f);
-		bHasBeenCalled = true;
+		ObjectMesh->SetSimulatePhysics(true);
+		ObjectMesh->SetCollisionProfileName(TEXT("DestructionCollision"));
+		//FName ComponentName = FName(TEXT("GC_Cone"));
+		UGeometryCollectionComponent* Geometry = NewObject<UGeometryCollectionComponent>(this, UGeometryCollectionComponent::StaticClass(), TEXT("GeometryComponent"));
+		if (Geometry)
+		{
+			Geometry->SetupAttachment(RootComponent);
+			Geometry->SetRestCollection(GeometryCollection);
+			Geometry->SetCollisionProfileName(TEXT("DestructionCollision"));
+			Geometry->RegisterComponent();
+			Geometry->AddImpulse(FVector(0.0f, 0.0f, 125.f));
+			FTimerHandle ChangeCollisionProfileTimer;
+			float DelayInSeconds = 1.0f;
+			GetWorld()->GetTimerManager().SetTimer(ChangeCollisionProfileTimer, [this, Geometry]() {
+				Geometry->SetCollisionProfileName(TEXT("OnlyStaticCollision"));
+				ObjectMesh->SetCollisionProfileName(TEXT("OnlyStaticCollision"));
+				}, DelayInSeconds, false);
+			this->SetLifeSpan(5.0f);
+		}
+		bHasBeenCalled = false;
 	}
 }
 // Called every frame
@@ -112,7 +136,7 @@ void ASPObject::Tick(float DeltaTime)
 			ObjectInfo->object_id(), ObjectInfo->x(), ObjectInfo->y(), ObjectInfo->z()));
 
 	}
-		
+
 	//else
 	//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%lld %f %f %f"),
 	//					ObjectInfo->object_id(), ObjectInfo->x(), ObjectInfo->y(), ObjectInfo->z()));
@@ -162,6 +186,5 @@ void ASPObject::SetDestInfo(const Protocol::PositionInfo& Info)
 	//	ResetJumping();
 	//}
 
-	//// ���¸� �ٷ� ����!
 	//SetMoveState(Info.state());
 }
