@@ -66,6 +66,16 @@ message S_MOVE
 	PositionInfo info = 1;
 }
 
+message C_TURN
+{
+	PlayerTurnInfo info = 1;
+}
+
+message S_TURN
+{
+	PlayerTurnInfo info = 1;
+}
+
 message C_O_MOVE
 {
 	PositionInfo info = 1;

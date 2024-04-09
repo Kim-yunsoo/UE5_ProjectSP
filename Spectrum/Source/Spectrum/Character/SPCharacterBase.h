@@ -50,11 +50,16 @@ protected:
 
 
 public:
-	void AimPotion(const FInputActionValue& Value);
-	void ThrowPotion(const FInputActionValue& Value);
-	void BlackPotionSpawn(const FInputActionValue& Value);
+	//void AimPotion(const FInputActionValue& Value);
+	//void ThrowPotion(const FInputActionValue& Value);
+	//void BlackPotionSpawn(const FInputActionValue& Value);
+
 
 	void SetBlackFour();
+	void SetAimPotion();
+	void SetThrowPotion();
+
+	double ThrowPitch;
 
 protected:
 	

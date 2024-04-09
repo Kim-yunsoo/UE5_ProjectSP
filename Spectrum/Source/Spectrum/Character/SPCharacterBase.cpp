@@ -259,84 +259,7 @@ void ASPCharacterBase::SetDestInfo(const Protocol::PositionInfo& Info)
 	SetMoveState(Info.state());
 }
 
-void ASPCharacterBase::AimPotion(const FInputActionValue& Value)
-{
-	if (bIsSpawn)
-	{
-		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-		AnimInstance->Montage_Play(ThrowMontage, 1.0f);
-		GetCharacterMovement()->bOrientRotationToMovement = false;
-		GetCharacterMovement()->bUseControllerDesiredRotation = true;
-		bIsTurnReady = true;
-	}
-}
 
-void ASPCharacterBase::ThrowPotion(const FInputActionValue& Value)
-{
-	if (bIsThrowReady)
-	{
-		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-		AnimInstance->Montage_JumpToSection(FName("End"), ThrowMontage);
-		bIsThrowReady = false;
-		if (Potion)
-		{
-			GetController()->GetControlRotation();
-			FVector ForwardVector = UKismetMathLibrary::GetForwardVector(GetController()->GetControlRotation());
-			float Mul = 1500.0f;
-			Potion->Throw((ForwardVector + FVector{ 0.0f,0.0f,0.4f }) * Mul);
-		}
-
-		GetCharacterMovement()->bOrientRotationToMovement = true;
-		GetCharacterMovement()->bUseControllerDesiredRotation = false;
-		bIsTurnReady = false;
-		bIsSpawn = false;
-		Potion = nullptr;
-	}
-	else
-	{
-		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-		AnimInstance->Montage_Stop(0.0f);
-	}
-}
-
-void ASPCharacterBase::BlackPotionSpawn(const FInputActionValue& Value)
-{
-	if (IsMyPlayer() == true)
-	{
-		Protocol::C_O_POTION PoPkt;
-		{
-			Protocol::PlayerPotionInfo* Info = PoPkt.mutable_info();
-			Info->set_object_id(PlayerInfo->object_id());
-			Info->set_is_blackspawn(true);
-			Info->set_is_throwready(false);
-		}
-
-		SEND_PACKET(PoPkt);
-	}
-
-	if (false == bIsSpawn)
-	{
-		FVector ItemLocation = GetMesh()->GetSocketLocation("Item_Socket");
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-		SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
-		Potion = GetWorld()->SpawnActor<ASPBlackPotion>(ASPBlackPotion::StaticClass(), GetMesh()->GetSocketLocation("Item_Socket"), FRotator{ 0.0f, 0.0f, 0.0f }, SpawnParams);
-		bIsSpawn = true;
-		if (Potion)
-		{
-			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
-			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{ "Item_Socket" });
-		}
-	}
-	else
-	{
-		if (Potion)
-		{
-			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
-			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{ "Item_Socket" });
-		}
-	}
-}
 
 void ASPCharacterBase::SetBlackFour()
 {
@@ -364,6 +287,18 @@ void ASPCharacterBase::SetBlackFour()
 	}
 }
 
+void ASPCharacterBase::SetAimPotion()
+{
+	if (bIsSpawn)
+	{
+		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+		AnimInstance->Montage_Play(ThrowMontage, 1.0f);
+		GetCharacterMovement()->bOrientRotationToMovement = false;
+		GetCharacterMovement()->bUseControllerDesiredRotation = true;
+		bIsTurnReady = true;
+	}
+}
+
 void ASPCharacterBase::SetCharacterControlData(const USPCharacterControlData* CharacterControlData)
 {
 	// Pawn
@@ -373,6 +308,37 @@ void ASPCharacterBase::SetCharacterControlData(const USPCharacterControlData* Ch
 	GetCharacterMovement()->bOrientRotationToMovement = CharacterControlData->bOrientRotationToMovement;
 	GetCharacterMovement()->bUseControllerDesiredRotation = CharacterControlData->bUseControllerDesiredRotation;
 	GetCharacterMovement()->RotationRate = CharacterControlData->RotationRate;
+}
+
+void ASPCharacterBase::SetThrowPotion()
+{
+
+	if (bIsThrowReady)
+	{
+		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+		AnimInstance->Montage_JumpToSection(FName("End"), ThrowMontage);
+		bIsThrowReady = false;
+		if (Potion)
+		{
+
+			FRotator ThrowRotation = FRotator(ThrowPitch, GetActorRotation().Yaw, 0.0f);
+			FVector ForwardVector = UKismetMathLibrary::GetForwardVector(ThrowRotation);
+
+			float Mul = 1500.0f;
+			Potion->Throw((ForwardVector + FVector{ 0.0f,0.0f,0.4f }) * Mul);
+		}
+
+		GetCharacterMovement()->bOrientRotationToMovement = true;
+		GetCharacterMovement()->bUseControllerDesiredRotation = false;
+		bIsTurnReady = false;
+		bIsSpawn = false;
+		Potion = nullptr;
+	}
+	else
+	{
+		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+		AnimInstance->Montage_Stop(0.0f);
+	}
 }
 
 void ASPCharacterBase::SetJumping()

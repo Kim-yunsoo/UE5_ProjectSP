@@ -234,6 +234,32 @@ void USpectrumGameInstance::HandleMove(const Protocol::S_MOVE& MovePkt)
 
 }
 
+void USpectrumGameInstance::HandleTurn(const Protocol::S_TURN& TurnPkt)
+{
+	if (Socket == nullptr || GameServerSession == nullptr)
+		return;
+
+	auto* World = GetWorld();
+	if (World == nullptr)
+		return;
+
+	const uint64 ObjectId = TurnPkt.info().object_id();
+	ASPCharacterBase** FindActor = Players.Find(ObjectId);
+	if (FindActor == nullptr)
+		return;
+
+	ASPCharacterBase* Player = (*FindActor);
+	if (Player->IsMyPlayer())
+		return;
+
+	const Protocol::PlayerTurnInfo& Info = TurnPkt.info();
+	Player->bIsTurnRight = Info.is_turnright();
+	Player->bIsTurnLeft = Info.is_turnleft();
+	Player->bIsTurnReady = Info.is_turnready();
+	Player->SetActorRotation(FRotator(0, Info.yaw(), 0));
+	Player->ThrowPitch = Info.pitch();
+}
+
 void USpectrumGameInstance::HandleOMove(const Protocol::S_O_MOVE& MovePkt)
 {
 
@@ -301,5 +327,16 @@ void USpectrumGameInstance::HandleOPotion(const Protocol::S_O_POTION& PotionPkt)
 	if(Info.is_blackspawn() == true)
 	{
 		Player->SetBlackFour();
+	}
+
+	if(Info.is_aimpotion() == true)
+	{
+		Player->SetAimPotion();
+	}
+
+
+	if(Info.is_throwpotion() == true)
+	{
+		Player->SetThrowPotion();
 	}
 }

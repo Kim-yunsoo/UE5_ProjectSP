@@ -310,10 +310,10 @@ void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Player
 		EnhancedInputComponent->BindAction(MouseRight, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::Aiming);
 		EnhancedInputComponent->BindAction(MouseRight, ETriggerEvent::Completed, this, &ASPCharacterPlayer::StopAiming);
 
-		EnhancedInputComponent->BindAction(BlackFour, ETriggerEvent::Triggered, this, &ASPCharacterBase::BlackPotionSpawn);
+		EnhancedInputComponent->BindAction(BlackFour, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::BlackPotionSpawn);
 
-		EnhancedInputComponent->BindAction(ThrowCtrl, ETriggerEvent::Triggered, this, &ASPCharacterBase::AimPotion);
-		EnhancedInputComponent->BindAction(ThrowCtrl, ETriggerEvent::Completed, this, &ASPCharacterBase::ThrowPotion);
+		EnhancedInputComponent->BindAction(ThrowCtrl, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::AimPotion);
+		EnhancedInputComponent->BindAction(ThrowCtrl, ETriggerEvent::Completed, this, &ASPCharacterPlayer::ThrowPotion);
 
 		EnhancedInputComponent->BindAction(GreenOne, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::GreenPotionSpawn);
 
@@ -411,6 +411,7 @@ void ASPCharacterPlayer::ShoulderMove(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::ShoulderLook(const FInputActionValue& Value)
 {
+
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
 	if (Controller != nullptr)
 	{
@@ -430,12 +431,40 @@ void ASPCharacterPlayer::ShoulderLook(const FInputActionValue& Value)
 		}
 		PreControlYawRotation = GetControlRotation().Yaw;
 	}
+
+	// 서버에 턴 정보 송신
+	Protocol::C_TURN TurnPkt;
+	{
+		Protocol::PlayerTurnInfo* Info = TurnPkt.mutable_info();
+		Info->set_object_id(PlayerInfo->object_id());
+		Info->set_is_turnright(bIsTurnRight);
+		Info->set_is_turnleft(bIsTurnLeft);
+		Info->set_is_turnready(bIsTurnReady);
+		Info->set_yaw(GetActorRotation().Yaw);
+		Info->set_pitch(GetControlRotation().Pitch);
+
+	}
+	SEND_PACKET(TurnPkt);
 }
 
 void ASPCharacterPlayer::StopShoulderLook(const FInputActionValue& Value)
 {
-		bIsTurnRight = false;
-		bIsTurnLeft = false;
+	bIsTurnRight = false;
+	bIsTurnLeft = false;
+
+	// 서버에 턴 정보 송신
+	Protocol::C_TURN TurnPkt;
+	{
+		Protocol::PlayerTurnInfo* Info = TurnPkt.mutable_info();
+		Info->set_object_id(PlayerInfo->object_id());
+		Info->set_is_turnright(bIsTurnRight);
+		Info->set_is_turnleft(bIsTurnLeft);
+		Info->set_is_turnready(bIsTurnReady);
+		Info->set_yaw(GetActorRotation().Yaw);
+		Info->set_pitch(GetControlRotation().Pitch);
+
+	}
+	SEND_PACKET(TurnPkt);
 }
 
 void ASPCharacterPlayer::SpeedUp(const FInputActionValue& Value)
@@ -623,45 +652,67 @@ void ASPCharacterPlayer::StopGraping(const FInputActionValue& Value)
 	}
 }
 
-//void ASPCharacterPlayer::AimPotion(const FInputActionValue& Value)
-//{
-//	if (bIsSpawn)
-//	{
-//		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-//		AnimInstance->Montage_Play(ThrowMontage, 1.0f);
-//		GetCharacterMovement()->bOrientRotationToMovement = false;
-//		GetCharacterMovement()->bUseControllerDesiredRotation = true;
-//		bIsTurnReady = true;
-//	}
-//}
-//
-//void ASPCharacterPlayer::ThrowPotion(const FInputActionValue& Value)
-//{
-//	if (bIsThrowReady)
-//	{
-//		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-//		AnimInstance->Montage_JumpToSection(FName("End"), ThrowMontage);
-//		bIsThrowReady = false;
-//		if (Potion)
-//		{
-//			GetController()->GetControlRotation();
-//			FVector ForwardVector = UKismetMathLibrary::GetForwardVector(GetController()->GetControlRotation());
-//			float Mul = 1500.0f;
-//			Potion->Throw((ForwardVector + FVector{ 0.0f,0.0f,0.4f }) * Mul);
-//		}
-//
-//		GetCharacterMovement()->bOrientRotationToMovement = true;
-//		GetCharacterMovement()->bUseControllerDesiredRotation = false;
-//		bIsTurnReady = false;
-//		bIsSpawn = false;
-//		Potion = nullptr;
-//	}
-//	else
-//	{
-//		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-//		AnimInstance->Montage_Stop(0.0f);
-//	}
-//}
+void ASPCharacterPlayer::AimPotion(const FInputActionValue& Value)
+{
+	Protocol::C_O_POTION PoPkt;
+	{
+		Protocol::PlayerPotionInfo* Info = PoPkt.mutable_info();
+		Info->set_object_id(PlayerInfo->object_id());
+		Info->set_is_blackspawn(false);
+		Info->set_is_throwpotion(false);
+		Info->set_is_aimpotion(true);
+	}
+
+	SEND_PACKET(PoPkt);
+
+	if (bIsSpawn)
+	{
+		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+		AnimInstance->Montage_Play(ThrowMontage, 1.0f);
+		GetCharacterMovement()->bOrientRotationToMovement = false;
+		GetCharacterMovement()->bUseControllerDesiredRotation = true;
+		bIsTurnReady = true;
+	}
+}
+
+void ASPCharacterPlayer::ThrowPotion(const FInputActionValue& Value)
+{
+	Protocol::C_O_POTION PoPkt;
+	{
+		Protocol::PlayerPotionInfo* Info = PoPkt.mutable_info();
+		Info->set_object_id(PlayerInfo->object_id());
+		Info->set_is_blackspawn(false);
+		Info->set_is_throwpotion(true);
+		Info->set_is_aimpotion(false);
+	}
+
+	SEND_PACKET(PoPkt);
+
+	if (bIsThrowReady)
+	{
+		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+		AnimInstance->Montage_JumpToSection(FName("End"), ThrowMontage);
+		bIsThrowReady = false;
+		if (Potion)
+		{
+			GetController()->GetControlRotation();
+			FVector ForwardVector = UKismetMathLibrary::GetForwardVector(GetController()->GetControlRotation());
+			float Mul = 1500.0f;
+			Potion->Throw((ForwardVector + FVector{ 0.0f,0.0f,0.4f }) * Mul);
+		}
+
+		GetCharacterMovement()->bOrientRotationToMovement = true;
+		GetCharacterMovement()->bUseControllerDesiredRotation = false;
+		bIsTurnReady = false;
+		bIsSpawn = false;
+		Potion = nullptr;
+	}
+	else
+	{
+		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+		AnimInstance->Montage_Stop(0.0f);
+	}
+}
 
 void ASPCharacterPlayer::Jumping(const FInputActionValue& Value)
 {
@@ -686,31 +737,41 @@ void ASPCharacterPlayer::StopJumping(const FInputActionValue& Value)
 	ResetJumping();
 }
 
-//void ASPCharacterPlayer::BlackPotionSpawn(const FInputActionValue& Value)
-//{
-//	if (false == bIsSpawn)
-//	{
-//		FVector ItemLocation = GetMesh()->GetSocketLocation("Item_Socket");
-//		FActorSpawnParameters SpawnParams;
-//		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-//		SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
-//		Potion = GetWorld()->SpawnActor<ASPBlackPotion>(ASPBlackPotion::StaticClass(), GetMesh()->GetSocketLocation("Item_Socket"), FRotator{ 0.0f, 0.0f, 0.0f }, SpawnParams);
-//		bIsSpawn = true;
-//		if (Potion)
-//		{
-//			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
-//			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{ "Item_Socket" });
-//		}
-//	}
-//	else 
-//	{
-//		if (Potion)
-//		{
-//			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
-//			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{ "Item_Socket" });
-//		}
-//	}
-//}
+void ASPCharacterPlayer::BlackPotionSpawn(const FInputActionValue& Value)
+{
+	Protocol::C_O_POTION PoPkt;
+	{
+		Protocol::PlayerPotionInfo* Info = PoPkt.mutable_info();
+		Info->set_object_id(PlayerInfo->object_id());
+		Info->set_is_blackspawn(true);
+		Info->set_is_throwpotion(false);
+	}
+
+	SEND_PACKET(PoPkt);
+
+	if (false == bIsSpawn)
+	{
+		FVector ItemLocation = GetMesh()->GetSocketLocation("Item_Socket");
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
+		Potion = GetWorld()->SpawnActor<ASPBlackPotion>(ASPBlackPotion::StaticClass(), GetMesh()->GetSocketLocation("Item_Socket"), FRotator{ 0.0f, 0.0f, 0.0f }, SpawnParams);
+		bIsSpawn = true;
+		if (Potion)
+		{
+			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
+			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{ "Item_Socket" });
+		}
+	}
+	else 
+	{
+		if (Potion)
+		{
+			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
+			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{ "Item_Socket" });
+		}
+	}
+}
 
 void ASPCharacterPlayer::GreenPotionSpawn(const FInputActionValue& Value)
 {

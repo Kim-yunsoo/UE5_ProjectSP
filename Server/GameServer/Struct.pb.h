@@ -55,6 +55,9 @@ extern ObjectInfoDefaultTypeInternal _ObjectInfo_default_instance_;
 class PlayerPotionInfo;
 struct PlayerPotionInfoDefaultTypeInternal;
 extern PlayerPotionInfoDefaultTypeInternal _PlayerPotionInfo_default_instance_;
+class PlayerTurnInfo;
+struct PlayerTurnInfoDefaultTypeInternal;
+extern PlayerTurnInfoDefaultTypeInternal _PlayerTurnInfo_default_instance_;
 class PositionInfo;
 struct PositionInfoDefaultTypeInternal;
 extern PositionInfoDefaultTypeInternal _PositionInfo_default_instance_;
@@ -63,6 +66,7 @@ PROTOBUF_NAMESPACE_OPEN
 template<> ::Protocol::BurstInfo* Arena::CreateMaybeMessage<::Protocol::BurstInfo>(Arena*);
 template<> ::Protocol::ObjectInfo* Arena::CreateMaybeMessage<::Protocol::ObjectInfo>(Arena*);
 template<> ::Protocol::PlayerPotionInfo* Arena::CreateMaybeMessage<::Protocol::PlayerPotionInfo>(Arena*);
+template<> ::Protocol::PlayerTurnInfo* Arena::CreateMaybeMessage<::Protocol::PlayerTurnInfo>(Arena*);
 template<> ::Protocol::PositionInfo* Arena::CreateMaybeMessage<::Protocol::PositionInfo>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace Protocol {
@@ -788,7 +792,8 @@ class PlayerPotionInfo final :
   enum : int {
     kObjectIdFieldNumber = 1,
     kIsBlackspawnFieldNumber = 2,
-    kIsThrowreadyFieldNumber = 3,
+    kIsAimpotionFieldNumber = 3,
+    kIsThrowpotionFieldNumber = 4,
   };
   // uint64 object_id = 1;
   void clear_object_id();
@@ -808,13 +813,22 @@ class PlayerPotionInfo final :
   void _internal_set_is_blackspawn(bool value);
   public:
 
-  // bool is_throwready = 3;
-  void clear_is_throwready();
-  bool is_throwready() const;
-  void set_is_throwready(bool value);
+  // bool is_aimpotion = 3;
+  void clear_is_aimpotion();
+  bool is_aimpotion() const;
+  void set_is_aimpotion(bool value);
   private:
-  bool _internal_is_throwready() const;
-  void _internal_set_is_throwready(bool value);
+  bool _internal_is_aimpotion() const;
+  void _internal_set_is_aimpotion(bool value);
+  public:
+
+  // bool is_throwpotion = 4;
+  void clear_is_throwpotion();
+  bool is_throwpotion() const;
+  void set_is_throwpotion(bool value);
+  private:
+  bool _internal_is_throwpotion() const;
+  void _internal_set_is_throwpotion(bool value);
   public:
 
   // @@protoc_insertion_point(class_scope:Protocol.PlayerPotionInfo)
@@ -827,7 +841,211 @@ class PlayerPotionInfo final :
   struct Impl_ {
     uint64_t object_id_;
     bool is_blackspawn_;
-    bool is_throwready_;
+    bool is_aimpotion_;
+    bool is_throwpotion_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_Struct_2eproto;
+};
+// -------------------------------------------------------------------
+
+class PlayerTurnInfo final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.PlayerTurnInfo) */ {
+ public:
+  inline PlayerTurnInfo() : PlayerTurnInfo(nullptr) {}
+  ~PlayerTurnInfo() override;
+  explicit PROTOBUF_CONSTEXPR PlayerTurnInfo(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  PlayerTurnInfo(const PlayerTurnInfo& from);
+  PlayerTurnInfo(PlayerTurnInfo&& from) noexcept
+    : PlayerTurnInfo() {
+    *this = ::std::move(from);
+  }
+
+  inline PlayerTurnInfo& operator=(const PlayerTurnInfo& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline PlayerTurnInfo& operator=(PlayerTurnInfo&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const PlayerTurnInfo& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const PlayerTurnInfo* internal_default_instance() {
+    return reinterpret_cast<const PlayerTurnInfo*>(
+               &_PlayerTurnInfo_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    4;
+
+  friend void swap(PlayerTurnInfo& a, PlayerTurnInfo& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(PlayerTurnInfo* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(PlayerTurnInfo* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  PlayerTurnInfo* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<PlayerTurnInfo>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const PlayerTurnInfo& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const PlayerTurnInfo& from) {
+    PlayerTurnInfo::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(PlayerTurnInfo* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.PlayerTurnInfo";
+  }
+  protected:
+  explicit PlayerTurnInfo(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kObjectIdFieldNumber = 1,
+    kIsTurnrightFieldNumber = 2,
+    kIsTurnleftFieldNumber = 3,
+    kIsTurnreadyFieldNumber = 4,
+    kYawFieldNumber = 5,
+    kPitchFieldNumber = 6,
+  };
+  // uint64 object_id = 1;
+  void clear_object_id();
+  uint64_t object_id() const;
+  void set_object_id(uint64_t value);
+  private:
+  uint64_t _internal_object_id() const;
+  void _internal_set_object_id(uint64_t value);
+  public:
+
+  // bool is_turnright = 2;
+  void clear_is_turnright();
+  bool is_turnright() const;
+  void set_is_turnright(bool value);
+  private:
+  bool _internal_is_turnright() const;
+  void _internal_set_is_turnright(bool value);
+  public:
+
+  // bool is_turnleft = 3;
+  void clear_is_turnleft();
+  bool is_turnleft() const;
+  void set_is_turnleft(bool value);
+  private:
+  bool _internal_is_turnleft() const;
+  void _internal_set_is_turnleft(bool value);
+  public:
+
+  // bool is_turnready = 4;
+  void clear_is_turnready();
+  bool is_turnready() const;
+  void set_is_turnready(bool value);
+  private:
+  bool _internal_is_turnready() const;
+  void _internal_set_is_turnready(bool value);
+  public:
+
+  // float yaw = 5;
+  void clear_yaw();
+  float yaw() const;
+  void set_yaw(float value);
+  private:
+  float _internal_yaw() const;
+  void _internal_set_yaw(float value);
+  public:
+
+  // float pitch = 6;
+  void clear_pitch();
+  float pitch() const;
+  void set_pitch(float value);
+  private:
+  float _internal_pitch() const;
+  void _internal_set_pitch(float value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:Protocol.PlayerTurnInfo)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    uint64_t object_id_;
+    bool is_turnright_;
+    bool is_turnleft_;
+    bool is_turnready_;
+    float yaw_;
+    float pitch_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -1286,29 +1504,175 @@ inline void PlayerPotionInfo::set_is_blackspawn(bool value) {
   // @@protoc_insertion_point(field_set:Protocol.PlayerPotionInfo.is_blackspawn)
 }
 
-// bool is_throwready = 3;
-inline void PlayerPotionInfo::clear_is_throwready() {
-  _impl_.is_throwready_ = false;
+// bool is_aimpotion = 3;
+inline void PlayerPotionInfo::clear_is_aimpotion() {
+  _impl_.is_aimpotion_ = false;
 }
-inline bool PlayerPotionInfo::_internal_is_throwready() const {
-  return _impl_.is_throwready_;
+inline bool PlayerPotionInfo::_internal_is_aimpotion() const {
+  return _impl_.is_aimpotion_;
 }
-inline bool PlayerPotionInfo::is_throwready() const {
-  // @@protoc_insertion_point(field_get:Protocol.PlayerPotionInfo.is_throwready)
-  return _internal_is_throwready();
+inline bool PlayerPotionInfo::is_aimpotion() const {
+  // @@protoc_insertion_point(field_get:Protocol.PlayerPotionInfo.is_aimpotion)
+  return _internal_is_aimpotion();
 }
-inline void PlayerPotionInfo::_internal_set_is_throwready(bool value) {
+inline void PlayerPotionInfo::_internal_set_is_aimpotion(bool value) {
   
-  _impl_.is_throwready_ = value;
+  _impl_.is_aimpotion_ = value;
 }
-inline void PlayerPotionInfo::set_is_throwready(bool value) {
-  _internal_set_is_throwready(value);
-  // @@protoc_insertion_point(field_set:Protocol.PlayerPotionInfo.is_throwready)
+inline void PlayerPotionInfo::set_is_aimpotion(bool value) {
+  _internal_set_is_aimpotion(value);
+  // @@protoc_insertion_point(field_set:Protocol.PlayerPotionInfo.is_aimpotion)
+}
+
+// bool is_throwpotion = 4;
+inline void PlayerPotionInfo::clear_is_throwpotion() {
+  _impl_.is_throwpotion_ = false;
+}
+inline bool PlayerPotionInfo::_internal_is_throwpotion() const {
+  return _impl_.is_throwpotion_;
+}
+inline bool PlayerPotionInfo::is_throwpotion() const {
+  // @@protoc_insertion_point(field_get:Protocol.PlayerPotionInfo.is_throwpotion)
+  return _internal_is_throwpotion();
+}
+inline void PlayerPotionInfo::_internal_set_is_throwpotion(bool value) {
+  
+  _impl_.is_throwpotion_ = value;
+}
+inline void PlayerPotionInfo::set_is_throwpotion(bool value) {
+  _internal_set_is_throwpotion(value);
+  // @@protoc_insertion_point(field_set:Protocol.PlayerPotionInfo.is_throwpotion)
+}
+
+// -------------------------------------------------------------------
+
+// PlayerTurnInfo
+
+// uint64 object_id = 1;
+inline void PlayerTurnInfo::clear_object_id() {
+  _impl_.object_id_ = uint64_t{0u};
+}
+inline uint64_t PlayerTurnInfo::_internal_object_id() const {
+  return _impl_.object_id_;
+}
+inline uint64_t PlayerTurnInfo::object_id() const {
+  // @@protoc_insertion_point(field_get:Protocol.PlayerTurnInfo.object_id)
+  return _internal_object_id();
+}
+inline void PlayerTurnInfo::_internal_set_object_id(uint64_t value) {
+  
+  _impl_.object_id_ = value;
+}
+inline void PlayerTurnInfo::set_object_id(uint64_t value) {
+  _internal_set_object_id(value);
+  // @@protoc_insertion_point(field_set:Protocol.PlayerTurnInfo.object_id)
+}
+
+// bool is_turnright = 2;
+inline void PlayerTurnInfo::clear_is_turnright() {
+  _impl_.is_turnright_ = false;
+}
+inline bool PlayerTurnInfo::_internal_is_turnright() const {
+  return _impl_.is_turnright_;
+}
+inline bool PlayerTurnInfo::is_turnright() const {
+  // @@protoc_insertion_point(field_get:Protocol.PlayerTurnInfo.is_turnright)
+  return _internal_is_turnright();
+}
+inline void PlayerTurnInfo::_internal_set_is_turnright(bool value) {
+  
+  _impl_.is_turnright_ = value;
+}
+inline void PlayerTurnInfo::set_is_turnright(bool value) {
+  _internal_set_is_turnright(value);
+  // @@protoc_insertion_point(field_set:Protocol.PlayerTurnInfo.is_turnright)
+}
+
+// bool is_turnleft = 3;
+inline void PlayerTurnInfo::clear_is_turnleft() {
+  _impl_.is_turnleft_ = false;
+}
+inline bool PlayerTurnInfo::_internal_is_turnleft() const {
+  return _impl_.is_turnleft_;
+}
+inline bool PlayerTurnInfo::is_turnleft() const {
+  // @@protoc_insertion_point(field_get:Protocol.PlayerTurnInfo.is_turnleft)
+  return _internal_is_turnleft();
+}
+inline void PlayerTurnInfo::_internal_set_is_turnleft(bool value) {
+  
+  _impl_.is_turnleft_ = value;
+}
+inline void PlayerTurnInfo::set_is_turnleft(bool value) {
+  _internal_set_is_turnleft(value);
+  // @@protoc_insertion_point(field_set:Protocol.PlayerTurnInfo.is_turnleft)
+}
+
+// bool is_turnready = 4;
+inline void PlayerTurnInfo::clear_is_turnready() {
+  _impl_.is_turnready_ = false;
+}
+inline bool PlayerTurnInfo::_internal_is_turnready() const {
+  return _impl_.is_turnready_;
+}
+inline bool PlayerTurnInfo::is_turnready() const {
+  // @@protoc_insertion_point(field_get:Protocol.PlayerTurnInfo.is_turnready)
+  return _internal_is_turnready();
+}
+inline void PlayerTurnInfo::_internal_set_is_turnready(bool value) {
+  
+  _impl_.is_turnready_ = value;
+}
+inline void PlayerTurnInfo::set_is_turnready(bool value) {
+  _internal_set_is_turnready(value);
+  // @@protoc_insertion_point(field_set:Protocol.PlayerTurnInfo.is_turnready)
+}
+
+// float yaw = 5;
+inline void PlayerTurnInfo::clear_yaw() {
+  _impl_.yaw_ = 0;
+}
+inline float PlayerTurnInfo::_internal_yaw() const {
+  return _impl_.yaw_;
+}
+inline float PlayerTurnInfo::yaw() const {
+  // @@protoc_insertion_point(field_get:Protocol.PlayerTurnInfo.yaw)
+  return _internal_yaw();
+}
+inline void PlayerTurnInfo::_internal_set_yaw(float value) {
+  
+  _impl_.yaw_ = value;
+}
+inline void PlayerTurnInfo::set_yaw(float value) {
+  _internal_set_yaw(value);
+  // @@protoc_insertion_point(field_set:Protocol.PlayerTurnInfo.yaw)
+}
+
+// float pitch = 6;
+inline void PlayerTurnInfo::clear_pitch() {
+  _impl_.pitch_ = 0;
+}
+inline float PlayerTurnInfo::_internal_pitch() const {
+  return _impl_.pitch_;
+}
+inline float PlayerTurnInfo::pitch() const {
+  // @@protoc_insertion_point(field_get:Protocol.PlayerTurnInfo.pitch)
+  return _internal_pitch();
+}
+inline void PlayerTurnInfo::_internal_set_pitch(float value) {
+  
+  _impl_.pitch_ = value;
+}
+inline void PlayerTurnInfo::set_pitch(float value) {
+  _internal_set_pitch(value);
+  // @@protoc_insertion_point(field_set:Protocol.PlayerTurnInfo.pitch)
 }
 
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

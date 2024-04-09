@@ -115,6 +115,16 @@ bool Handle_S_MOVE(PacketSessionRef& session, Protocol::S_MOVE& pkt)
 	return true;
 }
 
+bool Handle_S_TURN(PacketSessionRef& session, Protocol::S_TURN& pkt)
+{
+	if (auto* GameInstance = Cast<USpectrumGameInstance>(GWorld->GetGameInstance()))
+	{
+		GameInstance->HandleTurn(pkt);
+	}
+
+	return true;
+}
+
 bool Handle_S_O_MOVE(PacketSessionRef& session, Protocol::S_O_MOVE& pkt) {
 
 	if (auto* GameInstance = Cast<USpectrumGameInstance>(GWorld->GetGameInstance()))

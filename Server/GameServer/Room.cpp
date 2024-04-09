@@ -277,6 +277,28 @@ void Room::HandleMoveLocked(Protocol::C_O_MOVE& pkt)
 
 }
 
+void Room::HandleTurnLocked(Protocol::C_TURN& pkt)
+{
+	WRITE_LOCK;
+
+	const uint64 objectId = pkt.info().object_id();
+	if (_player.find(objectId) == _player.end())
+		return;
+
+	// È¸Àü 
+	{
+		Protocol::S_TURN turnPkt;
+		{
+			Protocol::PlayerTurnInfo* info = turnPkt.mutable_info();
+			info->CopyFrom(pkt.info());
+		}
+
+		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(turnPkt);
+		Broadcast(sendBuffer);
+	}
+
+}
+
 void Room::HandleBurstLocked(Protocol::C_O_BURST& pkt)
 {
 

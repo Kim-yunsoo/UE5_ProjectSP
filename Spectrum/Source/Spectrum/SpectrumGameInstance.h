@@ -44,6 +44,8 @@ public:
 	void HandleOSpawn(const Protocol::PositionInfo& positionInfo, bool IsMine);
 
 	void HandleMove(const Protocol::S_MOVE& MovePkt);					// 이동
+	void HandleTurn(const Protocol::S_TURN& TurnPkt);					// 회전
+
 	void HandleOMove(const Protocol::S_O_MOVE& MovePkt);					// 이동
 
 	void HandleOBurst(const Protocol::S_O_BURST& BurstPkt);				// 폭발

@@ -77,7 +77,8 @@ PROTOBUF_CONSTEXPR PlayerPotionInfo::PlayerPotionInfo(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.object_id_)*/uint64_t{0u}
   , /*decltype(_impl_.is_blackspawn_)*/false
-  , /*decltype(_impl_.is_throwready_)*/false
+  , /*decltype(_impl_.is_aimpotion_)*/false
+  , /*decltype(_impl_.is_throwpotion_)*/false
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct PlayerPotionInfoDefaultTypeInternal {
   PROTOBUF_CONSTEXPR PlayerPotionInfoDefaultTypeInternal()
@@ -88,8 +89,26 @@ struct PlayerPotionInfoDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 PlayerPotionInfoDefaultTypeInternal _PlayerPotionInfo_default_instance_;
+PROTOBUF_CONSTEXPR PlayerTurnInfo::PlayerTurnInfo(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.object_id_)*/uint64_t{0u}
+  , /*decltype(_impl_.is_turnright_)*/false
+  , /*decltype(_impl_.is_turnleft_)*/false
+  , /*decltype(_impl_.is_turnready_)*/false
+  , /*decltype(_impl_.yaw_)*/0
+  , /*decltype(_impl_.pitch_)*/0
+  , /*decltype(_impl_._cached_size_)*/{}} {}
+struct PlayerTurnInfoDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR PlayerTurnInfoDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~PlayerTurnInfoDefaultTypeInternal() {}
+  union {
+    PlayerTurnInfo _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 PlayerTurnInfoDefaultTypeInternal _PlayerTurnInfo_default_instance_;
 }  // namespace Protocol
-static ::_pb::Metadata file_level_metadata_Struct_2eproto[4];
+static ::_pb::Metadata file_level_metadata_Struct_2eproto[5];
 static constexpr ::_pb::EnumDescriptor const** file_level_enum_descriptors_Struct_2eproto = nullptr;
 static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_Struct_2eproto = nullptr;
 
@@ -136,13 +155,27 @@ const uint32_t TableStruct_Struct_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(p
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::Protocol::PlayerPotionInfo, _impl_.object_id_),
   PROTOBUF_FIELD_OFFSET(::Protocol::PlayerPotionInfo, _impl_.is_blackspawn_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::PlayerPotionInfo, _impl_.is_throwready_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::PlayerPotionInfo, _impl_.is_aimpotion_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::PlayerPotionInfo, _impl_.is_throwpotion_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::Protocol::PlayerTurnInfo, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::Protocol::PlayerTurnInfo, _impl_.object_id_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::PlayerTurnInfo, _impl_.is_turnright_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::PlayerTurnInfo, _impl_.is_turnleft_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::PlayerTurnInfo, _impl_.is_turnready_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::PlayerTurnInfo, _impl_.yaw_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::PlayerTurnInfo, _impl_.pitch_),
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::Protocol::PositionInfo)},
   { 17, -1, -1, sizeof(::Protocol::ObjectInfo)},
   { 26, -1, -1, sizeof(::Protocol::BurstInfo)},
   { 34, -1, -1, sizeof(::Protocol::PlayerPotionInfo)},
+  { 44, -1, -1, sizeof(::Protocol::PlayerTurnInfo)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -150,6 +183,7 @@ static const ::_pb::Message* const file_default_instances[] = {
   &::Protocol::_ObjectInfo_default_instance_._instance,
   &::Protocol::_BurstInfo_default_instance_._instance,
   &::Protocol::_PlayerPotionInfo_default_instance_._instance,
+  &::Protocol::_PlayerTurnInfo_default_instance_._instance,
 };
 
 const char descriptor_table_protodef_Struct_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
@@ -163,19 +197,22 @@ const char descriptor_table_protodef_Struct_2eproto[] PROTOBUF_SECTION_VARIABLE(
   "bject_id\030\001 \001(\004\022)\n\013object_type\030\002 \001(\0162\024.Pr"
   "otocol.ObjectType\022(\n\010pos_info\030\003 \001(\0132\026.Pr"
   "otocol.PositionInfo\"0\n\tBurstInfo\022\021\n\tobje"
-  "ct_id\030\001 \001(\004\022\020\n\010is_burst\030\002 \001(\010\"S\n\020PlayerP"
+  "ct_id\030\001 \001(\004\022\020\n\010is_burst\030\002 \001(\010\"j\n\020PlayerP"
   "otionInfo\022\021\n\tobject_id\030\001 \001(\004\022\025\n\ris_black"
-  "spawn\030\002 \001(\010\022\025\n\ris_throwready\030\003 \001(\010b\006prot"
-  "o3"
+  "spawn\030\002 \001(\010\022\024\n\014is_aimpotion\030\003 \001(\010\022\026\n\016is_"
+  "throwpotion\030\004 \001(\010\"\200\001\n\016PlayerTurnInfo\022\021\n\t"
+  "object_id\030\001 \001(\004\022\024\n\014is_turnright\030\002 \001(\010\022\023\n"
+  "\013is_turnleft\030\003 \001(\010\022\024\n\014is_turnready\030\004 \001(\010"
+  "\022\013\n\003yaw\030\005 \001(\002\022\r\n\005pitch\030\006 \001(\002b\006proto3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Struct_2eproto_deps[1] = {
   &::descriptor_table_Enum_2eproto,
 };
 static ::_pbi::once_flag descriptor_table_Struct_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Struct_2eproto = {
-    false, false, 522, descriptor_table_protodef_Struct_2eproto,
+    false, false, 676, descriptor_table_protodef_Struct_2eproto,
     "Struct.proto",
-    &descriptor_table_Struct_2eproto_once, descriptor_table_Struct_2eproto_deps, 1, 4,
+    &descriptor_table_Struct_2eproto_once, descriptor_table_Struct_2eproto_deps, 1, 5,
     schemas, file_default_instances, TableStruct_Struct_2eproto::offsets,
     file_level_metadata_Struct_2eproto, file_level_enum_descriptors_Struct_2eproto,
     file_level_service_descriptors_Struct_2eproto,
@@ -1150,13 +1187,14 @@ PlayerPotionInfo::PlayerPotionInfo(const PlayerPotionInfo& from)
   new (&_impl_) Impl_{
       decltype(_impl_.object_id_){}
     , decltype(_impl_.is_blackspawn_){}
-    , decltype(_impl_.is_throwready_){}
+    , decltype(_impl_.is_aimpotion_){}
+    , decltype(_impl_.is_throwpotion_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   ::memcpy(&_impl_.object_id_, &from._impl_.object_id_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.is_throwready_) -
-    reinterpret_cast<char*>(&_impl_.object_id_)) + sizeof(_impl_.is_throwready_));
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.is_throwpotion_) -
+    reinterpret_cast<char*>(&_impl_.object_id_)) + sizeof(_impl_.is_throwpotion_));
   // @@protoc_insertion_point(copy_constructor:Protocol.PlayerPotionInfo)
 }
 
@@ -1167,7 +1205,8 @@ inline void PlayerPotionInfo::SharedCtor(
   new (&_impl_) Impl_{
       decltype(_impl_.object_id_){uint64_t{0u}}
     , decltype(_impl_.is_blackspawn_){false}
-    , decltype(_impl_.is_throwready_){false}
+    , decltype(_impl_.is_aimpotion_){false}
+    , decltype(_impl_.is_throwpotion_){false}
     , /*decltype(_impl_._cached_size_)*/{}
   };
 }
@@ -1196,8 +1235,8 @@ void PlayerPotionInfo::Clear() {
   (void) cached_has_bits;
 
   ::memset(&_impl_.object_id_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&_impl_.is_throwready_) -
-      reinterpret_cast<char*>(&_impl_.object_id_)) + sizeof(_impl_.is_throwready_));
+      reinterpret_cast<char*>(&_impl_.is_throwpotion_) -
+      reinterpret_cast<char*>(&_impl_.object_id_)) + sizeof(_impl_.is_throwpotion_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -1223,10 +1262,18 @@ const char* PlayerPotionInfo::_InternalParse(const char* ptr, ::_pbi::ParseConte
         } else
           goto handle_unusual;
         continue;
-      // bool is_throwready = 3;
+      // bool is_aimpotion = 3;
       case 3:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
-          _impl_.is_throwready_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          _impl_.is_aimpotion_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // bool is_throwpotion = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 32)) {
+          _impl_.is_throwpotion_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -1272,10 +1319,16 @@ uint8_t* PlayerPotionInfo::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteBoolToArray(2, this->_internal_is_blackspawn(), target);
   }
 
-  // bool is_throwready = 3;
-  if (this->_internal_is_throwready() != 0) {
+  // bool is_aimpotion = 3;
+  if (this->_internal_is_aimpotion() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteBoolToArray(3, this->_internal_is_throwready(), target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(3, this->_internal_is_aimpotion(), target);
+  }
+
+  // bool is_throwpotion = 4;
+  if (this->_internal_is_throwpotion() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(4, this->_internal_is_throwpotion(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -1304,8 +1357,13 @@ size_t PlayerPotionInfo::ByteSizeLong() const {
     total_size += 1 + 1;
   }
 
-  // bool is_throwready = 3;
-  if (this->_internal_is_throwready() != 0) {
+  // bool is_aimpotion = 3;
+  if (this->_internal_is_aimpotion() != 0) {
+    total_size += 1 + 1;
+  }
+
+  // bool is_throwpotion = 4;
+  if (this->_internal_is_throwpotion() != 0) {
     total_size += 1 + 1;
   }
 
@@ -1333,8 +1391,11 @@ void PlayerPotionInfo::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const
   if (from._internal_is_blackspawn() != 0) {
     _this->_internal_set_is_blackspawn(from._internal_is_blackspawn());
   }
-  if (from._internal_is_throwready() != 0) {
-    _this->_internal_set_is_throwready(from._internal_is_throwready());
+  if (from._internal_is_aimpotion() != 0) {
+    _this->_internal_set_is_aimpotion(from._internal_is_aimpotion());
+  }
+  if (from._internal_is_throwpotion() != 0) {
+    _this->_internal_set_is_throwpotion(from._internal_is_throwpotion());
   }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
@@ -1354,8 +1415,8 @@ void PlayerPotionInfo::InternalSwap(PlayerPotionInfo* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(PlayerPotionInfo, _impl_.is_throwready_)
-      + sizeof(PlayerPotionInfo::_impl_.is_throwready_)
+      PROTOBUF_FIELD_OFFSET(PlayerPotionInfo, _impl_.is_throwpotion_)
+      + sizeof(PlayerPotionInfo::_impl_.is_throwpotion_)
       - PROTOBUF_FIELD_OFFSET(PlayerPotionInfo, _impl_.object_id_)>(
           reinterpret_cast<char*>(&_impl_.object_id_),
           reinterpret_cast<char*>(&other->_impl_.object_id_));
@@ -1365,6 +1426,337 @@ void PlayerPotionInfo::InternalSwap(PlayerPotionInfo* other) {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Struct_2eproto_getter, &descriptor_table_Struct_2eproto_once,
       file_level_metadata_Struct_2eproto[3]);
+}
+
+// ===================================================================
+
+class PlayerTurnInfo::_Internal {
+ public:
+};
+
+PlayerTurnInfo::PlayerTurnInfo(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:Protocol.PlayerTurnInfo)
+}
+PlayerTurnInfo::PlayerTurnInfo(const PlayerTurnInfo& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  PlayerTurnInfo* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.object_id_){}
+    , decltype(_impl_.is_turnright_){}
+    , decltype(_impl_.is_turnleft_){}
+    , decltype(_impl_.is_turnready_){}
+    , decltype(_impl_.yaw_){}
+    , decltype(_impl_.pitch_){}
+    , /*decltype(_impl_._cached_size_)*/{}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::memcpy(&_impl_.object_id_, &from._impl_.object_id_,
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.pitch_) -
+    reinterpret_cast<char*>(&_impl_.object_id_)) + sizeof(_impl_.pitch_));
+  // @@protoc_insertion_point(copy_constructor:Protocol.PlayerTurnInfo)
+}
+
+inline void PlayerTurnInfo::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_.object_id_){uint64_t{0u}}
+    , decltype(_impl_.is_turnright_){false}
+    , decltype(_impl_.is_turnleft_){false}
+    , decltype(_impl_.is_turnready_){false}
+    , decltype(_impl_.yaw_){0}
+    , decltype(_impl_.pitch_){0}
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
+}
+
+PlayerTurnInfo::~PlayerTurnInfo() {
+  // @@protoc_insertion_point(destructor:Protocol.PlayerTurnInfo)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void PlayerTurnInfo::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+}
+
+void PlayerTurnInfo::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void PlayerTurnInfo::Clear() {
+// @@protoc_insertion_point(message_clear_start:Protocol.PlayerTurnInfo)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  ::memset(&_impl_.object_id_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&_impl_.pitch_) -
+      reinterpret_cast<char*>(&_impl_.object_id_)) + sizeof(_impl_.pitch_));
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* PlayerTurnInfo::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // uint64 object_id = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          _impl_.object_id_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // bool is_turnright = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
+          _impl_.is_turnright_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // bool is_turnleft = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
+          _impl_.is_turnleft_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // bool is_turnready = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 32)) {
+          _impl_.is_turnready_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // float yaw = 5;
+      case 5:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 45)) {
+          _impl_.yaw_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+          ptr += sizeof(float);
+        } else
+          goto handle_unusual;
+        continue;
+      // float pitch = 6;
+      case 6:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 53)) {
+          _impl_.pitch_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+          ptr += sizeof(float);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* PlayerTurnInfo::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:Protocol.PlayerTurnInfo)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // uint64 object_id = 1;
+  if (this->_internal_object_id() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(1, this->_internal_object_id(), target);
+  }
+
+  // bool is_turnright = 2;
+  if (this->_internal_is_turnright() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(2, this->_internal_is_turnright(), target);
+  }
+
+  // bool is_turnleft = 3;
+  if (this->_internal_is_turnleft() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(3, this->_internal_is_turnleft(), target);
+  }
+
+  // bool is_turnready = 4;
+  if (this->_internal_is_turnready() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(4, this->_internal_is_turnready(), target);
+  }
+
+  // float yaw = 5;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_yaw = this->_internal_yaw();
+  uint32_t raw_yaw;
+  memcpy(&raw_yaw, &tmp_yaw, sizeof(tmp_yaw));
+  if (raw_yaw != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteFloatToArray(5, this->_internal_yaw(), target);
+  }
+
+  // float pitch = 6;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_pitch = this->_internal_pitch();
+  uint32_t raw_pitch;
+  memcpy(&raw_pitch, &tmp_pitch, sizeof(tmp_pitch));
+  if (raw_pitch != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteFloatToArray(6, this->_internal_pitch(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:Protocol.PlayerTurnInfo)
+  return target;
+}
+
+size_t PlayerTurnInfo::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:Protocol.PlayerTurnInfo)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // uint64 object_id = 1;
+  if (this->_internal_object_id() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_object_id());
+  }
+
+  // bool is_turnright = 2;
+  if (this->_internal_is_turnright() != 0) {
+    total_size += 1 + 1;
+  }
+
+  // bool is_turnleft = 3;
+  if (this->_internal_is_turnleft() != 0) {
+    total_size += 1 + 1;
+  }
+
+  // bool is_turnready = 4;
+  if (this->_internal_is_turnready() != 0) {
+    total_size += 1 + 1;
+  }
+
+  // float yaw = 5;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_yaw = this->_internal_yaw();
+  uint32_t raw_yaw;
+  memcpy(&raw_yaw, &tmp_yaw, sizeof(tmp_yaw));
+  if (raw_yaw != 0) {
+    total_size += 1 + 4;
+  }
+
+  // float pitch = 6;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_pitch = this->_internal_pitch();
+  uint32_t raw_pitch;
+  memcpy(&raw_pitch, &tmp_pitch, sizeof(tmp_pitch));
+  if (raw_pitch != 0) {
+    total_size += 1 + 4;
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData PlayerTurnInfo::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    PlayerTurnInfo::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*PlayerTurnInfo::GetClassData() const { return &_class_data_; }
+
+
+void PlayerTurnInfo::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<PlayerTurnInfo*>(&to_msg);
+  auto& from = static_cast<const PlayerTurnInfo&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:Protocol.PlayerTurnInfo)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from._internal_object_id() != 0) {
+    _this->_internal_set_object_id(from._internal_object_id());
+  }
+  if (from._internal_is_turnright() != 0) {
+    _this->_internal_set_is_turnright(from._internal_is_turnright());
+  }
+  if (from._internal_is_turnleft() != 0) {
+    _this->_internal_set_is_turnleft(from._internal_is_turnleft());
+  }
+  if (from._internal_is_turnready() != 0) {
+    _this->_internal_set_is_turnready(from._internal_is_turnready());
+  }
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_yaw = from._internal_yaw();
+  uint32_t raw_yaw;
+  memcpy(&raw_yaw, &tmp_yaw, sizeof(tmp_yaw));
+  if (raw_yaw != 0) {
+    _this->_internal_set_yaw(from._internal_yaw());
+  }
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_pitch = from._internal_pitch();
+  uint32_t raw_pitch;
+  memcpy(&raw_pitch, &tmp_pitch, sizeof(tmp_pitch));
+  if (raw_pitch != 0) {
+    _this->_internal_set_pitch(from._internal_pitch());
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void PlayerTurnInfo::CopyFrom(const PlayerTurnInfo& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:Protocol.PlayerTurnInfo)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool PlayerTurnInfo::IsInitialized() const {
+  return true;
+}
+
+void PlayerTurnInfo::InternalSwap(PlayerTurnInfo* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(PlayerTurnInfo, _impl_.pitch_)
+      + sizeof(PlayerTurnInfo::_impl_.pitch_)
+      - PROTOBUF_FIELD_OFFSET(PlayerTurnInfo, _impl_.object_id_)>(
+          reinterpret_cast<char*>(&_impl_.object_id_),
+          reinterpret_cast<char*>(&other->_impl_.object_id_));
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata PlayerTurnInfo::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_Struct_2eproto_getter, &descriptor_table_Struct_2eproto_once,
+      file_level_metadata_Struct_2eproto[4]);
 }
 
 // @@protoc_insertion_point(namespace_scope)
@@ -1385,6 +1777,10 @@ Arena::CreateMaybeMessage< ::Protocol::BurstInfo >(Arena* arena) {
 template<> PROTOBUF_NOINLINE ::Protocol::PlayerPotionInfo*
 Arena::CreateMaybeMessage< ::Protocol::PlayerPotionInfo >(Arena* arena) {
   return Arena::CreateMessageInternal< ::Protocol::PlayerPotionInfo >(arena);
+}
+template<> PROTOBUF_NOINLINE ::Protocol::PlayerTurnInfo*
+Arena::CreateMaybeMessage< ::Protocol::PlayerTurnInfo >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::Protocol::PlayerTurnInfo >(arena);
 }
 PROTOBUF_NAMESPACE_CLOSE
 

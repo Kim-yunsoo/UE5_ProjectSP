@@ -38,14 +38,14 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-	virtual void Tick(float DeltaTime) override;	// �����ϰ� �ִ��� ���θ� �� �� ����
+	virtual void Tick(float DeltaTime) override;	// 매번 계속 해야 하는 것들 여기에
 
 
 public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 
-protected: // ī�޶�
+protected:
 	void ChangeCharacterControl();
 	void SetCharacterControl(ECharacterControlType NewCharacterControlType);
 	virtual void SetCharacterControlData(const class USPCharacterControlData* CharacterControlData) override;
@@ -68,13 +68,13 @@ protected: // ī�޶�
 	void Graping(const FInputActionValue& Value);
 	void StopGraping(const FInputActionValue& Value);
 
-	//void AimPotion(const FInputActionValue& Value);
-	//void ThrowPotion(const FInputActionValue& Value);
+	void AimPotion(const FInputActionValue& Value);
+	void ThrowPotion(const FInputActionValue& Value);
 
 	void Jumping(const FInputActionValue& Value);
 	void StopJumping(const FInputActionValue& Value);
 
-	//void BlackPotionSpawn(const FInputActionValue& Value);
+	void BlackPotionSpawn(const FInputActionValue& Value);
 	void GreenPotionSpawn(const FInputActionValue& Value);
 
 	ECharacterControlType CurrentCharacterControlType;
