@@ -12,7 +12,7 @@ ASPObject::ASPObject()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	SetActorEnableCollision(true);
 	PrimaryActorTick.bCanEverTick = true;
-	bHasBeenCalled = false; // �ѹ��� �����ϱ� ���� ����
+	bHasBeenCalled = false; // 
 	//MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
 	ObjectMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ObjectMesh"));
 	ObjectMesh->SetCollisionProfileName(TEXT("PropCollision"));
@@ -20,6 +20,7 @@ ASPObject::ASPObject()
 	RootComponent = ObjectMesh;
 	ObjectInfo = new Protocol::PositionInfo();
 	DestInfo = new Protocol::PositionInfo();
+	bIsFrist = false;
 
 }
 
@@ -55,13 +56,15 @@ void ASPObject::BeginPlay()
 
 void ASPObject::OnExplosionHit(float Damage)
 {
-	if (false == bHasBeenCalled)
-	{
-		ObjectMesh->SetHiddenInGame(true);
-		//ObjectMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		//this->SetLifeSpan(1.0f);
-		bHasBeenCalled = true;
-	}
+	//if (false == bHasBeenCalled)
+	//{
+	//	ObjectMesh->SetHiddenInGame(true);
+	//	//ObjectMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	//	//this->SetLifeSpan(1.0f);
+	//	bHasBeenCalled = true;
+		//bIsFrist = true;	// 해당 변수만 켜고 처리는 Tick에서 처리
+		SetBurst(true);
+	//}
 }
 // Called every frame
 void ASPObject::Tick(float DeltaTime)
@@ -110,7 +113,9 @@ void ASPObject::Tick(float DeltaTime)
 	}
 
 	MovePacketSendTimer -= DeltaTime;
-	if (!Equal && MovePacketSendTimer <= 0)	// 0.1초마다 물건의 위치가 다르면 C_O_MOVE 패킷	전송
+	if (!Equal && MovePacketSendTimer <= 0&& bIsFrist == false)	
+		// 0.1초마다 물건의 위치가 다르면 C_O_MOVE 패킷	전송
+		// 터지지 않았을 때만
 	{
 		Protocol::C_O_MOVE MovePkt;
 		{
@@ -124,13 +129,21 @@ void ASPObject::Tick(float DeltaTime)
 			ObjectInfo->object_id(), ObjectInfo->x(), ObjectInfo->y(), ObjectInfo->z()));
 	}
 
-	//else
-	//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%lld %f %f %f"),
-	//					ObjectInfo->object_id(), ObjectInfo->x(), ObjectInfo->y(), ObjectInfo->z()));
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, FString::Printf(TEXT("%f %f %f"),
-	//	GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z));
-	//UE_LOG(LogTemp, Log, TEXT("%s"), *ObjectLocation.ToString());
+	if (bIsFrist == true)
+	{
+		ObjectMesh->SetHiddenInGame(true);
+		bHasBeenCalled = true;
 
+		Protocol::C_O_BURST BurstPkt;
+		{
+			Protocol::BurstInfo* Info = BurstPkt.mutable_info();
+			Info->set_object_id(ObjectInfo->object_id());
+			Info->set_is_burst(true);
+		}
+
+		SEND_PACKET(BurstPkt);
+
+	}
 }
 
 
@@ -164,4 +177,10 @@ void ASPObject::SetDestInfo(const Protocol::PositionInfo& Info)
 	
 	//// Apply status right now
 	//SetMoveState(Info.state());
+}
+
+void ASPObject::SetBurst(const bool burst)
+{
+	bHasBeenCalled = burst;
+	bIsFrist = burst;
 }

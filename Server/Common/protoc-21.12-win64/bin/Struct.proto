@@ -14,6 +14,8 @@ message PositionInfo
 	bool is_aiming = 7;
 	bool is_holding = 8;
 	bool is_jumping = 9;
+	bool is_throwpotion = 10;
+	bool is_spawnpotion = 11;
 }
 
 message ObjectInfo
@@ -21,4 +23,10 @@ message ObjectInfo
 	uint64 object_id = 1;
 	ObjectType object_type = 2;
 	PositionInfo pos_info = 3;
+}
+
+message BurstInfo
+{
+	uint64 object_id = 1;
+	bool is_burst = 2;
 }

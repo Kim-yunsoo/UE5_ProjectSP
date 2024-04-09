@@ -46,6 +46,9 @@ struct TableStruct_Struct_2eproto {
 };
 extern const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_Struct_2eproto;
 namespace Protocol {
+class BurstInfo;
+struct BurstInfoDefaultTypeInternal;
+extern BurstInfoDefaultTypeInternal _BurstInfo_default_instance_;
 class ObjectInfo;
 struct ObjectInfoDefaultTypeInternal;
 extern ObjectInfoDefaultTypeInternal _ObjectInfo_default_instance_;
@@ -54,6 +57,7 @@ struct PositionInfoDefaultTypeInternal;
 extern PositionInfoDefaultTypeInternal _PositionInfo_default_instance_;
 }  // namespace Protocol
 PROTOBUF_NAMESPACE_OPEN
+template<> ::Protocol::BurstInfo* Arena::CreateMaybeMessage<::Protocol::BurstInfo>(Arena*);
 template<> ::Protocol::ObjectInfo* Arena::CreateMaybeMessage<::Protocol::ObjectInfo>(Arena*);
 template<> ::Protocol::PositionInfo* Arena::CreateMaybeMessage<::Protocol::PositionInfo>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
@@ -191,6 +195,8 @@ class PositionInfo final :
     kIsAimingFieldNumber = 7,
     kIsHoldingFieldNumber = 8,
     kIsJumpingFieldNumber = 9,
+    kIsThrowpotionFieldNumber = 10,
+    kIsSpawnpotionFieldNumber = 11,
   };
   // uint64 object_id = 1;
   void clear_object_id();
@@ -273,6 +279,24 @@ class PositionInfo final :
   void _internal_set_is_jumping(bool value);
   public:
 
+  // bool is_throwpotion = 10;
+  void clear_is_throwpotion();
+  bool is_throwpotion() const;
+  void set_is_throwpotion(bool value);
+  private:
+  bool _internal_is_throwpotion() const;
+  void _internal_set_is_throwpotion(bool value);
+  public:
+
+  // bool is_spawnpotion = 11;
+  void clear_is_spawnpotion();
+  bool is_spawnpotion() const;
+  void set_is_spawnpotion(bool value);
+  private:
+  bool _internal_is_spawnpotion() const;
+  void _internal_set_is_spawnpotion(bool value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Protocol.PositionInfo)
  private:
   class _Internal;
@@ -290,6 +314,8 @@ class PositionInfo final :
     bool is_aiming_;
     bool is_holding_;
     bool is_jumping_;
+    bool is_throwpotion_;
+    bool is_spawnpotion_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -469,6 +495,165 @@ class ObjectInfo final :
     ::Protocol::PositionInfo* pos_info_;
     uint64_t object_id_;
     int object_type_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_Struct_2eproto;
+};
+// -------------------------------------------------------------------
+
+class BurstInfo final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.BurstInfo) */ {
+ public:
+  inline BurstInfo() : BurstInfo(nullptr) {}
+  ~BurstInfo() override;
+  explicit PROTOBUF_CONSTEXPR BurstInfo(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  BurstInfo(const BurstInfo& from);
+  BurstInfo(BurstInfo&& from) noexcept
+    : BurstInfo() {
+    *this = ::std::move(from);
+  }
+
+  inline BurstInfo& operator=(const BurstInfo& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline BurstInfo& operator=(BurstInfo&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const BurstInfo& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const BurstInfo* internal_default_instance() {
+    return reinterpret_cast<const BurstInfo*>(
+               &_BurstInfo_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    2;
+
+  friend void swap(BurstInfo& a, BurstInfo& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(BurstInfo* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(BurstInfo* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  BurstInfo* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<BurstInfo>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const BurstInfo& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const BurstInfo& from) {
+    BurstInfo::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(BurstInfo* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.BurstInfo";
+  }
+  protected:
+  explicit BurstInfo(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kObjectIdFieldNumber = 1,
+    kIsBurstFieldNumber = 2,
+  };
+  // uint64 object_id = 1;
+  void clear_object_id();
+  uint64_t object_id() const;
+  void set_object_id(uint64_t value);
+  private:
+  uint64_t _internal_object_id() const;
+  void _internal_set_object_id(uint64_t value);
+  public:
+
+  // bool is_burst = 2;
+  void clear_is_burst();
+  bool is_burst() const;
+  void set_is_burst(bool value);
+  private:
+  bool _internal_is_burst() const;
+  void _internal_set_is_burst(bool value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:Protocol.BurstInfo)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    uint64_t object_id_;
+    bool is_burst_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -665,6 +850,46 @@ inline void PositionInfo::set_is_jumping(bool value) {
   // @@protoc_insertion_point(field_set:Protocol.PositionInfo.is_jumping)
 }
 
+// bool is_throwpotion = 10;
+inline void PositionInfo::clear_is_throwpotion() {
+  _impl_.is_throwpotion_ = false;
+}
+inline bool PositionInfo::_internal_is_throwpotion() const {
+  return _impl_.is_throwpotion_;
+}
+inline bool PositionInfo::is_throwpotion() const {
+  // @@protoc_insertion_point(field_get:Protocol.PositionInfo.is_throwpotion)
+  return _internal_is_throwpotion();
+}
+inline void PositionInfo::_internal_set_is_throwpotion(bool value) {
+  
+  _impl_.is_throwpotion_ = value;
+}
+inline void PositionInfo::set_is_throwpotion(bool value) {
+  _internal_set_is_throwpotion(value);
+  // @@protoc_insertion_point(field_set:Protocol.PositionInfo.is_throwpotion)
+}
+
+// bool is_spawnpotion = 11;
+inline void PositionInfo::clear_is_spawnpotion() {
+  _impl_.is_spawnpotion_ = false;
+}
+inline bool PositionInfo::_internal_is_spawnpotion() const {
+  return _impl_.is_spawnpotion_;
+}
+inline bool PositionInfo::is_spawnpotion() const {
+  // @@protoc_insertion_point(field_get:Protocol.PositionInfo.is_spawnpotion)
+  return _internal_is_spawnpotion();
+}
+inline void PositionInfo::_internal_set_is_spawnpotion(bool value) {
+  
+  _impl_.is_spawnpotion_ = value;
+}
+inline void PositionInfo::set_is_spawnpotion(bool value) {
+  _internal_set_is_spawnpotion(value);
+  // @@protoc_insertion_point(field_set:Protocol.PositionInfo.is_spawnpotion)
+}
+
 // -------------------------------------------------------------------
 
 // ObjectInfo
@@ -799,9 +1024,55 @@ inline void ObjectInfo::set_allocated_pos_info(::Protocol::PositionInfo* pos_inf
   // @@protoc_insertion_point(field_set_allocated:Protocol.ObjectInfo.pos_info)
 }
 
+// -------------------------------------------------------------------
+
+// BurstInfo
+
+// uint64 object_id = 1;
+inline void BurstInfo::clear_object_id() {
+  _impl_.object_id_ = uint64_t{0u};
+}
+inline uint64_t BurstInfo::_internal_object_id() const {
+  return _impl_.object_id_;
+}
+inline uint64_t BurstInfo::object_id() const {
+  // @@protoc_insertion_point(field_get:Protocol.BurstInfo.object_id)
+  return _internal_object_id();
+}
+inline void BurstInfo::_internal_set_object_id(uint64_t value) {
+  
+  _impl_.object_id_ = value;
+}
+inline void BurstInfo::set_object_id(uint64_t value) {
+  _internal_set_object_id(value);
+  // @@protoc_insertion_point(field_set:Protocol.BurstInfo.object_id)
+}
+
+// bool is_burst = 2;
+inline void BurstInfo::clear_is_burst() {
+  _impl_.is_burst_ = false;
+}
+inline bool BurstInfo::_internal_is_burst() const {
+  return _impl_.is_burst_;
+}
+inline bool BurstInfo::is_burst() const {
+  // @@protoc_insertion_point(field_get:Protocol.BurstInfo.is_burst)
+  return _internal_is_burst();
+}
+inline void BurstInfo::_internal_set_is_burst(bool value) {
+  
+  _impl_.is_burst_ = value;
+}
+inline void BurstInfo::set_is_burst(bool value) {
+  _internal_set_is_burst(value);
+  // @@protoc_insertion_point(field_set:Protocol.BurstInfo.is_burst)
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 

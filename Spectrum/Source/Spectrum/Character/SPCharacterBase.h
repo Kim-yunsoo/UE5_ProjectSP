@@ -42,8 +42,8 @@ public:
 	Protocol::PositionInfo* GetPlayerInfo() { return PlayerInfo; }
 
 protected:
-	class Protocol::PositionInfo* PlayerInfo; // ���� ��ġ
-	class Protocol::PositionInfo* DestInfo;	// ������ ��ġ
+	class Protocol::PositionInfo* PlayerInfo; // 현재 위치
+	class Protocol::PositionInfo* DestInfo;	// 가려는 위치
 
 protected:
 	// ������ȯ

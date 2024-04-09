@@ -17,6 +17,8 @@ public:
 	void HandleMoveLocked(Protocol::C_MOVE& pkt);
 	void HandleMoveLocked(Protocol::C_O_MOVE& pkt);
 
+	void HandleBurstLocked(Protocol::C_O_BURST& pkt);
+
 	void updateTick();
 
 	void createAllObject();

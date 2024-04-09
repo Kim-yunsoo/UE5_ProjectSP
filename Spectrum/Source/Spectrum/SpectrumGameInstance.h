@@ -46,6 +46,7 @@ public:
 	void HandleMove(const Protocol::S_MOVE& MovePkt);					// 이동
 	void HandleOMove(const Protocol::S_O_MOVE& MovePkt);					// 이동
 
+	void HandleOBurst(const Protocol::S_O_BURST& BurstPkt);				// 폭발
 
 public:
 	// 서버 소켓, ip

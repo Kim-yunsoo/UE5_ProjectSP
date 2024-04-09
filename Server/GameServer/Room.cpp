@@ -277,6 +277,24 @@ void Room::HandleMoveLocked(Protocol::C_O_MOVE& pkt)
 
 }
 
+void Room::HandleBurstLocked(Protocol::C_O_BURST& pkt)
+{
+
+	WRITE_LOCK;
+
+	// ÀÌµ¿ 
+	{
+		Protocol::S_O_BURST burstPkt;
+		{
+			Protocol::BurstInfo* info = burstPkt.mutable_info();
+			info->CopyFrom(pkt.info());
+		}
+
+		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(burstPkt);
+		Broadcast(sendBuffer);
+	}
+}
+
 void Room::updateTick()
 {
 	cout<<"Room::updateTick"<<endl;

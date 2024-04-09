@@ -69,11 +69,23 @@ message S_MOVE
 message C_O_MOVE
 {
 	PositionInfo info = 1;
+
 }
 
 message S_O_MOVE
 {
 	PositionInfo info = 1;
+
+}
+
+message C_O_BURST
+{
+	BurstInfo info = 1;
+}
+
+message S_O_BURST
+{
+	BurstInfo info = 1;
 }
 
 message C_CHAT

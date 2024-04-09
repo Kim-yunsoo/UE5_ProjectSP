@@ -271,3 +271,24 @@ void USpectrumGameInstance::HandleOMove(const Protocol::S_O_MOVE& MovePkt)
 	//Object->SetPostionInfo(Info);
 	Object->SetDestInfo(Info);		// 이동 보정때문에 DestInfo에 저장
 }
+
+void USpectrumGameInstance::HandleOBurst(const Protocol::S_O_BURST& BurstPkt)
+{
+	if (Socket == nullptr || GameServerSession == nullptr)
+		return;
+
+	auto* World = GetWorld();
+	if (World == nullptr)
+		return;
+
+	const uint64 ObjectId = BurstPkt.info().object_id();
+	ASPObject** FindActor = Objects.Find(ObjectId);
+	if (FindActor == nullptr)
+		return;
+
+	ASPObject* Object = (*FindActor);
+
+	const Protocol::BurstInfo& Info = BurstPkt.info();
+	Object->SetBurst(Info.is_burst());
+
+}
