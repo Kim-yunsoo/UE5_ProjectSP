@@ -10,6 +10,17 @@
 #include "Protocol.pb.h"
 #include "SPObject.generated.h"
 
+
+UENUM()
+enum class ColorType :uint8
+{
+	None,
+	Green,
+	Orange,
+	Purple
+};
+
+
 UCLASS()
 class SPECTRUM_API ASPObject : public AActor , public ISPDamageInterface
 {
@@ -18,12 +29,15 @@ class SPECTRUM_API ASPObject : public AActor , public ISPDamageInterface
 public:	
 	// Sets default values for this actor's properties
 	ASPObject();
-	virtual ~ASPObject();
+	virtual ~ASPObject() override;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	virtual void OnExplosionHit(float Damage);
+
+protected: //ISPDamageInterface
+	virtual void OnExplosionHit();
+	virtual void OnChangeColorGreen();
 
 
 	//TObjectPtr<class UGeometryCollection> GeometryCollection ;
@@ -55,4 +69,17 @@ protected:
 protected:// chaos distruction
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<class UGeometryCollection> GeometryCollection;
+protected://DynamicMaterial
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	TObjectPtr<class UMaterialInstanceDynamic> DynamicInstance ;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	ColorType MyColorType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FLinearColor GreenLinearColor{0.03f,1.0f,0.181f,1.0f};
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FLinearColor OrangeLinearColor{ 0.942f ,0.0266f ,0.0f,1.0f};
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FLinearColor PurpleLinearColor{ 0.263f,0.0f,0.6f,1.0f};
 };

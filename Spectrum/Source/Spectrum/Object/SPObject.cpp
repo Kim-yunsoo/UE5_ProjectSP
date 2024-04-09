@@ -15,6 +15,7 @@ ASPObject::ASPObject()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	SetActorEnableCollision(true);
 	PrimaryActorTick.bCanEverTick = true;
+	MyColorType = ColorType::None;
 	//bHasBeenCalled = false; 
 	//MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
 	ObjectMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ObjectMesh"));
@@ -58,9 +59,14 @@ void ASPObject::BeginPlay()
 		DestInfo->set_z(ObjectLocation.Z);
 
 	}
+
+	//CreatDynamicMaterialInstance
+	int32 ElementIndex = 0;
+	DynamicInstance = ObjectMesh->CreateDynamicMaterialInstance(ElementIndex, nullptr, FName(TEXT("None")));
+
 }
 
-void ASPObject::OnExplosionHit(float Damage)
+void ASPObject::OnExplosionHit()
 {
 	if (bHasBeenCalled)
 	{
@@ -85,6 +91,14 @@ void ASPObject::OnExplosionHit(float Damage)
 			this->SetLifeSpan(5.0f);
 		}
 		bHasBeenCalled = false;
+	}
+}
+void ASPObject::OnChangeColorGreen()
+{
+	if(DynamicInstance)
+	{
+		DynamicInstance->SetVectorParameterValue(FName(TEXT("Base Color Tint")),GreenLinearColor);
+		MyColorType=ColorType::Green;
 	}
 }
 // Called every frame

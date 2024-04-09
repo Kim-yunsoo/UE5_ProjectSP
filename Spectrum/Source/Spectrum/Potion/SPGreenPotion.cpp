@@ -3,6 +3,7 @@
 
 #include "Potion/SPGreenPotion.h"
 #include "Component/SPExplosionComponent.h"
+#include "Component/SPGreenExplosionComponent.h"
 
 
 ASPGreenPotion::ASPGreenPotion()
@@ -19,7 +20,7 @@ ASPGreenPotion::ASPGreenPotion()
 		PotionMesh->SetRelativeScale3D(FVector(0.025f, 0.025f, 0.025f));
 		PotionMesh->SetCollisionProfileName(TEXT("NoCollision"));
 	}
-	ExplosionComponent = CreateDefaultSubobject<USPExplosionComponent>(TEXT("ExplosionComponent"));
+	GreenExplosionComponent = CreateDefaultSubobject<USPGreenExplosionComponent>(TEXT("ExplosionComponent"));
 
 }
 
@@ -31,6 +32,6 @@ void ASPGreenPotion::BeginPlay()
 
 void ASPGreenPotion::HandleActorHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
 {
-	ExplosionComponent->Explode();
+	GreenExplosionComponent->Explode();
 	this->SetLifeSpan(0.1f);
 }

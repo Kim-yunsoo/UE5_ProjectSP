@@ -16,7 +16,6 @@ ASPCharacterBase::ASPCharacterBase()
 	PlayerInfo = new Protocol::PositionInfo();
 	DestInfo = new Protocol::PositionInfo();
 
-	
 	//Pawn
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationRoll = false;
@@ -126,7 +125,7 @@ void ASPCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	{// Ã³À½ À§Ä¡¸¦ ¼³Á¤ÇØÁÜ
+	{// Ã³ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		FVector Location = GetActorLocation();
 		DestInfo->set_x(Location.X);
 		DestInfo->set_y(Location.Y);
@@ -149,8 +148,8 @@ void ASPCharacterBase::Tick(float DeltaSeconds)
 		PlayerInfo->set_yaw(GetControlRotation().Yaw);
 	}
 
-	if (IsMyPlayer() == false)		// ³» ÇÃ·¹ÀÌ¾î°¡ ¾Æ´Ñ °æ¿ì¿¡¸¸ DestInfo¸¦ ÀÌ¿ëÇÏ¿© ÀÌµ¿
-	{								// ¾ß±Ý¾ß±Ý ÀÌµ¿ÇÏµµ·Ï º¸Á¤
+	if (IsMyPlayer() == false)		// ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾î°¡ ï¿½Æ´ï¿½ ï¿½ï¿½ì¿¡ï¿½ï¿½ DestInfoï¿½ï¿½ ï¿½Ì¿ï¿½ï¿½Ï¿ï¿½ ï¿½Ìµï¿½
+	{								// ï¿½ß±Ý¾ß±ï¿½ ï¿½Ìµï¿½ï¿½Ïµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
 		//FVector Location = GetActorLocation();
 		//FVector DestLocation = FVector(DestInfo->x(), DestInfo->y(), DestInfo->z());
@@ -165,7 +164,7 @@ void ASPCharacterBase::Tick(float DeltaSeconds)
 		//////float LastLook;
 
 		//////float MoveDist = (MoveDir * 600.f * DeltaSeconds).Length();
-		//////MoveDist = FMath::Min(MoveDist, DistToDest);	//¿À¹öÇØ¼­ °¡Áö ¾Ê°Ô Á¦ÇÑ
+		//////MoveDist = FMath::Min(MoveDist, DistToDest);	//ï¿½ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê°ï¿½ ï¿½ï¿½ï¿½ï¿½
 		//////FVector NextLocation = Location + MoveDir* MoveDist;
 
 		//SetActorLocation(DestLocation);
@@ -195,15 +194,15 @@ void ASPCharacterBase::Tick(float DeltaSeconds)
 
 		//else
 		//{
-		//	/* ³ªÁß¿¡ ¸¸¾à Áß°£¿¡ ÆÐÅ¶À» ¸ø¹Þ´Ù°¡ °©ÀÚ±â ¹ÞÀ¸¸é °¡¾ßÇÏ´Â À§Ä¡°¡ ³Ê¹« ¸Ö¾îÁú¼öµµ ÀÖÀ¸´Ï±î
-		//	* ÀÌ°Å ¾î¶»°Ô Ã³¸®ÇÒÁö »ý°¢ÇØºÁ¾ßÇÔ
-		//	* ¼ø°£ÀÌµ¿ÀÌ³ª ±×·±°Å·Î Ã³¸®ÇÒÁö, ¾Æ´Ï¸é ¼­¹ö¿¡¼­ ÆÐÅ¶À» ¹ÞÁö ¸øÇß´Ù°í ¾Ë·ÁÁÙÁö
-		//	* º¸Á¤ÇØ¼­ °¡°Ô ÇÒÁö
-		//	* ¾Æ´Ï¸é ±×³É ¹«½ÃÇÒÁö
+		//	/* ï¿½ï¿½ï¿½ß¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½ï¿½ ï¿½ï¿½Å¶ï¿½ï¿½ ï¿½ï¿½ï¿½Þ´Ù°ï¿½ ï¿½ï¿½ï¿½Ú±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½Ê¹ï¿½ ï¿½Ö¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½
+		//	* ï¿½Ì°ï¿½ ï¿½î¶»ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Øºï¿½ï¿½ï¿½ï¿½ï¿½
+		//	* ï¿½ï¿½ï¿½ï¿½ï¿½Ìµï¿½ï¿½Ì³ï¿½ ï¿½×·ï¿½ï¿½Å·ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½Æ´Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¶ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ß´Ù°ï¿½ ï¿½Ë·ï¿½ï¿½ï¿½ï¿½ï¿½
+		//	* ï¿½ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		//	* ï¿½Æ´Ï¸ï¿½ ï¿½×³ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		//	*/
 		//}
 
-		//// Áß·ÂÃÑ Å¬¶óÀÌ¾ðÆ® ÄÚµå 
+		//// ï¿½ß·ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ® ï¿½Úµï¿½ 
 		//if (bIsHolding)
 		//{
 		//	PhysicsHandleComponent->SetTargetLocation(GravityArrow->K2_GetComponentLocation());
@@ -224,7 +223,7 @@ void ASPCharacterBase::SetMoveState(Protocol::MoveState State)
 
 	PlayerInfo->set_state(State);
 
-	// ³ªÁß¿¡ »óÅÂ¿¡ µû¸¥ ¾Ö´Ï¸ÞÀÌ¼Ç º¯°æ Ãß°¡ÇÒ¼öµµ..?
+	// ï¿½ï¿½ï¿½ß¿ï¿½ ï¿½ï¿½ï¿½Â¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ò¼ï¿½ï¿½ï¿½..?
 }
 
 void ASPCharacterBase::SetPostionInfo(const Protocol::PositionInfo& Info)
@@ -258,7 +257,7 @@ void ASPCharacterBase::SetDestInfo(const Protocol::PositionInfo& Info)
 		assert(PlayerInfo->object_id() == Info.object_id());
 	}
 
-	// Dest¿¡ ÃÖÁ¾ »óÅÂ º¹»ç
+	// Destï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	DestInfo->CopyFrom(Info);
 	bIsAiming = Info.is_aiming();
 	//bIsJumping = Info.is_jumping();
@@ -272,7 +271,7 @@ void ASPCharacterBase::SetDestInfo(const Protocol::PositionInfo& Info)
 		ResetJumping();
 	}
 
-	// »óÅÂ¸¸ ¹Ù·Î Àû¿ë!
+	// ï¿½ï¿½ï¿½Â¸ï¿½ ï¿½Ù·ï¿½ ï¿½ï¿½ï¿½ï¿½!
 	SetMoveState(Info.state());
 }
 

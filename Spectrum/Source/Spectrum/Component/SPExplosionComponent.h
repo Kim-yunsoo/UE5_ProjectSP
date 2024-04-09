@@ -3,16 +3,17 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "SPComponentBase.h"
 #include "Components/ActorComponent.h"
 #include "SPExplosionComponent.generated.h"
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class SPECTRUM_API USPExplosionComponent : public UActorComponent
+UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
+class SPECTRUM_API USPExplosionComponent : public USPComponentBase
 {
 	GENERATED_BODY()
 
-public:	
+public:
 	// Sets default values for this component's properties
 	USPExplosionComponent();
 
@@ -20,16 +21,6 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-public:	
-	void Explode();
-protected:
-	bool bHasExecutedOnce;
-
-	UPROPERTY(VisibleAnywhere, Category = Effect)
-	TObjectPtr<UParticleSystem> Effect ;
-
-	UPROPERTY(VisibleAnywhere)
-	TArray<AActor*>ActorArray ;
-
-	float Damage = 200.0f;
+public:
+	virtual void Explode() override;
 };
