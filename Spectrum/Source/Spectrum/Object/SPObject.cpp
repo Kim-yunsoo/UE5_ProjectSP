@@ -51,7 +51,6 @@ void ASPObject::BeginPlay()
 	RootComponent->SetMobility(EComponentMobility::Movable);
 	ObjectLocation = GetActorLocation();
 	//ObjectInfo->set_object_id(20);
-
 	{
 		//ObjectInfo->set_x(ObjectLocation.X);
 		//ObjectInfo->set_y(ObjectLocation.Y);
@@ -70,7 +69,6 @@ void ASPObject::BeginPlay()
 	int32 ElementIndex = 0;
 	ObjectDynamic = ObjectMesh->CreateDynamicMaterialInstance(ElementIndex, nullptr, FName(TEXT("None")));
 	ChaosDynamic = UMaterialInstanceDynamic::Create(GeometryCollection->Materials[ElementIndex], nullptr, NAME_None); //다이나믹으로 생성
-
 	// GeometryCollection;
 	//CreateDynamicMaterialInstance(ElementIndex, nullptr, FName(TEXT("None")));
 }

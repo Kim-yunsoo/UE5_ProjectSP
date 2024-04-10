@@ -10,7 +10,6 @@ ASPGreenPotion::ASPGreenPotion()
 {
 	SphereComponent->SetSphereRadius(35.46f);
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> PotionMeshRef(TEXT("/Script/Engine.StaticMesh'/Game/Spectrum/Assets/Potion/G_Potion/G_Potion1.G_Potion1'"));
-
 	if (PotionMeshRef.Object)
 	{
 		PotionMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GreenPotionMesh"));
@@ -21,7 +20,6 @@ ASPGreenPotion::ASPGreenPotion()
 		PotionMesh->SetCollisionProfileName(TEXT("NoCollision"));
 	}
 	GreenExplosionComponent = CreateDefaultSubobject<USPGreenExplosionComponent>(TEXT("ExplosionComponent"));
-
 }
 
 void ASPGreenPotion::BeginPlay()
