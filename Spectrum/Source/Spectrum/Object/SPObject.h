@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Interface/SPDamageInterface.h"
+//D:\UE_5.3\Engine\Source\Runtime\Experimental\GeometryCollectionEngine\Public\GeometryCollection\GeometryCollectionObject.h
+//#include "GeometryCollection\GeometryCollectionObject.h"GeometryCollectionEngine
 #include "Protocol.pb.h"
 #include "SPObject.generated.h"
 
@@ -23,6 +25,9 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void OnExplosionHit(float Damage);
 
+
+	//TObjectPtr<class UGeometryCollection> GeometryCollection ;
+
 public:
 	class Protocol::PositionInfo* ObjectInfo; // 현재 위치
 	class Protocol::PositionInfo* DestInfo;	// 가려는 위치
@@ -35,10 +40,15 @@ public:
 	//TObjectPtr<UStaticMeshComponent> MeshComponent;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	bool bHasBeenCalled;
+	bool bIsFrist;
 
 	void SetPostionInfo(const Protocol::PositionInfo& Info);
 	void SetDestInfo(const Protocol::PositionInfo& Info);
+	void SetBurst(const bool burst);
 
+protected:
+	const float MOVE_PACKET_SEND_DELAY = 0.2f;
+	float MovePacketSendTimer = MOVE_PACKET_SEND_DELAY;
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (AllowPrivateAccess = "ture"))
@@ -46,4 +56,8 @@ protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (AllowPrivateAccess = "ture"))
 	FVector ObjectLocation;
+
+protected:// chaos distruction
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<class UGeometryCollection> GeometryCollection;
 };

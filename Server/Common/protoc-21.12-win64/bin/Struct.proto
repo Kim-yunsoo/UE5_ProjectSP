@@ -14,6 +14,8 @@ message PositionInfo
 	bool is_aiming = 7;
 	bool is_holding = 8;
 	bool is_jumping = 9;
+	bool is_throwpotion = 10;
+	bool is_spawnpotion = 11;
 }
 
 message ObjectInfo
@@ -21,4 +23,28 @@ message ObjectInfo
 	uint64 object_id = 1;
 	ObjectType object_type = 2;
 	PositionInfo pos_info = 3;
+}
+
+message BurstInfo
+{
+	uint64 object_id = 1;
+	bool is_burst = 2;
+}
+
+message PlayerPotionInfo
+{
+	uint64 object_id = 1;
+	bool is_blackspawn = 2;
+	bool is_aimpotion = 3;
+	bool is_throwpotion = 4;
+}
+
+message PlayerTurnInfo
+{
+	uint64 object_id = 1;
+	bool is_turnright = 2;
+	bool is_turnleft = 3;
+	bool is_turnready = 4;
+	float yaw = 5;
+	float pitch = 6;
 }

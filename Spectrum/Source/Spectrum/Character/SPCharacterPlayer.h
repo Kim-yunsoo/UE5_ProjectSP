@@ -38,14 +38,14 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-	virtual void Tick(float DeltaTime) override;	// �����ϰ� �ִ��� ���θ� �� �� ����
+	virtual void Tick(float DeltaTime) override;	// 매번 계속 해야 하는 것들 여기에
 
 
 public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 
-protected: // ī�޶�
+protected:
 	void ChangeCharacterControl();
 	void SetCharacterControl(ECharacterControlType NewCharacterControlType);
 	virtual void SetCharacterControlData(const class USPCharacterControlData* CharacterControlData) override;
@@ -149,11 +149,10 @@ protected:
 	class UInputAction* LookAction;
 
 	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
-	//TObjectPtr<class UInputAction> Test; //���콺 ����
-
+	//TObjectPtr<class UInputAction> Test; 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat, Meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UAnimMontage> ThrowMontage; //������ ��Ÿ��
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat, Meta = (AllowPrivateAccess = "true"))
+	//TObjectPtr<class UAnimMontage> ThrowMontage; 
 
 protected:
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
@@ -165,11 +164,11 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	FVector UILocation; 
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-	uint8 bIsSpawn : 1; //Spawn check
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	//uint8 bIsSpawn : 1; //Spawn check
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-	uint8 bIsThrowReady : 1; //Throw Ready? 
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	//uint8 bIsThrowReady : 1; //Throw Ready? 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	FVector UIRotator;
@@ -188,13 +187,13 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UArrowComponent> GravityArrow;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Object, Meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class ASPPotionBase> Potion;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Object, Meta = (AllowPrivateAccess = "true"))
+	//TObjectPtr<class ASPPotionBase> Potion;
 
 	UFUNCTION()
 	void HandleMontageAnimNotify(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload);
 
-	//��Į
+
 protected:
 	void ShowProjectilePath();
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile", Meta = (AllowPrivateAccess = "true"))
