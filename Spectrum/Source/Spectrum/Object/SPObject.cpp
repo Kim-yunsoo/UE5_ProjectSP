@@ -24,14 +24,13 @@ ASPObject::ASPObject()
    ObjectMesh->SetMobility(EComponentMobility::Movable);
    bHasBeenCalled = true;
 
-   LinearColors.Add(FLinearColor(0.03f, 1.0f, 0.181f, 1.0f));   // Green
-   LinearColors.Add(FLinearColor(1.0f, 0.05f, 0.015f, 1.0f)); // Orange
+   LinearColors.Add(FLinearColor(0.043333, 0.390625, 0.0f, 1.0f));   // Green
+   LinearColors.Add(FLinearColor(0.973958f, 0.036101f, 0.0f, 1.0f)); // Orange
    LinearColors.Add(FLinearColor(0.263f, 0.0f, 0.6f, 1.0f));    // Purple
    
    ObjectInfo = new Protocol::PositionInfo();
    DestInfo = new Protocol::PositionInfo();
    bIsFrist = false;
-
 }
 
 ASPObject::~ASPObject()
@@ -205,6 +204,7 @@ void ASPObject::OnChangeColorGreen()
 {
    if(ObjectDynamic)
    {
+      UE_LOG(LogTemp,Log,TEXT("OnChangeColorGreen"));
       MyColorType=ColorType::Green;
       ObjectDynamic->SetVectorParameterValue(FName(TEXT("Base Color Tint")),LinearColors[static_cast<uint8>(MyColorType)]);
    }
@@ -215,6 +215,15 @@ void ASPObject::OnChangeColorOrange()
    if(ObjectDynamic)
    {
       MyColorType=ColorType::Orange;
+      ObjectDynamic->SetVectorParameterValue(FName(TEXT("Base Color Tint")),LinearColors[static_cast<uint8>(MyColorType)]);
+   }
+}
+
+void ASPObject::OnChangeColorPurple()
+{
+   if(ObjectDynamic)
+   {
+      MyColorType=ColorType::Purple;
       ObjectDynamic->SetVectorParameterValue(FName(TEXT("Base Color Tint")),LinearColors[static_cast<uint8>(MyColorType)]);
    }
 }

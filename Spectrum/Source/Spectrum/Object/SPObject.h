@@ -40,6 +40,7 @@ protected: //ISPDamageInterface
 	virtual void OnExplosionHit() override;
 	virtual void OnChangeColorGreen() override;
 	virtual void OnChangeColorOrange() override;
+	virtual void OnChangeColorPurple() override;
 
 
 	//TObjectPtr<class UGeometryCollection> GeometryCollection ;
@@ -91,8 +92,6 @@ protected://DynamicMaterial
 	TArray<FLinearColor> LinearColors;
 
 	int32 ElementIndex = 0;
-
-
 	// UPROPERTY()
 	// FLinearColor GreenLinearColor{0.03f,1.0f,0.181f,1.0f};
 	// UPROPERTY()
