@@ -55,10 +55,15 @@ public:
 	//TObjectPtr<UStaticMeshComponent> MeshComponent;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	bool bHasBeenCalled;
+	bool bIsFrist;
 
 	void SetPostionInfo(const Protocol::PositionInfo& Info);
 	void SetDestInfo(const Protocol::PositionInfo& Info);
+	void SetBurst(const bool burst);
 
+protected:
+	const float MOVE_PACKET_SEND_DELAY = 0.2f;
+	float MovePacketSendTimer = MOVE_PACKET_SEND_DELAY;
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (AllowPrivateAccess = "ture"))

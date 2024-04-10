@@ -30,6 +30,8 @@ ASPObject::ASPObject()
 	
 	ObjectInfo = new Protocol::PositionInfo();
 	DestInfo = new Protocol::PositionInfo();
+	bIsFrist = false;
+
 }
 
 ASPObject::~ASPObject()
@@ -51,10 +53,11 @@ void ASPObject::BeginPlay()
 	RootComponent->SetMobility(EComponentMobility::Movable);
 	ObjectLocation = GetActorLocation();
 	//ObjectInfo->set_object_id(20);
-	{
-		//ObjectInfo->set_x(ObjectLocation.X);
-		//ObjectInfo->set_y(ObjectLocation.Y);
-		//ObjectInfo->set_z(ObjectLocation.Z);
+
+	{// 
+		ObjectInfo->set_x(ObjectLocation.X);
+		ObjectInfo->set_y(ObjectLocation.Y);
+		ObjectInfo->set_z(ObjectLocation.Z);
 		ObjectInfo->set_is_aiming(false);
 		ObjectInfo->set_is_jumping(false);
 		ObjectInfo->set_is_holding(false);
@@ -62,7 +65,6 @@ void ASPObject::BeginPlay()
 		DestInfo->set_x(ObjectLocation.X);
 		DestInfo->set_y(ObjectLocation.Y);
 		DestInfo->set_z(ObjectLocation.Z);
-
 	}
 
 	//CreatDynamicMaterialInstance
@@ -76,6 +78,92 @@ void ASPObject::BeginPlay()
 void ASPObject::OnExplosionHit()
 {
 	if (bHasBeenCalled)
+	{
+
+		bIsFrist = true;
+		//ObjectMesh->SetHiddenInGame(true);
+		//ObjectMesh->SetSimulatePhysics(true);
+		//ObjectMesh->SetCollisionProfileName(TEXT("DestructionCollision"));
+		////FName ComponentName = FName(TEXT("GC_Cone"));
+		//UGeometryCollectionComponent* Geometry = NewObject<UGeometryCollectionComponent>(this, UGeometryCollectionComponent::StaticClass(), TEXT("GeometryComponent"));
+		//if (Geometry)
+		//{
+		//	Geometry->SetupAttachment(RootComponent);
+		//	Geometry->SetRestCollection(GeometryCollection);
+		//	Geometry->SetCollisionProfileName(TEXT("DestructionCollision"));
+		//	Geometry->RegisterComponent();
+		//	Geometry->AddImpulse(FVector(0.0f, 0.0f, 125.f));
+		//	FTimerHandle ChangeCollisionProfileTimer;
+		//	float DelayInSeconds = 1.0f;
+		//	GetWorld()->GetTimerManager().SetTimer(ChangeCollisionProfileTimer, [this, Geometry]() {
+		//		Geometry->SetCollisionProfileName(TEXT("OnlyStaticCollision"));
+		//		ObjectMesh->SetCollisionProfileName(TEXT("OnlyStaticCollision"));
+		//		}, DelayInSeconds, false);
+		//	this->SetLifeSpan(5.0f);
+		//}
+
+		bHasBeenCalled = false;
+	}
+}
+// Called every frame
+void ASPObject::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	{
+		SetActorRotation(FRotator(0, DestInfo->yaw(), 0));
+		FVector Location(DestInfo->x(), DestInfo->y(), DestInfo->z());
+		FVector TargetLocation = Location;
+		float InterpSpeed = 1.0f; 
+
+		FVector NewLocation = FMath::Lerp(GetActorLocation(), TargetLocation, DeltaTime * InterpSpeed);
+		SetActorLocation(NewLocation);
+
+		FRotator Rotation(0, DestInfo->yaw(), 0);
+		SetActorRotation(Rotation);
+	}
+
+	static float DelayTime = 1.0;
+	DelayTime -= DeltaTime;
+	if (DelayTime > 0.0f)
+	{
+		return;
+	}
+	DelayTime = 1.0;
+	bool Equal = UKismetMathLibrary::EqualEqual_VectorVector(ObjectLocation, GetActorLocation(), 0.0);
+	//UE_LOG(LogTemp, Log, TEXT("%s"), *GetActorLocation().ToString());
+	if (Equal)
+	{
+		ObjectMesh->SetSimulatePhysics(false);
+		ObjectLocation = GetActorLocation();
+		ObjectInfo->set_is_holding(false);
+	}
+	else
+	{
+		ObjectLocation = GetActorLocation();
+		ObjectInfo->set_x(ObjectLocation.X);
+		ObjectInfo->set_y(ObjectLocation.Y);
+		ObjectInfo->set_z(ObjectLocation.Z);
+		ObjectInfo->set_yaw(GetActorRotation().Yaw);
+
+	}
+
+	MovePacketSendTimer -= DeltaTime;
+	if (!Equal && MovePacketSendTimer <= 0&& bIsFrist == false)	
+	{
+		Protocol::C_O_MOVE MovePkt;
+		{
+			Protocol::PositionInfo* Info = MovePkt.mutable_info();
+			Info->CopyFrom(*ObjectInfo);
+		}
+
+		SEND_PACKET(MovePkt);
+
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("%lld %f %f %f"),
+			ObjectInfo->object_id(), ObjectInfo->x(), ObjectInfo->y(), ObjectInfo->z()));
+	}
+
+	if (bIsFrist == true)
 	{
 		ObjectMesh->SetHiddenInGame(true);
 		ObjectMesh->SetSimulatePhysics(true);
@@ -142,36 +230,18 @@ void ASPObject::Tick(float DeltaTime)
 		ObjectInfo->set_yaw(GetActorRotation().Yaw);
 
 
-		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("%lld %f %f %f"),
-		//	ObjectInfo->object_id(), ObjectInfo->x(), ObjectInfo->y(), ObjectInfo->z()));
-	}
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, FString::Printf(TEXT("%lld"), ObjectInfo->object_id()));
-
-
-	if (ObjectInfo->is_holding()) {
-
-		Protocol::C_O_MOVE MovePkt;
+		Protocol::C_O_BURST BurstPkt;
 		{
-			Protocol::PositionInfo* Info = MovePkt.mutable_info();
-			Info->CopyFrom(*ObjectInfo);
+			Protocol::BurstInfo* Info = BurstPkt.mutable_info();
+			Info->set_object_id(ObjectInfo->object_id());
+			Info->set_is_burst(true);
 		}
 
-		SEND_PACKET(MovePkt);
+		SEND_PACKET(BurstPkt);
 
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("%lld %f %f %f"),
-			ObjectInfo->object_id(), ObjectInfo->x(), ObjectInfo->y(), ObjectInfo->z()));
-
+		bIsFrist = false;
+		bHasBeenCalled = false;
 	}
-
-	//else
-	//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%lld %f %f %f"),
-	//					ObjectInfo->object_id(), ObjectInfo->x(), ObjectInfo->y(), ObjectInfo->z()));
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, FString::Printf(TEXT("%f %f %f"),
-	//	GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z));
-
-	//UE_LOG(LogTemp, Log, TEXT("%s"), *ObjectLocation.ToString());
-
-
 }
 
 
@@ -187,30 +257,31 @@ void ASPObject::SetPostionInfo(const Protocol::PositionInfo& Info)
 	//bIsJumping = Info.is_jumping();
 	//bIsHolding = Info.is_holding();
 
-	FVector Location(Info.x(), Info.y(), Info.z());
-	SetActorLocation(Location);
+	//FVector Location(Info.x(), Info.y(), Info.z());
+	//SetActorLocation(Location);
+	//FRotator Rotation(0, Info.yaw(), 0);
+	//SetActorRotation(Rotation);
+
 }
 
 void ASPObject::SetDestInfo(const Protocol::PositionInfo& Info)
 {
-	//if (PlayerInfo->object_id() != 0)
-	//{
-	//	assert(PlayerInfo->object_id() == Info.object_id());
-	//}
+	if (ObjectInfo->object_id() != 0)
+	{
+		assert(ObjectInfo->object_id() == Info.object_id());
+	}
 
-	//// Dest�� ���� ���� ����
-	//DestInfo->CopyFrom(Info);
-	//bIsAiming = Info.is_aiming();
-	////bIsJumping = Info.is_jumping();
-	//bIsHolding = Info.is_holding();
-
-	//if (IsMyPlayer() == false && Info.is_jumping() == true) {
-	//	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Jump signal 2")));
-	//	SetJumping();
-	//}
-	//else if (IsMyPlayer() == false && Info.is_jumping() == false) {
-	//	ResetJumping();
-	//}
-
+	DestInfo->CopyFrom(Info);
+	
+	//// Apply status right now
 	//SetMoveState(Info.state());
+}
+
+void ASPObject::SetBurst(const bool burst)
+{
+	if (bHasBeenCalled == true)
+	{
+		bHasBeenCalled = false;
+		bIsFrist = burst;
+	}
 }

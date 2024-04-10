@@ -25,7 +25,7 @@ USPAnimInstance::USPAnimInstance()
 void USPAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
-	//GetOwningActor() ���� �������� ���������� ���� �� �ִ�. ���� Ÿ���� ���Ͷ� ĳ���ͷ� ����ȯ
+	//GetOwningActor() 
 	Owner = Cast<ASPCharacterBase>(GetOwningActor());
 	if (Owner)
 	{

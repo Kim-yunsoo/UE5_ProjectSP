@@ -8,6 +8,7 @@
 #include "SPCharacterPlayer.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Spectrum.h"
 
 
 ASPCharacterBase::ASPCharacterBase()
@@ -110,6 +111,7 @@ ASPCharacterBase::ASPCharacterBase()
 
 
 	bIsAiming = false;
+	bIsBlackFour= false;
 }
 
 ASPCharacterBase::~ASPCharacterBase()
@@ -125,7 +127,7 @@ void ASPCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	{// ó�� ��ġ�� ��������
+	{// 처占쏙옙 占쏙옙치占쏙옙 占쏙옙占쏙옙占쏙옙占쏙옙
 		FVector Location = GetActorLocation();
 		DestInfo->set_x(Location.X);
 		DestInfo->set_y(Location.Y);
@@ -148,23 +150,20 @@ void ASPCharacterBase::Tick(float DeltaSeconds)
 		PlayerInfo->set_yaw(GetControlRotation().Yaw);
 	}
 
-	if (IsMyPlayer() == false)		// �� �÷��̾ �ƴ� ��쿡�� DestInfo�� �̿��Ͽ� �̵�
-	{								// �߱ݾ߱� �̵��ϵ��� ����
+	if (IsMyPlayer() == false)		// 占쏙옙 占시뤄옙占싱어가 占싣댐옙 占쏙옙荑∽옙占� DestInfo占쏙옙 占싱울옙占싹울옙 占싱듸옙
+	{								// 占쌩금야깍옙 占싱듸옙占싹듸옙占쏙옙 占쏙옙占쏙옙
 
-		//FVector Location = GetActorLocation();
-		//FVector DestLocation = FVector(DestInfo->x(), DestInfo->y(), DestInfo->z());
+		//if (bIsAiming)
+		//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("aim!!!!")));
 
-		//FVector MoveDir = (DestLocation - Location);
-		//////const float DistToDest = MoveDir.Length();
-		////MoveDir.Length();
-		////MoveDir.Normalize();
+		const Protocol::MoveState State = DestInfo->state();
 
 		////FRotator Rotator = MoveDir.Rotation();
 		////float DestLook = Rotator.Yaw;
 		//////float LastLook;
 
 		//////float MoveDist = (MoveDir * 600.f * DeltaSeconds).Length();
-		//////MoveDist = FMath::Min(MoveDist, DistToDest);	//�����ؼ� ���� �ʰ� ����
+		//////MoveDist = FMath::Min(MoveDist, DistToDest);	//占쏙옙占쏙옙占쌔쇽옙 占쏙옙占쏙옙 占십곤옙 占쏙옙占쏙옙
 		//////FVector NextLocation = Location + MoveDir* MoveDist;
 
 		//SetActorLocation(DestLocation);
@@ -181,28 +180,26 @@ void ASPCharacterBase::Tick(float DeltaSeconds)
 			SetActorRotation(FRotator(0, DestInfo->yaw() - 90.0f, 0));
 			AddMovementInput(GetActorForwardVector());
 
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("RUN")));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("RUN")));
 			//LastLook = DestLook;
 		}
 		else if (State == Protocol::MOVE_STATE_IDLE)
 		{
-			//SetActorRotation(FRotator(0, LastLook, 0));
-			//AddMovementInput(GetActorForwardVector());
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("IDLE")));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("IDLE")));
 
 		}
 
 		//else
 		//{
-		//	/* ���߿� ���� �߰��� ��Ŷ�� ���޴ٰ� ���ڱ� ������ �����ϴ� ��ġ�� �ʹ� �־������� �����ϱ�
-		//	* �̰� ��� ó������ �����غ�����
-		//	* �����̵��̳� �׷��ŷ� ó������, �ƴϸ� �������� ��Ŷ�� ���� ���ߴٰ� �˷�����
-		//	* �����ؼ� ���� ����
-		//	* �ƴϸ� �׳� ��������
+		//	/* 占쏙옙占쌩울옙 占쏙옙占쏙옙 占쌩곤옙占쏙옙 占쏙옙킷占쏙옙 占쏙옙占쌨다곤옙 占쏙옙占쌘깍옙 占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙占싹댐옙 占쏙옙치占쏙옙 占십뱄옙 占쌍억옙占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙占싹깍옙
+		//	* 占싱곤옙 占쏘떻占쏙옙 처占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙占쌔븝옙占쏙옙占쏙옙
+		//	* 占쏙옙占쏙옙占싱듸옙占싱놂옙 占쌓뤄옙占신뤄옙 처占쏙옙占쏙옙占쏙옙, 占싣니몌옙 占쏙옙占쏙옙占쏙옙占쏙옙 占쏙옙킷占쏙옙 占쏙옙占쏙옙 占쏙옙占쌩다곤옙 占싯뤄옙占쏙옙占쏙옙
+		//	* 占쏙옙占쏙옙占쌔쇽옙 占쏙옙占쏙옙 占쏙옙占쏙옙
+		//	* 占싣니몌옙 占쌓놂옙 占쏙옙占쏙옙占쏙옙占쏙옙
 		//	*/
 		//}
 
-		//// �߷��� Ŭ���̾�Ʈ �ڵ� 
+		//// 占쌩뤄옙占쏙옙 클占쏙옙占싱억옙트 占쌘듸옙 
 		//if (bIsHolding)
 		//{
 		//	PhysicsHandleComponent->SetTargetLocation(GravityArrow->K2_GetComponentLocation());
@@ -223,7 +220,7 @@ void ASPCharacterBase::SetMoveState(Protocol::MoveState State)
 
 	PlayerInfo->set_state(State);
 
-	// ���߿� ���¿� ���� �ִϸ��̼� ���� �߰��Ҽ���..?
+	// 占쏙옙占쌩울옙 占쏙옙占승울옙 占쏙옙占쏙옙 占쌍니몌옙占싱쇽옙 占쏙옙占쏙옙 占쌩곤옙占쌀쇽옙占쏙옙..?
 }
 
 void ASPCharacterBase::SetPostionInfo(const Protocol::PositionInfo& Info)
@@ -257,11 +254,13 @@ void ASPCharacterBase::SetDestInfo(const Protocol::PositionInfo& Info)
 		assert(PlayerInfo->object_id() == Info.object_id());
 	}
 
-	// Dest�� ���� ���� ����
+	// Dest占쏙옙 占쏙옙占쏙옙 占쏙옙占쏙옙 占쏙옙占쏙옙
 	DestInfo->CopyFrom(Info);
 	bIsAiming = Info.is_aiming();
 	//bIsJumping = Info.is_jumping();
 	bIsHolding = Info.is_holding();
+	SetIsThrowReady(Info.is_throwpotion());
+	SetIsSpawn(Info.is_spawnpotion());
 
 	if (IsMyPlayer() == false && Info.is_jumping() == true) {
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Jump signal 2")));
@@ -271,8 +270,48 @@ void ASPCharacterBase::SetDestInfo(const Protocol::PositionInfo& Info)
 		ResetJumping();
 	}
 
-	// ���¸� �ٷ� ����!
+	// 占쏙옙占승몌옙 占쌕뤄옙 占쏙옙占쏙옙!
 	SetMoveState(Info.state());
+}
+
+
+
+void ASPCharacterBase::SetBlackFour()
+{
+	if (false == bIsSpawn)
+	{
+		FVector ItemLocation = GetMesh()->GetSocketLocation("Item_Socket");
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
+		Potion = GetWorld()->SpawnActor<ASPBlackPotion>(ASPBlackPotion::StaticClass(), GetMesh()->GetSocketLocation("Item_Socket"), FRotator{ 0.0f, 0.0f, 0.0f }, SpawnParams);
+		bIsSpawn = true;
+		if (Potion)
+		{
+			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
+			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{ "Item_Socket" });
+		}
+	}
+	else
+	{
+		if (Potion)
+		{
+			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
+			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{ "Item_Socket" });
+		}
+	}
+}
+
+void ASPCharacterBase::SetAimPotion()
+{
+	if (bIsSpawn)
+	{
+		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+		AnimInstance->Montage_Play(ThrowMontage, 1.0f);
+		GetCharacterMovement()->bOrientRotationToMovement = false;
+		GetCharacterMovement()->bUseControllerDesiredRotation = true;
+		bIsTurnReady = true;
+	}
 }
 
 void ASPCharacterBase::SetCharacterControlData(const USPCharacterControlData* CharacterControlData)
@@ -284,6 +323,37 @@ void ASPCharacterBase::SetCharacterControlData(const USPCharacterControlData* Ch
 	GetCharacterMovement()->bOrientRotationToMovement = CharacterControlData->bOrientRotationToMovement;
 	GetCharacterMovement()->bUseControllerDesiredRotation = CharacterControlData->bUseControllerDesiredRotation;
 	GetCharacterMovement()->RotationRate = CharacterControlData->RotationRate;
+}
+
+void ASPCharacterBase::SetThrowPotion()
+{
+
+	if (bIsThrowReady)
+	{
+		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+		AnimInstance->Montage_JumpToSection(FName("End"), ThrowMontage);
+		bIsThrowReady = false;
+		if (Potion)
+		{
+
+			FRotator ThrowRotation = FRotator(ThrowPitch, GetActorRotation().Yaw, 0.0f);
+			FVector ForwardVector = UKismetMathLibrary::GetForwardVector(ThrowRotation);
+
+			float Mul = 1500.0f;
+			Potion->Throw((ForwardVector + FVector{ 0.0f,0.0f,0.4f }) * Mul);
+		}
+
+		GetCharacterMovement()->bOrientRotationToMovement = true;
+		GetCharacterMovement()->bUseControllerDesiredRotation = false;
+		bIsTurnReady = false;
+		bIsSpawn = false;
+		Potion = nullptr;
+	}
+	else
+	{
+		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+		AnimInstance->Montage_Stop(0.0f);
+	}
 }
 
 void ASPCharacterBase::SetJumping()
