@@ -56,6 +56,7 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	bool bHasBeenCalled;
 	bool bIsFrist;
+	bool bIsMove;
 
 	void SetPostionInfo(const Protocol::ThingInfo& Info);
 	void SetDestInfo(const Protocol::ThingInfo& Info);

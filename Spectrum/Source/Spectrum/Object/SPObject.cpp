@@ -31,7 +31,7 @@ ASPObject::ASPObject()
 	ObjectInfo = new Protocol::ThingInfo();
 	DestInfo = new Protocol::ThingInfo();
 	bIsFrist = false;
-
+	bIsMove = false;
 }
 
 ASPObject::~ASPObject()
@@ -69,9 +69,9 @@ void ASPObject::BeginPlay()
 	}
 
 	//CreatDynamicMaterialInstance
-	int32 ElementIndex = 0;
-	ObjectDynamic = ObjectMesh->CreateDynamicMaterialInstance(ElementIndex, nullptr, FName(TEXT("None")));
-	ChaosDynamic = UMaterialInstanceDynamic::Create(GeometryCollection->Materials[ElementIndex], nullptr, NAME_None); //다이나믹으로 생성
+	//int32 ElementIndex = 0;
+	//ObjectDynamic = ObjectMesh->CreateDynamicMaterialInstance(ElementIndex, nullptr, FName(TEXT("None")));
+	//ChaosDynamic = UMaterialInstanceDynamic::Create(GeometryCollection->Materials[ElementIndex], nullptr, NAME_None); //다이나믹으로 생성
 	// GeometryCollection;
 	//CreateDynamicMaterialInstance(ElementIndex, nullptr, FName(TEXT("None")));
 }
@@ -109,17 +109,27 @@ void ASPObject::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if(ObjectMesh->IsSimulatingPhysics() == true)
 	{// Movement correction 수정 필요
-		SetActorRotation(FRotator(0, DestInfo->yaw(), 0));
-		FVector Location(DestInfo->x(), DestInfo->y(), DestInfo->z());
+		FVector Location(DestInfo->x(), DestInfo->y(), DestInfo->z()*5);
 		FVector TargetLocation = Location;
-		float InterpSpeed = 1.0f; 
+		float InterpSpeed = 5.0f; 
 
 		FVector NewLocation = FMath::Lerp(GetActorLocation(), TargetLocation, DeltaTime * InterpSpeed);
 		SetActorLocation(NewLocation);
 
-		FRotator Rotation(DestInfo->pitch(), DestInfo->yaw(), 0);
-		SetActorRotation(Rotation);
+		//FRotator Rotation(DestInfo->pitch(), DestInfo->yaw(), 0);
+		//SetActorRotation(Rotation);
+
+		//FVector CurrentPosition = GetActorLocation();
+		//float InterpolationSpeed = 10.0f; // 조정 가능한 파라미터, 상황에 따라 다를 수 있음
+
+		//// FMath::VInterpTo를 사용하여 현재 위치에서 서버에서 받은 위치로 부드럽게 보간합니다.
+		//FVector NewPosition = FMath::VInterpTo(CurrentPosition, TargetLocation, DeltaTime, InterpolationSpeed);
+
+		//// 액터의 위치를 업데이트합니다.
+		//SetActorLocation(NewPosition);
+
 	}
 
 	static float DelayTime = 1.0;
@@ -131,11 +141,13 @@ void ASPObject::Tick(float DeltaTime)
 	DelayTime = 1.0;
 	bool Equal = UKismetMathLibrary::EqualEqual_VectorVector(ObjectLocation, GetActorLocation(), 0.0);
 	//UE_LOG(LogTemp, Log, TEXT("%s"), *GetActorLocation().ToString());
+
 	if (Equal)
 	{
 		ObjectMesh->SetSimulatePhysics(false);
 		ObjectLocation = GetActorLocation();
 		//ObjectInfo->set_is_holding(false);
+		bIsMove = false;
 	}
 	else
 	{
@@ -215,6 +227,17 @@ void ASPObject::SetDestInfo(const Protocol::ThingInfo& Info)
 	}
 
 	DestInfo->CopyFrom(Info);
+	bIsMove = true;
+	ObjectMesh->SetSimulatePhysics(true);
+	//FVector Location(DestInfo->x(), DestInfo->y(), DestInfo->z());
+	///*FVector TargetLocation = Location;
+	//float InterpSpeed = 1.0f;
+
+	//FVector NewLocation = FMath::Lerp(GetActorLocation(), TargetLocation, DeltaTime * InterpSpeed);*/
+	//SetActorLocation(Location);
+
+	//FRotator Rotation(DestInfo->pitch(), DestInfo->yaw(), 0);
+	//SetActorRotation(Rotation);
 	
 	//// Apply status right now
 	//SetMoveState(Info.state());
