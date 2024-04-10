@@ -156,7 +156,7 @@ void ASPCharacterBase::Tick(float DeltaSeconds)
 		//if (bIsAiming)
 		//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("aim!!!!")));
 
-		const Protocol::MoveState State = DestInfo->state();
+		//const Protocol::MoveState State = DestInfo->state();
 
 		////FRotator Rotator = MoveDir.Rotation();
 		////float DestLook = Rotator.Yaw;

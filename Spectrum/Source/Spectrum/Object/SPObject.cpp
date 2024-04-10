@@ -201,48 +201,48 @@ void ASPObject::OnChangeColorGreen()
 		ObjectDynamic->SetVectorParameterValue(FName(TEXT("Base Color Tint")),LinearColors[static_cast<uint8>(MyColorType)]);
 	}
 }
-// Called every frame
-void ASPObject::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-	static float DelayTime = 1.0;
-	DelayTime -= DeltaTime;
-	if (DelayTime > 0.0f)
-	{
-		return;
-	}
-	DelayTime = 1.0;
-	bool Equal = UKismetMathLibrary::EqualEqual_VectorVector(ObjectLocation, GetActorLocation(), 0.0);
-	//UE_LOG(LogTemp, Log, TEXT("%s"), *GetActorLocation().ToString());
-	if (Equal)
-	{
-		ObjectMesh->SetSimulatePhysics(false);
-		ObjectLocation = GetActorLocation();
-		ObjectInfo->set_is_holding(false);
-
-	}
-	else
-	{
-		ObjectLocation = GetActorLocation();
-		ObjectInfo->set_x(ObjectLocation.X);
-		ObjectInfo->set_y(ObjectLocation.Y);
-		ObjectInfo->set_z(ObjectLocation.Z);
-		ObjectInfo->set_yaw(GetActorRotation().Yaw);
-
-
-		Protocol::C_O_BURST BurstPkt;
-		{
-			Protocol::BurstInfo* Info = BurstPkt.mutable_info();
-			Info->set_object_id(ObjectInfo->object_id());
-			Info->set_is_burst(true);
-		}
-
-		SEND_PACKET(BurstPkt);
-
-		bIsFrist = false;
-		bHasBeenCalled = false;
-	}
-}
+//// Called every frame
+//void ASPObject::Tick(float DeltaTime)
+//{
+//	Super::Tick(DeltaTime);
+//	static float DelayTime = 1.0;
+//	DelayTime -= DeltaTime;
+//	if (DelayTime > 0.0f)
+//	{
+//		return;
+//	}
+//	DelayTime = 1.0;
+//	bool Equal = UKismetMathLibrary::EqualEqual_VectorVector(ObjectLocation, GetActorLocation(), 0.0);
+//	//UE_LOG(LogTemp, Log, TEXT("%s"), *GetActorLocation().ToString());
+//	if (Equal)
+//	{
+//		ObjectMesh->SetSimulatePhysics(false);
+//		ObjectLocation = GetActorLocation();
+//		ObjectInfo->set_is_holding(false);
+//
+//	}
+//	else
+//	{
+//		ObjectLocation = GetActorLocation();
+//		ObjectInfo->set_x(ObjectLocation.X);
+//		ObjectInfo->set_y(ObjectLocation.Y);
+//		ObjectInfo->set_z(ObjectLocation.Z);
+//		ObjectInfo->set_yaw(GetActorRotation().Yaw);
+//
+//
+//		Protocol::C_O_BURST BurstPkt;
+//		{
+//			Protocol::BurstInfo* Info = BurstPkt.mutable_info();
+//			Info->set_object_id(ObjectInfo->object_id());
+//			Info->set_is_burst(true);
+//		}
+//
+//		SEND_PACKET(BurstPkt);
+//
+//		bIsFrist = false;
+//		bHasBeenCalled = false;
+//	}
+//}
 
 
 void ASPObject::SetPostionInfo(const Protocol::PositionInfo& Info)
