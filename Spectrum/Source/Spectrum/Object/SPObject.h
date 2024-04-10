@@ -37,8 +37,9 @@ protected:
 	virtual void BeginPlay() override;
 
 protected: //ISPDamageInterface
-	virtual void OnExplosionHit();
-	virtual void OnChangeColorGreen();
+	virtual void OnExplosionHit() override;
+	virtual void OnChangeColorGreen() override;
+	virtual void OnChangeColorOrange() override;
 
 
 	//TObjectPtr<class UGeometryCollection> GeometryCollection ;
@@ -78,7 +79,8 @@ protected:// chaos distruction
 protected://DynamicMaterial
 	UPROPERTY()
 	TObjectPtr<class UMaterialInstanceDynamic> ObjectDynamic ;
-
+	UPROPERTY()
+	TObjectPtr<class UMaterialInterface> OriginMaterial ;
 	UPROPERTY()
 	TObjectPtr<class UMaterialInstanceDynamic> ChaosDynamic ;
 	
@@ -87,6 +89,9 @@ protected://DynamicMaterial
 
 	UPROPERTY()
 	TArray<FLinearColor> LinearColors;
+
+	int32 ElementIndex = 0;
+
 
 	// UPROPERTY()
 	// FLinearColor GreenLinearColor{0.03f,1.0f,0.181f,1.0f};

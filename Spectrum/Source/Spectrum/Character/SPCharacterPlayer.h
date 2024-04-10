@@ -76,6 +76,7 @@ protected:
 
 	void BlackPotionSpawn(const FInputActionValue& Value);
 	void GreenPotionSpawn(const FInputActionValue& Value);
+	void OrangePotionSpawn(const FInputActionValue& Value);
 
 	ECharacterControlType CurrentCharacterControlType;
 
@@ -137,7 +138,10 @@ protected:
 	TObjectPtr<class UInputAction> BlackFour; 
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UInputAction> GreenOne; 
+	TObjectPtr<class UInputAction> GreenOne;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> OrangeTwo; 
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> ThrowCtrl;
