@@ -127,7 +127,7 @@ void ASPCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	{// 처占쏙옙 占쏙옙치占쏙옙 占쏙옙占쏙옙占쏙옙占쏙옙
+	{
 		FVector Location = GetActorLocation();
 		DestInfo->set_x(Location.X);
 		DestInfo->set_y(Location.Y);
@@ -150,8 +150,8 @@ void ASPCharacterBase::Tick(float DeltaSeconds)
 		PlayerInfo->set_yaw(GetControlRotation().Yaw);
 	}
 
-	if (IsMyPlayer() == false)		// 占쏙옙 占시뤄옙占싱어가 占싣댐옙 占쏙옙荑∽옙占� DestInfo占쏙옙 占싱울옙占싹울옙 占싱듸옙
-	{								// 占쌩금야깍옙 占싱듸옙占싹듸옙占쏙옙 占쏙옙占쏙옙
+	if (IsMyPlayer() == false)		
+	{								
 
 		//if (bIsAiming)
 		//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("aim!!!!")));
@@ -189,17 +189,7 @@ void ASPCharacterBase::Tick(float DeltaSeconds)
 
 		}
 
-		//else
-		//{
-		//	/* 占쏙옙占쌩울옙 占쏙옙占쏙옙 占쌩곤옙占쏙옙 占쏙옙킷占쏙옙 占쏙옙占쌨다곤옙 占쏙옙占쌘깍옙 占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙占싹댐옙 占쏙옙치占쏙옙 占십뱄옙 占쌍억옙占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙占싹깍옙
-		//	* 占싱곤옙 占쏘떻占쏙옙 처占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙占쌔븝옙占쏙옙占쏙옙
-		//	* 占쏙옙占쏙옙占싱듸옙占싱놂옙 占쌓뤄옙占신뤄옙 처占쏙옙占쏙옙占쏙옙, 占싣니몌옙 占쏙옙占쏙옙占쏙옙占쏙옙 占쏙옙킷占쏙옙 占쏙옙占쏙옙 占쏙옙占쌩다곤옙 占싯뤄옙占쏙옙占쏙옙
-		//	* 占쏙옙占쏙옙占쌔쇽옙 占쏙옙占쏙옙 占쏙옙占쏙옙
-		//	* 占싣니몌옙 占쌓놂옙 占쏙옙占쏙옙占쏙옙占쏙옙
-		//	*/
-		//}
 
-		//// 占쌩뤄옙占쏙옙 클占쏙옙占싱억옙트 占쌘듸옙 
 		//if (bIsHolding)
 		//{
 		//	PhysicsHandleComponent->SetTargetLocation(GravityArrow->K2_GetComponentLocation());
@@ -220,7 +210,6 @@ void ASPCharacterBase::SetMoveState(Protocol::MoveState State)
 
 	PlayerInfo->set_state(State);
 
-	// 占쏙옙占쌩울옙 占쏙옙占승울옙 占쏙옙占쏙옙 占쌍니몌옙占싱쇽옙 占쏙옙占쏙옙 占쌩곤옙占쌀쇽옙占쏙옙..?
 }
 
 void ASPCharacterBase::SetPostionInfo(const Protocol::PositionInfo& Info)
@@ -254,7 +243,7 @@ void ASPCharacterBase::SetDestInfo(const Protocol::PositionInfo& Info)
 		assert(PlayerInfo->object_id() == Info.object_id());
 	}
 
-	// Dest占쏙옙 占쏙옙占쏙옙 占쏙옙占쏙옙 占쏙옙占쏙옙
+
 	DestInfo->CopyFrom(Info);
 	bIsAiming = Info.is_aiming();
 	//bIsJumping = Info.is_jumping();
@@ -270,7 +259,7 @@ void ASPCharacterBase::SetDestInfo(const Protocol::PositionInfo& Info)
 		ResetJumping();
 	}
 
-	// 占쏙옙占승몌옙 占쌕뤄옙 占쏙옙占쏙옙!
+
 	SetMoveState(Info.state());
 }
 

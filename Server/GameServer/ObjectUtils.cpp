@@ -29,7 +29,7 @@ ThingRef ObjectUtils::CreateThing()
 	ThingRef thing = make_shared<Thing>();
 	thing->objectInfo->set_object_id(newId);
 	thing->posInfo->set_object_id(newId);
-
+	thing->thingInfo->set_object_id(newId);
 	//thing->session = session;
 	//session->thing.store(player);
 

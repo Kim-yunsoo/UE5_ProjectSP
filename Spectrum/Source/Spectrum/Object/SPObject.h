@@ -44,8 +44,8 @@ protected: //ISPDamageInterface
 	//TObjectPtr<class UGeometryCollection> GeometryCollection ;
 
 public:
-	class Protocol::PositionInfo* ObjectInfo; // 현재 위치
-	class Protocol::PositionInfo* DestInfo;	// 가려는 위치
+	class Protocol::ThingInfo* ObjectInfo; // 현재 위치
+	class Protocol::ThingInfo* DestInfo;	// 가려는 위치
 
 public:	
 	// Called every frame
@@ -57,8 +57,8 @@ public:
 	bool bHasBeenCalled;
 	bool bIsFrist;
 
-	void SetPostionInfo(const Protocol::PositionInfo& Info);
-	void SetDestInfo(const Protocol::PositionInfo& Info);
+	void SetPostionInfo(const Protocol::ThingInfo& Info);
+	void SetDestInfo(const Protocol::ThingInfo& Info);
 	void SetBurst(const bool burst);
 
 protected:

@@ -54,6 +54,7 @@ void USpectrumGameInstance::ConnectToGameServer()
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("connection failed")));
 	}
 
+
 }
 
 void USpectrumGameInstance::DisconnectToGameServer()
@@ -181,7 +182,7 @@ void USpectrumGameInstance::HandleOSpawn(const Protocol::S_O_SPAWN& OSpawnPkt)
 	HandleOSpawn(Object, false);
 }
 
-void USpectrumGameInstance::HandleOSpawn(const Protocol::PositionInfo& positionInfo, bool IsMine)
+void USpectrumGameInstance::HandleOSpawn(const Protocol::ThingInfo& positionInfo, bool IsMine)
 {
 	if (Socket == nullptr || GameServerSession == nullptr)
 		return;
@@ -201,11 +202,11 @@ void USpectrumGameInstance::HandleOSpawn(const Protocol::PositionInfo& positionI
 	Object->SetPostionInfo(positionInfo);
 	Objects.Add(positionInfo.object_id(), Object);
 
-	if (Object)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("ok")));
+	//if (Object)
+	//{
+	//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("ok")));
 
-	}
+	//}
 	
 }
 
@@ -277,7 +278,7 @@ void USpectrumGameInstance::HandleOMove(const Protocol::S_O_MOVE& MovePkt)
 
 	ASPObject* Object = (*FindActor);
 
-	const Protocol::PositionInfo& Info = MovePkt.info();
+	const Protocol::ThingInfo& Info = MovePkt.info();
 	//Object->SetPostionInfo(Info);
 	Object->SetDestInfo(Info);		// 이동 보정때문에 DestInfo에 저장
 }
@@ -300,7 +301,7 @@ void USpectrumGameInstance::HandleOBurst(const Protocol::S_O_BURST& BurstPkt)
 
 	const Protocol::BurstInfo& Info = BurstPkt.info();
 	Object->SetBurst(Info.is_burst());
-
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("S_O_BURST")));
 }
 
 void USpectrumGameInstance::HandleOPotion(const Protocol::S_O_POTION& PotionPkt)

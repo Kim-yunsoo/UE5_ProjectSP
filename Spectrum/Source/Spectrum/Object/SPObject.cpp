@@ -28,8 +28,8 @@ ASPObject::ASPObject()
 	LinearColors.Add(FLinearColor(0.942f, 0.0266f, 0.0f, 1.0f)); // Orange
 	LinearColors.Add(FLinearColor(0.263f, 0.0f, 0.6f, 1.0f));    // Purple
 	
-	ObjectInfo = new Protocol::PositionInfo();
-	DestInfo = new Protocol::PositionInfo();
+	ObjectInfo = new Protocol::ThingInfo();
+	DestInfo = new Protocol::ThingInfo();
 	bIsFrist = false;
 
 }
@@ -58,13 +58,14 @@ void ASPObject::BeginPlay()
 		ObjectInfo->set_x(ObjectLocation.X);
 		ObjectInfo->set_y(ObjectLocation.Y);
 		ObjectInfo->set_z(ObjectLocation.Z);
-		ObjectInfo->set_is_aiming(false);
-		ObjectInfo->set_is_jumping(false);
-		ObjectInfo->set_is_holding(false);
+		ObjectInfo->set_yaw(GetActorRotation().Yaw);
+		ObjectInfo->set_pitch(GetActorRotation().Pitch);
 
 		DestInfo->set_x(ObjectLocation.X);
 		DestInfo->set_y(ObjectLocation.Y);
 		DestInfo->set_z(ObjectLocation.Z);
+		DestInfo->set_yaw(GetActorRotation().Yaw);
+		DestInfo->set_pitch(GetActorRotation().Pitch);
 	}
 
 	//CreatDynamicMaterialInstance
@@ -79,28 +80,26 @@ void ASPObject::OnExplosionHit()
 {
 	if (bHasBeenCalled)
 	{
-
-		bIsFrist = true;
-		//ObjectMesh->SetHiddenInGame(true);
-		//ObjectMesh->SetSimulatePhysics(true);
-		//ObjectMesh->SetCollisionProfileName(TEXT("DestructionCollision"));
-		////FName ComponentName = FName(TEXT("GC_Cone"));
-		//UGeometryCollectionComponent* Geometry = NewObject<UGeometryCollectionComponent>(this, UGeometryCollectionComponent::StaticClass(), TEXT("GeometryComponent"));
-		//if (Geometry)
-		//{
-		//	Geometry->SetupAttachment(RootComponent);
-		//	Geometry->SetRestCollection(GeometryCollection);
-		//	Geometry->SetCollisionProfileName(TEXT("DestructionCollision"));
-		//	Geometry->RegisterComponent();
-		//	Geometry->AddImpulse(FVector(0.0f, 0.0f, 125.f));
-		//	FTimerHandle ChangeCollisionProfileTimer;
-		//	float DelayInSeconds = 1.0f;
-		//	GetWorld()->GetTimerManager().SetTimer(ChangeCollisionProfileTimer, [this, Geometry]() {
-		//		Geometry->SetCollisionProfileName(TEXT("OnlyStaticCollision"));
-		//		ObjectMesh->SetCollisionProfileName(TEXT("OnlyStaticCollision"));
-		//		}, DelayInSeconds, false);
-		//	this->SetLifeSpan(5.0f);
-		//}
+		ObjectMesh->SetHiddenInGame(true);
+		ObjectMesh->SetSimulatePhysics(true);
+		ObjectMesh->SetCollisionProfileName(TEXT("DestructionCollision"));
+		//FName ComponentName = FName(TEXT("GC_Cone"));
+		UGeometryCollectionComponent* Geometry = NewObject<UGeometryCollectionComponent>(this, UGeometryCollectionComponent::StaticClass(), TEXT("GeometryComponent"));
+		if (Geometry)
+		{
+			Geometry->SetupAttachment(RootComponent);
+			Geometry->SetRestCollection(GeometryCollection);
+			Geometry->SetCollisionProfileName(TEXT("DestructionCollision"));
+			Geometry->RegisterComponent();
+			Geometry->AddImpulse(FVector(0.0f, 0.0f, 125.f));
+			FTimerHandle ChangeCollisionProfileTimer;
+			float DelayInSeconds = 1.0f;
+			GetWorld()->GetTimerManager().SetTimer(ChangeCollisionProfileTimer, [this, Geometry]() {
+				Geometry->SetCollisionProfileName(TEXT("OnlyStaticCollision"));
+				ObjectMesh->SetCollisionProfileName(TEXT("OnlyStaticCollision"));
+				}, DelayInSeconds, false);
+			this->SetLifeSpan(5.0f);
+		}
 
 		bHasBeenCalled = false;
 	}
@@ -110,7 +109,7 @@ void ASPObject::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	{
+	{// Movement correction 수정 필요
 		SetActorRotation(FRotator(0, DestInfo->yaw(), 0));
 		FVector Location(DestInfo->x(), DestInfo->y(), DestInfo->z());
 		FVector TargetLocation = Location;
@@ -119,7 +118,7 @@ void ASPObject::Tick(float DeltaTime)
 		FVector NewLocation = FMath::Lerp(GetActorLocation(), TargetLocation, DeltaTime * InterpSpeed);
 		SetActorLocation(NewLocation);
 
-		FRotator Rotation(0, DestInfo->yaw(), 0);
+		FRotator Rotation(DestInfo->pitch(), DestInfo->yaw(), 0);
 		SetActorRotation(Rotation);
 	}
 
@@ -136,7 +135,7 @@ void ASPObject::Tick(float DeltaTime)
 	{
 		ObjectMesh->SetSimulatePhysics(false);
 		ObjectLocation = GetActorLocation();
-		ObjectInfo->set_is_holding(false);
+		//ObjectInfo->set_is_holding(false);
 	}
 	else
 	{
@@ -145,6 +144,7 @@ void ASPObject::Tick(float DeltaTime)
 		ObjectInfo->set_y(ObjectLocation.Y);
 		ObjectInfo->set_z(ObjectLocation.Z);
 		ObjectInfo->set_yaw(GetActorRotation().Yaw);
+		ObjectInfo->set_pitch(GetActorRotation().Pitch);
 
 	}
 
@@ -153,7 +153,7 @@ void ASPObject::Tick(float DeltaTime)
 	{
 		Protocol::C_O_MOVE MovePkt;
 		{
-			Protocol::PositionInfo* Info = MovePkt.mutable_info();
+			Protocol::ThingInfo* Info = MovePkt.mutable_info();
 			Info->CopyFrom(*ObjectInfo);
 		}
 
@@ -165,32 +165,16 @@ void ASPObject::Tick(float DeltaTime)
 
 	if (bIsFrist == true)
 	{
-		ObjectMesh->SetHiddenInGame(true);
-		ObjectMesh->SetSimulatePhysics(true);
-		ObjectMesh->SetCollisionProfileName(TEXT("DestructionCollision"));
-		//FName ComponentName = FName(TEXT("GC_Cone"));
-		UGeometryCollectionComponent* Geometry = NewObject<UGeometryCollectionComponent>(this, UGeometryCollectionComponent::StaticClass(), TEXT("GeometryComponent"));
-		if (Geometry)
-		{
-			Geometry->SetupAttachment(RootComponent);
-			Geometry->SetRestCollection(GeometryCollection);
-			Geometry->SetCollisionProfileName(TEXT("DestructionCollision"));
-			Geometry->SetMaterial(0, ChaosDynamic);
-			if(MyColorType!=ColorType::None)
-			{
-				ChaosDynamic->SetVectorParameterValue(FName(TEXT("Base Color Tint")),LinearColors[static_cast<uint8>(MyColorType)]);
-			}
-			Geometry->RegisterComponent();
-			Geometry->AddImpulse(FVector(0.0f, 0.0f, 125.f));
-			FTimerHandle ChangeCollisionProfileTimer;
-			float DelayInSeconds = 1.0f;
-			GetWorld()->GetTimerManager().SetTimer(ChangeCollisionProfileTimer, [this, Geometry]() {
-				Geometry->SetCollisionProfileName(TEXT("OnlyStaticCollision"));
-				ObjectMesh->SetCollisionProfileName(TEXT("OnlyStaticCollision"));
-				}, DelayInSeconds, false);
-			this->SetLifeSpan(5.0f);
-		}
-		bHasBeenCalled = false;
+		OnExplosionHit();
+		bIsFrist = false;
+
+		//Protocol::C_O_BURST BurstPkt;
+		//{
+		//	Protocol::BurstInfo* Info = BurstPkt.mutable_info();
+		//	Info->set_object_id(ObjectInfo->object_id());
+		//	Info->set_is_burst(true);
+		//}
+		//SEND_PACKET(BurstPkt);
 	}
 }
 void ASPObject::OnChangeColorGreen()
@@ -201,51 +185,10 @@ void ASPObject::OnChangeColorGreen()
 		ObjectDynamic->SetVectorParameterValue(FName(TEXT("Base Color Tint")),LinearColors[static_cast<uint8>(MyColorType)]);
 	}
 }
-//// Called every frame
-//void ASPObject::Tick(float DeltaTime)
-//{
-//	Super::Tick(DeltaTime);
-//	static float DelayTime = 1.0;
-//	DelayTime -= DeltaTime;
-//	if (DelayTime > 0.0f)
-//	{
-//		return;
-//	}
-//	DelayTime = 1.0;
-//	bool Equal = UKismetMathLibrary::EqualEqual_VectorVector(ObjectLocation, GetActorLocation(), 0.0);
-//	//UE_LOG(LogTemp, Log, TEXT("%s"), *GetActorLocation().ToString());
-//	if (Equal)
-//	{
-//		ObjectMesh->SetSimulatePhysics(false);
-//		ObjectLocation = GetActorLocation();
-//		ObjectInfo->set_is_holding(false);
-//
-//	}
-//	else
-//	{
-//		ObjectLocation = GetActorLocation();
-//		ObjectInfo->set_x(ObjectLocation.X);
-//		ObjectInfo->set_y(ObjectLocation.Y);
-//		ObjectInfo->set_z(ObjectLocation.Z);
-//		ObjectInfo->set_yaw(GetActorRotation().Yaw);
-//
-//
-//		Protocol::C_O_BURST BurstPkt;
-//		{
-//			Protocol::BurstInfo* Info = BurstPkt.mutable_info();
-//			Info->set_object_id(ObjectInfo->object_id());
-//			Info->set_is_burst(true);
-//		}
-//
-//		SEND_PACKET(BurstPkt);
-//
-//		bIsFrist = false;
-//		bHasBeenCalled = false;
-//	}
-//}
 
 
-void ASPObject::SetPostionInfo(const Protocol::PositionInfo& Info)
+
+void ASPObject::SetPostionInfo(const Protocol::ThingInfo& Info)
 {
 	if (ObjectInfo->object_id() != 0)
 	{
@@ -264,7 +207,7 @@ void ASPObject::SetPostionInfo(const Protocol::PositionInfo& Info)
 
 }
 
-void ASPObject::SetDestInfo(const Protocol::PositionInfo& Info)
+void ASPObject::SetDestInfo(const Protocol::ThingInfo& Info)
 {
 	if (ObjectInfo->object_id() != 0)
 	{
@@ -282,6 +225,6 @@ void ASPObject::SetBurst(const bool burst)
 	if (bHasBeenCalled == true)
 	{
 		bHasBeenCalled = false;
-		bIsFrist = burst;
+		bIsFrist = true;
 	}
 }

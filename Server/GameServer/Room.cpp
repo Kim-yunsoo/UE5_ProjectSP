@@ -182,9 +182,9 @@ bool Room::HandleEnterPlayerLocked(PlayerRef player)
 
 			for (auto& item : _objects)
 			{
-				Protocol::PositionInfo* posInfo = new Protocol::PositionInfo();
-				posInfo->CopyFrom(*item.second->posInfo);
-				Opkt.set_allocated_objects(posInfo);
+				Protocol::ThingInfo* Info = new Protocol::ThingInfo();
+				Info->CopyFrom(*item.second->thingInfo);
+				Opkt.set_allocated_objects(Info);
 
 				auto sendBuffer = ServerPacketHandler::MakeSendBuffer(Opkt);
 				if (auto session = player->session.lock())
@@ -267,7 +267,7 @@ void Room::HandleMoveLocked(Protocol::C_O_MOVE& pkt)
 	{
 		Protocol::S_O_MOVE movePkt;
 		{
-			Protocol::PositionInfo* info = movePkt.mutable_info();
+			Protocol::ThingInfo* info = movePkt.mutable_info();
 			info->CopyFrom(pkt.info());
 		}
 

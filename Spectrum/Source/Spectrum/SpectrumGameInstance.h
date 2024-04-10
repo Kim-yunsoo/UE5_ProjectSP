@@ -41,7 +41,7 @@ public:
 	
 	
 	void HandleOSpawn(const Protocol::S_O_SPAWN& OSpawnPkt);			// 패킷으로 삭제
-	void HandleOSpawn(const Protocol::PositionInfo& positionInfo, bool IsMine);
+	void HandleOSpawn(const Protocol::ThingInfo& positionInfo, bool IsMine);
 
 	void HandleMove(const Protocol::S_MOVE& MovePkt);					// 이동
 	void HandleTurn(const Protocol::S_TURN& TurnPkt);					// 회전
@@ -55,6 +55,8 @@ public:
 	// 서버 소켓, ip
 	class FSocket* Socket;
 	FString IpAddress = TEXT("127.0.0.1");
+	//FString IpAddress = TEXT("192.168.45.25");
+	//FString IpAddress = TEXT("192.168.1.27");
 	int16 Port = 7777;
 	TSharedPtr<class PacketSession> GameServerSession;	// 게임 서버 만듬
 
