@@ -13,7 +13,6 @@
 
 ASPCharacterBase::ASPCharacterBase()
 {
-
 	PlayerInfo = new Protocol::PositionInfo();
 	DestInfo = new Protocol::PositionInfo();
 
@@ -56,25 +55,23 @@ ASPCharacterBase::ASPCharacterBase()
 	Feet->SetupAttachment(GetMesh());
 
 	//staff Mesh
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> StaffMeshRef(TEXT("/Script/Engine.StaticMesh'/Game/Spectrum/Assets/Staff/G_Staff/G_Staff.G_Staff'"));
 	Staff = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Staff"));
-	if (StaffMeshRef.Object)
-	{
-		Staff->SetStaticMesh(StaffMeshRef.Object);
-		Staff->SetupAttachment(GetMesh(), TEXT("Staff_Socket"));
-	}
+	Staff->SetupAttachment(GetMesh(), TEXT("Staff_Socket"));
+	Staff->SetCollisionProfileName(TEXT("AllCollisionIgnore"));
+
 
 	//Sphere
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereMeshRef(TEXT("/Script/Engine.StaticMesh'/Engine/EditorMeshes/ArcadeEditorSphere.ArcadeEditorSphere'"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereMeshRef(
+		TEXT("/Script/Engine.StaticMesh'/Engine/EditorMeshes/ArcadeEditorSphere.ArcadeEditorSphere'"));
 	Sphere = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Sphere"));
 	if (SphereMeshRef.Object)
 	{
 		Sphere->SetStaticMesh(SphereMeshRef.Object);
 		Sphere->SetupAttachment(Staff);
 		Sphere->SetWorldScale3D(FVector(-0.03125, -0.03125, -0.03125));
-		Sphere->SetRelativeLocation(FVector(-2.277422, 0.0, 51.739027));
+		// Sphere->SetRelativeLocation(FVector(-2.277422, 0.0, 51.739027));
 		Sphere->SetVisibility(false);
-		Sphere->SetCollisionProfileName(TEXT("NoCollision"));
+		Sphere->SetCollisionProfileName(TEXT("AllCollisionIgnore"));
 	}
 
 	//static ConstructorHelpers::FObjectFinder<USkeletalMesh> CharacterMeshRef(TEXT("/Script/Engine.SkeletalMesh'/Game/Characters/Mannequins/Meshes/SKM_Quinn_Simple.SKM_Quinn_Simple'"));
@@ -84,19 +81,22 @@ ASPCharacterBase::ASPCharacterBase()
 	//	GetMesh()->SetSkeletalMesh(CharacterMeshRef.Object);
 	//}
 
-	static ConstructorHelpers::FClassFinder<UAnimInstance> AnimInstanceClassRef(TEXT("/Game/Spectrum/Animation/AB_SP_Anim.AB_SP_Anim_c"));
+	// static ConstructorHelpers::FClassFinder<UAnimInstance> AnimInstanceClassRef(
+	// 	TEXT("/Game/Spectrum/Animation/AB_SP_Anim.AB_SP_Anim_c"));
+	//
+	// if (AnimInstanceClassRef.Class)
+	// {
+	// 	GetMesh()->SetAnimInstanceClass(AnimInstanceClassRef.Class);
+	// }
 
-	if (AnimInstanceClassRef.Class)
-	{
-		GetMesh()->SetAnimInstanceClass(AnimInstanceClassRef.Class);
-	}
-
-	static ConstructorHelpers::FObjectFinder<USPCharacterControlData> ShoulderDataRef(TEXT("/Script/Spectrum.SPCharacterControlData'/Game/Spectrum/CharacterControl/SPC_Shoulder.SPC_Shoulder'"));
+	static ConstructorHelpers::FObjectFinder<USPCharacterControlData> ShoulderDataRef(
+		TEXT("/Script/Spectrum.SPCharacterControlData'/Game/Spectrum/CharacterControl/SPC_Shoulder.SPC_Shoulder'"));
 	if (ShoulderDataRef.Object)
 	{
 		CharacterControlManager.Add(ECharacterControlType::Shoulder, ShoulderDataRef.Object);
 	}
-	static ConstructorHelpers::FObjectFinder<USPCharacterControlData> QuaterDataRef(TEXT("/Script/Spectrum.SPCharacterControlData'/Game/Spectrum/CharacterControl/SPC_Quater.SPC_Quater'"));
+	static ConstructorHelpers::FObjectFinder<USPCharacterControlData> QuaterDataRef(
+		TEXT("/Script/Spectrum.SPCharacterControlData'/Game/Spectrum/CharacterControl/SPC_Quater.SPC_Quater'"));
 	if (QuaterDataRef.Object)
 	{
 		CharacterControlManager.Add(ECharacterControlType::Quater, QuaterDataRef.Object);
@@ -109,9 +109,8 @@ ASPCharacterBase::ASPCharacterBase()
 	}
 
 
-
 	bIsAiming = false;
-	bIsBlackFour= false;
+	bIsBlackFour = false;
 }
 
 ASPCharacterBase::~ASPCharacterBase()
@@ -120,7 +119,6 @@ ASPCharacterBase::~ASPCharacterBase()
 	delete DestInfo;
 	PlayerInfo = nullptr;
 	DestInfo = nullptr;
-
 }
 
 void ASPCharacterBase::BeginPlay()
@@ -156,7 +154,7 @@ void ASPCharacterBase::Tick(float DeltaSeconds)
 		//if (bIsAiming)
 		//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("aim!!!!")));
 
-		//const Protocol::MoveState State = DestInfo->state();
+		// const Protocol::MoveState State = DestInfo->state();
 
 		////FRotator Rotator = MoveDir.Rotation();
 		////float DestLook = Rotator.Yaw;
@@ -186,7 +184,6 @@ void ASPCharacterBase::Tick(float DeltaSeconds)
 		else if (State == Protocol::MOVE_STATE_IDLE)
 		{
 			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("IDLE")));
-
 		}
 
 
@@ -200,7 +197,6 @@ void ASPCharacterBase::Tick(float DeltaSeconds)
 bool ASPCharacterBase::IsMyPlayer()
 {
 	return Cast<ASPCharacterPlayer>(this) != nullptr;
-
 }
 
 void ASPCharacterBase::SetMoveState(Protocol::MoveState State)
@@ -224,11 +220,13 @@ void ASPCharacterBase::SetPostionInfo(const Protocol::PositionInfo& Info)
 	bIsJumping = Info.is_jumping();
 	bIsHolding = Info.is_holding();
 
-	if (IsMyPlayer() == false && Info.is_jumping() == true) {
+	if (IsMyPlayer() == false && Info.is_jumping() == true)
+	{
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Jump signal 2")));
 		SetJumping();
 	}
-	else if (IsMyPlayer() == false && Info.is_jumping() == false) {
+	else if (IsMyPlayer() == false && Info.is_jumping() == false)
+	{
 		ResetJumping();
 	}
 
@@ -251,18 +249,19 @@ void ASPCharacterBase::SetDestInfo(const Protocol::PositionInfo& Info)
 	SetIsThrowReady(Info.is_throwpotion());
 	SetIsSpawn(Info.is_spawnpotion());
 
-	if (IsMyPlayer() == false && Info.is_jumping() == true) {
+	if (IsMyPlayer() == false && Info.is_jumping() == true)
+	{
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Jump signal 2")));
 		SetJumping();
 	}
-	else if (IsMyPlayer() == false && Info.is_jumping() == false) {
+	else if (IsMyPlayer() == false && Info.is_jumping() == false)
+	{
 		ResetJumping();
 	}
 
 
 	SetMoveState(Info.state());
 }
-
 
 
 void ASPCharacterBase::SetBlackFour()
@@ -273,20 +272,24 @@ void ASPCharacterBase::SetBlackFour()
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
-		Potion = GetWorld()->SpawnActor<ASPBlackPotion>(ASPBlackPotion::StaticClass(), GetMesh()->GetSocketLocation("Item_Socket"), FRotator{ 0.0f, 0.0f, 0.0f }, SpawnParams);
+		Potion = GetWorld()->SpawnActor<ASPBlackPotion>(ASPBlackPotion::StaticClass(),
+		                                                GetMesh()->GetSocketLocation("Item_Socket"),
+		                                                FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
 		bIsSpawn = true;
 		if (Potion)
 		{
-			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
-			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{ "Item_Socket" });
+			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+			                                          EAttachmentRule::SnapToTarget, true);
+			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
 		}
 	}
 	else
 	{
 		if (Potion)
 		{
-			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
-			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{ "Item_Socket" });
+			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+			                                          EAttachmentRule::SnapToTarget, true);
+			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
 		}
 	}
 }
@@ -316,7 +319,6 @@ void ASPCharacterBase::SetCharacterControlData(const USPCharacterControlData* Ch
 
 void ASPCharacterBase::SetThrowPotion()
 {
-
 	if (bIsThrowReady)
 	{
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
@@ -324,12 +326,11 @@ void ASPCharacterBase::SetThrowPotion()
 		bIsThrowReady = false;
 		if (Potion)
 		{
-
 			FRotator ThrowRotation = FRotator(ThrowPitch, GetActorRotation().Yaw, 0.0f);
 			FVector ForwardVector = UKismetMathLibrary::GetForwardVector(ThrowRotation);
 
 			float Mul = 1500.0f;
-			Potion->Throw((ForwardVector + FVector{ 0.0f,0.0f,0.4f }) * Mul);
+			Potion->Throw((ForwardVector + FVector{0.0f, 0.0f, 0.4f}) * Mul);
 		}
 
 		GetCharacterMovement()->bOrientRotationToMovement = true;
@@ -354,5 +355,3 @@ void ASPCharacterBase::ResetJumping()
 {
 	bIsJumping = false;
 }
-
-

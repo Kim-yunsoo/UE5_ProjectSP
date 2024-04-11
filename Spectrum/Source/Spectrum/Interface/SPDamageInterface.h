@@ -23,4 +23,6 @@ class SPECTRUM_API ISPDamageInterface
 public:
 	virtual void OnExplosionHit() = 0;
 	virtual void OnChangeColorGreen() = 0;
+	virtual void OnChangeColorOrange() = 0;
+	virtual void OnChangeColorPurple() = 0;
 };

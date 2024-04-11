@@ -76,7 +76,7 @@ void USPAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 		FRotator NewRotator = UKismetMathLibrary::MakeRotator(0, DeltaY, DeltaZ);
 
-		FRotator RInterp = UKismetMathLibrary::RInterpTo(NewRotator, DeltaRotation, DeltaSeconds, 3);
+		FRotator RInterp = UKismetMathLibrary::RInterpTo(NewRotator, DeltaRotation, DeltaSeconds, 10);
 		UKismetMathLibrary::BreakRotator(RInterp, foo, DeltaY, DeltaZ);
 
 		DeltaY = UKismetMathLibrary::ClampAngle(DeltaY, -90, 90);
