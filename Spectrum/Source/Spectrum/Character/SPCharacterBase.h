@@ -58,7 +58,6 @@ public:
 	void SetBlackFour();
 	void SetAimPotion();
 	void SetThrowPotion();
-
 	double ThrowPitch;
 
 protected:
@@ -113,7 +112,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gravity Gun")
 	TObjectPtr<class UPhysicsHandleComponent> PhysicsHandleComponent;
-	//turn in place
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
 	uint8 bIsTurnRight : 1;

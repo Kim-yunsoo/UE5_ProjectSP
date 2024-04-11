@@ -24,9 +24,9 @@ ASPObject::ASPObject()
    ObjectMesh->SetMobility(EComponentMobility::Movable);
    bHasBeenCalled = true;
 
-   LinearColors.Add(FLinearColor(0.043333, 0.390625, 0.0f, 1.0f));   // Green
-   LinearColors.Add(FLinearColor(0.973958f, 0.036101f, 0.0f, 1.0f)); // Orange
-   LinearColors.Add(FLinearColor(0.263f, 0.0f, 0.6f, 1.0f));    // Purple
+   LinearColors.Add(FLinearColor(0.043333, 0.390625, 0.0f, 1.0f));   
+   LinearColors.Add(FLinearColor(0.973958f, 0.036101f, 0.0f, 1.0f)); 
+   LinearColors.Add(FLinearColor(0.263f, 0.0f, 0.6f, 1.0f));    
    
    ObjectInfo = new Protocol::PositionInfo();
    DestInfo = new Protocol::PositionInfo();
@@ -53,27 +53,20 @@ void ASPObject::BeginPlay()
    ObjectLocation = GetActorLocation();
    //ObjectInfo->set_object_id(20);
 
-   {// 
+   {
       ObjectInfo->set_x(ObjectLocation.X);
       ObjectInfo->set_y(ObjectLocation.Y);
       ObjectInfo->set_z(ObjectLocation.Z);
       ObjectInfo->set_is_aiming(false);
       ObjectInfo->set_is_jumping(false);
       ObjectInfo->set_is_holding(false);
-
       DestInfo->set_x(ObjectLocation.X);
       DestInfo->set_y(ObjectLocation.Y);
       DestInfo->set_z(ObjectLocation.Z);
    }
-
-   //CreatDynamicMaterialInstance
    OriginMaterial = ObjectMesh->GetMaterial(ElementIndex); // mesh origin
    ObjectDynamic = ObjectMesh->CreateDynamicMaterialInstance(ElementIndex, nullptr, FName(TEXT("None")));
-   ChaosDynamic = UMaterialInstanceDynamic::Create(OriginMaterial, nullptr, NAME_None); 
-
-   // ChaosDynamic = UMaterialInstanceDynamic::Create(GeometryCollection->Materials[ElementIndex], nullptr, NAME_None); //다이나믹으로 생성
-   // GeometryCollection;
-   //CreateDynamicMaterialInstance(ElementIndex, nullptr, FName(TEXT("None")));
+   ChaosDynamic = UMaterialInstanceDynamic::Create(OriginMaterial, nullptr, NAME_None);
 }
 
 void ASPObject::OnExplosionHit()
@@ -149,11 +142,10 @@ void ASPObject::Tick(float DeltaTime)
       ObjectInfo->set_y(ObjectLocation.Y);
       ObjectInfo->set_z(ObjectLocation.Z);
       ObjectInfo->set_yaw(GetActorRotation().Yaw);
-
    }
 
    MovePacketSendTimer -= DeltaTime;
-   if (!Equal && MovePacketSendTimer <= 0&& bIsFrist == false)   
+   if (!Equal && MovePacketSendTimer <= 0 && bIsFrist == false)   
    {
       Protocol::C_O_MOVE MovePkt;
       {
@@ -204,7 +196,6 @@ void ASPObject::OnChangeColorGreen()
 {
    if(ObjectDynamic)
    {
-      UE_LOG(LogTemp,Log,TEXT("OnChangeColorGreen"));
       MyColorType=ColorType::Green;
       ObjectDynamic->SetVectorParameterValue(FName(TEXT("Base Color Tint")),LinearColors[static_cast<uint8>(MyColorType)]);
    }

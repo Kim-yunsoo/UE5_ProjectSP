@@ -24,6 +24,7 @@
 #include "Components/WidgetComponent.h"
 #include "Components/SceneComponent.h"
 #include "Components/DecalComponent.h"
+#include "Components/DynamicMeshComponent.h"
 #include "Potion/SPOrangePotion.h"
 #include "Potion/SPPurplePotion.h"
 //#include "UI/SPHUDWidget.h"
@@ -56,7 +57,7 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 	GravityArrow = CreateDefaultSubobject<UArrowComponent>(TEXT("GravityArrow"));
 	if (GravityArrow)
 	{
-		GravityArrow->SetupAttachment(GetMesh());
+		GravityArrow->SetupAttachment(Staff);
 		GravityArrow->SetRelativeRotation(FRotator(0, 0, 0));
 	}
 
@@ -525,7 +526,6 @@ void ASPCharacterPlayer::StopAiming(const FInputActionValue& Value)
 	FollowCamera->AttachToComponent(CameraBoom, AttachmentRules, NAME_None);
 	CameraMove();
 }
-
 void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 {
 	if (false == bIsHolding)
@@ -556,12 +556,17 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 			float DrawTime = 5.0f;
 
 			bool HitSuccess = GetWorld()->LineTraceSingleByChannel(outHitResult, SphereLocationStart, SphereLocationEnd, ECC_GameTraceChannel1, Params);
-		
+			// UActorComponent* DynamicMeshComponent = outHitResult.GetActor()->GetComponentByClass(UDynamicMeshComponent::StaticClass());
+			// if(HitSuccess && DynamicMeshComponent)
+			// {
+			// 	Cast<UDynamicMeshComponent>(DynamicMeshComponent)->SetComplexAsSimpleCollisionEnabled(false,true);
+			// }
 			if (HitSuccess && outHitResult.Component->Mobility == EComponentMobility::Movable)
 			{
 				
 				outHitResult.Component->SetSimulatePhysics(true);
 				HitComponent = outHitResult.GetComponent();
+
 
 				// AActor* HitActor = outHitResult.GetActor();
 				// if (HitActor)
