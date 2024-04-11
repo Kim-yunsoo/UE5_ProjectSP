@@ -3,16 +3,24 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameFramework/Character.h"
 #include "Potion/SPBlackPotion.h" 
-#include "Character/SPCharacterBase.h"
 #include "Interface/SPCharacterHUDInterface.h"
 #include "InputActionValue.h"
+#include "Protocol.pb.h"
 #include "SPCharacterPlayer.generated.h"
 
 /**
  *
  */
 //DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAimingChangedDelegate, bool, bIsAiming);
+
+UENUM()
+enum class ECharacterControlType : uint8
+{
+	Shoulder,
+	Quater
+};
 
 UENUM()
 enum class EDecalMesh : uint8
@@ -29,7 +37,7 @@ enum class EDecalMesh : uint8
 
 
 UCLASS()
-class SPECTRUM_API ASPCharacterPlayer : public ASPCharacterBase
+class SPECTRUM_API ASPCharacterPlayer : public ACharacter
 {
 	GENERATED_BODY()
 
@@ -48,7 +56,7 @@ public:
 protected:
 	void ChangeCharacterControl();
 	void SetCharacterControl(ECharacterControlType NewCharacterControlType);
-	virtual void SetCharacterControlData(const class USPCharacterControlData* CharacterControlData) override;
+	virtual void SetCharacterControlData(const class USPCharacterControlData* CharacterControlData);
 	void CameraMove();
 
 
@@ -81,6 +89,15 @@ protected:
 
 	ECharacterControlType CurrentCharacterControlType;
 
+public:
+	const uint8 GetIsAiming() { return bIsAiming; };
+	const uint8 GetIsHolding() { return bIsHolding; };
+	const uint8 GetIsThrowReady() { return bIsThrowReady; };
+	const uint8 GetIsSpawn() { return bIsSpawn; };
+
+	void SetIsThrowReady(bool throwready) { bIsThrowReady = throwready; };
+	void SetIsSpawn(bool spawn) { bIsSpawn = spawn; };
+
 protected:
 	const float MOVE_PACKET_SEND_DELAY = 0.2f;				
 	float MovePacketSendTimer = MOVE_PACKET_SEND_DELAY;
@@ -95,6 +112,65 @@ protected:
 	FVector2D LastDesiredInput;
 
 
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	TObjectPtr<class USkeletalMeshComponent>Face;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	TObjectPtr<class USkeletalMeshComponent> Torso;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	TObjectPtr<class USkeletalMeshComponent> Legs;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	TObjectPtr<class USkeletalMeshComponent> Feet;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	TObjectPtr<class UStaticMeshComponent> Staff;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	TObjectPtr<class UStaticMeshComponent> Sphere;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gravity Gun")
+	TObjectPtr<class UPhysicsHandleComponent> PhysicsHandleComponent;
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
+	uint8 bIsTurnRight : 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
+	uint8 bIsTurnLeft : 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
+	uint8 bIsTurnReady : 1; // TurnReady?
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
+	float PreControlYawRotation;
+
+protected:
+
+	
+
+	UPROPERTY(EditAnywhere, Category = CharacterControl, Meta = (AllowPrivateAccess = "true"))
+	TMap<ECharacterControlType, class USPCharacterControlData*> CharacterControlManager;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Object, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class ASPPotionBase> Potion;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	uint8 bIsAiming : 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	uint8 bIsHolding : 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	uint8 bIsSpawn : 1; //Spawn check
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	uint8 bIsThrowReady : 1; //Throw Ready? 
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UAnimMontage> ThrowMontage;
 
 	//Camera
 protected:

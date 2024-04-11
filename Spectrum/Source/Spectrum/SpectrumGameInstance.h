@@ -7,8 +7,8 @@
 #include "Spectrum.h"
 #include "SpectrumGameInstance.generated.h"
 
-class ASPCharacterBase;
 class ASPObject;
+class ASPCharacterPlayer;
 /**
  * 
  */
@@ -39,18 +39,9 @@ public:
 	void HandleDespawn(uint64 ObjectId);								// 오브젝트 아이디로 삭제
 	void HandleDespawn(const Protocol::S_DESPAWN& DespawnPkt);			// 패킷으로 삭제
 	
-	
-	void HandleOSpawn(const Protocol::S_O_SPAWN& OSpawnPkt);			// 패킷으로 삭제
-	void HandleOSpawn(const Protocol::ThingInfo& positionInfo, bool IsMine);
 
 	void HandleMove(const Protocol::S_MOVE& MovePkt);					// 이동
-	void HandleTurn(const Protocol::S_TURN& TurnPkt);					// 회전
 
-	void HandleOMove(const Protocol::S_O_MOVE& MovePkt);					// 이동
-
-	void HandleOBurst(const Protocol::S_O_BURST& BurstPkt);				// 폭발
-
-	void HandleOPotion(const Protocol::S_O_POTION& PotionPkt);			// 포션
 public:
 	// 서버 소켓, ip
 	class FSocket* Socket;
@@ -62,15 +53,8 @@ public:
 
 
 public:
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<ASPCharacterBase> OtherPlayerClass;
 
-	// 나중에 오브젝트 별로 클래스 만들어서 넣어주기
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<ASPObject> ObjectsClass;
-
-
-	ASPCharacterBase* MyPlayer;
-	TMap<uint64, ASPCharacterBase*> Players;
+	ASPCharacterPlayer* MyPlayer;
+	TMap<uint64, ASPCharacterPlayer*> Players;
 	TMap<uint64, ASPObject*> Objects;
 };

@@ -75,36 +75,6 @@ bool Handle_S_DESPAWN(PacketSessionRef& session, Protocol::S_DESPAWN& pkt)
 	return true;
 }
 
-bool Handle_S_O_SPAWN(PacketSessionRef& session, Protocol::S_O_SPAWN& pkt)
-{
-	if (auto* GameInstance = Cast<USpectrumGameInstance>(GWorld->GetGameInstance()))
-	{
-		Protocol::ThingInfo posInfo = pkt.objects();
-		posInfo.set_object_id(pkt.objects().object_id());
-
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("%lld"), posInfo.object_id()));
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("%f %f %f"), 
-			posInfo.x(), posInfo.y(), posInfo.z()));
-
-		GameInstance->HandleOSpawn(posInfo, false);
-
-	}
-
-	//auto* GameInstance = Cast<USpectrumGameInstance>(GWorld->GetGameInstance());
-	//Protocol::PositionInfo posInfo = pkt.objects();
-	//posInfo.set_object_id(pkt.objects().object_id());
-
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("%lld"), posInfo.object_id()));
-	//GameInstance->HandleOSpawn(posInfo, false);
-
-	return true;
-}
-
-bool Handle_S_O_DESPAWN(PacketSessionRef& session, Protocol::S_O_DESPAWN& pkt)
-{
-	return false;
-}
-
 bool Handle_S_MOVE(PacketSessionRef& session, Protocol::S_MOVE& pkt)
 {
 	if (auto* GameInstance = Cast<USpectrumGameInstance>(GWorld->GetGameInstance()))
@@ -115,47 +85,6 @@ bool Handle_S_MOVE(PacketSessionRef& session, Protocol::S_MOVE& pkt)
 	return true;
 }
 
-bool Handle_S_TURN(PacketSessionRef& session, Protocol::S_TURN& pkt)
-{
-	if (auto* GameInstance = Cast<USpectrumGameInstance>(GWorld->GetGameInstance()))
-	{
-		GameInstance->HandleTurn(pkt);
-	}
-
-	return true;
-}
-
-bool Handle_S_O_MOVE(PacketSessionRef& session, Protocol::S_O_MOVE& pkt) {
-
-	if (auto* GameInstance = Cast<USpectrumGameInstance>(GWorld->GetGameInstance()))
-	{
-		GameInstance->HandleOMove(pkt);
-	}
-
-	return true;
-
-
-}
-
-bool Handle_S_O_BURST(PacketSessionRef& session, Protocol::S_O_BURST& pkt)
-{
-	if (auto* GameInstance = Cast<USpectrumGameInstance>(GWorld->GetGameInstance()))
-	{
-		GameInstance->HandleOBurst(pkt);
-	}
-
-	return true;
-}
-
-bool Handle_S_O_POTION(PacketSessionRef& session, Protocol::S_O_POTION& pkt)
-{
-	if (auto* GameInstance = Cast<USpectrumGameInstance>(GWorld->GetGameInstance()))
-	{
-		GameInstance->HandleOPotion(pkt);
-	}
-
-	return true;
-}
 
 bool Handle_S_CHAT(PacketSessionRef& session, Protocol::S_CHAT& pkt)
 {

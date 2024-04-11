@@ -15,12 +15,6 @@ public:
 	bool HandleLeavePlayerLocked(PlayerRef player);
 
 	void HandleMoveLocked(Protocol::C_MOVE& pkt);
-	void HandleMoveLocked(Protocol::C_O_MOVE& pkt);
-
-	void HandleTurnLocked(Protocol::C_TURN& pkt);
-
-	void HandleBurstLocked(Protocol::C_O_BURST& pkt);
-	void HandlePotionLocked(Protocol::C_O_POTION& pkt);
 
 	void updateTick();
 

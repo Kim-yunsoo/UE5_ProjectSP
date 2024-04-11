@@ -42,12 +42,7 @@ protected: //ISPDamageInterface
 	virtual void OnChangeColorOrange() override;
 	virtual void OnChangeColorPurple() override;
 
-
 	//TObjectPtr<class UGeometryCollection> GeometryCollection ;
-
-public:
-	class Protocol::ThingInfo* ObjectInfo; // 현재 위치
-	class Protocol::ThingInfo* DestInfo;	// 가려는 위치
 
 public:	
 	// Called every frame
@@ -57,12 +52,6 @@ public:
 	//TObjectPtr<UStaticMeshComponent> MeshComponent;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	bool bHasBeenCalled;
-	bool bIsFrist;
-	bool bIsMove;
-
-	void SetPostionInfo(const Protocol::ThingInfo& Info);
-	void SetDestInfo(const Protocol::ThingInfo& Info);
-	void SetBurst(const bool burst);
 
 protected:
 	const float MOVE_PACKET_SEND_DELAY = 0.2f;

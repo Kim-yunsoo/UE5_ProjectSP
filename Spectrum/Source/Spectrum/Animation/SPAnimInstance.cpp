@@ -26,7 +26,7 @@ void USPAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
 	//GetOwningActor() 
-	Owner = Cast<ASPCharacterBase>(GetOwningActor());
+	Owner = Cast<ASPCharacterPlayer>(GetOwningActor());
 	if (Owner)
 	{
 		Movement = Owner->GetCharacterMovement();
@@ -44,12 +44,7 @@ void USPAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		bIsIdle = GroundSpeed < MovingThreshould;
 		bIsFalling = Movement->IsFalling();
 
-		//bIsJumping = bIsFalling & (Velocity.Z > JumpingThreshould);
-		if (Owner->IsMyPlayer() == true)
 			bIsJumping = bIsFalling & (Velocity.Z > JumpingThreshould);
-		else if (Owner->IsMyPlayer() == false) 
-			bIsJumping = Owner->GetIsJumping();
-
 
 		bIsAiming = Owner->GetIsAiming();
 		bIsHolding = Owner->GetIsHolding();
@@ -57,15 +52,6 @@ void USPAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		bIsTurnRight = Owner->bIsTurnRight;
 		bIsTurnLeft = Owner->bIsTurnLeft;
 		bIsTurnReady= Owner->bIsTurnReady;
-
-		
-		//if (Owner->IsMyPlayer() == false && bIsJumping == true) {
-		//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%f %f %f"), 
-		//		Owner->GetActorLocation().X, Owner->GetActorLocation().Y, Owner->GetActorLocation().Z));
-
-		//}
-		//else if (Owner->IsMyPlayer() == false && bIsAiming == false)
-		//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("333333333")));
 
 
 		FRotator ControlRotation = Owner->GetControlRotation();

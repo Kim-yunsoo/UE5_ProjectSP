@@ -2,6 +2,7 @@
 
 
 #include "Character/SPCharacterPlayer.h"
+#include "Components/CapsuleComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -31,6 +32,97 @@
 
 ASPCharacterPlayer::ASPCharacterPlayer()
 {
+	//Pawn
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationRoll = false;
+	bUseControllerRotationYaw = false;
+
+	//Capsule
+	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
+	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Pawn"));
+
+	//Movement
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
+	GetCharacterMovement()->JumpZVelocity = 350.0f;
+	GetCharacterMovement()->AirControl = 0.4f;
+	GetCharacterMovement()->MaxWalkSpeed = 500.f;
+	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
+	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
+
+	GetCharacterMovement()->bRunPhysicsWithNoController = true;
+
+	//Mesh
+	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -96.0f), FRotator(0.0f, -90.0f, 0.0f));
+	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+	GetMesh()->SetCollisionProfileName(TEXT("CharacterMesh"));
+
+	//Mesh
+	Face = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Face"));
+	Face->SetupAttachment(GetMesh());
+
+	Torso = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Torso"));
+	Torso->SetupAttachment(GetMesh());
+
+	Legs = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Legs"));
+	Legs->SetupAttachment(GetMesh());
+
+	Feet = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Feet"));
+	Feet->SetupAttachment(GetMesh());
+
+	//staff Mesh
+	Staff = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Staff"));
+	Staff->SetupAttachment(GetMesh(), TEXT("Staff_Socket"));
+	Staff->SetCollisionProfileName(TEXT("AllCollisionIgnore"));
+
+
+	//Sphere
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereMeshRef(
+		TEXT("/Script/Engine.StaticMesh'/Engine/EditorMeshes/ArcadeEditorSphere.ArcadeEditorSphere'"));
+	Sphere = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Sphere"));
+	if (SphereMeshRef.Object)
+	{
+		Sphere->SetStaticMesh(SphereMeshRef.Object);
+		Sphere->SetupAttachment(Staff);
+		Sphere->SetWorldScale3D(FVector(-0.03125, -0.03125, -0.03125));
+		// Sphere->SetRelativeLocation(FVector(-2.277422, 0.0, 51.739027));
+		Sphere->SetVisibility(false);
+		Sphere->SetCollisionProfileName(TEXT("AllCollisionIgnore"));
+	}
+
+	//static ConstructorHelpers::FObjectFinder<USkeletalMesh> CharacterMeshRef(TEXT("/Script/Engine.SkeletalMesh'/Game/Characters/Mannequins/Meshes/SKM_Quinn_Simple.SKM_Quinn_Simple'"));
+	//
+	//if (CharacterMeshRef.Object)
+	//{
+	//	GetMesh()->SetSkeletalMesh(CharacterMeshRef.Object);
+	//}
+
+	// static ConstructorHelpers::FClassFinder<UAnimInstance> AnimInstanceClassRef(
+	// 	TEXT("/Game/Spectrum/Animation/AB_SP_Anim.AB_SP_Anim_c"));
+	//
+	// if (AnimInstanceClassRef.Class)
+	// {
+	// 	GetMesh()->SetAnimInstanceClass(AnimInstanceClassRef.Class);
+	// }
+
+	static ConstructorHelpers::FObjectFinder<USPCharacterControlData> ShoulderDataRef(
+		TEXT("/Script/Spectrum.SPCharacterControlData'/Game/Spectrum/CharacterControl/SPC_Shoulder.SPC_Shoulder'"));
+	if (ShoulderDataRef.Object)
+	{
+		CharacterControlManager.Add(ECharacterControlType::Shoulder, ShoulderDataRef.Object);
+	}
+	static ConstructorHelpers::FObjectFinder<USPCharacterControlData> QuaterDataRef(
+		TEXT("/Script/Spectrum.SPCharacterControlData'/Game/Spectrum/CharacterControl/SPC_Quater.SPC_Quater'"));
+	if (QuaterDataRef.Object)
+	{
+		CharacterControlManager.Add(ECharacterControlType::Quater, QuaterDataRef.Object);
+	}
+
+	PhysicsHandleComponent = CreateDefaultSubobject<UPhysicsHandleComponent>(TEXT("PhysicsHandleComponent"));
+	if (PhysicsHandleComponent)
+	{
+		PhysicsHandleComponent->SetInterpolationSpeed(5.0);
+	}
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->SetupAttachment(RootComponent);
 	SpringArm->TargetArmLength = 150.f;
@@ -199,8 +291,8 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 
 	CurrentCharacterControlType = ECharacterControlType::Shoulder;
 	LastInput = FVector2D::ZeroVector;
-	//bIsAiming = false;
-	//bIsHolding = false;
+	bIsAiming = false;
+	bIsHolding = false;
 	HitComponent = nullptr;
 	bIsSpawn = false;
 	bIsThrowReady = false;
@@ -230,64 +322,7 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 		LastDesiredInput = DesiredInput;
 	}
 
-	//if (DesiredInput == FVector2D::Zero()) {
-	//	SetMoveState(Protocol::MOVE_STATE_IDLE);
-	//	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("IDLE")));
-	//}
-	//else {
-	//	SetMoveState(Protocol::MOVE_STATE_RUN);
-	//	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("RUN")));
-	//}
-
-
-	FVector Velocity = GetVelocity();
-	if (!Velocity.IsNearlyZero()) {
-		if(bIsJumping == true)
-		{
-			SetMoveState(Protocol::MOVE_STATE_JUMP);
-		}
-		else
-		{
-			SetMoveState(Protocol::MOVE_STATE_RUN);
-		}
-	}
-	else
-		SetMoveState(Protocol::MOVE_STATE_IDLE);
 	
-		// send C_MOVE by 0.1s
-	MovePacketSendTimer -= DeltaTime*10;
-
-	if (MovePacketSendTimer <= 0 || ForceSendPacket)
-	{
-		MovePacketSendTimer = MOVE_PACKET_SEND_DELAY;
-
-		Protocol::C_MOVE MovePkt;
-
-		{
-			Protocol::PositionInfo* Info = MovePkt.mutable_info();
-			Info->CopyFrom(*PlayerInfo);
-			Info->set_yaw(DesiredYaw);
-			Info->set_state(GetMoveState());
-			Info->set_is_aiming(bIsAiming);
-			Info->set_is_holding(bIsHolding);
-			Info->set_is_jumping(bIsJumping);
-			Info->set_is_throwpotion(bIsThrowReady);
-			Info->set_is_spawnpotion(bIsSpawn);
-
-			////Info 
-			//if(GetMoveState()== Protocol::MOVE_STATE_IDLE)
-			//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("IDLE")));
-			//else if(GetMoveState() == Protocol::MOVE_STATE_RUN)
-			//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("RUN")));
-
-			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("%f %f %f"),
-			//	GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z));
-			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, FString::Printf(TEXT("%f %f %f"),
-			//	PlayerInfo->x(), PlayerInfo->y(), PlayerInfo->z()));
-		}
-
-		SEND_PACKET(MovePkt);
-	}
 
 	if (bIsHolding)
 	{
@@ -337,7 +372,13 @@ void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Player
 
 void ASPCharacterPlayer::SetCharacterControlData(const USPCharacterControlData* CharacterControlData)
 {
-	Super::SetCharacterControlData(CharacterControlData);
+	// Pawn
+	bUseControllerRotationYaw = CharacterControlData->bUseControllerRotationYaw;
+
+	// CharacterMovement
+	GetCharacterMovement()->bOrientRotationToMovement = CharacterControlData->bOrientRotationToMovement;
+	GetCharacterMovement()->bUseControllerDesiredRotation = CharacterControlData->bUseControllerDesiredRotation;
+	GetCharacterMovement()->RotationRate = CharacterControlData->RotationRate;
 
 	CameraBoom->TargetArmLength = CharacterControlData->TargetArmLength;
 	CameraBoom->SetRelativeRotation(CharacterControlData->RelativeRotation);
@@ -447,19 +488,7 @@ void ASPCharacterPlayer::ShoulderLook(const FInputActionValue& Value)
 		PreControlYawRotation = GetControlRotation().Yaw;
 	}
 
-	// 서버에 턴 정보 송신
-	Protocol::C_TURN TurnPkt;
-	{
-		Protocol::PlayerTurnInfo* Info = TurnPkt.mutable_info();
-		Info->set_object_id(PlayerInfo->object_id());
-		Info->set_is_turnright(bIsTurnRight);
-		Info->set_is_turnleft(bIsTurnLeft);
-		Info->set_is_turnready(bIsTurnReady);
-		Info->set_yaw(GetActorRotation().Yaw);
-		Info->set_pitch(GetControlRotation().Pitch);
-
-	}
-	SEND_PACKET(TurnPkt);
+	
 }
 
 void ASPCharacterPlayer::StopShoulderLook(const FInputActionValue& Value)
@@ -467,19 +496,7 @@ void ASPCharacterPlayer::StopShoulderLook(const FInputActionValue& Value)
 	bIsTurnRight = false;
 	bIsTurnLeft = false;
 
-	// 서버에 턴 정보 송신
-	Protocol::C_TURN TurnPkt;
-	{
-		Protocol::PlayerTurnInfo* Info = TurnPkt.mutable_info();
-		Info->set_object_id(PlayerInfo->object_id());
-		Info->set_is_turnright(bIsTurnRight);
-		Info->set_is_turnleft(bIsTurnLeft);
-		Info->set_is_turnready(bIsTurnReady);
-		Info->set_yaw(GetActorRotation().Yaw);
-		Info->set_pitch(GetControlRotation().Pitch);
-
-	}
-	SEND_PACKET(TurnPkt);
+	
 }
 
 void ASPCharacterPlayer::SpeedUp(const FInputActionValue& Value)
@@ -681,16 +698,7 @@ void ASPCharacterPlayer::StopGraping(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::AimPotion(const FInputActionValue& Value)
 {
-	Protocol::C_O_POTION PoPkt;
-	{
-		Protocol::PlayerPotionInfo* Info = PoPkt.mutable_info();
-		Info->set_object_id(PlayerInfo->object_id());
-		Info->set_is_blackspawn(false);
-		Info->set_is_throwpotion(false);
-		Info->set_is_aimpotion(true);
-	}
 
-	SEND_PACKET(PoPkt);
 
 	if (bIsSpawn)
 	{
@@ -704,16 +712,7 @@ void ASPCharacterPlayer::AimPotion(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::ThrowPotion(const FInputActionValue& Value)
 {
-	Protocol::C_O_POTION PoPkt;
-	{
-		Protocol::PlayerPotionInfo* Info = PoPkt.mutable_info();
-		Info->set_object_id(PlayerInfo->object_id());
-		Info->set_is_blackspawn(false);
-		Info->set_is_throwpotion(true);
-		Info->set_is_aimpotion(false);
-	}
-
-	SEND_PACKET(PoPkt);
+	
 
 	if (bIsThrowReady)
 	{
@@ -749,9 +748,6 @@ void ASPCharacterPlayer::Jumping(const FInputActionValue& Value)
 		JumpKeyHoldTime = 0.0f;
 	}
 
-	bIsJumping = true;
-	SetMoveState(Protocol::MOVE_STATE_JUMP);
-	SetJumping();
 }
 
 void ASPCharacterPlayer::MyStopJumping(const FInputActionValue& Value)
@@ -759,22 +755,11 @@ void ASPCharacterPlayer::MyStopJumping(const FInputActionValue& Value)
 	bPressedJump = false;
 	ResetJumpState();
 
-	bIsJumping = false;
-	//SetMoveState(Protocol::MOVE_STATE_IDLE);
-	ResetJumping();
 }
 
 void ASPCharacterPlayer::BlackPotionSpawn(const FInputActionValue& Value)
 {
-	Protocol::C_O_POTION PoPkt;
-	{
-		Protocol::PlayerPotionInfo* Info = PoPkt.mutable_info();
-		Info->set_object_id(PlayerInfo->object_id());
-		Info->set_is_blackspawn(true);
-		Info->set_is_throwpotion(false);
-	}
-
-	SEND_PACKET(PoPkt);
+	
 
 	if (false == bIsSpawn)
 	{

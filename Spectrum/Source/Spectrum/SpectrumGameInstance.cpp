@@ -118,21 +118,16 @@ void USpectrumGameInstance::HandleSpawn(const Protocol::ObjectInfo& ObjectInfo, 
 	if (IsMine)
 	{
 		auto* PC = UGameplayStatics::GetPlayerController(this, 0);
-		ASPCharacterBase* Player = Cast<ASPCharacterBase>(PC->GetPawn());
+		ASPCharacterPlayer* Player = Cast<ASPCharacterPlayer>(PC->GetPawn());
 		if (Player == nullptr)
 			return;
 
-		Player->SetPostionInfo(ObjectInfo.pos_info());
+		//Player->SetPostionInfo(ObjectInfo.pos_info());
 
 		MyPlayer = Player;
 		Players.Add(ObjectInfo.object_id(), Player);
 	}
-	else
-	{
-		ASPCharacterBase* Player = Cast<ASPCharacterBase>(World->SpawnActor(OtherPlayerClass, &SpawnLocation));
-		Player->SetPostionInfo(ObjectInfo.pos_info());
-		Players.Add(ObjectInfo.object_id(), Player);
-	}
+
 
 }
 
@@ -159,7 +154,7 @@ void USpectrumGameInstance::HandleDespawn(uint64 ObjectId)
 	if (World == nullptr)
 		return;
 
-	ASPCharacterBase** FindActor = Players.Find(ObjectId);
+	ASPCharacterPlayer** FindActor = Players.Find(ObjectId);
 	if (FindActor == nullptr)
 		return;
 
@@ -175,40 +170,7 @@ void USpectrumGameInstance::HandleDespawn(const Protocol::S_DESPAWN& DespawnPkt)
 	}
 }
 
-void USpectrumGameInstance::HandleOSpawn(const Protocol::S_O_SPAWN& OSpawnPkt)
-{
-	auto& Object = OSpawnPkt.objects();
 
-	HandleOSpawn(Object, false);
-}
-
-void USpectrumGameInstance::HandleOSpawn(const Protocol::ThingInfo& positionInfo, bool IsMine)
-{
-	if (Socket == nullptr || GameServerSession == nullptr)
-		return;
-
-	auto* World = GetWorld();
-	if (World == nullptr)
-		return;
-
-	// 중복 처리 체크
-	const uint64 ObjectId = positionInfo.object_id();
-	if (Objects.Find(ObjectId) != nullptr)
-		return;
-
-	FVector SpawnLocation(positionInfo.x(), positionInfo.y(), positionInfo.z());
-
-	ASPObject* Object = Cast<ASPObject>(World->SpawnActor(ObjectsClass, &SpawnLocation));
-	Object->SetPostionInfo(positionInfo);
-	Objects.Add(positionInfo.object_id(), Object);
-
-	//if (Object)
-	//{
-	//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("ok")));
-
-	//}
-	
-}
 
 void USpectrumGameInstance::HandleMove(const Protocol::S_MOVE& MovePkt)
 {
@@ -221,123 +183,18 @@ void USpectrumGameInstance::HandleMove(const Protocol::S_MOVE& MovePkt)
 		return;
 
 	const uint64 ObjectId = MovePkt.info().object_id();
-	ASPCharacterBase** FindActor = Players.Find(ObjectId);
+	ASPCharacterPlayer** FindActor = Players.Find(ObjectId);
 	if (FindActor == nullptr)
 		return;
 
-	ASPCharacterBase* Player = (*FindActor);
-	if (Player->IsMyPlayer())
-		return;
+	//ASPCharacterPlayer* Player = (*FindActor);
+	//if (Player->IsMyPlayer())
+	//	return;
 
-	const Protocol::PositionInfo& Info = MovePkt.info();
-	//Player->SetPlayerInfo(Info);
-	Player->SetDestInfo(Info);
+	//const Protocol::PositionInfo& Info = MovePkt.info();
+	////Player->SetPlayerInfo(Info);
+	//Player->SetDestInfo(Info);
 
 }
 
-void USpectrumGameInstance::HandleTurn(const Protocol::S_TURN& TurnPkt)
-{
-	if (Socket == nullptr || GameServerSession == nullptr)
-		return;
 
-	auto* World = GetWorld();
-	if (World == nullptr)
-		return;
-
-	const uint64 ObjectId = TurnPkt.info().object_id();
-	ASPCharacterBase** FindActor = Players.Find(ObjectId);
-	if (FindActor == nullptr)
-		return;
-
-	ASPCharacterBase* Player = (*FindActor);
-	if (Player->IsMyPlayer())
-		return;
-
-	const Protocol::PlayerTurnInfo& Info = TurnPkt.info();
-	Player->bIsTurnRight = Info.is_turnright();
-	Player->bIsTurnLeft = Info.is_turnleft();
-	Player->bIsTurnReady = Info.is_turnready();
-	Player->SetActorRotation(FRotator(0, Info.yaw(), 0));
-	Player->ThrowPitch = Info.pitch();
-}
-
-void USpectrumGameInstance::HandleOMove(const Protocol::S_O_MOVE& MovePkt)
-{
-
-	if (Socket == nullptr || GameServerSession == nullptr)
-		return;
-
-	auto* World = GetWorld();
-	if (World == nullptr)
-		return;
-
-	const uint64 ObjectId = MovePkt.info().object_id();
-	ASPObject** FindActor = Objects.Find(ObjectId);
-	if (FindActor == nullptr)
-		return;
-
-	ASPObject* Object = (*FindActor);
-
-	const Protocol::ThingInfo& Info = MovePkt.info();
-	//Object->SetPostionInfo(Info);
-	Object->SetDestInfo(Info);		// 이동 보정때문에 DestInfo에 저장
-}
-
-void USpectrumGameInstance::HandleOBurst(const Protocol::S_O_BURST& BurstPkt)
-{
-	if (Socket == nullptr || GameServerSession == nullptr)
-		return;
-
-	auto* World = GetWorld();
-	if (World == nullptr)
-		return;
-
-	const uint64 ObjectId = BurstPkt.info().object_id();
-	ASPObject** FindActor = Objects.Find(ObjectId);
-	if (FindActor == nullptr)
-		return;
-
-	ASPObject* Object = (*FindActor);
-
-	const Protocol::BurstInfo& Info = BurstPkt.info();
-	Object->SetBurst(Info.is_burst());
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("S_O_BURST")));
-}
-
-void USpectrumGameInstance::HandleOPotion(const Protocol::S_O_POTION& PotionPkt)
-{
-
-	if (Socket == nullptr || GameServerSession == nullptr)
-		return;
-
-	auto* World = GetWorld();
-	if (World == nullptr)
-		return;
-
-	const uint64 ObjectId = PotionPkt.info().object_id();
-	ASPCharacterBase** FindActor = Players.Find(ObjectId);
-	if (FindActor == nullptr)
-		return;
-
-	ASPCharacterBase* Player = (*FindActor);
-	if (Player->IsMyPlayer())
-		return;
-
-	const Protocol::PlayerPotionInfo& Info = PotionPkt.info();
-
-	if(Info.is_blackspawn() == true)
-	{
-		Player->SetBlackFour();
-	}
-
-	if(Info.is_aimpotion() == true)
-	{
-		Player->SetAimPotion();
-	}
-
-
-	if(Info.is_throwpotion() == true)
-	{
-		Player->SetThrowPotion();
-	}
-}

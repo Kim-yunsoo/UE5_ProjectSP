@@ -175,24 +175,7 @@ bool Room::HandleEnterPlayerLocked(PlayerRef player)
 	}
 
 		//// 맵에 배치될 물건들 정보 전송
-	{
-		// _objects에 있는 물건들 정보 전송
-		{
-			Protocol::S_O_SPAWN Opkt;
 
-			for (auto& item : _objects)
-			{
-				Protocol::ThingInfo* Info = new Protocol::ThingInfo();
-				Info->CopyFrom(*item.second->thingInfo);
-				Opkt.set_allocated_objects(Info);
-
-				auto sendBuffer = ServerPacketHandler::MakeSendBuffer(Opkt);
-				if (auto session = player->session.lock())
-					session->Send(sendBuffer);
-			}
-		}
-
-	}
 
 	return success;
 	//return EnterRoom(player, true);
@@ -259,84 +242,6 @@ void Room::HandleMoveLocked(Protocol::C_MOVE& pkt)
 	}
 }
 
-void Room::HandleMoveLocked(Protocol::C_O_MOVE& pkt)
-{
-	WRITE_LOCK;
-
-	// 이동 
-	{
-		Protocol::S_O_MOVE movePkt;
-		{
-			Protocol::ThingInfo* info = movePkt.mutable_info();
-			info->CopyFrom(pkt.info());
-		}
-
-		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(movePkt);
-		Broadcast(sendBuffer);
-	}
-
-}
-
-void Room::HandleTurnLocked(Protocol::C_TURN& pkt)
-{
-	WRITE_LOCK;
-
-	const uint64 objectId = pkt.info().object_id();
-	if (_player.find(objectId) == _player.end())
-		return;
-
-	// 회전 
-	{
-		Protocol::S_TURN turnPkt;
-		{
-			Protocol::PlayerTurnInfo* info = turnPkt.mutable_info();
-			info->CopyFrom(pkt.info());
-		}
-
-		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(turnPkt);
-		Broadcast(sendBuffer);
-	}
-
-}
-
-void Room::HandleBurstLocked(Protocol::C_O_BURST& pkt)
-{
-
-	WRITE_LOCK;
-
-	// 이동 
-	{
-		Protocol::S_O_BURST burstPkt;
-		{
-			Protocol::BurstInfo* info = burstPkt.mutable_info();
-			info->CopyFrom(pkt.info());
-		}
-
-		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(burstPkt);
-		Broadcast(sendBuffer);
-	}
-}
-
-void Room::HandlePotionLocked(Protocol::C_O_POTION& pkt)
-{
-	WRITE_LOCK;
-
-	{
-		Protocol::S_O_POTION potionPkt;
-		{
-			Protocol::PlayerPotionInfo* info = potionPkt.mutable_info();
-			info->CopyFrom(pkt.info());
-		}
-
-		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(potionPkt);
-		Broadcast(sendBuffer);
-	}
-}
-
-void Room::updateTick()
-{
-	cout<<"Room::updateTick"<<endl;
-}
 
 void Room::createAllObject() // 배치될 물건 생성해서 _objects에 저장해둠
 {

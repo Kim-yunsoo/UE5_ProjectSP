@@ -62,26 +62,7 @@ int main()
 	// Main Thread
 	// DoWorkerJob(service);
 
-	// 배치될 물건들 정보 저장
-	//for(int i = 0; i < 10000; i++)
-	{
-		ThingRef thing = ObjectUtils::CreateThing();
-
-		Protocol::ThingInfo* Info = new Protocol::ThingInfo();
-		Info->set_x(700.f);
-		Info->set_y(-180.f);
-		Info->set_z(120.f);
-		Info->set_yaw(0.f);
-		Info->set_pitch(0.f);
-		Info->set_object_id(thing->thingInfo->object_id());
-		thing->thingInfo = Info;
-
-		GRoom->_objects.insert(make_pair(thing->thingInfo->object_id(), thing));
-
-		cout << thing->thingInfo->object_id() << endl;
-	}
 	
-
 
 
 	while (true)
@@ -107,7 +88,7 @@ int main()
 
 		//GSessionManager.Broadcast(sendBuffer);
 
-		Sleep(0.1);
+		//Sleep(0.1);
 	}
 
 	
