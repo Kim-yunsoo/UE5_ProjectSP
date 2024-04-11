@@ -79,7 +79,7 @@ bool Handle_S_O_SPAWN(PacketSessionRef& session, Protocol::S_O_SPAWN& pkt)
 {
 	if (auto* GameInstance = Cast<USpectrumGameInstance>(GWorld->GetGameInstance()))
 	{
-		Protocol::PositionInfo posInfo = pkt.objects();
+		Protocol::ThingInfo posInfo = pkt.objects();
 		posInfo.set_object_id(pkt.objects().object_id());
 
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("%lld"), posInfo.object_id()));

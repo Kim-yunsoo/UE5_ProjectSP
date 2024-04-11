@@ -43,6 +43,8 @@ int main()
 
 	ServerServiceRef service = make_shared<ServerService>(
 		NetAddress(L"127.0.0.1", 7777),
+		//NetAddress(L"192.168.1.27", 7777),
+		//NetAddress(L"192.168.45.25", 7777),
 		make_shared<IocpCore>(),
 		[=]() { return make_shared<GameSession>(); }, // TODO : SessionManager 등
 		100);
@@ -61,18 +63,26 @@ int main()
 	// DoWorkerJob(service);
 
 	// 배치될 물건들 정보 저장
-	ThingRef thing = ObjectUtils::CreateThing();
+	//for(int i = 0; i < 10000; i++)
+	{
+		ThingRef thing = ObjectUtils::CreateThing();
 
-	Protocol::PositionInfo* posInfo = new Protocol::PositionInfo();
-	posInfo->set_x(700.f);
-	posInfo->set_y(-180.f);
-	posInfo->set_z(120.f);
-	posInfo->set_yaw(4.f);
-	posInfo->set_object_id(thing->posInfo->object_id());
-	cout << thing->posInfo->object_id() << endl;
-	thing->posInfo = posInfo;
+		Protocol::ThingInfo* Info = new Protocol::ThingInfo();
+		Info->set_x(700.f);
+		Info->set_y(-180.f);
+		Info->set_z(120.f);
+		Info->set_yaw(0.f);
+		Info->set_pitch(0.f);
+		Info->set_object_id(thing->thingInfo->object_id());
+		thing->thingInfo = Info;
+
+		GRoom->_objects.insert(make_pair(thing->thingInfo->object_id(), thing));
+
+		cout << thing->thingInfo->object_id() << endl;
+	}
 	
-	GRoom->_objects.insert(make_pair(thing->posInfo->object_id(), thing));
+
+
 
 	while (true)
 	{

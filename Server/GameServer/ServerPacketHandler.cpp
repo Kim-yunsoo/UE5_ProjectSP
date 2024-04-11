@@ -23,7 +23,7 @@ bool Handle_C_LOGIN(PacketSessionRef& session, Protocol::C_LOGIN& pkt)
 	// TODO : DB에서 유저 정보 긁어온다
 	Protocol::S_LOGIN loginPkt;
 
-	for (int32 i = 0; i < 3; i++)
+	//for (int32 i = 0; i < 3; i++)
 	{
 		Protocol::ObjectInfo* player = loginPkt.add_players();
 		Protocol::PositionInfo* posInfo = player->mutable_pos_info();
@@ -48,7 +48,7 @@ bool Handle_C_ENTER_GAME(PacketSessionRef& session, Protocol::C_ENTER_GAME& pkt)
 	// 방에 입장
 	GRoom->HandleEnterPlayerLocked(player);
 
-	
+	cout<< "Player Enter" << endl;
 	
 
 

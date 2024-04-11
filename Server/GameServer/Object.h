@@ -11,6 +11,7 @@ public:
 public:
 	Protocol::ObjectInfo* objectInfo;
 	Protocol::PositionInfo* posInfo;
+	Protocol::ThingInfo* thingInfo;
 
 
 public:

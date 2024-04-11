@@ -24,14 +24,13 @@ ASPObject::ASPObject()
    ObjectMesh->SetMobility(EComponentMobility::Movable);
    bHasBeenCalled = true;
 
-   LinearColors.Add(FLinearColor(0.03f, 1.0f, 0.181f, 1.0f));   // Green
-   LinearColors.Add(FLinearColor(0.942f, 0.0266f, 0.0f, 1.0f)); // Orange
-   LinearColors.Add(FLinearColor(0.263f, 0.0f, 0.6f, 1.0f));    // Purple
+   LinearColors.Add(FLinearColor(0.043333, 0.390625, 0.0f, 1.0f));   
+   LinearColors.Add(FLinearColor(0.973958f, 0.036101f, 0.0f, 1.0f)); 
+   LinearColors.Add(FLinearColor(0.263f, 0.0f, 0.6f, 1.0f));    
    
    ObjectInfo = new Protocol::PositionInfo();
    DestInfo = new Protocol::PositionInfo();
    bIsFrist = false;
-
 }
 
 ASPObject::~ASPObject()
@@ -54,25 +53,20 @@ void ASPObject::BeginPlay()
    ObjectLocation = GetActorLocation();
    //ObjectInfo->set_object_id(20);
 
-   {// 
+   {
       ObjectInfo->set_x(ObjectLocation.X);
       ObjectInfo->set_y(ObjectLocation.Y);
       ObjectInfo->set_z(ObjectLocation.Z);
       ObjectInfo->set_is_aiming(false);
       ObjectInfo->set_is_jumping(false);
       ObjectInfo->set_is_holding(false);
-
       DestInfo->set_x(ObjectLocation.X);
       DestInfo->set_y(ObjectLocation.Y);
       DestInfo->set_z(ObjectLocation.Z);
    }
-
-   //CreatDynamicMaterialInstance
-   int32 ElementIndex = 0;
-   // ObjectDynamic = ObjectMesh->CreateDynamicMaterialInstance(ElementIndex, nullptr, FName(TEXT("None")));
-   // ChaosDynamic = UMaterialInstanceDynamic::Create(GeometryCollection->Materials[ElementIndex], nullptr, NAME_None); //다이나믹으로 생성
-   // GeometryCollection;
-   //CreateDynamicMaterialInstance(ElementIndex, nullptr, FName(TEXT("None")));
+   OriginMaterial = ObjectMesh->GetMaterial(ElementIndex); // mesh origin
+   ObjectDynamic = ObjectMesh->CreateDynamicMaterialInstance(ElementIndex, nullptr, FName(TEXT("None")));
+   ChaosDynamic = UMaterialInstanceDynamic::Create(OriginMaterial, nullptr, NAME_None);
 }
 
 void ASPObject::OnExplosionHit()
@@ -89,6 +83,11 @@ void ASPObject::OnExplosionHit()
          Geometry->SetupAttachment(RootComponent);
          Geometry->SetRestCollection(GeometryCollection);
          Geometry->SetCollisionProfileName(TEXT("DestructionCollision"));
+         Geometry->SetMaterial(ElementIndex, ChaosDynamic);
+         if(MyColorType!=ColorType::None)
+         {
+            ChaosDynamic->SetVectorParameterValue(FName(TEXT("Base Color Tint")),LinearColors[static_cast<uint8>(MyColorType)]);
+         }
          Geometry->RegisterComponent();
          Geometry->AddImpulse(FVector(0.0f, 0.0f, 125.f));
          FTimerHandle ChangeCollisionProfileTimer;
@@ -143,11 +142,10 @@ void ASPObject::Tick(float DeltaTime)
       ObjectInfo->set_y(ObjectLocation.Y);
       ObjectInfo->set_z(ObjectLocation.Z);
       ObjectInfo->set_yaw(GetActorRotation().Yaw);
-
    }
 
    MovePacketSendTimer -= DeltaTime;
-   if (!Equal && MovePacketSendTimer <= 0&& bIsFrist == false)   
+   if (!Equal && MovePacketSendTimer <= 0 && bIsFrist == false)   
    {
       Protocol::C_O_MOVE MovePkt;
       {
@@ -157,8 +155,8 @@ void ASPObject::Tick(float DeltaTime)
 
       SEND_PACKET(MovePkt);
 
-      // GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("%lld %f %f %f"),
-      //    ObjectInfo->object_id(), ObjectInfo->x(), ObjectInfo->y(), ObjectInfo->z()));
+      GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("%lld %f %f %f"),
+         ObjectInfo->object_id(), ObjectInfo->x(), ObjectInfo->y(), ObjectInfo->z()));
    }
 
    if (bIsFrist == true)
@@ -194,6 +192,8 @@ void ASPObject::Tick(float DeltaTime)
 
    }
 }
+// Called every frame
+
 void ASPObject::OnChangeColorGreen()
 {
    if(ObjectDynamic)
@@ -203,6 +203,23 @@ void ASPObject::OnChangeColorGreen()
    }
 }
 
+void ASPObject::OnChangeColorOrange()
+{
+   if(ObjectDynamic)
+   {
+      MyColorType=ColorType::Orange;
+      ObjectDynamic->SetVectorParameterValue(FName(TEXT("Base Color Tint")),LinearColors[static_cast<uint8>(MyColorType)]);
+   }
+}
+
+void ASPObject::OnChangeColorPurple()
+{
+   if(ObjectDynamic)
+   {
+      MyColorType=ColorType::Purple;
+      ObjectDynamic->SetVectorParameterValue(FName(TEXT("Base Color Tint")),LinearColors[static_cast<uint8>(MyColorType)]);
+   }
+}
 
 
 void ASPObject::SetPostionInfo(const Protocol::PositionInfo& Info)
@@ -224,7 +241,7 @@ void ASPObject::SetPostionInfo(const Protocol::PositionInfo& Info)
 
 }
 
-void ASPObject::SetDestInfo(const Protocol::PositionInfo& Info)
+void ASPObject::SetDestInfo(const Protocol::ThingInfo& Info)
 {
    if (ObjectInfo->object_id() != 0)
    {

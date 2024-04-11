@@ -37,15 +37,17 @@ protected:
 	virtual void BeginPlay() override;
 
 protected: //ISPDamageInterface
-	virtual void OnExplosionHit();
-	virtual void OnChangeColorGreen();
+	virtual void OnExplosionHit() override;
+	virtual void OnChangeColorGreen() override;
+	virtual void OnChangeColorOrange() override;
+	virtual void OnChangeColorPurple() override;
 
 
 	//TObjectPtr<class UGeometryCollection> GeometryCollection ;
 
 public:
-	class Protocol::PositionInfo* ObjectInfo; // 현재 위치
-	class Protocol::PositionInfo* DestInfo;	// 가려는 위치
+	class Protocol::ThingInfo* ObjectInfo; // 현재 위치
+	class Protocol::ThingInfo* DestInfo;	// 가려는 위치
 
 public:	
 	// Called every frame
@@ -56,9 +58,10 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	bool bHasBeenCalled;
 	bool bIsFrist;
+	bool bIsMove;
 
-	void SetPostionInfo(const Protocol::PositionInfo& Info);
-	void SetDestInfo(const Protocol::PositionInfo& Info);
+	void SetPostionInfo(const Protocol::ThingInfo& Info);
+	void SetDestInfo(const Protocol::ThingInfo& Info);
 	void SetBurst(const bool burst);
 
 protected:
@@ -78,7 +81,8 @@ protected:// chaos distruction
 protected://DynamicMaterial
 	UPROPERTY()
 	TObjectPtr<class UMaterialInstanceDynamic> ObjectDynamic ;
-
+	UPROPERTY()
+	TObjectPtr<class UMaterialInterface> OriginMaterial ;
 	UPROPERTY()
 	TObjectPtr<class UMaterialInstanceDynamic> ChaosDynamic ;
 	
@@ -88,6 +92,7 @@ protected://DynamicMaterial
 	UPROPERTY()
 	TArray<FLinearColor> LinearColors;
 
+	int32 ElementIndex = 0;
 	// UPROPERTY()
 	// FLinearColor GreenLinearColor{0.03f,1.0f,0.181f,1.0f};
 	// UPROPERTY()

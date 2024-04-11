@@ -72,10 +72,12 @@ protected:
 	void ThrowPotion(const FInputActionValue& Value);
 
 	void Jumping(const FInputActionValue& Value);
-	void StopJumping(const FInputActionValue& Value);
+	void MyStopJumping(const FInputActionValue& Value);
 
 	void BlackPotionSpawn(const FInputActionValue& Value);
 	void GreenPotionSpawn(const FInputActionValue& Value);
+	void OrangePotionSpawn(const FInputActionValue& Value);
+	void PurplePotionSpawn(const FInputActionValue& Value);
 
 	ECharacterControlType CurrentCharacterControlType;
 
@@ -96,13 +98,13 @@ protected:
 
 	//Camera
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, Meta = (AllowPrivateAccess = "ture"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, Meta = (AllowPrivateAccess = "ture"))
 	TObjectPtr<class USpringArmComponent> SpringArm;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, Meta = (AllowPrivateAccess = "ture"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Camera, Meta = (AllowPrivateAccess = "ture"))
 	TObjectPtr<class USpringArmComponent> CameraBoom;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, Meta = (AllowPrivateAccess = "ture"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Camera, Meta = (AllowPrivateAccess = "ture"))
 	TObjectPtr<class UCameraComponent> FollowCamera;
 
 
@@ -137,7 +139,13 @@ protected:
 	TObjectPtr<class UInputAction> BlackFour; 
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UInputAction> GreenOne; 
+	TObjectPtr<class UInputAction> GreenOne;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> OrangeTwo;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> PurpleThree; 
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> ThrowCtrl;

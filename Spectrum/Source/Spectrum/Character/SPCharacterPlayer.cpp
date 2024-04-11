@@ -24,6 +24,9 @@
 #include "Components/WidgetComponent.h"
 #include "Components/SceneComponent.h"
 #include "Components/DecalComponent.h"
+#include "Components/DynamicMeshComponent.h"
+#include "Potion/SPOrangePotion.h"
+#include "Potion/SPPurplePotion.h"
 //#include "UI/SPHUDWidget.h"
 
 ASPCharacterPlayer::ASPCharacterPlayer()
@@ -121,13 +124,24 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 	{
 		GreenOne = GreenOneRef.Object;
 	}
-
+	static ConstructorHelpers::FObjectFinder<UInputAction> OrangeTwoRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_OrangePotionSpawn.IA_SP_OrangePotionSpawn'"));
+	if (nullptr != OrangeTwoRef.Object)
+	{
+		OrangeTwo = OrangeTwoRef.Object;
+	}
+	
+	static ConstructorHelpers::FObjectFinder<UInputAction> PurpleThreeRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_PurplePotionSpawn.IA_SP_PurplePotionSpawn'"));
+	if (nullptr != PurpleThreeRef.Object)
+	{
+		PurpleThree = PurpleThreeRef.Object;
+	}
 
 	/*static ConstructorHelpers::FObjectFinder<UAnimMontage> ThrowMontageRef(TEXT("/Script/Engine.AnimMontage'/Game/Spectrum/Animation/AniMeta/Man/AM_SP_Throw.AM_SP_Throw'"));
 	if (ThrowMontageRef.Object)
 	{
 		ThrowMontage = ThrowMontageRef.Object;
 	}*/
+
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticMeshforSplineRef(TEXT("/Script/Engine.StaticMesh'/Game/Spectrum/SM_MERGED_StaticMeshActor_90.SM_MERGED_StaticMeshActor_90'"));
 	if (StaticMeshforSplineRef.Object)
@@ -193,7 +207,7 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 	bIsTurnReady = false;
 	bIsTurnLeft = false;
 	bIsTurnReady = false;
-	HitDistance = 1200.f;
+	HitDistance = 1800.f;
 }
 
 void ASPCharacterPlayer::BeginPlay()
@@ -289,7 +303,7 @@ void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Player
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
 	{
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::Jumping);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ASPCharacterPlayer::StopJumping);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ASPCharacterPlayer::MyStopJumping);
 
 		EnhancedInputComponent->BindAction(ChangeControlAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::ChangeCharacterControl);
 
@@ -316,7 +330,8 @@ void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Player
 		EnhancedInputComponent->BindAction(ThrowCtrl, ETriggerEvent::Completed, this, &ASPCharacterPlayer::ThrowPotion);
 
 		EnhancedInputComponent->BindAction(GreenOne, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::GreenPotionSpawn);
-
+		EnhancedInputComponent->BindAction(OrangeTwo, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::OrangePotionSpawn);
+		EnhancedInputComponent->BindAction(PurpleThree, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::PurplePotionSpawn);
 	}
 }
 
@@ -511,7 +526,6 @@ void ASPCharacterPlayer::StopAiming(const FInputActionValue& Value)
 	FollowCamera->AttachToComponent(CameraBoom, AttachmentRules, NAME_None);
 	CameraMove();
 }
-
 void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 {
 	if (false == bIsHolding)
@@ -542,11 +556,24 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 			float DrawTime = 5.0f;
 
 			bool HitSuccess = GetWorld()->LineTraceSingleByChannel(outHitResult, SphereLocationStart, SphereLocationEnd, ECC_GameTraceChannel1, Params);
+			// UActorComponent* DynamicMeshComponent = outHitResult.GetActor()->GetComponentByClass(UDynamicMeshComponent::StaticClass());
+			// if(HitSuccess && DynamicMeshComponent)
+			// {
+			// 	Cast<UDynamicMeshComponent>(DynamicMeshComponent)->SetComplexAsSimpleCollisionEnabled(false,true);
+			// }
 			if (HitSuccess && outHitResult.Component->Mobility == EComponentMobility::Movable)
 			{
+				
 				outHitResult.Component->SetSimulatePhysics(true);
 				HitComponent = outHitResult.GetComponent();
 
+
+				// AActor* HitActor = outHitResult.GetActor();
+				// if (HitActor)
+				// {
+				// 	UStaticMeshComponent* MeshComponent = HitActor->FindComponentByClass<UStaticMeshComponent>();
+				// 	// MeshComponent->SetCollisionEnabled();
+				// }
 
 				//여기서 주변 물체의 SetSimulatePhysics(true);
 				FVector SphereTracePoint = HitComponent->K2_GetComponentLocation();
@@ -727,7 +754,7 @@ void ASPCharacterPlayer::Jumping(const FInputActionValue& Value)
 	SetJumping();
 }
 
-void ASPCharacterPlayer::StopJumping(const FInputActionValue& Value)
+void ASPCharacterPlayer::MyStopJumping(const FInputActionValue& Value)
 {
 	bPressedJump = false;
 	ResetJumpState();
@@ -777,7 +804,6 @@ void ASPCharacterPlayer::GreenPotionSpawn(const FInputActionValue& Value)
 {
 	if (false == bIsSpawn)
 	{
-		FVector ItemLocation = GetMesh()->GetSocketLocation("Item_Socket");
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
@@ -785,6 +811,56 @@ void ASPCharacterPlayer::GreenPotionSpawn(const FInputActionValue& Value)
 		//Potion->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 		//Potion->SetupAttachment(RootComponent);
 		//Potion->RegisterComponent();
+		bIsSpawn = true;
+		if (Potion)
+		{
+			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
+			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{ "Item_Socket" });
+		}
+	}
+	else
+	{
+		if (Potion)
+		{
+			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
+			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{ "Item_Socket" });
+		}
+	}
+}
+
+void ASPCharacterPlayer::OrangePotionSpawn(const FInputActionValue& Value)
+{
+	if (false == bIsSpawn)
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
+		Potion = GetWorld()->SpawnActor<ASPOrangePotion>(ASPOrangePotion::StaticClass(), GetMesh()->GetSocketLocation("Item_Socket"), FRotator{ 0.0f, 0.0f, 0.0f }, SpawnParams);
+		bIsSpawn = true;
+		if (Potion)
+		{
+			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
+			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{ "Item_Socket" });
+		}
+	}
+	else
+	{
+		if (Potion)
+		{
+			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
+			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{ "Item_Socket" });
+		}
+	}
+}
+
+void ASPCharacterPlayer::PurplePotionSpawn(const FInputActionValue& Value)
+{
+	if (false == bIsSpawn)
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
+		Potion = GetWorld()->SpawnActor<ASPPurplePotion>(ASPPurplePotion::StaticClass(), GetMesh()->GetSocketLocation("Item_Socket"), FRotator{ 0.0f, 0.0f, 0.0f }, SpawnParams);
 		bIsSpawn = true;
 		if (Potion)
 		{
