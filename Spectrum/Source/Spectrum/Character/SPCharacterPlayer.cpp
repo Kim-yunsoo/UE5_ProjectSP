@@ -54,7 +54,7 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 	GravityArrow = CreateDefaultSubobject<UArrowComponent>(TEXT("GravityArrow"));
 	if (GravityArrow)
 	{
-		GravityArrow->SetupAttachment(GetMesh());
+		GravityArrow->SetupAttachment(Staff);
 		GravityArrow->SetRelativeRotation(FRotator(0, 0, 0));
 	}
 
