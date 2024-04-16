@@ -49,6 +49,7 @@ void ASPObject::BeginPlay()
    //UE_LOG(LogTemp,Log,TEXT("MyActor's name is : %s, and its mesh is: %s"),*GetName(),*(ObjectMesh->GetStaticMesh()->GetName()));
    //UE_LOG(LogTemp,Log,TEXT("It was called from C++"));
    //GEngine->AddOnScreenDebugMessage(1,10,FColor::Blue,TEXT("It was called from C++"));
+   
    RootComponent->SetMobility(EComponentMobility::Movable);
    ObjectLocation = GetActorLocation();
    //ObjectInfo->set_object_id(20);
