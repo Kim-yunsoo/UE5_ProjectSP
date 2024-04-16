@@ -17,14 +17,14 @@
 void USpectrumGameInstance::ConnectToGameServer()
 {
 	// 家南 积己
-	Socket = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateSocket(TEXT("Stream"), TEXT("Client Socket"));
+	//Socket = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateSocket(TEXT("Stream"), TEXT("Client Socket"));
 
-	FIPv4Address Ip;
-	FIPv4Address::Parse(IpAddress, Ip);
+	//FIPv4Address Ip;
+	//FIPv4Address::Parse(IpAddress, Ip);
 
-	TSharedRef<FInternetAddr> InternetAddr = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateInternetAddr();
-	InternetAddr->SetIp(Ip.Value);
-	InternetAddr->SetPort(Port);
+	//TSharedRef<FInternetAddr> InternetAddr = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateInternetAddr();
+	//InternetAddr->SetIp(Ip.Value);
+	//InternetAddr->SetPort(Port);
 
 	//// 辑滚俊 立加(匙飘况农 目池记)
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("connect to server")));
