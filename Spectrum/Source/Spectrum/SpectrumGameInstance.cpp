@@ -26,33 +26,33 @@ void USpectrumGameInstance::ConnectToGameServer()
 	InternetAddr->SetIp(Ip.Value);
 	InternetAddr->SetPort(Port);
 
-	// 서버에 접속(네트워크 커넥션)
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("connect to server")));
+	//// 서버에 접속(네트워크 커넥션)
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("connect to server")));
 
-	bool bConnected = Socket->Connect(*InternetAddr);
+	//bool bConnected = Socket->Connect(*InternetAddr);
 
-	// 접속 성공 여부
-	if (bConnected)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("connection Success")));
+	//// 접속 성공 여부
+	//if (bConnected)
+	//{
+	//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("connection Success")));
 
-		// Session 만들기(워커 스레드 생성)
-		GameServerSession = MakeShared<PacketSession>(Socket);
-		GameServerSession->Run();		// 이제 멀티스레드로 돌아감
+	//	// Session 만들기(워커 스레드 생성)
+	//	GameServerSession = MakeShared<PacketSession>(Socket);
+	//	GameServerSession->Run();		// 이제 멀티스레드로 돌아감
 
-		// 로비에서 캐릭터 선택창 띄우기
-		{ // 로그인	패킷 보내기
-			Protocol::C_LOGIN Pkt;
-			SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(Pkt);
-			SendPacket(SendBuffer);
-			
-		}
+	//	// 로비에서 캐릭터 선택창 띄우기
+	//	{ // 로그인	패킷 보내기
+	//		Protocol::C_LOGIN Pkt;
+	//		SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(Pkt);
+	//		SendPacket(SendBuffer);
+	//		
+	//	}
 
-	}
-	else
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("connection failed")));
-	}
+	//}
+	//else
+	//{
+	//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("connection failed")));
+	//}
 
 
 }
