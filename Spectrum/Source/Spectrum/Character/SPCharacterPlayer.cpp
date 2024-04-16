@@ -153,76 +153,90 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 		GravityArrow->SetRelativeRotation(FRotator(0, 0, 0));
 	}
 
-	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionJumpRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_Jump.IA_SP_Jump'"));
+	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionJumpRef(
+		TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_Jump.IA_SP_Jump'"));
 	if (nullptr != InputActionJumpRef.Object)
 	{
 		JumpAction = InputActionJumpRef.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UInputAction> InputChangeActionControlRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_ChangeControl.IA_SP_ChangeControl'"));
+	static ConstructorHelpers::FObjectFinder<UInputAction> InputChangeActionControlRef(
+		TEXT(
+			"/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_ChangeControl.IA_SP_ChangeControl'"));
 	if (nullptr != InputChangeActionControlRef.Object)
 	{
 		ChangeControlAction = InputChangeActionControlRef.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionShoulderMoveRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_ShoulderMove.IA_SP_ShoulderMove'"));
+	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionShoulderMoveRef(
+		TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_ShoulderMove.IA_SP_ShoulderMove'"));
 	if (nullptr != InputActionShoulderMoveRef.Object)
 	{
 		ShoulderMoveAction = InputActionShoulderMoveRef.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionShoulderLookRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_ShoulderLook.IA_SP_ShoulderLook'"));
+	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionShoulderLookRef(
+		TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_ShoulderLook.IA_SP_ShoulderLook'"));
 	if (nullptr != InputActionShoulderLookRef.Object)
 	{
 		ShoulderLookAction = InputActionShoulderLookRef.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionQuaterMoveRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_QuaterMove.IA_SP_QuaterMove'"));
+	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionQuaterMoveRef(
+		TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_QuaterMove.IA_SP_QuaterMove'"));
 	if (nullptr != InputActionQuaterMoveRef.Object)
 	{
 		QuaterMoveAction = InputActionQuaterMoveRef.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UInputAction> SpeedUpActionRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_SpeedUp.IA_SP_SpeedUp'"));
+	static ConstructorHelpers::FObjectFinder<UInputAction> SpeedUpActionRef(
+		TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_SpeedUp.IA_SP_SpeedUp'"));
 	if (nullptr != SpeedUpActionRef.Object)
 	{
 		SpeedUpAction = SpeedUpActionRef.Object;
 	}
-	static ConstructorHelpers::FObjectFinder<UInputAction> AimActionRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_MouseRight.IA_SP_MouseRight'"));
+	static ConstructorHelpers::FObjectFinder<UInputAction> AimActionRef(
+		TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_MouseRight.IA_SP_MouseRight'"));
 	if (nullptr != AimActionRef.Object)
 	{
 		MouseRight = AimActionRef.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UInputAction> MouseLeftRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_MouseLeft.IA_SP_MouseLeft'"));
+	static ConstructorHelpers::FObjectFinder<UInputAction> MouseLeftRef(
+		TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_MouseLeft.IA_SP_MouseLeft'"));
 	if (nullptr != MouseLeftRef.Object)
 	{
 		MouseLeft = MouseLeftRef.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UInputAction> BlackFourRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_BlackPotionSpawn.IA_SP_BlackPotionSpawn'"));
+	static ConstructorHelpers::FObjectFinder<UInputAction> BlackFourRef(TEXT(
+		"/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_BlackPotionSpawn.IA_SP_BlackPotionSpawn'"));
 	if (nullptr != BlackFourRef.Object)
 	{
 		BlackFour = BlackFourRef.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UInputAction> ThrowCtrlRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_Throw.IA_SP_Throw'"));
+	static ConstructorHelpers::FObjectFinder<UInputAction> ThrowCtrlRef(
+		TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_Throw.IA_SP_Throw'"));
 	if (nullptr != ThrowCtrlRef.Object)
 	{
 		ThrowCtrl = ThrowCtrlRef.Object;
 	}
-	static ConstructorHelpers::FObjectFinder<UInputAction> GreenOneRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_GreenPotionSpawn.IA_SP_GreenPotionSpawn'"));
+	static ConstructorHelpers::FObjectFinder<UInputAction> GreenOneRef(TEXT(
+		"/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_GreenPotionSpawn.IA_SP_GreenPotionSpawn'"));
 	if (nullptr != GreenOneRef.Object)
 	{
 		GreenOne = GreenOneRef.Object;
 	}
-	static ConstructorHelpers::FObjectFinder<UInputAction> OrangeTwoRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_OrangePotionSpawn.IA_SP_OrangePotionSpawn'"));
+	static ConstructorHelpers::FObjectFinder<UInputAction> OrangeTwoRef(TEXT(
+		"/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_OrangePotionSpawn.IA_SP_OrangePotionSpawn'"));
 	if (nullptr != OrangeTwoRef.Object)
 	{
 		OrangeTwo = OrangeTwoRef.Object;
 	}
-	
-	static ConstructorHelpers::FObjectFinder<UInputAction> PurpleThreeRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_PurplePotionSpawn.IA_SP_PurplePotionSpawn'"));
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> PurpleThreeRef(TEXT(
+		"/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_PurplePotionSpawn.IA_SP_PurplePotionSpawn'"));
 	if (nullptr != PurpleThreeRef.Object)
 	{
 		PurpleThree = PurpleThreeRef.Object;
@@ -235,12 +249,12 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 	}*/
 
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticMeshforSplineRef(TEXT("/Script/Engine.StaticMesh'/Game/Spectrum/SM_MERGED_StaticMeshActor_90.SM_MERGED_StaticMeshActor_90'"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticMeshforSplineRef(
+		TEXT("/Script/Engine.StaticMesh'/Game/Spectrum/SM_MERGED_StaticMeshActor_90.SM_MERGED_StaticMeshActor_90'"));
 	if (StaticMeshforSplineRef.Object)
 	{
 		StaticMeshforSpline = StaticMeshforSplineRef.Object;
 	}
-
 
 
 	DecalSphere = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DecalSphere"));
@@ -250,7 +264,8 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 		DecalSphere->SetWorldScale3D(FVector(3.0, 3.0, 3.0));
 		DecalSphere->SetCollisionProfileName(TEXT("NoCollision"));
 	}
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> DecalSphereRef(TEXT("/Script/Engine.StaticMesh'/Engine/BasicShapes/Sphere.Sphere'"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> DecalSphereRef(
+		TEXT("/Script/Engine.StaticMesh'/Engine/BasicShapes/Sphere.Sphere'"));
 	if (DecalSphereRef.Succeeded())
 	{
 		DecalSphere->SetStaticMesh(DecalSphereRef.Object);
@@ -270,14 +285,16 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 	//	Decal->SetDecal(DecalRef.Object);
 	//}
 
-	static ConstructorHelpers::FObjectFinder<UMaterialInterface> MeshFinder1(TEXT("/Script/Engine.Material'/Game/Spectrum/Assets/Decal/M_Decal_Sphere_Black.M_Decal_Sphere_Black'"));
+	static ConstructorHelpers::FObjectFinder<UMaterialInterface> MeshFinder1(
+		TEXT("/Script/Engine.Material'/Game/Spectrum/Assets/Decal/M_Decal_Sphere_Black.M_Decal_Sphere_Black'"));
 	if (MeshFinder1.Succeeded())
 	{
 		DecalSphere->SetMaterial(0, MeshFinder1.Object);
 		// 필요에 따라 추가적인 MeshFinder 사용하여 다른 메시 로드 및 추가
 	}
 
-	static ConstructorHelpers::FObjectFinder<UMaterialInterface> MeshFinder2(TEXT("/Script/Engine.Material'/Game/Spectrum/Assets/Decal/M_Decal_Black.M_Decal_Black'"));
+	static ConstructorHelpers::FObjectFinder<UMaterialInterface> MeshFinder2(
+		TEXT("/Script/Engine.Material'/Game/Spectrum/Assets/Decal/M_Decal_Black.M_Decal_Black'"));
 	if (MeshFinder2.Succeeded())
 	{
 		MyDecal->SetMaterial(0, MeshFinder2.Object);
@@ -286,7 +303,6 @@ ASPCharacterPlayer::ASPCharacterPlayer()
 
 	DecalSphere->SetVisibility(false);
 	MyDecal->SetVisibility(false);
-
 
 
 	CurrentCharacterControlType = ECharacterControlType::Shoulder;
@@ -306,7 +322,14 @@ void ASPCharacterPlayer::BeginPlay()
 {
 	Super::BeginPlay();
 	SetCharacterControl(CurrentCharacterControlType);
-	GetMesh()->GetAnimInstance()->OnPlayMontageNotifyBegin.AddDynamic(this, &ASPCharacterPlayer::HandleMontageAnimNotify);
+	GetMesh()->GetAnimInstance()->OnPlayMontageNotifyBegin.AddDynamic(
+		this, &ASPCharacterPlayer::HandleMontageAnimNotify);
+
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	if (PlayerController)
+	{
+		EnableInput(PlayerController);
+	}
 }
 
 void ASPCharacterPlayer::Tick(float DeltaTime)
@@ -322,12 +345,10 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 		LastDesiredInput = DesiredInput;
 	}
 
-	
 
 	if (bIsHolding)
 	{
 		PhysicsHandleComponent->SetTargetLocation(GravityArrow->K2_GetComponentLocation());
-
 	}
 }
 
@@ -338,20 +359,28 @@ void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Player
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
 	{
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::Jumping);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ASPCharacterPlayer::MyStopJumping);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this,
+		                                   &ASPCharacterPlayer::MyStopJumping);
 
-		EnhancedInputComponent->BindAction(ChangeControlAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::ChangeCharacterControl);
+		EnhancedInputComponent->BindAction(ChangeControlAction, ETriggerEvent::Triggered, this,
+		                                   &ASPCharacterPlayer::ChangeCharacterControl);
 
-		EnhancedInputComponent->BindAction(ShoulderMoveAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::ShoulderMove);
+		EnhancedInputComponent->BindAction(ShoulderMoveAction, ETriggerEvent::Triggered, this,
+		                                   &ASPCharacterPlayer::ShoulderMove);
 
-		EnhancedInputComponent->BindAction(ShoulderLookAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::ShoulderLook);
-		EnhancedInputComponent->BindAction(ShoulderLookAction, ETriggerEvent::None, this, &ASPCharacterPlayer::StopShoulderLook);
+		EnhancedInputComponent->BindAction(ShoulderLookAction, ETriggerEvent::Triggered, this,
+		                                   &ASPCharacterPlayer::ShoulderLook);
+		EnhancedInputComponent->BindAction(ShoulderLookAction, ETriggerEvent::None, this,
+		                                   &ASPCharacterPlayer::StopShoulderLook);
 
-		EnhancedInputComponent->BindAction(QuaterMoveAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::QuaterMove);
-		EnhancedInputComponent->BindAction(QuaterMoveAction, ETriggerEvent::Completed, this, &ASPCharacterPlayer::QuaterMove);
+		EnhancedInputComponent->BindAction(QuaterMoveAction, ETriggerEvent::Triggered, this,
+		                                   &ASPCharacterPlayer::QuaterMove);
+		EnhancedInputComponent->BindAction(QuaterMoveAction, ETriggerEvent::Completed, this,
+		                                   &ASPCharacterPlayer::QuaterMove);
 
 		EnhancedInputComponent->BindAction(SpeedUpAction, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::SpeedUp);
-		EnhancedInputComponent->BindAction(SpeedUpAction, ETriggerEvent::Completed, this, &ASPCharacterPlayer::StopSpeedUp);
+		EnhancedInputComponent->BindAction(SpeedUpAction, ETriggerEvent::Completed, this,
+		                                   &ASPCharacterPlayer::StopSpeedUp);
 
 		EnhancedInputComponent->BindAction(MouseLeft, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::Graping);
 		EnhancedInputComponent->BindAction(MouseLeft, ETriggerEvent::Completed, this, &ASPCharacterPlayer::StopGraping);
@@ -359,14 +388,18 @@ void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Player
 		EnhancedInputComponent->BindAction(MouseRight, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::Aiming);
 		EnhancedInputComponent->BindAction(MouseRight, ETriggerEvent::Completed, this, &ASPCharacterPlayer::StopAiming);
 
-		EnhancedInputComponent->BindAction(BlackFour, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::BlackPotionSpawn);
+		EnhancedInputComponent->BindAction(BlackFour, ETriggerEvent::Triggered, this,
+		                                   &ASPCharacterPlayer::BlackPotionSpawn);
 
 		EnhancedInputComponent->BindAction(ThrowCtrl, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::AimPotion);
 		EnhancedInputComponent->BindAction(ThrowCtrl, ETriggerEvent::Completed, this, &ASPCharacterPlayer::ThrowPotion);
 
-		EnhancedInputComponent->BindAction(GreenOne, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::GreenPotionSpawn);
-		EnhancedInputComponent->BindAction(OrangeTwo, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::OrangePotionSpawn);
-		EnhancedInputComponent->BindAction(PurpleThree, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::PurplePotionSpawn);
+		EnhancedInputComponent->BindAction(GreenOne, ETriggerEvent::Triggered, this,
+		                                   &ASPCharacterPlayer::GreenPotionSpawn);
+		EnhancedInputComponent->BindAction(OrangeTwo, ETriggerEvent::Triggered, this,
+		                                   &ASPCharacterPlayer::OrangePotionSpawn);
+		EnhancedInputComponent->BindAction(PurpleThree, ETriggerEvent::Triggered, this,
+		                                   &ASPCharacterPlayer::PurplePotionSpawn);
 	}
 }
 
@@ -392,10 +425,11 @@ void ASPCharacterPlayer::SetCharacterControlData(const USPCharacterControlData* 
 void ASPCharacterPlayer::CameraMove()
 {
 	FLatentActionInfo LatentInfo;
-	FVector TargetRelativeLocation{ 0,0,0 };
-	FRotator TargetRelativeRotation{ 0,0,0 };
+	FVector TargetRelativeLocation{0, 0, 0};
+	FRotator TargetRelativeRotation{0, 0, 0};
 	LatentInfo.CallbackTarget = this;
-	UKismetSystemLibrary::MoveComponentTo(FollowCamera, TargetRelativeLocation, TargetRelativeRotation, true, true, 0.5, true, EMoveComponentAction::Type::Move, LatentInfo);
+	UKismetSystemLibrary::MoveComponentTo(FollowCamera, TargetRelativeLocation, TargetRelativeRotation, true, true, 0.5,
+	                                      true, EMoveComponentAction::Type::Move, LatentInfo);
 }
 
 void ASPCharacterPlayer::ChangeCharacterControl()
@@ -409,15 +443,22 @@ void ASPCharacterPlayer::ChangeCharacterControl()
 		SetCharacterControl(ECharacterControlType::Quater);
 	}
 }
+
 void ASPCharacterPlayer::SetCharacterControl(ECharacterControlType NewCharacterControlType)
 {
+	if (!IsLocallyControlled())
+	{
+		return;
+	}
+	
 	USPCharacterControlData* NewCharacterControl = CharacterControlManager[NewCharacterControlType];
 	check(NewCharacterControl);
 
 	SetCharacterControlData(NewCharacterControl);
 
 	APlayerController* PlayerController = CastChecked<APlayerController>(GetController());
-	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(
+		PlayerController->GetLocalPlayer()))
 	{
 		Subsystem->ClearAllMappings();
 		UInputMappingContext* NewMappingContext = NewCharacterControl->InputMappingContext;
@@ -436,8 +477,6 @@ void ASPCharacterPlayer::ShoulderMove(const FInputActionValue& Value)
 
 	if (Controller != nullptr)
 	{
-		
-
 		const FRotator Rotation = Controller->GetControlRotation();
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
 
@@ -467,7 +506,6 @@ void ASPCharacterPlayer::ShoulderMove(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::ShoulderLook(const FInputActionValue& Value)
 {
-
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
 	if (Controller != nullptr)
 	{
@@ -482,21 +520,17 @@ void ASPCharacterPlayer::ShoulderLook(const FInputActionValue& Value)
 		}
 		else
 		{
-				bIsTurnRight = false;
-				bIsTurnLeft = true;
+			bIsTurnRight = false;
+			bIsTurnLeft = true;
 		}
 		PreControlYawRotation = GetControlRotation().Yaw;
 	}
-
-	
 }
 
 void ASPCharacterPlayer::StopShoulderLook(const FInputActionValue& Value)
 {
 	bIsTurnRight = false;
 	bIsTurnLeft = false;
-
-	
 }
 
 void ASPCharacterPlayer::SpeedUp(const FInputActionValue& Value)
@@ -514,11 +548,13 @@ void ASPCharacterPlayer::StopSpeedUp(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::Aiming(const FInputActionValue& Value)
 {
-	if (false == bIsHolding) {
+	if (false == bIsHolding)
+	{
 		bIsAiming = true;
 		GetCharacterMovement()->bOrientRotationToMovement = false;
 		GetCharacterMovement()->bUseControllerDesiredRotation = true;
-		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, true);
+		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld,
+		                                          EAttachmentRule::KeepWorld, true);
 		FollowCamera->AttachToComponent(SpringArm, AttachmentRules, NAME_None);
 		CameraMove();
 	}
@@ -526,7 +562,8 @@ void ASPCharacterPlayer::Aiming(const FInputActionValue& Value)
 	{
 		GetCharacterMovement()->bOrientRotationToMovement = true;
 		GetCharacterMovement()->bUseControllerDesiredRotation = false;
-		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, true);
+		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld,
+		                                          EAttachmentRule::KeepWorld, true);
 		FollowCamera->AttachToComponent(CameraBoom, AttachmentRules, NAME_None);
 		CameraMove();
 	}
@@ -534,16 +571,18 @@ void ASPCharacterPlayer::Aiming(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::StopAiming(const FInputActionValue& Value)
 {
-
 	bIsAiming = false;
-	
+
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->bUseControllerDesiredRotation = false;
-	FollowCamera->K2_AttachToComponent(CameraBoom, NAME_None, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, true);
-	FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, true);
+	FollowCamera->K2_AttachToComponent(CameraBoom, NAME_None, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld,
+	                                   EAttachmentRule::KeepWorld, true);
+	FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld,
+	                                          EAttachmentRule::KeepWorld, true);
 	FollowCamera->AttachToComponent(CameraBoom, AttachmentRules, NAME_None);
 	CameraMove();
 }
+
 void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 {
 	GetCharacterMovement()->bOrientRotationToMovement = true;
@@ -561,21 +600,29 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 
 			FVector WorldLocation;
 			FVector WorldDirection;
-			bool TransSuccess = PlayerController->DeprojectScreenPositionToWorld(0.5, 0.5, WorldLocation, WorldDirection);
+			bool TransSuccess = PlayerController->DeprojectScreenPositionToWorld(
+				0.5, 0.5, WorldLocation, WorldDirection);
 
 			FVector SphereLocationEnd = ReseltFoward * 10000000 + SphereLocationStart;
 
 			TArray<TEnumAsByte<EObjectTypeQuery>> EmptyObjectTypes;
 			EDrawDebugTrace::Type drawDebugType = EDrawDebugTrace::ForDuration;
-			TArray<AActor*> actorsToIgnore;
+			TArray<AActor*> HitActorsToIgnore;
 			FLinearColor RedColor = FLinearColor(1.0f, 0.0f, 0.0f, 1.0f);
 			FLinearColor GreenColor = FLinearColor(0.0f, 1.0f, 0.0f, 1.0f);
 			FCollisionQueryParams Params;
-			Params.AddIgnoredActor(this);
+			//모든 캐릭터 타입은 무시하도록 하자,
+			UGameplayStatics::GetAllActorsOfClass(GetWorld(),ACharacter::StaticClass(),HitActorsToIgnore );
+			for(AActor* FoundActor:HitActorsToIgnore)
+			{
+				Params.AddIgnoredActor(FoundActor);
+			}
+			// Params.AddIgnoredActor(this);
 			Params.bTraceComplex = true;
 			float DrawTime = 5.0f;
 
-			bool HitSuccess = GetWorld()->LineTraceSingleByChannel(outHitResult, SphereLocationStart, SphereLocationEnd, ECC_GameTraceChannel1, Params);
+			bool HitSuccess = GetWorld()->LineTraceSingleByChannel(outHitResult, SphereLocationStart, SphereLocationEnd,
+			                                                       ECC_GameTraceChannel1, Params);
 			// UActorComponent* DynamicMeshComponent = outHitResult.GetActor()->GetComponentByClass(UDynamicMeshComponent::StaticClass());
 			// if(HitSuccess && DynamicMeshComponent)
 			// {
@@ -583,7 +630,6 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 			// }
 			if (HitSuccess && outHitResult.Component->Mobility == EComponentMobility::Movable)
 			{
-				
 				outHitResult.Component->SetSimulatePhysics(true);
 				HitComponent = outHitResult.GetComponent();
 
@@ -607,7 +653,9 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 				FLinearColor RedColor1(1.0f, 0.0f, 0.0f);
 				float DrawTime1 = 5.0f;
 
-				bool Success = UKismetSystemLibrary::SphereTraceMultiForObjects(GetWorld(), SphereTracePoint, SphereTracePoint, Radius, ObjectTypes, false, ActorsToIgnore, EDrawDebugTrace::ForDuration, OutHits, true, GreenColor1, RedColor1, DrawTime1);
+				bool Success = UKismetSystemLibrary::SphereTraceMultiForObjects(
+					GetWorld(), SphereTracePoint, SphereTracePoint, Radius, ObjectTypes, false, ActorsToIgnore,
+					EDrawDebugTrace::ForDuration, OutHits, true, GreenColor1, RedColor1, DrawTime1);
 
 				ActorPrimitiveArray.Empty();
 
@@ -629,7 +677,6 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 							if (HitPrimitive->Mobility == EComponentMobility::Movable)
 							{
 								HitPrimitive->SetSimulatePhysics(true);
-
 							}
 						}
 					}
@@ -643,8 +690,9 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 					);
 
 					bIsHolding = true;
-					
-					FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, true);
+
+					FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld,
+					                                          EAttachmentRule::KeepWorld, true);
 					FollowCamera->AttachToComponent(CameraBoom, AttachmentRules, NAME_None);
 					CameraMove();
 				}
@@ -681,7 +729,6 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 		bIsHolding = false;
 		if (HitComponent && HitComponent->IsSimulatingPhysics())
 		{
-		
 			PhysicsHandleComponent->ReleaseComponent();
 			HitComponent->AddImpulse(FollowCamera->GetForwardVector() * HitDistance, NAME_None, true);
 			HitComponent = nullptr;
@@ -691,7 +738,6 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::StopGraping(const FInputActionValue& Value)
 {
-
 	if (bIsHolding && HitComponent->IsSimulatingPhysics())
 	{
 		bIsHolding = false;
@@ -703,8 +749,6 @@ void ASPCharacterPlayer::StopGraping(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::AimPotion(const FInputActionValue& Value)
 {
-
-
 	if (bIsSpawn)
 	{
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
@@ -717,8 +761,6 @@ void ASPCharacterPlayer::AimPotion(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::ThrowPotion(const FInputActionValue& Value)
 {
-	
-
 	if (bIsThrowReady)
 	{
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
@@ -729,7 +771,7 @@ void ASPCharacterPlayer::ThrowPotion(const FInputActionValue& Value)
 			GetController()->GetControlRotation();
 			FVector ForwardVector = UKismetMathLibrary::GetForwardVector(GetController()->GetControlRotation());
 			float Mul = 1500.0f;
-			Potion->Throw((ForwardVector + FVector{ 0.0f,0.0f,0.4f }) * Mul);
+			Potion->Throw((ForwardVector + FVector{0.0f, 0.0f, 0.4f}) * Mul);
 		}
 
 		GetCharacterMovement()->bOrientRotationToMovement = true;
@@ -752,40 +794,40 @@ void ASPCharacterPlayer::Jumping(const FInputActionValue& Value)
 		bPressedJump = true;
 		JumpKeyHoldTime = 0.0f;
 	}
-
 }
 
 void ASPCharacterPlayer::MyStopJumping(const FInputActionValue& Value)
 {
 	bPressedJump = false;
 	ResetJumpState();
-
 }
 
 void ASPCharacterPlayer::BlackPotionSpawn(const FInputActionValue& Value)
 {
-	
-
 	if (false == bIsSpawn)
 	{
 		FVector ItemLocation = GetMesh()->GetSocketLocation("Item_Socket");
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
-		Potion = GetWorld()->SpawnActor<ASPBlackPotion>(ASPBlackPotion::StaticClass(), GetMesh()->GetSocketLocation("Item_Socket"), FRotator{ 0.0f, 0.0f, 0.0f }, SpawnParams);
+		Potion = GetWorld()->SpawnActor<ASPBlackPotion>(ASPBlackPotion::StaticClass(),
+		                                                GetMesh()->GetSocketLocation("Item_Socket"),
+		                                                FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
 		bIsSpawn = true;
 		if (Potion)
 		{
-			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
-			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{ "Item_Socket" });
+			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+			                                          EAttachmentRule::SnapToTarget, true);
+			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
 		}
 	}
-	else 
+	else
 	{
 		if (Potion)
 		{
-			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
-			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{ "Item_Socket" });
+			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+			                                          EAttachmentRule::SnapToTarget, true);
+			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
 		}
 	}
 }
@@ -797,23 +839,27 @@ void ASPCharacterPlayer::GreenPotionSpawn(const FInputActionValue& Value)
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
-		Potion = GetWorld()->SpawnActor<ASPGreenPotion>(ASPGreenPotion::StaticClass(), GetMesh()->GetSocketLocation("Item_Socket"), FRotator{ 0.0f, 0.0f, 0.0f }, SpawnParams);
+		Potion = GetWorld()->SpawnActor<ASPGreenPotion>(ASPGreenPotion::StaticClass(),
+		                                                GetMesh()->GetSocketLocation("Item_Socket"),
+		                                                FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
 		//Potion->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 		//Potion->SetupAttachment(RootComponent);
 		//Potion->RegisterComponent();
 		bIsSpawn = true;
 		if (Potion)
 		{
-			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
-			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{ "Item_Socket" });
+			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+			                                          EAttachmentRule::SnapToTarget, true);
+			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
 		}
 	}
 	else
 	{
 		if (Potion)
 		{
-			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
-			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{ "Item_Socket" });
+			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+			                                          EAttachmentRule::SnapToTarget, true);
+			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
 		}
 	}
 }
@@ -825,20 +871,24 @@ void ASPCharacterPlayer::OrangePotionSpawn(const FInputActionValue& Value)
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
-		Potion = GetWorld()->SpawnActor<ASPOrangePotion>(ASPOrangePotion::StaticClass(), GetMesh()->GetSocketLocation("Item_Socket"), FRotator{ 0.0f, 0.0f, 0.0f }, SpawnParams);
+		Potion = GetWorld()->SpawnActor<ASPOrangePotion>(ASPOrangePotion::StaticClass(),
+		                                                 GetMesh()->GetSocketLocation("Item_Socket"),
+		                                                 FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
 		bIsSpawn = true;
 		if (Potion)
 		{
-			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
-			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{ "Item_Socket" });
+			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+			                                          EAttachmentRule::SnapToTarget, true);
+			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
 		}
 	}
 	else
 	{
 		if (Potion)
 		{
-			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
-			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{ "Item_Socket" });
+			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+			                                          EAttachmentRule::SnapToTarget, true);
+			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
 		}
 	}
 }
@@ -850,25 +900,30 @@ void ASPCharacterPlayer::PurplePotionSpawn(const FInputActionValue& Value)
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
-		Potion = GetWorld()->SpawnActor<ASPPurplePotion>(ASPPurplePotion::StaticClass(), GetMesh()->GetSocketLocation("Item_Socket"), FRotator{ 0.0f, 0.0f, 0.0f }, SpawnParams);
+		Potion = GetWorld()->SpawnActor<ASPPurplePotion>(ASPPurplePotion::StaticClass(),
+		                                                 GetMesh()->GetSocketLocation("Item_Socket"),
+		                                                 FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
 		bIsSpawn = true;
 		if (Potion)
 		{
-			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
-			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{ "Item_Socket" });
+			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+			                                          EAttachmentRule::SnapToTarget, true);
+			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
 		}
 	}
 	else
 	{
 		if (Potion)
 		{
-			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
-			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{ "Item_Socket" });
+			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+			                                          EAttachmentRule::SnapToTarget, true);
+			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
 		}
 	}
 }
 
-void ASPCharacterPlayer::HandleMontageAnimNotify(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload)
+void ASPCharacterPlayer::HandleMontageAnimNotify(FName NotifyName,
+                                                 const FBranchingPointNotifyPayload& BranchingPointPayload)
 {
 	if (NotifyName == FName("PlayMontageNotify"))
 	{
@@ -898,7 +953,7 @@ void ASPCharacterPlayer::ShowProjectilePath()
 		//GetController()->GetControlRotation();
 		//FVector LaunchVelocity = ; 
 		FVector LaunchVelocity = (UKismetMathLibrary::GetForwardVector(GetController()->GetControlRotation())
-			+ FVector{ 0.0f,0.0f,0.4f }) * 1500.0f;
+			+ FVector{0.0f, 0.0f, 0.4f}) * 1500.0f;
 		//(ForwardVector + FVector{ 0.0f,0.0f,0.4f })* Mul
 		float ProjectileRadius = 0.0f;
 		TEnumAsByte<ECollisionChannel> TraceChannel = ECollisionChannel::ECC_Camera;
@@ -911,13 +966,16 @@ void ASPCharacterPlayer::ShowProjectilePath()
 		float OverrideGravityZ = 0.0;
 
 		UGameplayStatics::Blueprint_PredictProjectilePath_ByTraceChannel(GetWorld(), OutHit, OutPathPositions,
-			OutLastTraceDestination, StartPos, LaunchVelocity, true, ProjectileRadius, TraceChannel, false, ActorsToIgnore,
-			DrawDebugType, DrawDebugTime, SimFrequency, MaxSimTime, OverrideGravityZ);
+		                                                                 OutLastTraceDestination, StartPos,
+		                                                                 LaunchVelocity, true, ProjectileRadius,
+		                                                                 TraceChannel, false, ActorsToIgnore,
+		                                                                 DrawDebugType, DrawDebugTime, SimFrequency,
+		                                                                 MaxSimTime, OverrideGravityZ);
 
 		FHitResult SweepHitResult;
 		/*ProjectileCircle->SetWorldLocation(OutHit.Location, false, &SweepHitResult, ETeleportType::None);
 		ProjectileCircle->SetVisibility(true, false);*/
-		
+
 		//FVector DecalSize{ 100,200,200 };
 		//UGameplayStatics::SpawnDecalAtLocation(GetWorld(), Decal, DecalSize, OutHit.Location, GetControlRotation(), 0.1);
 		//UE_LOG(LogTemp, Log, TEXT("TEST"));
@@ -943,7 +1001,8 @@ void ASPCharacterPlayer::ShowProjectilePath()
 			UClass* whyClass = USplineMeshComponent::StaticClass();
 			FTransform RelativeTransform = FTransform();
 
-			USplineMeshComponent* NewSplineMeshComp = NewObject<USplineMeshComponent>(this, USplineMeshComponent::StaticClass());
+			USplineMeshComponent* NewSplineMeshComp = NewObject<USplineMeshComponent>(
+				this, USplineMeshComponent::StaticClass());
 			//UActorComponent* ActorComponent = AddComponentByClass(USplineMeshComponent::StaticClass(), true, RelativeTransform, false);
 			//USplineMeshComponent* NewSplineMeshComp = Cast<USplineMeshComponent>(ActorComponent);
 
@@ -992,19 +1051,19 @@ void ASPCharacterPlayer::ShowProjectilePath()
 			}
 			if (bIsSuccessStart && bIsSuccessEnd)
 			{
-				NewSplineMeshComp->SetStartAndEnd(StartPointLocation, StartPointTangent, EndPointLocation, EndPointTangent, true);
+				NewSplineMeshComp->SetStartAndEnd(StartPointLocation, StartPointTangent, EndPointLocation,
+				                                  EndPointTangent, true);
 			}
 			SplineCompArray.Emplace(NewSplineMeshComp);
 			NewSplineMeshComp->RegisterComponent();
-
-
 		}
 		FTimerHandle TimerHandle;
 		float DelayTime = 0.01f;
 
-		GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this]() {
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this]()
+		{
 			ShowProjectilePath();
-			}, DelayTime, false);
+		}, DelayTime, false);
 	}
 	else
 	{
@@ -1055,4 +1114,3 @@ void ASPCharacterPlayer::QuaterMove(const FInputActionValue& Value)
 		DesiredYaw = Rotator.Yaw;
 	}
 }
-

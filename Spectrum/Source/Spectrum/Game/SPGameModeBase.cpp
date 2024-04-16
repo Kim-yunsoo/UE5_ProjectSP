@@ -3,6 +3,8 @@
 
 #include "Game/SPGameModeBase.h"
 
+#include "GameFramework/GameStateBase.h"
+
 ASPGameModeBase::ASPGameModeBase()
 {
 	//static ConstructorHelpers::FClassFinder<APawn> ThirdPersonClassRef(TEXT("/Game/ThirdPerson/Blueprints/BP_ThirdPersonCharacter.BP_ThirdPersonCharacter_C"));
