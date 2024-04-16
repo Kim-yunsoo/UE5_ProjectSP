@@ -22,12 +22,13 @@ ASPObject::ASPObject()
    ObjectMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ObjectMesh"));
    ObjectMesh->SetCollisionProfileName(TEXT("PropCollision"));
    ObjectMesh->SetMobility(EComponentMobility::Movable);
+   ObjectMesh->SetUseCCD(true);
+   ObjectMesh->SetRenderCustomDepth(true);
    bHasBeenCalled = true;
 
    LinearColors.Add(FLinearColor(0.043333, 0.390625, 0.0f, 1.0f));   
    LinearColors.Add(FLinearColor(0.973958f, 0.036101f, 0.0f, 1.0f)); 
    LinearColors.Add(FLinearColor(0.263f, 0.0f, 0.6f, 1.0f));    
-   
 }
 
 ASPObject::~ASPObject()

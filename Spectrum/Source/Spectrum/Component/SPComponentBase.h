@@ -22,7 +22,7 @@ protected:
 	bool bHasExecutedOnce;
 
 	UPROPERTY(VisibleAnywhere, Category = Effect)
-	TObjectPtr<UParticleSystem> Effect ;
+	TObjectPtr<UParticleSystem> Effect;
 
 	UPROPERTY(VisibleAnywhere)
 	TArray<AActor*>ActorArray ;
