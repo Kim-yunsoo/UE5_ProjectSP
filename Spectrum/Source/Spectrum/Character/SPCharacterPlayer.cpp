@@ -536,6 +536,7 @@ void ASPCharacterPlayer::StopAiming(const FInputActionValue& Value)
 {
 
 	bIsAiming = false;
+	
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->bUseControllerDesiredRotation = false;
 	FollowCamera->K2_AttachToComponent(CameraBoom, NAME_None, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, true);
@@ -545,6 +546,8 @@ void ASPCharacterPlayer::StopAiming(const FInputActionValue& Value)
 }
 void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 {
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->bUseControllerDesiredRotation = false;
 	if (false == bIsHolding)
 	{
 		//FVector SphereLocationStart = Sphere->K2_GetComponentLocation();
@@ -640,6 +643,7 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 					);
 
 					bIsHolding = true;
+					
 					FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, true);
 					FollowCamera->AttachToComponent(CameraBoom, AttachmentRules, NAME_None);
 					CameraMove();
@@ -677,6 +681,7 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 		bIsHolding = false;
 		if (HitComponent && HitComponent->IsSimulatingPhysics())
 		{
+		
 			PhysicsHandleComponent->ReleaseComponent();
 			HitComponent->AddImpulse(FollowCamera->GetForwardVector() * HitDistance, NAME_None, true);
 			HitComponent = nullptr;
