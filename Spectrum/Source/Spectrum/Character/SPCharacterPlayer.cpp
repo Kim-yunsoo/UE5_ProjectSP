@@ -29,6 +29,7 @@
 #include "Potion/SPOrangePotion.h"
 #include "Potion/SPPurplePotion.h"
 //#include "UI/SPHUDWidget.h"
+#include "SpectrumLog.h"
 
 ASPCharacterPlayer::ASPCharacterPlayer()
 {
@@ -411,6 +412,14 @@ void ASPCharacterPlayer::ChangeCharacterControl()
 }
 void ASPCharacterPlayer::SetCharacterControl(ECharacterControlType NewCharacterControlType)
 {
+	if (!IsLocallyControlled()) //(Authority, Autonomous Proxy)
+	{
+		SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("return!!!!!"));
+		return;
+	}
+	//
+	SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("Here!!!!!"));
+
 	USPCharacterControlData* NewCharacterControl = CharacterControlManager[NewCharacterControlType];
 	check(NewCharacterControl);
 
@@ -681,7 +690,6 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 		bIsHolding = false;
 		if (HitComponent && HitComponent->IsSimulatingPhysics())
 		{
-		
 			PhysicsHandleComponent->ReleaseComponent();
 			HitComponent->AddImpulse(FollowCamera->GetForwardVector() * HitDistance, NAME_None, true);
 			HitComponent = nullptr;
