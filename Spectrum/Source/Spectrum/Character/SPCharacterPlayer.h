@@ -8,6 +8,7 @@
 #include "Interface/SPCharacterHUDInterface.h"
 #include "InputActionValue.h"
 #include "Protocol.pb.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "SPCharacterPlayer.generated.h"
 
 /**
@@ -22,19 +23,6 @@ enum class ECharacterControlType : uint8
 	Quater
 };
 
-UENUM()
-enum class EDecalMesh : uint8
-{
-	SphereBlack,
-	DecalBlack,
-	SphereGreen,
-	DecalGreen,
-	SphereOrange,
-	DecalOrange,
-	SpherePurple,
-	DecalPurple
-};
-
 
 UCLASS()
 class SPECTRUM_API ASPCharacterPlayer : public ACharacter
@@ -42,7 +30,7 @@ class SPECTRUM_API ASPCharacterPlayer : public ACharacter
 	GENERATED_BODY()
 
 public:
-	ASPCharacterPlayer();
+	ASPCharacterPlayer(const FObjectInitializer& ObjectInitializer);
 
 protected:
 	virtual void BeginPlay() override;
@@ -316,5 +304,6 @@ protected:
 
 	UFUNCTION(Server, Reliable)
 	void ServerRPCSpeedUpStop();
-	
+
+	virtual void PossessedBy(AController* NewController) override;
 };

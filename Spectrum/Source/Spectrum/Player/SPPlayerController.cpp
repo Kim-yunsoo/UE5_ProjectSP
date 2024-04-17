@@ -6,11 +6,11 @@
 
 ASPPlayerController::ASPPlayerController()
 {
-	static ConstructorHelpers::FClassFinder<USPHUDWidget> SPHUDWidgetRef(TEXT("/Game/Spectrum/UMG/WB_SPHUD.WB_SPHUD_C"));
-	if (SPHUDWidgetRef.Class)
-	{
-		SPHUDWidgetClass = SPHUDWidgetRef.Class;
-	}
+	// static ConstructorHelpers::FClassFinder<USPHUDWidget> SPHUDWidgetRef(TEXT("/Game/Spectrum/UMG/WB_SPHUD.WB_SPHUD_C"));
+	// if (SPHUDWidgetRef.Class)
+	// {
+	// 	SPHUDWidgetClass = SPHUDWidgetRef.Class;
+	// }
 }
 
 void ASPPlayerController::BeginPlay()
@@ -20,10 +20,10 @@ void ASPPlayerController::BeginPlay()
 	FInputModeGameOnly GameOblyInputMode;
 	SetInputMode(GameOblyInputMode);
 
-	SPHUDWidget = CreateWidget<USPHUDWidget>(this, SPHUDWidgetClass);
-	if (SPHUDWidget)
-	{
-		SPHUDWidget->AddToViewport();
-		SPHUDWidget->SetVisibility(ESlateVisibility::Visible);
-	}
+	// SPHUDWidget = CreateWidget<USPHUDWidget>(this, SPHUDWidgetClass);
+	// if (SPHUDWidget)
+	// {
+	// 	SPHUDWidget->AddToViewport();
+	// 	SPHUDWidget->SetVisibility(ESlateVisibility::Visible);
+	// }
 }

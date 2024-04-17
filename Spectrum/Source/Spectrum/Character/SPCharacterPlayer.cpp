@@ -28,10 +28,12 @@
 #include "Components/DynamicMeshComponent.h"
 #include "Potion/SPOrangePotion.h"
 #include "Potion/SPPurplePotion.h"
+#include "SPCharacterMovementComponent.h"
 //#include "UI/SPHUDWidget.h"
 #include "SpectrumLog.h"
 
-ASPCharacterPlayer::ASPCharacterPlayer()
+ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializer)
+: Super(ObjectInitializer.SetDefaultSubobjectClass<USPCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
 	//Pawn
 	bUseControllerRotationPitch = false;
@@ -1082,6 +1084,17 @@ void ASPCharacterPlayer::ShowProjectilePath()
 	}
 }
 
+void ASPCharacterPlayer::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	
+	// If we are controlled remotely, set animation timing to be driven by client's network updates. So timing and events remain in sync.
+	// if (Mesh && IsReplicatingMovement() && (GetRemoteRole() == ROLE_AutonomousProxy && GetNetConnection() != nullptr))
+	// {
+	// 	Mesh->bOnlyAllowAutonomousTickPose = true;
+	// }
+}
+
 void ASPCharacterPlayer::ServerRPCSpeedUpStop_Implementation()
 {
 	GetCharacterMovement()->MaxWalkSpeed = 500.f;
@@ -1137,3 +1150,4 @@ void ASPCharacterPlayer::QuaterMove(const FInputActionValue& Value)
 		DesiredYaw = Rotator.Yaw;
 	}
 }
+
