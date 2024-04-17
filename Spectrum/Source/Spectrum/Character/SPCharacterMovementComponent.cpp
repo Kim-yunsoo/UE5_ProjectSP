@@ -2,14 +2,21 @@
 
 
 #include "Character/SPCharacterMovementComponent.h"
+//D:\UE_5.3\Engine\Source\Runtime\Engine\Classes\GameFramework\CharacterMovementComponent.h
+// #include "GameFramework\CharacterMovementComponent.h"
 #include "GameFramework/Character.h"
 
+namespace CharacterMovementCVars
+{
+	// Use newer RPCs and RPC parameter serialization that allow variable length data without changing engine APIs.
+	static int32 EnableQueuedAnimEventsOnServer = 1;
+	static int32 NetEnableListenServerSmoothing = 1;
+	
+}
 
 void USPCharacterMovementComponent::MoveAutonomous(float ClientTimeStamp, float DeltaTime, uint8 CompressedFlags,
                                                    const FVector& NewAccel)
 {
-	//Super::MoveAutonomous(ClientTimeStamp, DeltaTime, CompressedFlags, NewAccel);
-	
 	if (!HasValidData())
 	{
 		return;
@@ -40,26 +47,26 @@ void USPCharacterMovementComponent::MoveAutonomous(float ClientTimeStamp, float 
 	{
 		if (!bWasPlayingRootMotion) // If we were playing root motion before PerformMovement but aren't anymore, we're on the last frame of anim root motion and have already ticked character
 		{
-			//TickCharacterPose(DeltaTime);
+			TickCharacterPose(DeltaTime);
 		}
 		// TODO: SaveBaseLocation() in case tick moves us?
 
-		 if (!CharacterMovementCVars::EnableQueuedAnimEventsOnServer || CharacterOwner->GetMesh()->ShouldOnlyTickMontages(DeltaTime))
-		 {
-		 	// If we're not doing a full anim graph update on the server, 
-		 	// trigger events right away, as we could be receiving multiple ServerMoves per frame.
-		 	CharacterOwner->GetMesh()->ConditionallyDispatchQueuedAnimEvents();
-		 }
+		if (!CharacterMovementCVars::EnableQueuedAnimEventsOnServer || CharacterOwner->GetMesh()->ShouldOnlyTickMontages(DeltaTime))
+		{
+			// If we're not doing a full anim graph update on the server, 
+			// trigger events right away, as we could be receiving multiple ServerMoves per frame.
+			CharacterOwner->GetMesh()->ConditionallyDispatchQueuedAnimEvents();
+		}
 	}
 
 	if (CharacterOwner && UpdatedComponent)
 	{
 		// Smooth local view of remote clients on listen servers
 		if (CharacterMovementCVars::NetEnableListenServerSmoothing &&
-		 	CharacterOwner->GetRemoteRole() == ROLE_AutonomousProxy &&
-		 	IsNetMode(NM_ListenServer))
-		 {
-		 	SmoothCorrection(OldLocation, OldRotation, UpdatedComponent->GetComponentLocation(), UpdatedComponent->GetComponentQuat());
-		 }
+			CharacterOwner->GetRemoteRole() == ROLE_AutonomousProxy &&
+			IsNetMode(NM_ListenServer))
+		{
+			SmoothCorrection(OldLocation, OldRotation, UpdatedComponent->GetComponentLocation(), UpdatedComponent->GetComponentQuat());
+		}
 	}
 }

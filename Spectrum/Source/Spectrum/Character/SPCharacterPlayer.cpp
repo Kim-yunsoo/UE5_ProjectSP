@@ -63,7 +63,7 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 	//Mesh
 	Face = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Face"));
 	Face->SetupAttachment(GetMesh());
-
+	
 	Torso = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Torso"));
 	Torso->SetupAttachment(GetMesh());
 
@@ -772,7 +772,9 @@ void ASPCharacterPlayer::AimPotion(const FInputActionValue& Value)
 	if (bIsSpawn)
 	{
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+		UAnimInstance* TorsoAnimInstance = Torso->GetAnimInstance();
 		AnimInstance->Montage_Play(ThrowMontage, 1.0f);
+		TorsoAnimInstance->Montage_Play(ThrowMontage, 1.0f);
 		GetCharacterMovement()->bOrientRotationToMovement = false;
 		GetCharacterMovement()->bUseControllerDesiredRotation = true;
 		bIsTurnReady = true;
@@ -784,7 +786,9 @@ void ASPCharacterPlayer::ThrowPotion(const FInputActionValue& Value)
 	if (bIsThrowReady)
 	{
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+		UAnimInstance* TorsoAnimInstance = GetMesh()->GetAnimInstance();
 		AnimInstance->Montage_JumpToSection(FName("End"), ThrowMontage);
+		TorsoAnimInstance->Montage_JumpToSection(FName("End"), ThrowMontage);
 		bIsThrowReady = false;
 		if (Potion)
 		{
@@ -803,7 +807,9 @@ void ASPCharacterPlayer::ThrowPotion(const FInputActionValue& Value)
 	else
 	{
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+		UAnimInstance* TorsoAnimInstance = GetMesh()->GetAnimInstance();
 		AnimInstance->Montage_Stop(0.0f);
+		TorsoAnimInstance->Montage_Stop(0.0f);
 	}
 }
 

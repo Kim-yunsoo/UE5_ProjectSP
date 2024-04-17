@@ -16,7 +16,7 @@ class SPECTRUM_API USPCharacterMovementComponent : public UCharacterMovementComp
 {
 	GENERATED_BODY()
 protected:
-	virtual class FNetworkPredictionData_Client* GetPredictionData_Client() const override;
+	// virtual class FNetworkPredictionData_Client* GetPredictionData_Client() const override;
 	
 protected:
 	virtual void MoveAutonomous( float ClientTimeStamp, float DeltaTime, uint8 CompressedFlags, const FVector& NewAccel) override;
