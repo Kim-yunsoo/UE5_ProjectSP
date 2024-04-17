@@ -327,7 +327,8 @@ void ASPCharacterPlayer::BeginPlay()
 	SetCharacterControl(CurrentCharacterControlType);
 	GetMesh()->GetAnimInstance()->OnPlayMontageNotifyBegin.AddDynamic(
 		this, &ASPCharacterPlayer::HandleMontageAnimNotify);
-
+	// Torso->GetAnimInstance()->OnPlayMontageNotifyBegin.AddDynamic(
+	// 	this, &ASPCharacterPlayer::HandleMontageAnimNotify);
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 	if (PlayerController)
 	{
@@ -774,7 +775,7 @@ void ASPCharacterPlayer::AimPotion(const FInputActionValue& Value)
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 		UAnimInstance* TorsoAnimInstance = Torso->GetAnimInstance();
 		AnimInstance->Montage_Play(ThrowMontage, 1.0f);
-		TorsoAnimInstance->Montage_Play(ThrowMontage, 1.0f);
+		// TorsoAnimInstance->Montage_Play(ThrowMontage, 1.0f);
 		GetCharacterMovement()->bOrientRotationToMovement = false;
 		GetCharacterMovement()->bUseControllerDesiredRotation = true;
 		bIsTurnReady = true;
@@ -788,7 +789,7 @@ void ASPCharacterPlayer::ThrowPotion(const FInputActionValue& Value)
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 		UAnimInstance* TorsoAnimInstance = GetMesh()->GetAnimInstance();
 		AnimInstance->Montage_JumpToSection(FName("End"), ThrowMontage);
-		TorsoAnimInstance->Montage_JumpToSection(FName("End"), ThrowMontage);
+		// TorsoAnimInstance->Montage_JumpToSection(FName("End"), ThrowMontage);
 		bIsThrowReady = false;
 		if (Potion)
 		{
@@ -809,7 +810,7 @@ void ASPCharacterPlayer::ThrowPotion(const FInputActionValue& Value)
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 		UAnimInstance* TorsoAnimInstance = GetMesh()->GetAnimInstance();
 		AnimInstance->Montage_Stop(0.0f);
-		TorsoAnimInstance->Montage_Stop(0.0f);
+		// TorsoAnimInstance->Montage_Stop(0.0f);
 	}
 }
 
