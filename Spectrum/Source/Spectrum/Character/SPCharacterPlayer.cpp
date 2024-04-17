@@ -450,7 +450,7 @@ void ASPCharacterPlayer::SetCharacterControl(ECharacterControlType NewCharacterC
 	{
 		return;
 	}
-	
+
 	USPCharacterControlData* NewCharacterControl = CharacterControlManager[NewCharacterControlType];
 	check(NewCharacterControl);
 
@@ -612,8 +612,8 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 			FLinearColor GreenColor = FLinearColor(0.0f, 1.0f, 0.0f, 1.0f);
 			FCollisionQueryParams Params;
 			//모든 캐릭터 타입은 무시하도록 하자,
-			UGameplayStatics::GetAllActorsOfClass(GetWorld(),ACharacter::StaticClass(),HitActorsToIgnore );
-			for(AActor* FoundActor:HitActorsToIgnore)
+			UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACharacter::StaticClass(), HitActorsToIgnore);
+			for (AActor* FoundActor : HitActorsToIgnore)
 			{
 				Params.AddIgnoredActor(FoundActor);
 			}
