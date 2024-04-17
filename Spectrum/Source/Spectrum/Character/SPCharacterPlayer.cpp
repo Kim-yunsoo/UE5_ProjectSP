@@ -29,6 +29,7 @@
 #include "Potion/SPOrangePotion.h"
 #include "Potion/SPPurplePotion.h"
 //#include "UI/SPHUDWidget.h"
+#include "SpectrumLog.h"
 
 ASPCharacterPlayer::ASPCharacterPlayer()
 {
