@@ -557,25 +557,34 @@ void ASPCharacterPlayer::StopSpeedUp(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::Aiming(const FInputActionValue& Value)
 {
-	if (false == bIsHolding)
+	if (!HasAuthority()) //서버가 아닌 경우 
 	{
-		bIsAiming = true;
-		GetCharacterMovement()->bOrientRotationToMovement = false;
-		GetCharacterMovement()->bUseControllerDesiredRotation = true;
-		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld,
-		                                          EAttachmentRule::KeepWorld, true);
-		FollowCamera->AttachToComponent(SpringArm, AttachmentRules, NAME_None);
-		CameraMove();
+		if (false == bIsHolding)
+		{
+			bIsAiming = true;
+			ServerRPCAiming();
+			GetCharacterMovement()->bOrientRotationToMovement = false;
+			GetCharacterMovement()->bUseControllerDesiredRotation = true;
+			FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld,
+			                                          EAttachmentRule::KeepWorld, true);
+			FollowCamera->AttachToComponent(SpringArm, AttachmentRules, NAME_None);
+			CameraMove();
+		}
+		else
+		{
+			GetCharacterMovement()->bOrientRotationToMovement = true;
+			GetCharacterMovement()->bUseControllerDesiredRotation = false;
+			FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld,
+			                                          EAttachmentRule::KeepWorld, true);
+			FollowCamera->AttachToComponent(CameraBoom, AttachmentRules, NAME_None);
+			CameraMove();
+		}
 	}
-	else
-	{
-		GetCharacterMovement()->bOrientRotationToMovement = true;
-		GetCharacterMovement()->bUseControllerDesiredRotation = false;
-		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld,
-		                                          EAttachmentRule::KeepWorld, true);
-		FollowCamera->AttachToComponent(CameraBoom, AttachmentRules, NAME_None);
-		CameraMove();
-	}
+}
+
+void ASPCharacterPlayer::ServerRPCAiming_Implementation()
+{
+	bIsAiming = true;
 }
 
 void ASPCharacterPlayer::StopAiming(const FInputActionValue& Value)
@@ -1081,6 +1090,29 @@ void ASPCharacterPlayer::ShowProjectilePath()
 		MyDecal->SetVisibility(false);
 	}
 }
+
+
+// UCharacterMovementComponent
+void ASPCharacterPlayer::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	// If we are controlled remotely, set animation timing to be driven by client's network updates. So timing and events remain in sync.
+	// if (Mesh && IsReplicatingMovement() && (GetRemoteRole() == ROLE_AutonomousProxy && GetNetConnection() != nullptr))
+	// {
+	// 	Mesh->bOnlyAllowAutonomousTickPose = true;
+	// }
+}
+
+
+// void ASPCharacterPlayer::MoveAutonomous(float ClientTimeStamp, float DeltaTime, uint8 CompressedFlags, const FVector& NewAccel)
+// {
+// 	if (GetCharacterMovement() != nullptr)
+// 	{
+// 		GetCharacterMovement()->MoveAutonomous(ClientTimeStamp, DeltaTime, CompressedFlags, NewAccel);
+// 	}
+// 	// 여기에 원하는 동작을 추가하거나 수정합니다.
+// }
 
 void ASPCharacterPlayer::ServerRPCSpeedUpStop_Implementation()
 {

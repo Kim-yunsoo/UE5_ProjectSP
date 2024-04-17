@@ -8,6 +8,7 @@
 #include "Interface/SPCharacterHUDInterface.h"
 #include "InputActionValue.h"
 #include "Protocol.pb.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "SPCharacterPlayer.generated.h"
 
 /**
@@ -316,5 +317,12 @@ protected:
 
 	UFUNCTION(Server, Reliable)
 	void ServerRPCSpeedUpStop();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPCAiming();
+	//funtion
+	virtual void PossessedBy(AController* NewController) override;
 	
+	// virtual void MoveAutonomous( float ClientTimeStamp, float DeltaTime, uint8 CompressedFlags, const FVector& NewAccel);
+
 };
