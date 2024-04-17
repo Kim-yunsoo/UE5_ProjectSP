@@ -538,13 +538,21 @@ void ASPCharacterPlayer::SpeedUp(const FInputActionValue& Value)
 {
 	if (false == bIsAiming && false == bIsHolding)
 	{
-		GetCharacterMovement()->MaxWalkSpeed = 900.f;
+		if (!HasAuthority())
+		{
+			GetCharacterMovement()->MaxWalkSpeed = 900.f;
+		}
+		ServerRPCSpeedUp();
 	}
 }
 
 void ASPCharacterPlayer::StopSpeedUp(const FInputActionValue& Value)
 {
-	GetCharacterMovement()->MaxWalkSpeed = 500.f;
+	if (!HasAuthority())
+	{
+		GetCharacterMovement()->MaxWalkSpeed = 500.f;
+	}
+	ServerRPCSpeedUpStop();
 }
 
 void ASPCharacterPlayer::Aiming(const FInputActionValue& Value)
@@ -1073,6 +1081,20 @@ void ASPCharacterPlayer::ShowProjectilePath()
 		MyDecal->SetVisibility(false);
 	}
 }
+
+void ASPCharacterPlayer::ServerRPCSpeedUpStop_Implementation()
+{
+	GetCharacterMovement()->MaxWalkSpeed = 500.f;
+}
+
+void ASPCharacterPlayer::ServerRPCSpeedUp_Implementation()
+{
+	GetCharacterMovement()->MaxWalkSpeed = 900.f;
+}
+
+// bool ASPCharacterPlayer::ServerRPCSpeedUp_Validate()
+// {
+// }
 
 void ASPCharacterPlayer::QuaterMove(const FInputActionValue& Value)
 {

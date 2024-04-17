@@ -310,6 +310,11 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Decal")
 	TArray<UStaticMesh*> MeshArray;
 
-//widget
+//RPC
+	UFUNCTION(Server, Reliable)
+	void ServerRPCSpeedUp();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPCSpeedUpStop();
 	
 };
