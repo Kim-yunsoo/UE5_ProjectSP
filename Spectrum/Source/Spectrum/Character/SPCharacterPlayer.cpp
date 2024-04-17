@@ -28,10 +28,12 @@
 #include "Components/DynamicMeshComponent.h"
 #include "Potion/SPOrangePotion.h"
 #include "Potion/SPPurplePotion.h"
+#include "SPCharacterMovementComponent.h"
 //#include "UI/SPHUDWidget.h"
 #include "SpectrumLog.h"
 
-ASPCharacterPlayer::ASPCharacterPlayer()
+ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializer)
+: Super(ObjectInitializer.SetDefaultSubobjectClass<USPCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
 	//Pawn
 	bUseControllerRotationPitch = false;
@@ -1104,16 +1106,6 @@ void ASPCharacterPlayer::PossessedBy(AController* NewController)
 	// }
 }
 
-
-// void ASPCharacterPlayer::MoveAutonomous(float ClientTimeStamp, float DeltaTime, uint8 CompressedFlags, const FVector& NewAccel)
-// {
-// 	if (GetCharacterMovement() != nullptr)
-// 	{
-// 		GetCharacterMovement()->MoveAutonomous(ClientTimeStamp, DeltaTime, CompressedFlags, NewAccel);
-// 	}
-// 	// 여기에 원하는 동작을 추가하거나 수정합니다.
-// }
-
 void ASPCharacterPlayer::ServerRPCSpeedUpStop_Implementation()
 {
 	GetCharacterMovement()->MaxWalkSpeed = 500.f;
@@ -1169,3 +1161,4 @@ void ASPCharacterPlayer::QuaterMove(const FInputActionValue& Value)
 		DesiredYaw = Rotator.Yaw;
 	}
 }
+

@@ -23,19 +23,6 @@ enum class ECharacterControlType : uint8
 	Quater
 };
 
-UENUM()
-enum class EDecalMesh : uint8
-{
-	SphereBlack,
-	DecalBlack,
-	SphereGreen,
-	DecalGreen,
-	SphereOrange,
-	DecalOrange,
-	SpherePurple,
-	DecalPurple
-};
-
 
 UCLASS()
 class SPECTRUM_API ASPCharacterPlayer : public ACharacter
@@ -43,7 +30,7 @@ class SPECTRUM_API ASPCharacterPlayer : public ACharacter
 	GENERATED_BODY()
 
 public:
-	ASPCharacterPlayer();
+	ASPCharacterPlayer(const FObjectInitializer& ObjectInitializer);
 
 protected:
 	virtual void BeginPlay() override;
