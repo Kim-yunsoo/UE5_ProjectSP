@@ -309,10 +309,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Decal")
 	TArray<UStaticMesh*> MeshArray;
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Decal", Meta = (AllowPrivateAccess = "true"))
-	//uint8 bIsDecal : 1;
 
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Decal", Meta = (AllowPrivateAccess = "true"))
-	//FVector TestDecalLocation;
-
+//widget
+	
 };
