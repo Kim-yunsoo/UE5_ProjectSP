@@ -328,11 +328,16 @@ protected:
 public:
 	// virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;;
 	//funtion
-	virtual void PossessedBy(AController* NewController) override;
+	//virtual void PossessedBy(AController* NewController) override;
 
 	
 	// virtual void MoveAutonomous( float ClientTimeStamp, float DeltaTime, uint8 CompressedFlags, const FVector& NewAccel);
 
 	UFUNCTION(Server, Reliable)
 	void ServerRPCBlackPotionSpawn();
+
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadOnly, Category = Character)
+	float DeltaY;
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadOnly, Category = Character)
+	float DeltaZ;
 };
