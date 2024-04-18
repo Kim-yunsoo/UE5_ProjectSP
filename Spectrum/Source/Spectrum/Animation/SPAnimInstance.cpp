@@ -60,11 +60,9 @@ void USPAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		bIsTurnRight = Owner->bIsTurnRight;
 		bIsTurnLeft = Owner->bIsTurnLeft;
 		bIsTurnReady= Owner->bIsTurnReady;
-		
-		DeltaY = UKismetMathLibrary::ClampAngle(Owner->DeltaY, -90, 90);
-		//DeltaY = Owner->DeltaY;
-		DeltaZ = UKismetMathLibrary::ClampAngle(Owner->DeltaZ, -0, 0);
 
+		DeltaZ=Owner->DeltaZ;
+		DeltaY=Owner->DeltaY;
 	}
 }
 

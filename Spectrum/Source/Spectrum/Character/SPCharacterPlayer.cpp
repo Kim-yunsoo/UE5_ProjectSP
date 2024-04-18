@@ -591,6 +591,10 @@ void ASPCharacterPlayer::Aiming(const FInputActionValue& Value)
 	ServerRPCAiming();
 	// else
 	// {
+	// 	MulticastRPCAiming();
+	// }
+	// else
+	// {
 	// 	SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("MulticastRPCAiming"));
 	// 	MulticastRPCAiming();
 	// }
@@ -1183,9 +1187,11 @@ void ASPCharacterPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 
 void ASPCharacterPlayer::ClientRPCAiming_Implementation(ASPCharacterPlayer* CharacterToPlay)
 {
-	SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("ClientRPCAiming_Implementation"));
 	if (false == bIsHolding)
 	{
+		SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("ClientRPCAiming_Implementation"));
+		CharacterToPlay->GetCharacterMovement()->bOrientRotationToMovement = false;
+		CharacterToPlay->GetCharacterMovement()->bUseControllerDesiredRotation = true;
 		CharacterToPlay->bIsAiming = true;
 	}
 }
@@ -1244,24 +1250,27 @@ void ASPCharacterPlayer::Aiming_CameraMove()
 	}
 }
 
+void ASPCharacterPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(ASPCharacterPlayer, bIsAiming);
+	DOREPLIFETIME(ASPCharacterPlayer, DeltaY);
+	DOREPLIFETIME(ASPCharacterPlayer, DeltaZ);
+}
 
-
-// void ASPCharacterPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-// {
-// 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-// }
+void ASPCharacterPlayer::OnRep_Aiming()
+{
+	// GetCharacterMovement()->bOrientRotationToMovement = false;
+	// GetCharacterMovement()->bUseControllerDesiredRotation = true;
+}
 
 void ASPCharacterPlayer::MulticastRPCAiming_Implementation()
 {
-	if (false == bIsHolding)
-	{
-		Aiming_CameraMove(); //애니메이션 작동
-		GetCharacterMovement()->bOrientRotationToMovement = false;
-		GetCharacterMovement()->bUseControllerDesiredRotation = true;
-		bIsAiming = true;
-	}
-	SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("Multi"));
-
+	// if (false == bIsHolding)
+	// {
+	// 	Aiming_CameraMove();
+	// 	bIsAiming = true;
+	// }
 }
 
 
@@ -1305,8 +1314,6 @@ void ASPCharacterPlayer::QuaterMove(const FInputActionValue& Value)
 	FVector MoveDirection = FVector(MovementVector.X, MovementVector.Y, 0.0f);
 	GetController()->SetControlRotation(FRotationMatrix::MakeFromX(MoveDirection).Rotator());
 	AddMovementInput(MoveDirection, MovementVectorSize);
-
-
 	{
 		DesiredInput = MovementVector;
 
