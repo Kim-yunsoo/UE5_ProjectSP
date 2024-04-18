@@ -298,7 +298,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Decal")
 	TArray<UStaticMesh*> MeshArray;
 
-<<<<<<< HEAD
+
 //RPC
 	UFUNCTION(Server, Reliable)
 	void ServerRPCSpeedUp();
@@ -310,9 +310,7 @@ protected:
 	void ServerRPCAiming();
 	//funtion
 	virtual void PossessedBy(AController* NewController) override;
-=======
-//widget
->>>>>>> parent of 879d9bb (달리기 동기화)
+
 	
 	// virtual void MoveAutonomous( float ClientTimeStamp, float DeltaTime, uint8 CompressedFlags, const FVector& NewAccel);
 
