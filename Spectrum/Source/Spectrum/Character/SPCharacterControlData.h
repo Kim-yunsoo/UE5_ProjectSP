@@ -25,7 +25,6 @@ class SPECTRUM_API USPCharacterControlData : public UPrimaryDataAsset
 
 	UPROPERTY(EditAnywhere, Category = CharacterMovement)
 	uint32 bUseControllerDesiredRotation : 1;
-
 	UPROPERTY(EditAnywhere, Category = CharacterMovement)
 	FRotator RotationRate;
 
