@@ -145,7 +145,7 @@ protected:
 	TObjectPtr<class ASPPotionBase> Potion;
 
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	UPROPERTY(BlueprintReadWrite, Category = "Character")
 	uint8 bIsAiming : 1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
@@ -299,17 +299,29 @@ protected:
 	TArray<UStaticMesh*> MeshArray;
 
 //RPC
-	UFUNCTION(Server, Reliable)
+	UFUNCTION(Server, Unreliable)
 	void ServerRPCSpeedUp();
 
-	UFUNCTION(Server, Reliable)
+	UFUNCTION(Server, Unreliable)
 	void ServerRPCSpeedUpStop();
 
-	UFUNCTION(Server, Reliable)
+	UFUNCTION(Server, Unreliable)
 	void ServerRPCAiming();
+
+	UFUNCTION(Client, Unreliable)
+	void ClientRPCAiming(ASPCharacterPlayer* CharacterToPlay);
+	
+	void Aiming_CameraMove();
+
+	UFUNCTION(NetMulticast, Unreliable)
+	void MulticastRPCAiming();
+
+public:
+	// virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;;
 	//funtion
-	virtual void PossessedBy(AController* NewController) override;
+	// virtual void PossessedBy(AController* NewController) override;
 	
 	// virtual void MoveAutonomous( float ClientTimeStamp, float DeltaTime, uint8 CompressedFlags, const FVector& NewAccel);
-
+	// UFUNCTION()
+	// void OnRep_Aiming();
 };
