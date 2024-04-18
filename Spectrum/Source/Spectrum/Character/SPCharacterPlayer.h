@@ -59,7 +59,7 @@ protected:
 	virtual void SetCharacterControlData(const class USPCharacterControlData* CharacterControlData);
 	void CameraMove();
 
-
+//
 
 	void ShoulderMove(const FInputActionValue& Value);
 	void ShoulderLook(const FInputActionValue& Value);
@@ -240,7 +240,7 @@ protected:
 
 protected:
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-	//uint8 bIsAiming : 1; //���� 
+	//uint8 bIsAiming : 1; //     
 
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	//uint8 bIsHolding : 1; 
