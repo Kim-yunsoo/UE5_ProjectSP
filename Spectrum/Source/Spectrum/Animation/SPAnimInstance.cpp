@@ -6,6 +6,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Character/SPCharacterPlayer.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Net/UnrealNetwork.h"
 
 
 USPAnimInstance::USPAnimInstance()
@@ -53,20 +54,14 @@ void USPAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		bIsTurnLeft = Owner->bIsTurnLeft;
 		bIsTurnReady= Owner->bIsTurnReady;
 
-
-		FRotator ControlRotation = Owner->GetControlRotation();
-		FRotator GetActorRotation = Owner->GetActorRotation();
-		FRotator DeltaRotation=UKismetMathLibrary::NormalizedDeltaRotator(ControlRotation, GetActorRotation);
-
-		float  foo = 0.f;
-
-		FRotator NewRotator = UKismetMathLibrary::MakeRotator(0, DeltaY, DeltaZ);
-
-		FRotator RInterp = UKismetMathLibrary::RInterpTo(NewRotator, DeltaRotation, DeltaSeconds, 10);
-		UKismetMathLibrary::BreakRotator(RInterp, foo, DeltaY, DeltaZ);
-
-		DeltaY = UKismetMathLibrary::ClampAngle(DeltaY, -90, 90);
-		DeltaZ = UKismetMathLibrary::ClampAngle(DeltaZ, -0, 0);
-
+		DeltaZ=Owner->DeltaZ;
+		DeltaY=Owner->DeltaY;
 	}
+}
+
+
+void USPAnimInstance::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
 }

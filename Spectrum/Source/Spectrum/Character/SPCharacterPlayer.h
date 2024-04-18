@@ -129,14 +129,12 @@ public:
 	uint8 bIsTurnLeft : 1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
-	uint8 bIsTurnReady : 1; // TurnReady?
+	uint8 bIsTurnReady : 1; 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
 	float PreControlYawRotation;
 
 protected:
-
-	
 
 	UPROPERTY(EditAnywhere, Category = CharacterControl, Meta = (AllowPrivateAccess = "true"))
 	TMap<ECharacterControlType, class USPCharacterControlData*> CharacterControlManager;
@@ -145,7 +143,7 @@ protected:
 	TObjectPtr<class ASPPotionBase> Potion;
 
 
-	UPROPERTY(BlueprintReadWrite, Category = "Character")
+	UPROPERTY(ReplicatedUsing=OnRep_Aiming,BlueprintReadWrite, Category = "Character")
 	uint8 bIsAiming : 1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
@@ -315,13 +313,19 @@ protected:
 
 	UFUNCTION(NetMulticast, Unreliable)
 	void MulticastRPCAiming();
+public:
+	UPROPERTY(Replicated,EditAnywhere, BlueprintReadOnly, Category = Character)
+	float DeltaY;
+
+	UPROPERTY(Replicated,EditAnywhere, BlueprintReadOnly, Category = Character)
+	float DeltaZ;
 
 public:
-	// virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;;
 	//funtion
 	// virtual void PossessedBy(AController* NewController) override;
 	
 	// virtual void MoveAutonomous( float ClientTimeStamp, float DeltaTime, uint8 CompressedFlags, const FVector& NewAccel);
-	// UFUNCTION()
-	// void OnRep_Aiming();
+	UFUNCTION()
+	void OnRep_Aiming();
 };

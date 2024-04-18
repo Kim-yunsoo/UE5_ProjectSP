@@ -32,6 +32,7 @@
 //#include "UI/SPHUDWidget.h"
 #include "EngineUtils.h"
 #include "SpectrumLog.h"
+#include "Net/UnrealNetwork.h"
 
 ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<USPCharacterMovementComponent>(
@@ -342,6 +343,22 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if(bIsAiming)
+	{
+		FRotator ControlRotation = GetControlRotation();
+		FRotator GetActorRotation = this->GetActorRotation();
+		FRotator DeltaRotation=UKismetMathLibrary::NormalizedDeltaRotator(ControlRotation, GetActorRotation);
+
+		float  foo = 0.f;
+
+		FRotator NewRotator = UKismetMathLibrary::MakeRotator(0, DeltaY, DeltaZ);
+
+		FRotator RInterp = UKismetMathLibrary::RInterpTo(NewRotator, DeltaRotation, DeltaTime, 10);
+		UKismetMathLibrary::BreakRotator(RInterp, foo, DeltaY, DeltaZ);
+
+		DeltaY = UKismetMathLibrary::ClampAngle(DeltaY, -90, 90);
+		DeltaZ = UKismetMathLibrary::ClampAngle(DeltaZ, -0, 0);
+	}
 
 	bool ForceSendPacket = false;
 
@@ -574,6 +591,10 @@ void ASPCharacterPlayer::Aiming(const FInputActionValue& Value)
 	ServerRPCAiming();
 	// else
 	// {
+	// 	MulticastRPCAiming();
+	// }
+	// else
+	// {
 	// 	SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("MulticastRPCAiming"));
 	// 	MulticastRPCAiming();
 	// }
@@ -586,7 +607,6 @@ void ASPCharacterPlayer::ServerRPCAiming_Implementation()
 		Aiming_CameraMove(); //애니메이션 작동
 		bIsAiming = true;
 	}
-	// MulticastRPCAiming();
 	for (APlayerController* PlayerController : TActorRange<APlayerController>(GetWorld()))
 	{
 		if (PlayerController && GetController() != PlayerController) //현재 로직을 수행하고 있는 컨트롤러가 아닌 경우 
@@ -1117,9 +1137,11 @@ void ASPCharacterPlayer::ShowProjectilePath()
 
 void ASPCharacterPlayer::ClientRPCAiming_Implementation(ASPCharacterPlayer* CharacterToPlay)
 {
-	SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("ClientRPCAiming_Implementation"));
 	if (false == bIsHolding)
 	{
+		SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("ClientRPCAiming_Implementation"));
+		CharacterToPlay->GetCharacterMovement()->bOrientRotationToMovement = false;
+		CharacterToPlay->GetCharacterMovement()->bUseControllerDesiredRotation = true;
 		CharacterToPlay->bIsAiming = true;
 	}
 }
@@ -1146,18 +1168,27 @@ void ASPCharacterPlayer::Aiming_CameraMove()
 	}
 }
 
-// void ASPCharacterPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-// {
-// 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-// }
+void ASPCharacterPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(ASPCharacterPlayer, bIsAiming);
+	DOREPLIFETIME(ASPCharacterPlayer, DeltaY);
+	DOREPLIFETIME(ASPCharacterPlayer, DeltaZ);
+}
+
+void ASPCharacterPlayer::OnRep_Aiming()
+{
+	// GetCharacterMovement()->bOrientRotationToMovement = false;
+	// GetCharacterMovement()->bUseControllerDesiredRotation = true;
+}
 
 void ASPCharacterPlayer::MulticastRPCAiming_Implementation()
 {
-	if (false == bIsHolding)
-	{
-		Aiming_CameraMove(); //애니메이션 작동
-		bIsAiming = true;
-	}
+	// if (false == bIsHolding)
+	// {
+	// 	Aiming_CameraMove();
+	// 	bIsAiming = true;
+	// }
 }
 
 
@@ -1201,8 +1232,6 @@ void ASPCharacterPlayer::QuaterMove(const FInputActionValue& Value)
 	FVector MoveDirection = FVector(MovementVector.X, MovementVector.Y, 0.0f);
 	GetController()->SetControlRotation(FRotationMatrix::MakeFromX(MoveDirection).Rotator());
 	AddMovementInput(MoveDirection, MovementVectorSize);
-
-
 	{
 		DesiredInput = MovementVector;
 
