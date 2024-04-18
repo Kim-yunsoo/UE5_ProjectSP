@@ -30,12 +30,14 @@
 #include "Potion/SPPurplePotion.h"
 #include "SPCharacterMovementComponent.h"
 //#include "UI/SPHUDWidget.h"
+#include "EngineUtils.h"
 #include "SpectrumLog.h"
 #include "EngineUtils.h"
 #include "Net/UnrealNetwork.h"
 
 ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializer)
-: Super(ObjectInitializer.SetDefaultSubobjectClass<USPCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
+	: Super(ObjectInitializer.SetDefaultSubobjectClass<USPCharacterMovementComponent>(
+		ACharacter::CharacterMovementComponentName))
 {
 	//Pawn
 	bUseControllerRotationPitch = false;
@@ -65,7 +67,7 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 	//Mesh
 	Face = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Face"));
 	Face->SetupAttachment(GetMesh());
-	
+
 	Torso = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Torso"));
 	Torso->SetupAttachment(GetMesh());
 
@@ -563,34 +565,46 @@ void ASPCharacterPlayer::StopSpeedUp(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::Aiming(const FInputActionValue& Value)
 {
-	if (!HasAuthority()) //서버가 아닌 경우 
+	if (!HasAuthority()) //클라이언트
 	{
 		if (false == bIsHolding)
 		{
+			SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("not HasAuthority"));
+			Aiming_CameraMove(); //애니메이션 작동
 			bIsAiming = true;
-			ServerRPCAiming();
-			GetCharacterMovement()->bOrientRotationToMovement = false;
-			GetCharacterMovement()->bUseControllerDesiredRotation = true;
-			FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld,
-			                                          EAttachmentRule::KeepWorld, true);
-			FollowCamera->AttachToComponent(SpringArm, AttachmentRules, NAME_None);
-			CameraMove();
-		}
-		else
-		{
-			GetCharacterMovement()->bOrientRotationToMovement = true;
-			GetCharacterMovement()->bUseControllerDesiredRotation = false;
-			FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld,
-			                                          EAttachmentRule::KeepWorld, true);
-			FollowCamera->AttachToComponent(CameraBoom, AttachmentRules, NAME_None);
-			CameraMove();
 		}
 	}
+	ServerRPCAiming();
+	// else
+	// {
+	// 	SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("MulticastRPCAiming"));
+	// 	MulticastRPCAiming();
+	// }
 }
 
 void ASPCharacterPlayer::ServerRPCAiming_Implementation()
 {
-	bIsAiming = true;
+	if (false == bIsHolding)
+	{
+		Aiming_CameraMove(); //애니메이션 작동
+		bIsAiming = true;
+	}
+	// MulticastRPCAiming();
+	for (APlayerController* PlayerController : TActorRange<APlayerController>(GetWorld()))
+	{
+		if (PlayerController && GetController() != PlayerController) //현재 로직을 수행하고 있는 컨트롤러가 아닌 경우 
+		{
+			if (!PlayerController->IsLocalController()) //이미 재생을 했기에 
+			{
+				ASPCharacterPlayer* OtherPlayer = Cast<ASPCharacterPlayer>(PlayerController->GetPawn());
+				//서버도 아니고 공격 명령을 내린 플레이어 컨트롤러도 아닌 시뮬레이트 프록시
+				if (OtherPlayer)
+				{
+					OtherPlayer->ClientRPCAiming(this);
+				}
+			}
+		}
+	}
 }
 
 void ASPCharacterPlayer::StopAiming(const FInputActionValue& Value)
@@ -1152,15 +1166,14 @@ void ASPCharacterPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 }
 
 // UCharacterMovementComponent
-void ASPCharacterPlayer::PossessedBy(AController* NewController)
-{
-	Super::PossessedBy(NewController);
 
-	// If we are controlled remotely, set animation timing to be driven by client's network updates. So timing and events remain in sync.
-	// if (Mesh && IsReplicatingMovement() && (GetRemoteRole() == ROLE_AutonomousProxy && GetNetConnection() != nullptr))
-	// {
-	// 	Mesh->bOnlyAllowAutonomousTickPose = true;
-	// }
+void ASPCharacterPlayer::ClientRPCAiming_Implementation(ASPCharacterPlayer* CharacterToPlay)
+{
+	SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("ClientRPCAiming_Implementation"));
+	if (false == bIsHolding)
+	{
+		CharacterToPlay->bIsAiming = true;
+	}
 }
 
 void ASPCharacterPlayer::ServerRPCBlackPotionSpawn_Implementation()
@@ -1194,6 +1207,43 @@ void ASPCharacterPlayer::ServerRPCBlackPotionSpawn_Implementation()
 	}
 	//MulticastRPCPotion();
 }
+
+void ASPCharacterPlayer::Aiming_CameraMove()
+{
+	if (false == bIsHolding)
+	{
+		GetCharacterMovement()->bOrientRotationToMovement = false;
+		GetCharacterMovement()->bUseControllerDesiredRotation = true;
+		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld,
+		                                          EAttachmentRule::KeepWorld, true);
+		FollowCamera->AttachToComponent(SpringArm, AttachmentRules, NAME_None);
+		CameraMove();
+	}
+	else
+	{
+		GetCharacterMovement()->bOrientRotationToMovement = true;
+		GetCharacterMovement()->bUseControllerDesiredRotation = false;
+		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld,
+		                                          EAttachmentRule::KeepWorld, true);
+		FollowCamera->AttachToComponent(CameraBoom, AttachmentRules, NAME_None);
+		CameraMove();
+	}
+}
+
+// void ASPCharacterPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+// {
+// 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+// }
+
+void ASPCharacterPlayer::MulticastRPCAiming_Implementation()
+{
+	if (false == bIsHolding)
+	{
+		Aiming_CameraMove(); //애니메이션 작동
+		bIsAiming = true;
+	}
+}
+
 
 void ASPCharacterPlayer::ServerRPCSpeedUpStop_Implementation()
 {
@@ -1250,4 +1300,3 @@ void ASPCharacterPlayer::QuaterMove(const FInputActionValue& Value)
 		DesiredYaw = Rotator.Yaw;
 	}
 }
-
