@@ -541,21 +541,13 @@ void ASPCharacterPlayer::SpeedUp(const FInputActionValue& Value)
 {
 	if (false == bIsAiming && false == bIsHolding)
 	{
-		if (!HasAuthority())
-		{
-			GetCharacterMovement()->MaxWalkSpeed = 900.f;
-		}
-		ServerRPCSpeedUp();
+		GetCharacterMovement()->MaxWalkSpeed = 900.f;
 	}
 }
 
 void ASPCharacterPlayer::StopSpeedUp(const FInputActionValue& Value)
 {
-	if (!HasAuthority())
-	{
-		GetCharacterMovement()->MaxWalkSpeed = 500.f;
-	}
-	ServerRPCSpeedUpStop();
+	GetCharacterMovement()->MaxWalkSpeed = 500.f;
 }
 
 void ASPCharacterPlayer::Aiming(const FInputActionValue& Value)
@@ -1100,6 +1092,7 @@ void ASPCharacterPlayer::ShowProjectilePath()
 	}
 }
 
+<<<<<<< HEAD
 
 // UCharacterMovementComponent
 void ASPCharacterPlayer::PossessedBy(AController* NewController)
@@ -1127,6 +1120,8 @@ void ASPCharacterPlayer::ServerRPCSpeedUp_Implementation()
 // {
 // }
 
+=======
+>>>>>>> parent of 879d9bb (달리기 동기화)
 void ASPCharacterPlayer::QuaterMove(const FInputActionValue& Value)
 {
 	FVector2D MovementVector = Value.Get<FVector2D>();
