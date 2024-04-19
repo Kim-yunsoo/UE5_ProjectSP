@@ -36,19 +36,15 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;	// 매번 계속 해야 하는 것들 여기에
 
-
 public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
 
 protected:
 	void ChangeCharacterControl();
 	void SetCharacterControl(ECharacterControlType NewCharacterControlType);
 	virtual void SetCharacterControlData(const class USPCharacterControlData* CharacterControlData);
 	void CameraMove();
-
 //
-
 	void ShoulderMove(const FInputActionValue& Value);
 	void ShoulderLook(const FInputActionValue& Value);
 	void StopShoulderLook(const FInputActionValue& Value);
@@ -99,7 +95,6 @@ protected:
 
 	FVector2D LastDesiredInput;
 
-
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	TObjectPtr<class USkeletalMeshComponent>Face;
@@ -128,14 +123,13 @@ public:
 	UPROPERTY(Replicated, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
 	uint8 bIsTurnLeft : 1;
 
-	UPROPERTY(Replicated,EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
 	uint8 bIsTurnReady : 1; 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
 	float PreControlYawRotation;
 
 protected:
-
 	UPROPERTY(EditAnywhere, Category = CharacterControl, Meta = (AllowPrivateAccess = "true"))
 	TMap<ECharacterControlType, class USPCharacterControlData*> CharacterControlManager;
 
@@ -154,27 +148,7 @@ protected:
 	UPROPERTY(ReplicatedUsing = OnRep_PotionSpawn, EditAnywhere, BlueprintReadWrite, Category = "Character")
 	uint8 bIsSpawn : 1; //Spawn check
 
-	UFUNCTION()
-	void OnRep_PotionSpawn();
-
-	UFUNCTION(Server, Unreliable)
-	void ServerRPCBlackPotionSpawn();
-
-	UFUNCTION(Server, Unreliable)
-	void ServerRPCThrowPotion();
-
-	UFUNCTION(Server, Unreliable)
-	void ServerRPCTurnReady();
-
-	void PlayTurnAnimation();
-
-	UFUNCTION(Client, Unreliable)
-	void ClientRPCTurnAnimation(ASPCharacterPlayer* CharacterToPlay);
-
-	UFUNCTION(Server, Unreliable)
-	void ServerRPCdirection(bool TurnRight, bool Turnleft);
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	UPROPERTY(Replicated, BlueprintReadWrite, Category = "Character")
 	uint8 bIsThrowReady : 1; //Throw Ready? 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat, Meta = (AllowPrivateAccess = "true"))
@@ -190,8 +164,6 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Camera, Meta = (AllowPrivateAccess = "ture"))
 	TObjectPtr<class UCameraComponent> FollowCamera;
-
-
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
@@ -308,7 +280,7 @@ protected:
 	TArray<UStaticMesh*> MeshArray;
 	
 
-//RPC
+// ServerRPC
 	UFUNCTION(Server, Unreliable)
 	void ServerRPCSpeedUp();
 
@@ -319,6 +291,21 @@ protected:
 	void ServerRPCAiming();
 	
 	UFUNCTION(Server, Unreliable)
+	void ServerRPCBlackPotionSpawn();
+
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCThrowPotion(bool IsThrowReady);
+	
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCTurnReady();
+	
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCdirection(bool TurnRight, bool Turnleft);
+	
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCShowProjectilePath();
+
+	UFUNCTION(Server, Unreliable)
 	void ServerRPCStopAiming();
 	
 	UFUNCTION(Server, Unreliable)
@@ -326,9 +313,31 @@ protected:
 
 	UFUNCTION(Server, Unreliable)
 	void ServerRPCStopGraping();
+	
+	//ClientRPC
+	UFUNCTION(Client, Unreliable)
+	void ClientRPCTurnAnimation(ASPCharacterPlayer* CharacterToPlay);
 
-	//funtion
+	UFUNCTION(Client, Unreliable)
+	void ClientRPCThrowAnimation(ASPCharacterPlayer* CharacterToPlay);
+
+	UFUNCTION(Client, Unreliable)
+	void ClientRPCStopAnimation(ASPCharacterPlayer* CharacterToPlay);
+	
+	//OnRep
+	UFUNCTION()
+	void OnRep_PotionSpawn();
+
+	//function
 	void Aiming_CameraMove();
+	void PlayTurnAnimation();
+	void PlayThrowAnimation();
+	void PlayStopAnimation();
+	void Aiming_CameraMove();
+
+	//virtual void PossessedBy(AController* NewController) override;
+	
+	// virtual void MoveAutonomous( float ClientTimeStamp, float DeltaTime, uint8 CompressedFlags, const FVector& NewAccel);
 
 protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const;
