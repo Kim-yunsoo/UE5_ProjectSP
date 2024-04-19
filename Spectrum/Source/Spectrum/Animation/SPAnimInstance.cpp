@@ -7,7 +7,7 @@
 #include "Character/SPCharacterPlayer.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Net/UnrealNetwork.h"
-
+#include "SpectrumLog.h"
 
 USPAnimInstance::USPAnimInstance()
 {
@@ -21,6 +21,13 @@ USPAnimInstance::USPAnimInstance()
 	bIsTurnReady = false;	
 	DeltaY = 0;
 	DeltaZ = 0;
+}
+
+void USPAnimInstance::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(USPAnimInstance, DeltaY);
+	DOREPLIFETIME(USPAnimInstance, DeltaZ);
 }
 
 void USPAnimInstance::NativeInitializeAnimation()
@@ -68,6 +75,4 @@ void USPAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 	}
 }
-
-
 

@@ -32,6 +32,7 @@
 //#include "UI/SPHUDWidget.h"
 #include "EngineUtils.h"
 #include "SpectrumLog.h"
+#include "EngineUtils.h"
 #include "Net/UnrealNetwork.h"
 
 ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializer)
@@ -342,14 +343,6 @@ void ASPCharacterPlayer::BeginPlay()
 void ASPCharacterPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	// bool ForceSendPacket = false;
-	//
-	// if (LastDesiredInput != DesiredInput)
-	// {
-	// 	ForceSendPacket = true;
-	// 	LastDesiredInput = DesiredInput;
-	// }
-	//
 
 	if (bIsHolding)
 	{
@@ -453,6 +446,7 @@ void ASPCharacterPlayer::SetCharacterControl(ECharacterControlType NewCharacterC
 {
 	if (!IsLocallyControlled())
 	{
+		SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("IsLocallyControlled"));
 		return;
 	}
 
@@ -542,7 +536,7 @@ void ASPCharacterPlayer::SpeedUp(const FInputActionValue& Value)
 {
 	if (false == bIsAiming && false == bIsHolding)
 	{
-		if (!HasAuthority())
+		if(!HasAuthority())
 		{
 			GetCharacterMovement()->MaxWalkSpeed = 900.f;
 		}
@@ -552,7 +546,7 @@ void ASPCharacterPlayer::SpeedUp(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::StopSpeedUp(const FInputActionValue& Value)
 {
-	if (!HasAuthority())
+	if(!HasAuthority())
 	{
 		GetCharacterMovement()->MaxWalkSpeed = 500.f;
 	}
@@ -790,7 +784,6 @@ void ASPCharacterPlayer::ThrowPotion(const FInputActionValue& Value)
 			float Mul = 1500.0f;
 			Potion->Throw((ForwardVector + FVector{0.0f, 0.0f, 0.4f}) * Mul);
 		}
-
 		GetCharacterMovement()->bOrientRotationToMovement = true;
 		GetCharacterMovement()->bUseControllerDesiredRotation = false;
 		bIsTurnReady = false;
@@ -823,32 +816,37 @@ void ASPCharacterPlayer::MyStopJumping(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::BlackPotionSpawn(const FInputActionValue& Value)
 {
-	if (false == bIsSpawn)
+	if(!HasAuthority())
 	{
-		FVector ItemLocation = GetMesh()->GetSocketLocation("Item_Socket");
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-		SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
-		Potion = GetWorld()->SpawnActor<ASPBlackPotion>(ASPBlackPotion::StaticClass(),
-		                                                GetMesh()->GetSocketLocation("Item_Socket"),
-		                                                FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
-		bIsSpawn = true;
-		if (Potion)
-		{
-			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
-			                                          EAttachmentRule::SnapToTarget, true);
-			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
-		}
+		// if (false == bIsSpawn)
+		// {
+		// 	FVector ItemLocation = GetMesh()->GetSocketLocation("Item_Socket");
+		// 	FActorSpawnParameters SpawnParams;
+		// 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		// 	SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
+		// 	Potion = GetWorld()->SpawnActor<ASPBlackPotion>(ASPBlackPotion::StaticClass(),
+		// 													GetMesh()->GetSocketLocation("Item_Socket"),
+		// 													FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
+		// 	bIsSpawn = true;
+		// 	if (Potion)
+		// 	{
+		// 		FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+		// 												  EAttachmentRule::SnapToTarget, true);
+		// 		Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
+		// 	}
+		// }
+		// else
+		// {
+		// 	if (Potion)
+		// 	{
+		// 		FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+		// 												  EAttachmentRule::SnapToTarget, true);
+		// 		Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
+		// 	}
+		// }
 	}
-	else
-	{
-		if (Potion)
-		{
-			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
-			                                          EAttachmentRule::SnapToTarget, true);
-			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
-		}
-	}
+	ServerRPCBlackPotionSpawn();
+	//
 }
 
 void ASPCharacterPlayer::GreenPotionSpawn(const FInputActionValue& Value)
@@ -939,6 +937,41 @@ void ASPCharacterPlayer::PurplePotionSpawn(const FInputActionValue& Value)
 			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
 		}
 	}
+}
+
+void ASPCharacterPlayer::OnRep_Potion()
+{
+	SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("Potion"));
+	if(!Potion)
+	{
+		SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("ISPotion"));
+	}
+	if(Potion)
+	{
+		SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("Potion YSE"));
+		FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+													  EAttachmentRule::SnapToTarget, true);
+		Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
+	}
+}
+
+void ASPCharacterPlayer::MulticastRPCPotion_Implementation()
+{
+	SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("Potionspawn"));
+}
+
+void ASPCharacterPlayer::OnRep_PotionSpawn()
+{
+	// SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("Potionspawn"));
+	//
+	// if (Potion)
+	// {
+	//
+	// 	FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+	// 	                                          EAttachmentRule::SnapToTarget, true);
+	// 	Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
+	// }
+	
 }
 
 void ASPCharacterPlayer::HandleMontageAnimNotify(FName NotifyName,
@@ -1092,6 +1125,47 @@ void ASPCharacterPlayer::ShowProjectilePath()
 	}
 }
 
+
+void ASPCharacterPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(ASPCharacterPlayer, bIsSpawn);
+	DOREPLIFETIME(ASPCharacterPlayer, Potion);
+
+}
+
+
+void ASPCharacterPlayer::ServerRPCBlackPotionSpawn_Implementation()
+{
+	SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("Spawn"));
+	if (false == bIsSpawn)
+	{
+		FVector ItemLocation = GetMesh()->GetSocketLocation("Item_Socket");
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
+		Potion = GetWorld()->SpawnActor<ASPBlackPotion>(ASPBlackPotion::StaticClass(),
+														GetMesh()->GetSocketLocation("Item_Socket"),
+														FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
+		bIsSpawn = true;
+		if (Potion)
+		{
+			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+													  EAttachmentRule::SnapToTarget, true);
+			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
+		}
+	}
+	else
+	{
+		if (Potion)
+		{
+			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+													  EAttachmentRule::SnapToTarget, true);
+			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
+		}
+	}
+	//MulticastRPCPotion();
+}
 
 void ASPCharacterPlayer::Aiming_CameraMove()
 {
