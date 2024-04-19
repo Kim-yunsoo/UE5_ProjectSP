@@ -285,13 +285,7 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 		MyDecal->SetWorldScale3D(FVector(1.0, 0.3, 0.3));
 		MyDecal->SetRelativeRotation(FRotator(90.f, 0.f, 0.f));
 	}
-
-	//static ConstructorHelpers::FObjectFinder<UDecalComponent> DecalRef(TEXT("/Script/Engine.Material'/Game/Spectrum/Assets/Decal/M_Circle_Decal.M_Circle_Decal'"));
-	//if (DecalSphereRef.Succeeded())
-	//{
-	//	Decal->SetDecal(DecalRef.Object);
-	//}
-
+	
 	static ConstructorHelpers::FObjectFinder<UMaterialInterface> MeshFinder1(
 		TEXT("/Script/Engine.Material'/Game/Spectrum/Assets/Decal/M_Decal_Sphere_Black.M_Decal_Sphere_Black'"));
 	if (MeshFinder1.Succeeded())
@@ -698,92 +692,20 @@ void ASPCharacterPlayer::BlackPotionSpawn(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::GreenPotionSpawn(const FInputActionValue& Value)
 {
-	if (false == bIsSpawn)
-	{
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-		SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
-		Potion = GetWorld()->SpawnActor<ASPGreenPotion>(ASPGreenPotion::StaticClass(),
-		                                                GetMesh()->GetSocketLocation("Item_Socket"),
-		                                                FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
-		//Potion->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
-		//Potion->SetupAttachment(RootComponent);
-		//Potion->RegisterComponent();
-		bIsSpawn = true;
-		if (Potion)
-		{
-			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
-			                                          EAttachmentRule::SnapToTarget, true);
-			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
-		}
-	}
-	else
-	{
-		if (Potion)
-		{
-			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
-			                                          EAttachmentRule::SnapToTarget, true);
-			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
-		}
-	}
+	ServerRPCGreenPotionSpawn();
+	
 }
 
 void ASPCharacterPlayer::OrangePotionSpawn(const FInputActionValue& Value)
 {
-	if (false == bIsSpawn)
-	{
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-		SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
-		Potion = GetWorld()->SpawnActor<ASPOrangePotion>(ASPOrangePotion::StaticClass(),
-		                                                 GetMesh()->GetSocketLocation("Item_Socket"),
-		                                                 FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
-		bIsSpawn = true;
-		if (Potion)
-		{
-			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
-			                                          EAttachmentRule::SnapToTarget, true);
-			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
-		}
-	}
-	else
-	{
-		if (Potion)
-		{
-			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
-			                                          EAttachmentRule::SnapToTarget, true);
-			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
-		}
-	}
+	ServerRPCOrangePotionSpawn();
+	
 }
 
 void ASPCharacterPlayer::PurplePotionSpawn(const FInputActionValue& Value)
 {
-	if (false == bIsSpawn)
-	{
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-		SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
-		Potion = GetWorld()->SpawnActor<ASPPurplePotion>(ASPPurplePotion::StaticClass(),
-		                                                 GetMesh()->GetSocketLocation("Item_Socket"),
-		                                                 FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
-		bIsSpawn = true;
-		if (Potion)
-		{
-			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
-			                                          EAttachmentRule::SnapToTarget, true);
-			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
-		}
-	}
-	else
-	{
-		if (Potion)
-		{
-			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
-			                                          EAttachmentRule::SnapToTarget, true);
-			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
-		}
-	}
+	ServerRPCPurplePotionSpawn();
+	
 }
 
 void ASPCharacterPlayer::OnRep_Potion()
@@ -813,6 +735,96 @@ void ASPCharacterPlayer::ClientRPCStopAnimation_Implementation(ASPCharacterPlaye
 	}
 }
 
+
+void ASPCharacterPlayer::ServerRPCGreenPotionSpawn_Implementation()
+{
+	if (false == bIsSpawn)
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
+		Potion = GetWorld()->SpawnActor<ASPGreenPotion>(ASPGreenPotion::StaticClass(),
+														GetMesh()->GetSocketLocation("Item_Socket"),
+														FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
+		//Potion->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+		//Potion->SetupAttachment(RootComponent);
+		//Potion->RegisterComponent();
+		bIsSpawn = true;
+		if (Potion)
+		{
+			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+													  EAttachmentRule::SnapToTarget, true);
+			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
+		}
+	}
+	else
+	{
+		if (Potion)
+		{
+			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+													  EAttachmentRule::SnapToTarget, true);
+			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
+		}
+	}
+}
+
+void ASPCharacterPlayer::ServerRPCOrangePotionSpawn_Implementation()
+{
+	if (false == bIsSpawn)
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
+		Potion = GetWorld()->SpawnActor<ASPOrangePotion>(ASPOrangePotion::StaticClass(),
+														 GetMesh()->GetSocketLocation("Item_Socket"),
+														 FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
+		bIsSpawn = true;
+		if (Potion)
+		{
+			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+													  EAttachmentRule::SnapToTarget, true);
+			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
+		}
+	}
+	else
+	{
+		if (Potion)
+		{
+			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+													  EAttachmentRule::SnapToTarget, true);
+			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
+		}
+	}
+}
+
+void ASPCharacterPlayer::ServerRPCPurplePotionSpawn_Implementation()
+{
+	if (false == bIsSpawn)
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
+		Potion = GetWorld()->SpawnActor<ASPPurplePotion>(ASPPurplePotion::StaticClass(),
+														 GetMesh()->GetSocketLocation("Item_Socket"),
+														 FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
+		bIsSpawn = true;
+		if (Potion)
+		{
+			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+													  EAttachmentRule::SnapToTarget, true);
+			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
+		}
+	}
+	else
+	{
+		if (Potion)
+		{
+			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+													  EAttachmentRule::SnapToTarget, true);
+			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
+		}
+	}
+}
 
 void ASPCharacterPlayer::OnRep_PotionSpawn()
 {
@@ -1080,7 +1092,6 @@ void ASPCharacterPlayer::ServerRPCBlackPotionSpawn_Implementation()
 			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
 		}
 	}
-	//MulticastRPCPotion();
 }
 
 void ASPCharacterPlayer::ServerRPCGraping_Implementation()

@@ -20,6 +20,8 @@ ASPGreenPotion::ASPGreenPotion()
 		PotionMesh->SetCollisionProfileName(TEXT("NoCollision"));
 	}
 	GreenExplosionComponent = CreateDefaultSubobject<USPGreenExplosionComponent>(TEXT("ExplosionComponent"));
+	this->SetReplicates(true);
+	this->AActor::SetReplicateMovement(true);
 }
 
 void ASPGreenPotion::BeginPlay()

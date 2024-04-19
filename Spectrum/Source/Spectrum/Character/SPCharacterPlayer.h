@@ -311,6 +311,15 @@ protected:
 	UFUNCTION(Server, Unreliable)
 	void ServerRPCStopGraping();
 	
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCGreenPotionSpawn();
+	
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCOrangePotionSpawn();
+
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCPurplePotionSpawn();
+	
 	//ClientRPC
 	UFUNCTION(Client, Unreliable)
 	void ClientRPCTurnAnimation(ASPCharacterPlayer* CharacterToPlay);

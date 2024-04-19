@@ -18,6 +18,8 @@ ASPOrangePotion::ASPOrangePotion()
 		PotionMesh->SetCollisionProfileName(TEXT("NoCollision"));
 	}
 	OrangeExplosionComponent = CreateDefaultSubobject<USPOrangeExplosionComponent>(TEXT("ExplosionComponent"));
+	this->SetReplicates(true);
+	this->AActor::SetReplicateMovement(true);
 }
 
 void ASPOrangePotion::BeginPlay()

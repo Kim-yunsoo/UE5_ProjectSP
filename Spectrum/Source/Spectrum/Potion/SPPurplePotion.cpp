@@ -19,6 +19,8 @@ ASPPurplePotion::ASPPurplePotion()
 		PotionMesh->SetCollisionProfileName(TEXT("NoCollision"));
 	}
 	PurpleExplosionComponent = CreateDefaultSubobject<USPPurpleExplosionComponent>(TEXT("ExplosionComponent"));
+	this->SetReplicates(true);
+	this->AActor::SetReplicateMovement(true);
 }
 
 void ASPPurplePotion::BeginPlay()
