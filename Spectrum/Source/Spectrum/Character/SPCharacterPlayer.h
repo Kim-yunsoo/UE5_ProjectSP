@@ -36,19 +36,15 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;	// 매번 계속 해야 하는 것들 여기에
 
-
 public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
 
 protected:
 	void ChangeCharacterControl();
 	void SetCharacterControl(ECharacterControlType NewCharacterControlType);
 	virtual void SetCharacterControlData(const class USPCharacterControlData* CharacterControlData);
 	void CameraMove();
-
 //
-
 	void ShoulderMove(const FInputActionValue& Value);
 	void ShoulderLook(const FInputActionValue& Value);
 	void StopShoulderLook(const FInputActionValue& Value);
@@ -99,7 +95,6 @@ protected:
 
 	FVector2D LastDesiredInput;
 
-
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	TObjectPtr<class USkeletalMeshComponent>Face;
@@ -135,7 +130,6 @@ public:
 	float PreControlYawRotation;
 
 protected:
-
 	UPROPERTY(EditAnywhere, Category = CharacterControl, Meta = (AllowPrivateAccess = "true"))
 	TMap<ECharacterControlType, class USPCharacterControlData*> CharacterControlManager;
 
@@ -154,8 +148,7 @@ protected:
 	UPROPERTY(ReplicatedUsing = OnRep_PotionSpawn, EditAnywhere, BlueprintReadWrite, Category = "Character")
 	uint8 bIsSpawn : 1; //Spawn check
 
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	UPROPERTY(Replicated, BlueprintReadWrite, Category = "Character")
 	uint8 bIsThrowReady : 1; //Throw Ready? 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat, Meta = (AllowPrivateAccess = "true"))
@@ -171,8 +164,6 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Camera, Meta = (AllowPrivateAccess = "ture"))
 	TObjectPtr<class UCameraComponent> FollowCamera;
-
-
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
@@ -309,7 +300,7 @@ protected:
 	void ServerRPCBlackPotionSpawn();
 
 	UFUNCTION(Server, Unreliable)
-	void ServerRPCThrowPotion();
+	void ServerRPCThrowPotion(bool IsThrowReady);
 
 	UFUNCTION(Server, Unreliable)
 	void ServerRPCTurnReady();
@@ -317,6 +308,8 @@ protected:
 	UFUNCTION(Server, Unreliable)
 	void ServerRPCdirection(bool TurnRight, bool Turnleft);
 	
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCShowProjectilePath();
 	
 	//ClientRPC
 	UFUNCTION(Client, Unreliable)

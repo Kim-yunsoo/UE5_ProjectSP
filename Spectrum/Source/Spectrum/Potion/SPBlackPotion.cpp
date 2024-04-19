@@ -21,6 +21,7 @@ ASPBlackPotion::ASPBlackPotion()
 	ExplosionComponent = CreateDefaultSubobject<USPExplosionComponent>(TEXT("ExplosionComponent"));
 	//ConstructorHelpers::FObjectFinder<UStaticMeshComponent> BlackPotionRef(TEXT(""));
 	this->SetReplicates(true);
+	this->AActor::SetReplicateMovement(true);
 }
 
 // Called when the game starts or when spawned
