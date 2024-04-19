@@ -2,6 +2,8 @@
 
 
 #include "Component/SPExplosionComponent.h"
+
+#include "SpectrumLog.h"
 #include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Interface/SPDamageInterface.h"
@@ -30,7 +32,6 @@ void USPExplosionComponent::BeginPlay()
 void USPExplosionComponent::Explode()
 {
 	Super::Explode();
-
 	//Multi Sphere Trace For Object
 	//Start & End
 	FVector SphereTracePoint = GetOwner()->GetRootComponent()->GetComponentLocation();
@@ -43,21 +44,27 @@ void USPExplosionComponent::Explode()
 	FLinearColor RedColor(1.0f, 0.0f, 0.0f);
 	float DrawTime = 5.0f;
 	bool Success = UKismetSystemLibrary::SphereTraceMultiForObjects(GetWorld(), SphereTracePoint, SphereTracePoint,
-	                                                                Radius, ObjectTypes, false, ActorsToIgnore,
-	                                                                EDrawDebugTrace::ForDuration, OutHits, true,
-	                                                                GreenColor, RedColor, DrawTime);
+																	Radius, ObjectTypes, false, ActorsToIgnore,
+																	EDrawDebugTrace::ForDuration, OutHits, true,
+																	GreenColor, RedColor, DrawTime);
+
 	if (Success)
 	{
-		//for each loop ±¸Çö
-		for (const FHitResult& HitResult : OutHits)
-		{
-			AActor* HitActor = HitResult.GetActor();
-			if (HitActor)
-			{
-				ActorArray.AddUnique(HitActor);
-			}
-		}
+		MultiRPCExplosion(OutHits);
+	}
+}
 
+void USPExplosionComponent::MultiRPCExplosion_Implementation(const TArray<FHitResult>& OutHits)
+{
+	SP_SUBLOG(LogSPNetwork,Log,TEXT("OnExplosionHit first!! "));
+	for (const FHitResult& HitResult : OutHits)
+	{
+		AActor* HitActor = HitResult.GetActor();
+		if (HitActor)
+		{
+			ActorArray.AddUnique(HitActor);
+		}
+	}
 		if (ActorArray.Num() > 0)
 		{
 			for (AActor*& HitActor : ActorArray)
@@ -65,9 +72,32 @@ void USPExplosionComponent::Explode()
 				ISPDamageInterface* DamageInterface = Cast<ISPDamageInterface>(HitActor);
 				if (DamageInterface)
 				{
+					SP_SUBLOG(LogSPNetwork,Log,TEXT("OnExplosionHit !! "));
 					DamageInterface->OnExplosionHit();
 				}
 			}
 		}
-	}
 }
+
+
+
+// void USPExplosionComponent::MultiRPCExplosion_Implementation(const TArray<AActor*> ActorArray)
+// {
+// 	// if (ActorArray.Num() > 0)
+// 	// {
+// 	// 	for (AActor*& HitActor : ActorArray)
+// 	// 	{
+// 	// 		ISPDamageInterface* DamageInterface = Cast<ISPDamageInterface>(HitActor);
+// 	// 		if (DamageInterface)
+// 	// 		{
+// 	// 			SP_SUBLOG(LogSPNetwork,Log,TEXT("OnExplosionHit !! "));
+// 	// 			DamageInterface->OnExplosionHit();
+// 	// 		}
+// 	// 	}
+// 	// }
+// }
+
+//
+
+
+

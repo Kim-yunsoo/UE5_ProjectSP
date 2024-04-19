@@ -23,9 +23,11 @@ protected:
 	//virtual void Hit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) override;
 
 public:	
-
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USPExplosionComponent> ExplosionComponent ;
+	//RPC
+	UFUNCTION(NetMulticast, Unreliable)
+	void MultiRPCExplosion();
 
 	UFUNCTION()
 	void HandleActorHit(AActor* SelfActor,
@@ -33,4 +35,6 @@ public:
 		FVector NormalImpulse,
 		const FHitResult& Hit
 	);
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 };
