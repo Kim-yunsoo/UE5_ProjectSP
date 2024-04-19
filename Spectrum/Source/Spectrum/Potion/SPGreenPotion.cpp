@@ -22,6 +22,7 @@ ASPGreenPotion::ASPGreenPotion()
 	GreenExplosionComponent = CreateDefaultSubobject<USPGreenExplosionComponent>(TEXT("ExplosionComponent"));
 	this->SetReplicates(true);
 	this->AActor::SetReplicateMovement(true);
+	GreenExplosionComponent->SetIsReplicated(true);
 }
 
 void ASPGreenPotion::BeginPlay()

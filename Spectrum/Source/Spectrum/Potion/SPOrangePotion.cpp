@@ -20,6 +20,7 @@ ASPOrangePotion::ASPOrangePotion()
 	OrangeExplosionComponent = CreateDefaultSubobject<USPOrangeExplosionComponent>(TEXT("ExplosionComponent"));
 	this->SetReplicates(true);
 	this->AActor::SetReplicateMovement(true);
+	OrangeExplosionComponent->SetIsReplicated(true);
 }
 
 void ASPOrangePotion::BeginPlay()

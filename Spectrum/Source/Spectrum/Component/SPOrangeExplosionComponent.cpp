@@ -35,25 +35,29 @@ void USPOrangeExplosionComponent::Explode()
 																	GreenColor, RedColor, DrawTime);
 	if (Success)
 	{
-		//for each loop ±¸Çö
-		for (const FHitResult& HitResult : OutHits)
-		{
-			AActor* HitActor = HitResult.GetActor();
-			if (HitActor)
-			{
-				ActorArray.AddUnique(HitActor);
-			}
-		}
+		MultiRPCOrangeExplosion(OutHits);
+	}
+}
 
-		if (ActorArray.Num() > 0)
+void USPOrangeExplosionComponent::MultiRPCOrangeExplosion_Implementation(const TArray<FHitResult>& Array)
+{
+	for (const FHitResult& HitResult : Array)
+	{
+		AActor* HitActor = HitResult.GetActor();
+		if (HitActor)
 		{
-			for (AActor*& HitActor : ActorArray)
+			ActorArray.AddUnique(HitActor);
+		}
+	}
+
+	if (ActorArray.Num() > 0)
+	{
+		for (AActor*& HitActor : ActorArray)
+		{
+			ISPDamageInterface* DamageInterface = Cast<ISPDamageInterface>(HitActor);
+			if (DamageInterface)
 			{
-				ISPDamageInterface* DamageInterface = Cast<ISPDamageInterface>(HitActor);
-				if (DamageInterface)
-				{
-					DamageInterface->OnChangeColorOrange();
-				}
+				DamageInterface->OnChangeColorOrange();
 			}
 		}
 	}

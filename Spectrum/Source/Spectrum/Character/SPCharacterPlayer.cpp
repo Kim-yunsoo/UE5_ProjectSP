@@ -817,6 +817,14 @@ void ASPCharacterPlayer::ServerRPCPurplePotionSpawn_Implementation()
 }
 
 
+void ASPCharacterPlayer::ClientRPCTurnAnimation_Implementation(ASPCharacterPlayer* CharacterToPlay)
+{
+	if (CharacterToPlay)
+	{
+		CharacterToPlay->PlayTurnAnimation();
+	}
+}
+
 void ASPCharacterPlayer::OnRep_PotionSpawn()
 {
 	SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("Potionspawn"));

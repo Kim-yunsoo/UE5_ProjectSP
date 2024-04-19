@@ -34,27 +34,33 @@ void USPGreenExplosionComponent::Explode()
 																	Radius, ObjectTypes, false, ActorsToIgnore,
 																	EDrawDebugTrace::ForDuration, OutHits, true,
 																	GreenColor, RedColor, DrawTime);
+
 	if (Success)
 	{
-		//for each loop ±¸Çö
-		for (const FHitResult& HitResult : OutHits)
-		{
-			AActor* HitActor = HitResult.GetActor();
-			if (HitActor)
-			{
-				ActorArray.AddUnique(HitActor);
-			}
-		}
+		MultiRPCGreenExplosion(OutHits);
+	}
+}
 
-		if (ActorArray.Num() > 0)
+void USPGreenExplosionComponent::MultiRPCGreenExplosion_Implementation(const TArray<FHitResult>& OutHits)
+{
+
+	for (const FHitResult& HitResult : OutHits)
+	{
+		AActor* HitActor = HitResult.GetActor();
+		if (HitActor)
 		{
-			for (AActor*& HitActor : ActorArray)
+			ActorArray.AddUnique(HitActor);
+		}
+	}
+
+	if (ActorArray.Num() > 0)
+	{
+		for (AActor*& HitActor : ActorArray)
+		{
+			ISPDamageInterface* DamageInterface = Cast<ISPDamageInterface>(HitActor);
+			if (DamageInterface)
 			{
-				ISPDamageInterface* DamageInterface = Cast<ISPDamageInterface>(HitActor);
-				if (DamageInterface)
-				{
-					DamageInterface->OnChangeColorGreen();
-				}
+				DamageInterface->OnChangeColorGreen();
 			}
 		}
 	}

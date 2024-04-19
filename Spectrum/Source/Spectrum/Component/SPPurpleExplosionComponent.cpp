@@ -35,25 +35,30 @@ void USPPurpleExplosionComponent::Explode()
 																	GreenColor, RedColor, DrawTime);
 	if (Success)
 	{
-		//for each loop 구현
-		for (const FHitResult& HitResult : OutHits)
-		{
-			AActor* HitActor = HitResult.GetActor();
-			if (HitActor)
-			{
-				ActorArray.AddUnique(HitActor);
-			}
-		}
+		MultiRPCPrupleExplosion(OutHits);
+	}
+}
 
-		if (ActorArray.Num() > 0)
+void USPPurpleExplosionComponent::MultiRPCPrupleExplosion_Implementation(const TArray<FHitResult>& Array)
+{
+	//for each loop 구현
+	for (const FHitResult& HitResult : Array)
+	{
+		AActor* HitActor = HitResult.GetActor();
+		if (HitActor)
 		{
-			for (AActor*& HitActor : ActorArray)
+			ActorArray.AddUnique(HitActor);
+		}
+	}
+
+	if (ActorArray.Num() > 0)
+	{
+		for (AActor*& HitActor : ActorArray)
+		{
+			ISPDamageInterface* DamageInterface = Cast<ISPDamageInterface>(HitActor);
+			if (DamageInterface)
 			{
-				ISPDamageInterface* DamageInterface = Cast<ISPDamageInterface>(HitActor);
-				if (DamageInterface)
-				{
-					DamageInterface->OnChangeColorPurple();
-				}
+				DamageInterface->OnChangeColorPurple();
 			}
 		}
 	}

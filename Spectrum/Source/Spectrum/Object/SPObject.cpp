@@ -140,6 +140,7 @@ void ASPObject::OnChangeColorGreen()
 {
 	if (ObjectDynamic)
 	{
+		
 		MyColorType = ColorType::Green;
 		ObjectDynamic->SetVectorParameterValue(FName(TEXT("Base Color Tint")),
 		                                       LinearColors[static_cast<uint8>(MyColorType)]);
