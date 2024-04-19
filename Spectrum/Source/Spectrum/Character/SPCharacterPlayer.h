@@ -122,10 +122,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gravity Gun")
 	TObjectPtr<class UPhysicsHandleComponent> PhysicsHandleComponent;
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(Replicated, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
 	uint8 bIsTurnRight : 1;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(Replicated, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
 	uint8 bIsTurnLeft : 1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
@@ -159,6 +159,20 @@ protected:
 
 	UFUNCTION(Server, Unreliable)
 	void ServerRPCBlackPotionSpawn();
+
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCThrowPotion();
+
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCTurnReady();
+
+	void PlayTurnAnimation();
+
+	UFUNCTION(Client, Unreliable)
+	void ClientRPCTurnAnimation(ASPCharacterPlayer* CharacterToPlay);
+
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCdirection(bool TurnRight, bool Turnleft);
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	uint8 bIsThrowReady : 1; //Throw Ready? 
