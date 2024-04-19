@@ -560,7 +560,7 @@ void ASPCharacterPlayer::Aiming(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::ServerRPCAiming_Implementation()
 {
-		bIsAiming = true;
+	bIsAiming = true;
 }
 
 void ASPCharacterPlayer::StopAiming(const FInputActionValue& Value)
@@ -856,7 +856,7 @@ void ASPCharacterPlayer::ServerRPCdirection_Implementation(bool TurnRight, bool 
 
 void ASPCharacterPlayer::ServerRPCThrowPotion_Implementation(bool IsThrowReady)
 {
-	if(IsThrowReady)
+	if (IsThrowReady)
 	{
 		PlayThrowAnimation();
 		if (Potion)
@@ -872,7 +872,8 @@ void ASPCharacterPlayer::ServerRPCThrowPotion_Implementation(bool IsThrowReady)
 		bIsTurnReady = false;
 		bIsSpawn = false;
 		Potion = nullptr;
-		for (APlayerController* PlayerController : TActorRange<APlayerController>(GetWorld())) //플레이어 컨트롤러 목록을 서버에서 가지고 오기
+		for (APlayerController* PlayerController : TActorRange<APlayerController>(GetWorld()))
+		//플레이어 컨트롤러 목록을 서버에서 가지고 오기
 		{
 			if (PlayerController && GetController() != PlayerController) //시뮬레이트 프록시
 			{
@@ -892,7 +893,8 @@ void ASPCharacterPlayer::ServerRPCThrowPotion_Implementation(bool IsThrowReady)
 	else
 	{
 		PlayStopAnimation();
-		for (APlayerController* PlayerController : TActorRange<APlayerController>(GetWorld())) //플레이어 컨트롤러 목록을 서버에서 가지고 오기
+		for (APlayerController* PlayerController : TActorRange<APlayerController>(GetWorld()))
+		//플레이어 컨트롤러 목록을 서버에서 가지고 오기
 		{
 			if (PlayerController && GetController() != PlayerController) //시뮬레이트 프록시
 			{
@@ -1085,7 +1087,6 @@ void ASPCharacterPlayer::ServerRPCBlackPotionSpawn_Implementation()
 
 void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 {
-	
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->bUseControllerDesiredRotation = false;
 	if (false == bIsHolding)
@@ -1130,7 +1131,7 @@ void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 			{
 				outHitResult.Component->SetSimulatePhysics(true);
 				HitComponent = outHitResult.GetComponent();
-			
+
 				FVector SphereTracePoint = HitComponent->K2_GetComponentLocation();
 				float Radius = 150.f;
 				TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
