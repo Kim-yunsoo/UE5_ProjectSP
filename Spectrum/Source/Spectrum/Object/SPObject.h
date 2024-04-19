@@ -58,7 +58,7 @@ protected:
 	float MovePacketSendTimer = MOVE_PACKET_SEND_DELAY;
 
 protected:
-	UPROPERTY(BlueprintReadWrite, Meta = (AllowPrivateAccess = "ture"))
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Meta = (AllowPrivateAccess = "ture"))
 	TObjectPtr<UStaticMeshComponent> ObjectMesh ;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (AllowPrivateAccess = "ture"))

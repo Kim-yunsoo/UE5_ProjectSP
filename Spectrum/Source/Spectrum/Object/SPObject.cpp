@@ -51,8 +51,6 @@ void ASPObject::BeginPlay()
 
 	RootComponent->SetMobility(EComponentMobility::Movable);
 	ObjectLocation = GetActorLocation();
-
-
 	OriginMaterial = ObjectMesh->GetMaterial(ElementIndex); // mesh origin
 	ObjectDynamic = ObjectMesh->CreateDynamicMaterialInstance(ElementIndex, nullptr, FName(TEXT("None")));
 	ChaosDynamic = UMaterialInstanceDynamic::Create(OriginMaterial, nullptr, NAME_None);
@@ -64,8 +62,7 @@ void ASPObject::OnExplosionHit()
 	{
 		ObjectMesh->SetHiddenInGame(true);
 		ObjectMesh->SetSimulatePhysics(true);
-		ObjectMesh->SetCollisionProfileName(TEXT("DestructionCollision"));
-		SP_LOG(LogSPNetwork, Log, TEXT("DestructionCollision !!!"));
+		ObjectMesh->SetCollisionProfileName(TEXT("OnlyStaticCollision"));
 
 		//FName ComponentName = FName(TEXT("GC_Cone"));
 		UGeometryCollectionComponent* Geometry = NewObject<UGeometryCollectionComponent>(
@@ -83,13 +80,13 @@ void ASPObject::OnExplosionHit()
 			}
 			Geometry->RegisterComponent();
 			Geometry->AddImpulse(FVector(0.0f, 0.0f, 125.f));
-			FTimerHandle ChangeCollisionProfileTimer;
-			float DelayInSeconds = 1.0f;
-			GetWorld()->GetTimerManager().SetTimer(ChangeCollisionProfileTimer, [this, Geometry]()
-			{
-				Geometry->SetCollisionProfileName(TEXT("OnlyStaticCollision"));
-				ObjectMesh->SetCollisionProfileName(TEXT("OnlyStaticCollision"));
-			}, DelayInSeconds, false);
+			// FTimerHandle ChangeCollisionProfileTimer;
+			// float DelayInSeconds = 0.5f;
+			// GetWorld()->GetTimerManager().SetTimer(ChangeCollisionProfileTimer, [this, Geometry]()
+			// {
+			// 	Geometry->SetCollisionProfileName(TEXT("OnlyStaticCollision"));
+			// 	ObjectMesh->SetCollisionProfileName(TEXT("OnlyStaticCollision"));
+			// }, DelayInSeconds, false);
 			this->SetLifeSpan(5.0f);
 		}
 
