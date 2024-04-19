@@ -342,32 +342,14 @@ void ASPCharacterPlayer::BeginPlay()
 void ASPCharacterPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	if(bIsAiming)
-	{
-		FRotator ControlRotation = GetControlRotation();
-		FRotator GetActorRotation = this->GetActorRotation();
-		FRotator DeltaRotation=UKismetMathLibrary::NormalizedDeltaRotator(ControlRotation, GetActorRotation);
-
-		float  foo = 0.f;
-
-		FRotator NewRotator = UKismetMathLibrary::MakeRotator(0, DeltaY, DeltaZ);
-
-		FRotator RInterp = UKismetMathLibrary::RInterpTo(NewRotator, DeltaRotation, DeltaTime, 10);
-		UKismetMathLibrary::BreakRotator(RInterp, foo, DeltaY, DeltaZ);
-
-		DeltaY = UKismetMathLibrary::ClampAngle(DeltaY, -90, 90);
-		DeltaZ = UKismetMathLibrary::ClampAngle(DeltaZ, -0, 0);
-	}
-
-	bool ForceSendPacket = false;
-
-	if (LastDesiredInput != DesiredInput)
-	{
-		ForceSendPacket = true;
-		LastDesiredInput = DesiredInput;
-	}
-
+	// bool ForceSendPacket = false;
+	//
+	// if (LastDesiredInput != DesiredInput)
+	// {
+	// 	ForceSendPacket = true;
+	// 	LastDesiredInput = DesiredInput;
+	// }
+	//
 
 	if (bIsHolding)
 	{
@@ -589,15 +571,6 @@ void ASPCharacterPlayer::Aiming(const FInputActionValue& Value)
 		}
 	}
 	ServerRPCAiming();
-	// else
-	// {
-	// 	MulticastRPCAiming();
-	// }
-	// else
-	// {
-	// 	SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("MulticastRPCAiming"));
-	// 	MulticastRPCAiming();
-	// }
 }
 
 void ASPCharacterPlayer::ServerRPCAiming_Implementation()
@@ -606,21 +579,6 @@ void ASPCharacterPlayer::ServerRPCAiming_Implementation()
 	{
 		Aiming_CameraMove(); //애니메이션 작동
 		bIsAiming = true;
-	}
-	for (APlayerController* PlayerController : TActorRange<APlayerController>(GetWorld()))
-	{
-		if (PlayerController && GetController() != PlayerController) //현재 로직을 수행하고 있는 컨트롤러가 아닌 경우 
-		{
-			if (!PlayerController->IsLocalController()) //이미 재생을 했기에 
-			{
-				ASPCharacterPlayer* OtherPlayer = Cast<ASPCharacterPlayer>(PlayerController->GetPawn());
-				//서버도 아니고 공격 명령을 내린 플레이어 컨트롤러도 아닌 시뮬레이트 프록시
-				if (OtherPlayer)
-				{
-					OtherPlayer->ClientRPCAiming(this);
-				}
-			}
-		}
 	}
 }
 
@@ -1140,8 +1098,6 @@ void ASPCharacterPlayer::ClientRPCAiming_Implementation(ASPCharacterPlayer* Char
 	if (false == bIsHolding)
 	{
 		SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("ClientRPCAiming_Implementation"));
-		CharacterToPlay->GetCharacterMovement()->bOrientRotationToMovement = false;
-		CharacterToPlay->GetCharacterMovement()->bUseControllerDesiredRotation = true;
 		CharacterToPlay->bIsAiming = true;
 	}
 }
@@ -1172,23 +1128,6 @@ void ASPCharacterPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(ASPCharacterPlayer, bIsAiming);
-	DOREPLIFETIME(ASPCharacterPlayer, DeltaY);
-	DOREPLIFETIME(ASPCharacterPlayer, DeltaZ);
-}
-
-void ASPCharacterPlayer::OnRep_Aiming()
-{
-	// GetCharacterMovement()->bOrientRotationToMovement = false;
-	// GetCharacterMovement()->bUseControllerDesiredRotation = true;
-}
-
-void ASPCharacterPlayer::MulticastRPCAiming_Implementation()
-{
-	// if (false == bIsHolding)
-	// {
-	// 	Aiming_CameraMove();
-	// 	bIsAiming = true;
-	// }
 }
 
 
@@ -1201,10 +1140,6 @@ void ASPCharacterPlayer::ServerRPCSpeedUp_Implementation()
 {
 	GetCharacterMovement()->MaxWalkSpeed = 900.f;
 }
-
-// bool ASPCharacterPlayer::ServerRPCSpeedUp_Validate()
-// {
-// }
 
 void ASPCharacterPlayer::QuaterMove(const FInputActionValue& Value)
 {

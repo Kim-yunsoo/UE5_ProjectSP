@@ -143,7 +143,7 @@ protected:
 	TObjectPtr<class ASPPotionBase> Potion;
 
 
-	UPROPERTY(ReplicatedUsing=OnRep_Aiming,BlueprintReadWrite, Category = "Character")
+	UPROPERTY(Replicated,BlueprintReadWrite, Category = "Character")
 	uint8 bIsAiming : 1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
@@ -310,22 +310,12 @@ protected:
 	void ClientRPCAiming(ASPCharacterPlayer* CharacterToPlay);
 	
 	void Aiming_CameraMove();
-
-	UFUNCTION(NetMulticast, Unreliable)
-	void MulticastRPCAiming();
-public:
-	UPROPERTY(Replicated,EditAnywhere, BlueprintReadOnly, Category = Character)
-	float DeltaY;
-
-	UPROPERTY(Replicated,EditAnywhere, BlueprintReadOnly, Category = Character)
-	float DeltaZ;
-
 public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;;
 	//funtion
 	// virtual void PossessedBy(AController* NewController) override;
+
+
 	
 	// virtual void MoveAutonomous( float ClientTimeStamp, float DeltaTime, uint8 CompressedFlags, const FVector& NewAccel);
-	UFUNCTION()
-	void OnRep_Aiming();
 };
