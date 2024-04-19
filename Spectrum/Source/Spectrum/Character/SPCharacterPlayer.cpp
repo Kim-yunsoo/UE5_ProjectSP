@@ -1093,15 +1093,6 @@ void ASPCharacterPlayer::ShowProjectilePath()
 }
 
 
-void ASPCharacterPlayer::ClientRPCAiming_Implementation(ASPCharacterPlayer* CharacterToPlay)
-{
-	if (false == bIsHolding)
-	{
-		SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("ClientRPCAiming_Implementation"));
-		CharacterToPlay->bIsAiming = true;
-	}
-}
-
 void ASPCharacterPlayer::Aiming_CameraMove()
 {
 	if (false == bIsHolding)

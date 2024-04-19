@@ -305,17 +305,6 @@ protected:
 
 	UFUNCTION(Server, Unreliable)
 	void ServerRPCAiming();
-
-	UFUNCTION(Client, Unreliable)
-	void ClientRPCAiming(ASPCharacterPlayer* CharacterToPlay);
 	
 	void Aiming_CameraMove();
-public:
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;;
-	//funtion
-	// virtual void PossessedBy(AController* NewController) override;
-
-
-	
-	// virtual void MoveAutonomous( float ClientTimeStamp, float DeltaTime, uint8 CompressedFlags, const FVector& NewAccel);
 };
