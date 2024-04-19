@@ -301,7 +301,7 @@ protected:
 
 	UFUNCTION(Server, Unreliable)
 	void ServerRPCThrowPotion(bool IsThrowReady);
-
+	
 	UFUNCTION(Server, Unreliable)
 	void ServerRPCTurnReady();
 	
@@ -315,7 +315,11 @@ protected:
 	UFUNCTION(Client, Unreliable)
 	void ClientRPCTurnAnimation(ASPCharacterPlayer* CharacterToPlay);
 
+	UFUNCTION(Client, Unreliable)
+	void ClientRPCThrowAnimation(ASPCharacterPlayer* CharacterToPlay);
 
+	UFUNCTION(Client, Unreliable)
+	void ClientRPCStopAnimation(ASPCharacterPlayer* CharacterToPlay);
 	
 	//OnRep
 	UFUNCTION()
@@ -324,8 +328,8 @@ protected:
 	//function
 	void Aiming_CameraMove();
 	void PlayTurnAnimation();
-
-
+	void PlayThrowAnimation();
+	void PlayStopAnimation();
 	//virtual void PossessedBy(AController* NewController) override;
 	
 	// virtual void MoveAutonomous( float ClientTimeStamp, float DeltaTime, uint8 CompressedFlags, const FVector& NewAccel);

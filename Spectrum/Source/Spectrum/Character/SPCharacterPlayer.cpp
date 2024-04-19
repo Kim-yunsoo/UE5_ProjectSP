@@ -567,22 +567,14 @@ void ASPCharacterPlayer::Aiming(const FInputActionValue& Value)
 {
 	if (!HasAuthority()) //클라이언트
 	{
-		if (false == bIsHolding)
-		{
-			Aiming_CameraMove(); //애니메이션 작동
-			bIsAiming = true;
-		}
+		Aiming_CameraMove(); //애니메이션 작동
+		ServerRPCAiming();
 	}
-	ServerRPCAiming();
 }
 
 void ASPCharacterPlayer::ServerRPCAiming_Implementation()
 {
-	if (false == bIsHolding)
-	{
-		Aiming_CameraMove(); //애니메이션 작동
 		bIsAiming = true;
-	}
 }
 
 void ASPCharacterPlayer::StopAiming(const FInputActionValue& Value)
@@ -786,9 +778,7 @@ void ASPCharacterPlayer::ThrowPotion(const FInputActionValue& Value)
 		ServerRPCThrowPotion(bIsThrowReady);
 		if (!HasAuthority())
 		{
-			UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-			UAnimInstance* TorsoAnimInstance = GetMesh()->GetAnimInstance();
-			AnimInstance->Montage_JumpToSection(FName("End"), ThrowMontage);
+			PlayThrowAnimation();
 			bIsThrowReady = false;
 			GetCharacterMovement()->bOrientRotationToMovement = true;
 			GetCharacterMovement()->bUseControllerDesiredRotation = false;
@@ -796,17 +786,15 @@ void ASPCharacterPlayer::ThrowPotion(const FInputActionValue& Value)
 			bIsSpawn = false;
 			Potion = nullptr;
 		}
+		bIsTurnReady = false;
 	}
 	else
 	{
-		ServerRPCThrowPotion(bIsThrowReady);
 		if (!HasAuthority())
 		{
-			UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-			UAnimInstance* TorsoAnimInstance = GetMesh()->GetAnimInstance();
-			AnimInstance->Montage_Stop(0.0f);
-			// TorsoAnimInstance->Montage_Stop(0.0f);
+			PlayStopAnimation();
 		}
+		ServerRPCThrowPotion(bIsThrowReady);
 	}
 }
 
@@ -1047,6 +1035,22 @@ void ASPCharacterPlayer::ServerRPCShowProjectilePath_Implementation()
 	}
 }
 
+void ASPCharacterPlayer::ClientRPCThrowAnimation_Implementation(ASPCharacterPlayer* CharacterToPlay)
+{
+	if (CharacterToPlay)
+	{
+		CharacterToPlay->PlayThrowAnimation();
+	}
+}
+
+void ASPCharacterPlayer::ClientRPCStopAnimation_Implementation(ASPCharacterPlayer* CharacterToPlay)
+{
+	if (CharacterToPlay)
+	{
+		CharacterToPlay->PlayStopAnimation();
+	}
+}
+
 void ASPCharacterPlayer::OnRep_PotionSpawn()
 {
 	SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("Potionspawn"));
@@ -1071,6 +1075,20 @@ void ASPCharacterPlayer::PlayTurnAnimation()
 	// TorsoAnimInstance->Montage_Play(ThrowMontage, 1.0f);
 	GetCharacterMovement()->bOrientRotationToMovement = false;
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
+}
+
+void ASPCharacterPlayer::PlayThrowAnimation()
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	UAnimInstance* TorsoAnimInstance = GetMesh()->GetAnimInstance();
+	AnimInstance->Montage_JumpToSection(FName("End"), ThrowMontage);
+}
+
+void ASPCharacterPlayer::PlayStopAnimation()
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	UAnimInstance* TorsoAnimInstance = GetMesh()->GetAnimInstance();
+	AnimInstance->Montage_Stop(0.0f);
 }
 
 void ASPCharacterPlayer::ServerRPCdirection_Implementation(bool TurnRight, bool Turnleft)
@@ -1113,6 +1131,7 @@ void ASPCharacterPlayer::ServerRPCThrowPotion_Implementation(bool IsThrowReady)
 {
 	if(IsThrowReady)
 	{
+		PlayThrowAnimation();
 		if (Potion)
 		{
 			GetController()->GetControlRotation();
@@ -1126,12 +1145,42 @@ void ASPCharacterPlayer::ServerRPCThrowPotion_Implementation(bool IsThrowReady)
 		bIsTurnReady = false;
 		bIsSpawn = false;
 		Potion = nullptr;
+		for (APlayerController* PlayerController : TActorRange<APlayerController>(GetWorld())) //플레이어 컨트롤러 목록을 서버에서 가지고 오기
+		{
+			if (PlayerController && GetController() != PlayerController) //시뮬레이트 프록시
+			{
+				if (!PlayerController->IsLocalController())
+				{
+					//서버 아니고 공격 명령 내린 플레이어 컨트롤러도 아닌 시뮬레이트 프록시
+					//폰을 재생하는 플레이어 컨트롤러
+					ASPCharacterPlayer* OtherPlayer = Cast<ASPCharacterPlayer>(PlayerController->GetPawn());
+					if (OtherPlayer)
+					{
+						OtherPlayer->ClientRPCThrowAnimation(this);
+					}
+				}
+			}
+		}
 	}
 	else
 	{
-		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-		UAnimInstance* TorsoAnimInstance = GetMesh()->GetAnimInstance();
-		AnimInstance->Montage_Stop(0.0f);
+		PlayStopAnimation();
+		for (APlayerController* PlayerController : TActorRange<APlayerController>(GetWorld())) //플레이어 컨트롤러 목록을 서버에서 가지고 오기
+		{
+			if (PlayerController && GetController() != PlayerController) //시뮬레이트 프록시
+			{
+				if (!PlayerController->IsLocalController())
+				{
+					//서버 아니고 공격 명령 내린 플레이어 컨트롤러도 아닌 시뮬레이트 프록시
+					//폰을 재생하는 플레이어 컨트롤러
+					ASPCharacterPlayer* OtherPlayer = Cast<ASPCharacterPlayer>(PlayerController->GetPawn());
+					if (OtherPlayer)
+					{
+						OtherPlayer->ClientRPCStopAnimation(this);
+					}
+				}
+			}
+		}
 	}
 }
 
