@@ -249,6 +249,7 @@ protected:
 
 protected:
 	void ShowProjectilePath();
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile", Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class USplineComponent> Projectile_Path;
 
@@ -300,9 +301,6 @@ protected:
 	
 	UFUNCTION(Server, Unreliable)
 	void ServerRPCdirection(bool TurnRight, bool Turnleft);
-	
-	UFUNCTION(Server, Unreliable)
-	void ServerRPCShowProjectilePath();
 
 	UFUNCTION(Server, Unreliable)
 	void ServerRPCStopAiming();
@@ -324,8 +322,6 @@ protected:
 	void ClientRPCStopAnimation(ASPCharacterPlayer* CharacterToPlay);
 
 	//MultiRPC
-	UFUNCTION(NetMulticast, Unreliable)
-	void MulticastRPCProjectile();
 	
 	//OnRep
 	UFUNCTION()
