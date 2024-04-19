@@ -301,8 +301,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Decal")
 	TArray<UStaticMesh*> MeshArray;
 	
-protected:
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 //RPC
 	UFUNCTION(Server, Unreliable)
@@ -313,6 +311,12 @@ protected:
 
 	UFUNCTION(Server, Unreliable)
 	void ServerRPCAiming();
+	
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCStopAiming();
+
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCBlackPotionSpawn();
 	
 	void Aiming_CameraMove();
 public:

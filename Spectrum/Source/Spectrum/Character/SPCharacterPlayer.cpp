@@ -331,13 +331,6 @@ void ASPCharacterPlayer::BeginPlay()
 	SetCharacterControl(CurrentCharacterControlType);
 	GetMesh()->GetAnimInstance()->OnPlayMontageNotifyBegin.AddDynamic(
 		this, &ASPCharacterPlayer::HandleMontageAnimNotify);
-	// Torso->GetAnimInstance()->OnPlayMontageNotifyBegin.AddDynamic(
-	// 	this, &ASPCharacterPlayer::HandleMontageAnimNotify);
-	APlayerController* PlayerController = Cast<APlayerController>(GetController());
-	if (PlayerController)
-	{
-		EnableInput(PlayerController);
-	}
 }
 
 void ASPCharacterPlayer::Tick(float DeltaTime)
@@ -536,7 +529,7 @@ void ASPCharacterPlayer::SpeedUp(const FInputActionValue& Value)
 {
 	if (false == bIsAiming && false == bIsHolding)
 	{
-		if(!HasAuthority())
+		if (!HasAuthority())
 		{
 			GetCharacterMovement()->MaxWalkSpeed = 900.f;
 		}
@@ -546,7 +539,7 @@ void ASPCharacterPlayer::SpeedUp(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::StopSpeedUp(const FInputActionValue& Value)
 {
-	if(!HasAuthority())
+	if (!HasAuthority())
 	{
 		GetCharacterMovement()->MaxWalkSpeed = 500.f;
 	}
@@ -555,25 +548,20 @@ void ASPCharacterPlayer::StopSpeedUp(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::Aiming(const FInputActionValue& Value)
 {
-	if (!HasAuthority()) //클라이언트
-	{
-		if (false == bIsHolding)
-		{
-			SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("not HasAuthority"));
-			Aiming_CameraMove(); //애니메이션 작동
-			bIsAiming = true;
-		}
-	}
-	ServerRPCAiming();
-}
-
-void ASPCharacterPlayer::ServerRPCAiming_Implementation()
-{
 	if (false == bIsHolding)
 	{
 		Aiming_CameraMove(); //애니메이션 작동
 		bIsAiming = true;
+		if (!HasAuthority())
+		{
+			ServerRPCAiming();
+		}
 	}
+}
+
+void ASPCharacterPlayer::ServerRPCAiming_Implementation()
+{
+	bIsAiming = true;
 }
 
 void ASPCharacterPlayer::StopAiming(const FInputActionValue& Value)
@@ -588,6 +576,15 @@ void ASPCharacterPlayer::StopAiming(const FInputActionValue& Value)
 	                                          EAttachmentRule::KeepWorld, true);
 	FollowCamera->AttachToComponent(CameraBoom, AttachmentRules, NAME_None);
 	CameraMove();
+	if (!HasAuthority())
+	{
+		ServerRPCStopAiming();
+	}
+}
+
+void ASPCharacterPlayer::ServerRPCStopAiming_Implementation()
+{
+	bIsAiming = false;
 }
 
 void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
@@ -816,7 +813,7 @@ void ASPCharacterPlayer::MyStopJumping(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::BlackPotionSpawn(const FInputActionValue& Value)
 {
-	if(!HasAuthority())
+	if (!HasAuthority())
 	{
 		// if (false == bIsSpawn)
 		// {
@@ -942,22 +939,17 @@ void ASPCharacterPlayer::PurplePotionSpawn(const FInputActionValue& Value)
 void ASPCharacterPlayer::OnRep_Potion()
 {
 	SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("Potion"));
-	if(!Potion)
+	if (!Potion)
 	{
 		SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("ISPotion"));
 	}
-	if(Potion)
+	if (Potion)
 	{
 		SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("Potion YSE"));
 		FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
-													  EAttachmentRule::SnapToTarget, true);
+		                                          EAttachmentRule::SnapToTarget, true);
 		Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
 	}
-}
-
-void ASPCharacterPlayer::MulticastRPCPotion_Implementation()
-{
-	SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("Potionspawn"));
 }
 
 void ASPCharacterPlayer::OnRep_PotionSpawn()
@@ -971,7 +963,6 @@ void ASPCharacterPlayer::OnRep_PotionSpawn()
 	// 	                                          EAttachmentRule::SnapToTarget, true);
 	// 	Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
 	// }
-	
 }
 
 void ASPCharacterPlayer::HandleMontageAnimNotify(FName NotifyName,
@@ -1131,9 +1122,8 @@ void ASPCharacterPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(ASPCharacterPlayer, bIsSpawn);
 	DOREPLIFETIME(ASPCharacterPlayer, Potion);
-
+	DOREPLIFETIME(ASPCharacterPlayer, bIsAiming);
 }
-
 
 void ASPCharacterPlayer::ServerRPCBlackPotionSpawn_Implementation()
 {
@@ -1145,13 +1135,13 @@ void ASPCharacterPlayer::ServerRPCBlackPotionSpawn_Implementation()
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
 		Potion = GetWorld()->SpawnActor<ASPBlackPotion>(ASPBlackPotion::StaticClass(),
-														GetMesh()->GetSocketLocation("Item_Socket"),
-														FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
+		                                                GetMesh()->GetSocketLocation("Item_Socket"),
+		                                                FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
 		bIsSpawn = true;
 		if (Potion)
 		{
 			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
-													  EAttachmentRule::SnapToTarget, true);
+			                                          EAttachmentRule::SnapToTarget, true);
 			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
 		}
 	}
@@ -1160,12 +1150,13 @@ void ASPCharacterPlayer::ServerRPCBlackPotionSpawn_Implementation()
 		if (Potion)
 		{
 			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
-													  EAttachmentRule::SnapToTarget, true);
+			                                          EAttachmentRule::SnapToTarget, true);
 			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
 		}
 	}
 	//MulticastRPCPotion();
 }
+
 
 void ASPCharacterPlayer::Aiming_CameraMove()
 {
@@ -1188,13 +1179,6 @@ void ASPCharacterPlayer::Aiming_CameraMove()
 		CameraMove();
 	}
 }
-
-void ASPCharacterPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME(ASPCharacterPlayer, bIsAiming);
-}
-
 
 void ASPCharacterPlayer::ServerRPCSpeedUpStop_Implementation()
 {
