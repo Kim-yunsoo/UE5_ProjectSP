@@ -144,7 +144,7 @@ protected:
 
 	UFUNCTION()
 	void OnRep_Potion();
-
+	
 	UPROPERTY(Replicated,BlueprintReadWrite, Category = "Character")
 	uint8 bIsAiming : 1;
 
@@ -156,6 +156,9 @@ protected:
 
 	UFUNCTION()
 	void OnRep_PotionSpawn();
+
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCBlackPotionSpawn();
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	uint8 bIsThrowReady : 1; //Throw Ready? 
@@ -248,9 +251,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	FVector UIRotator;
 
-
-
-
 protected:
 	UPrimitiveComponent* HitComponent;
 	//AActor* HitActor;
@@ -262,12 +262,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UArrowComponent> GravityArrow;
 
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Object, Meta = (AllowPrivateAccess = "true"))
-	//TObjectPtr<class ASPPotionBase> Potion;
-
 	UFUNCTION()
 	void HandleMontageAnimNotify(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload);
-
 
 protected:
 	void ShowProjectilePath();
@@ -313,16 +309,11 @@ protected:
 
 	UFUNCTION(Server, Unreliable)
 	void ServerRPCAiming();
-
-	UFUNCTION(Client, Unreliable)
-	void ClientRPCAiming(ASPCharacterPlayer* CharacterToPlay);
 	
 	void Aiming_CameraMove();
-public:
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;;
+
 	//funtion
 	//virtual void PossessedBy(AController* NewController) override;
-
 	
 	// virtual void MoveAutonomous( float ClientTimeStamp, float DeltaTime, uint8 CompressedFlags, const FVector& NewAccel);
 };

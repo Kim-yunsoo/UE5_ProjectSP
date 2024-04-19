@@ -559,7 +559,6 @@ void ASPCharacterPlayer::Aiming(const FInputActionValue& Value)
 	{
 		if (false == bIsHolding)
 		{
-			SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("not HasAuthority"));
 			Aiming_CameraMove(); //애니메이션 작동
 			bIsAiming = true;
 		}
@@ -955,22 +954,17 @@ void ASPCharacterPlayer::OnRep_Potion()
 	}
 }
 
-void ASPCharacterPlayer::MulticastRPCPotion_Implementation()
-{
-	SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("Potionspawn"));
-}
-
 void ASPCharacterPlayer::OnRep_PotionSpawn()
 {
-	// SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("Potionspawn"));
-	//
-	// if (Potion)
-	// {
-	//
-	// 	FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
-	// 	                                          EAttachmentRule::SnapToTarget, true);
-	// 	Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
-	// }
+	SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("Potionspawn"));
+	
+	if (Potion)
+	{
+	
+		FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+		                                          EAttachmentRule::SnapToTarget, true);
+		Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
+	}
 	
 }
 
@@ -1130,19 +1124,8 @@ void ASPCharacterPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(ASPCharacterPlayer, bIsSpawn);
+	DOREPLIFETIME(ASPCharacterPlayer, bIsAiming);
 	DOREPLIFETIME(ASPCharacterPlayer, Potion);
-
-}
-
-// UCharacterMovementComponent
-
-void ASPCharacterPlayer::ClientRPCAiming_Implementation(ASPCharacterPlayer* CharacterToPlay)
-{
-	if (false == bIsHolding)
-	{
-		SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("ClientRPCAiming_Implementation"));
-		CharacterToPlay->bIsAiming = true;
-	}
 }
 
 void ASPCharacterPlayer::ServerRPCBlackPotionSpawn_Implementation()
@@ -1197,12 +1180,6 @@ void ASPCharacterPlayer::Aiming_CameraMove()
 		FollowCamera->AttachToComponent(CameraBoom, AttachmentRules, NAME_None);
 		CameraMove();
 	}
-}
-
-void ASPCharacterPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME(ASPCharacterPlayer, bIsAiming);
 }
 
 
