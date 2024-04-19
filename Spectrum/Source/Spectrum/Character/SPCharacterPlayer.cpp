@@ -566,7 +566,7 @@ void ASPCharacterPlayer::Aiming(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::ServerRPCAiming_Implementation()
 {
-		bIsAiming = true;
+	bIsAiming = true;
 }
 
 void ASPCharacterPlayer::StopAiming(const FInputActionValue& Value)
@@ -606,15 +606,12 @@ void ASPCharacterPlayer::AimPotion(const FInputActionValue& Value)
 {
 	if (bIsSpawn)
 	{
-		if(!bIsTurnReady)
+		if (!HasAuthority())
 		{
-			if (!HasAuthority())
-			{
-				bIsTurnReady = true;
-				PlayTurnAnimation();
-			}
-			ServerRPCTurnReady();
+			bIsTurnReady = true;
+			PlayTurnAnimation();
 		}
+		ServerRPCTurnReady();
 	}
 }
 
@@ -808,11 +805,11 @@ void ASPCharacterPlayer::ServerRPCShowProjectilePath_Implementation()
 	{
 		FPredictProjectilePathParams PredictParams;
 		FPredictProjectilePathResult PredictResult;
-	
+
 		FHitResult OutHit;
 		TArray<FVector> OutPathPositions;
 		FVector OutLastTraceDestination;
-	
+
 		FVector StartPos = PotionThrowStartLocation->GetComponentLocation();
 		//GetController()->GetControlRotation();
 		//FVector LaunchVelocity = ; 
@@ -828,19 +825,19 @@ void ASPCharacterPlayer::ServerRPCShowProjectilePath_Implementation()
 		float SimFrequency = 15.0f;
 		float MaxSimTime = 2.0f;
 		float OverrideGravityZ = 0.0;
-	
+
 		UGameplayStatics::Blueprint_PredictProjectilePath_ByTraceChannel(GetWorld(), OutHit, OutPathPositions,
 		                                                                 OutLastTraceDestination, StartPos,
 		                                                                 LaunchVelocity, true, ProjectileRadius,
 		                                                                 TraceChannel, false, ActorsToIgnore,
 		                                                                 DrawDebugType, DrawDebugTime, SimFrequency,
 		                                                                 MaxSimTime, OverrideGravityZ);
-	
+
 		FHitResult SweepHitResult;
 		DecalSphere->SetVisibility(true);
 		MyDecal->SetVisibility(true);
 		DecalSphere->SetWorldLocation(OutHit.Location, false, &SweepHitResult, ETeleportType::TeleportPhysics);
-	
+
 		for (int i = 0; i < OutPathPositions.Num(); i++)
 		{
 			Projectile_Path->AddSplinePointAtIndex(OutPathPositions[i], i, ESplineCoordinateSpace::Type::Local, true);
@@ -849,7 +846,7 @@ void ASPCharacterPlayer::ServerRPCShowProjectilePath_Implementation()
 		{
 			UClass* whyClass = USplineMeshComponent::StaticClass();
 			FTransform RelativeTransform = FTransform();
-	
+
 			USplineMeshComponent* NewSplineMeshComp = NewObject<USplineMeshComponent>(
 				this, USplineMeshComponent::StaticClass());
 			if (NewSplineMeshComp == nullptr)
@@ -869,7 +866,7 @@ void ASPCharacterPlayer::ServerRPCShowProjectilePath_Implementation()
 			FVector StartPointTangent;
 			FVector EndPointLocation;
 			FVector EndPointTangent;
-			
+
 			bool bIsSuccessStart = false;
 			bool bIsSuccessEnd = false;
 			if (i < Projectile_Path->GetNumberOfSplinePoints())
@@ -894,7 +891,7 @@ void ASPCharacterPlayer::ServerRPCShowProjectilePath_Implementation()
 		}
 		FTimerHandle TimerHandle;
 		float DelayTime = 0.01f;
-	
+
 		GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this]()
 		{
 			ShowProjectilePath();
@@ -978,7 +975,7 @@ void ASPCharacterPlayer::ClientRPCTurnAnimation_Implementation(ASPCharacterPlaye
 
 void ASPCharacterPlayer::ServerRPCThrowPotion_Implementation(bool IsThrowReady)
 {
-	if(IsThrowReady)
+	if (IsThrowReady)
 	{
 		PlayThrowAnimation();
 		if (Potion)
@@ -994,7 +991,8 @@ void ASPCharacterPlayer::ServerRPCThrowPotion_Implementation(bool IsThrowReady)
 		bIsTurnReady = false;
 		bIsSpawn = false;
 		Potion = nullptr;
-		for (APlayerController* PlayerController : TActorRange<APlayerController>(GetWorld())) //플레이어 컨트롤러 목록을 서버에서 가지고 오기
+		for (APlayerController* PlayerController : TActorRange<APlayerController>(GetWorld()))
+		//플레이어 컨트롤러 목록을 서버에서 가지고 오기
 		{
 			if (PlayerController && GetController() != PlayerController) //시뮬레이트 프록시
 			{
@@ -1014,7 +1012,8 @@ void ASPCharacterPlayer::ServerRPCThrowPotion_Implementation(bool IsThrowReady)
 	else
 	{
 		PlayStopAnimation();
-		for (APlayerController* PlayerController : TActorRange<APlayerController>(GetWorld())) //플레이어 컨트롤러 목록을 서버에서 가지고 오기
+		for (APlayerController* PlayerController : TActorRange<APlayerController>(GetWorld()))
+		//플레이어 컨트롤러 목록을 서버에서 가지고 오기
 		{
 			if (PlayerController && GetController() != PlayerController) //시뮬레이트 프록시
 			{
@@ -1046,7 +1045,6 @@ void ASPCharacterPlayer::HandleMontageAnimNotify(FName NotifyName,
 void ASPCharacterPlayer::ShowProjectilePath()
 {
 	//ServerRPCShowProjectilePath();
-	
 }
 
 
@@ -1098,7 +1096,6 @@ void ASPCharacterPlayer::ServerRPCBlackPotionSpawn_Implementation()
 
 void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 {
-	
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->bUseControllerDesiredRotation = false;
 	if (false == bIsHolding)
@@ -1143,7 +1140,7 @@ void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 			{
 				outHitResult.Component->SetSimulatePhysics(true);
 				HitComponent = outHitResult.GetComponent();
-			
+
 				FVector SphereTracePoint = HitComponent->K2_GetComponentLocation();
 				float Radius = 150.f;
 				TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;

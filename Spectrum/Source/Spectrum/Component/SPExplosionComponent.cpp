@@ -50,25 +50,21 @@ void USPExplosionComponent::Explode()
 
 	if (Success)
 	{
-		//for each loop ±¸Çö
-		for (const FHitResult& HitResult : OutHits)
-		{
-			AActor* HitActor = HitResult.GetActor();
-			if (HitActor)
-			{
-				ActorArray.AddUnique(HitActor);
-			}
-		}
-
-		MultiRPCExplosion(ActorArray);
+		MultiRPCExplosion(OutHits);
 	}
-	
 }
 
-void USPExplosionComponent::MultiRPCExplosion_Implementation(const TArray<AActor*>& Array)
+void USPExplosionComponent::MultiRPCExplosion_Implementation(const TArray<FHitResult>& OutHits)
 {
 	SP_SUBLOG(LogSPNetwork,Log,TEXT("OnExplosionHit first!! "));
-
+	for (const FHitResult& HitResult : OutHits)
+	{
+		AActor* HitActor = HitResult.GetActor();
+		if (HitActor)
+		{
+			ActorArray.AddUnique(HitActor);
+		}
+	}
 		if (ActorArray.Num() > 0)
 		{
 			for (AActor*& HitActor : ActorArray)
