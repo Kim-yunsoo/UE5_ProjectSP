@@ -259,7 +259,6 @@ protected:
 	TObjectPtr<class USceneComponent> PotionThrowStartLocation;
 
 	UPROPERTY()
-	//TObjectPtr<class USplineMeshComponent> SplineCoin;
 	TArray<class USplineMeshComponent*> SplineCompArray;
 
 	UPROPERTY()
@@ -273,7 +272,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Decal")
 	TObjectPtr<class UDecalComponent> MyDecal;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Decal")
+	UPROPERTY(BlueprintReadWrite, Category = "Decal")
 	TObjectPtr<class UStaticMeshComponent> DecalSphere;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Decal")
@@ -323,6 +322,10 @@ protected:
 
 	UFUNCTION(Client, Unreliable)
 	void ClientRPCStopAnimation(ASPCharacterPlayer* CharacterToPlay);
+
+	//MultiRPC
+	UFUNCTION(NetMulticast, Unreliable)
+	void MulticastRPCProjectile();
 	
 	//OnRep
 	UFUNCTION()

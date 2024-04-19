@@ -310,8 +310,8 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 
 	DecalSphere->SetVisibility(false);
 	MyDecal->SetVisibility(false);
-
-
+	DecalSphere->SetIsReplicated(true);
+	
 	CurrentCharacterControlType = ECharacterControlType::Shoulder;
 	LastInput = FVector2D::ZeroVector;
 	bIsAiming = false;
@@ -789,11 +789,6 @@ void ASPCharacterPlayer::PurplePotionSpawn(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::OnRep_Potion()
 {
-	SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("Potion"));
-	if (!Potion)
-	{
-		SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("ISPotion"));
-	}
 	if (Potion)
 	{
 		SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("Potion YSE"));
@@ -821,11 +816,8 @@ void ASPCharacterPlayer::ServerRPCShowProjectilePath_Implementation()
 		FVector OutLastTraceDestination;
 	
 		FVector StartPos = PotionThrowStartLocation->GetComponentLocation();
-		//GetController()->GetControlRotation();
-		//FVector LaunchVelocity = ; 
 		FVector LaunchVelocity = (UKismetMathLibrary::GetForwardVector(GetController()->GetControlRotation())
 			+ FVector{0.0f, 0.0f, 0.4f}) * 1500.0f;
-		//(ForwardVector + FVector{ 0.0f,0.0f,0.4f })* Mul
 		float ProjectileRadius = 0.0f;
 		TEnumAsByte<ECollisionChannel> TraceChannel = ECollisionChannel::ECC_Camera;
 		TArray<AActor*> ActorsToIgnore;
@@ -842,11 +834,10 @@ void ASPCharacterPlayer::ServerRPCShowProjectilePath_Implementation()
 		                                                                 TraceChannel, false, ActorsToIgnore,
 		                                                                 DrawDebugType, DrawDebugTime, SimFrequency,
 		                                                                 MaxSimTime, OverrideGravityZ);
-	
 		FHitResult SweepHitResult;
-		DecalSphere->SetVisibility(true);
-		MyDecal->SetVisibility(true);
 		DecalSphere->SetWorldLocation(OutHit.Location, false, &SweepHitResult, ETeleportType::TeleportPhysics);
+		MulticastRPCProjectile();
+		//멀티로 날리기
 	
 		for (int i = 0; i < OutPathPositions.Num(); i++)
 		{
@@ -899,6 +890,7 @@ void ASPCharacterPlayer::ServerRPCShowProjectilePath_Implementation()
 			SplineCompArray.Emplace(NewSplineMeshComp);
 			NewSplineMeshComp->RegisterComponent();
 		}
+		
 		FTimerHandle TimerHandle;
 		float DelayTime = 0.01f;
 	
@@ -909,8 +901,7 @@ void ASPCharacterPlayer::ServerRPCShowProjectilePath_Implementation()
 	}
 	else
 	{
-		DecalSphere->SetVisibility(false);
-		MyDecal->SetVisibility(false);
+		MulticastRPCProjectile();
 	}
 }
 
@@ -930,17 +921,24 @@ void ASPCharacterPlayer::ClientRPCStopAnimation_Implementation(ASPCharacterPlaye
 	}
 }
 
+void ASPCharacterPlayer::MulticastRPCProjectile_Implementation()
+{
+	if(bIsThrowReady)
+	{
+		DecalSphere->SetVisibility(true);
+		MyDecal->SetVisibility(true);
+	}
+	else
+	{
+		DecalSphere->SetVisibility(false);
+		MyDecal->SetVisibility(false);
+	}
+}
+
 void ASPCharacterPlayer::OnRep_PotionSpawn()
 {
 	SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("Potionspawn"));
 
-	// if (Potion)
-	// {
-	//
-	// 	FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
-	// 	                                          EAttachmentRule::SnapToTarget, true);
-	// 	Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
-	// }
 }
 
 void ASPCharacterPlayer::PlayTurnAnimation()
@@ -1039,14 +1037,13 @@ void ASPCharacterPlayer::HandleMontageAnimNotify(FName NotifyName,
 	if (NotifyName == FName("PlayMontageNotify"))
 	{
 		bIsThrowReady = true;
-		// ShowProjectilePath();
+		ShowProjectilePath();
 	}
 }
 
 void ASPCharacterPlayer::ShowProjectilePath()
 {
-	//ServerRPCShowProjectilePath();
-	
+	ServerRPCShowProjectilePath();
 }
 
 
@@ -1065,7 +1062,6 @@ void ASPCharacterPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 
 void ASPCharacterPlayer::ServerRPCBlackPotionSpawn_Implementation()
 {
-	SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("Spawn"));
 	if (false == bIsSpawn)
 	{
 		FVector ItemLocation = GetMesh()->GetSocketLocation("Item_Socket");
@@ -1094,7 +1090,6 @@ void ASPCharacterPlayer::ServerRPCBlackPotionSpawn_Implementation()
 	}
 	//MulticastRPCPotion();
 }
-
 
 void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 {
