@@ -23,4 +23,8 @@ protected:
 
 public:
 	virtual void Explode() override;
+
+	//RPC
+	UFUNCTION(NetMulticast, Unreliable)
+	void MultiRPCOrangeExplosion(const TArray<FHitResult>& Array);
 };

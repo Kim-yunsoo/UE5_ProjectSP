@@ -285,13 +285,7 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 		MyDecal->SetWorldScale3D(FVector(1.0, 0.3, 0.3));
 		MyDecal->SetRelativeRotation(FRotator(90.f, 0.f, 0.f));
 	}
-
-	//static ConstructorHelpers::FObjectFinder<UDecalComponent> DecalRef(TEXT("/Script/Engine.Material'/Game/Spectrum/Assets/Decal/M_Circle_Decal.M_Circle_Decal'"));
-	//if (DecalSphereRef.Succeeded())
-	//{
-	//	Decal->SetDecal(DecalRef.Object);
-	//}
-
+	
 	static ConstructorHelpers::FObjectFinder<UMaterialInterface> MeshFinder1(
 		TEXT("/Script/Engine.Material'/Game/Spectrum/Assets/Decal/M_Decal_Sphere_Black.M_Decal_Sphere_Black'"));
 	if (MeshFinder1.Succeeded())
@@ -310,8 +304,8 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 
 	DecalSphere->SetVisibility(false);
 	MyDecal->SetVisibility(false);
-
-
+	// DecalSphere->SetIsReplicated(true);
+	
 	CurrentCharacterControlType = ECharacterControlType::Shoulder;
 	LastInput = FVector2D::ZeroVector;
 	bIsAiming = false;
@@ -606,12 +600,12 @@ void ASPCharacterPlayer::AimPotion(const FInputActionValue& Value)
 {
 	if (bIsSpawn)
 	{
-		if (!HasAuthority())
-		{
-			bIsTurnReady = true;
-			PlayTurnAnimation();
-		}
-		ServerRPCTurnReady();
+			if (!HasAuthority())
+			{
+				bIsTurnReady = true;
+				PlayTurnAnimation();
+			}
+			ServerRPCTurnReady();
 	}
 }
 
@@ -619,7 +613,6 @@ void ASPCharacterPlayer::ServerRPCTurnReady_Implementation()
 {
 	bIsTurnReady = true;
 	PlayTurnAnimation();
-
 	for (APlayerController* PlayerController : TActorRange<APlayerController>(GetWorld()))
 	//플레이어 컨트롤러 목록을 서버에서 가지고 오기
 	{
@@ -689,218 +682,30 @@ void ASPCharacterPlayer::BlackPotionSpawn(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::GreenPotionSpawn(const FInputActionValue& Value)
 {
-	if (false == bIsSpawn)
-	{
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-		SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
-		Potion = GetWorld()->SpawnActor<ASPGreenPotion>(ASPGreenPotion::StaticClass(),
-		                                                GetMesh()->GetSocketLocation("Item_Socket"),
-		                                                FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
-		//Potion->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
-		//Potion->SetupAttachment(RootComponent);
-		//Potion->RegisterComponent();
-		bIsSpawn = true;
-		if (Potion)
-		{
-			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
-			                                          EAttachmentRule::SnapToTarget, true);
-			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
-		}
-	}
-	else
-	{
-		if (Potion)
-		{
-			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
-			                                          EAttachmentRule::SnapToTarget, true);
-			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
-		}
-	}
+	ServerRPCGreenPotionSpawn();
+	
 }
 
 void ASPCharacterPlayer::OrangePotionSpawn(const FInputActionValue& Value)
 {
-	if (false == bIsSpawn)
-	{
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-		SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
-		Potion = GetWorld()->SpawnActor<ASPOrangePotion>(ASPOrangePotion::StaticClass(),
-		                                                 GetMesh()->GetSocketLocation("Item_Socket"),
-		                                                 FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
-		bIsSpawn = true;
-		if (Potion)
-		{
-			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
-			                                          EAttachmentRule::SnapToTarget, true);
-			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
-		}
-	}
-	else
-	{
-		if (Potion)
-		{
-			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
-			                                          EAttachmentRule::SnapToTarget, true);
-			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
-		}
-	}
+	ServerRPCOrangePotionSpawn();
+	
 }
 
 void ASPCharacterPlayer::PurplePotionSpawn(const FInputActionValue& Value)
 {
-	if (false == bIsSpawn)
-	{
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-		SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
-		Potion = GetWorld()->SpawnActor<ASPPurplePotion>(ASPPurplePotion::StaticClass(),
-		                                                 GetMesh()->GetSocketLocation("Item_Socket"),
-		                                                 FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
-		bIsSpawn = true;
-		if (Potion)
-		{
-			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
-			                                          EAttachmentRule::SnapToTarget, true);
-			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
-		}
-	}
-	else
-	{
-		if (Potion)
-		{
-			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
-			                                          EAttachmentRule::SnapToTarget, true);
-			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
-		}
-	}
+	ServerRPCPurplePotionSpawn();
+	
 }
 
 void ASPCharacterPlayer::OnRep_Potion()
 {
-	SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("Potion"));
-	if (!Potion)
-	{
-		SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("ISPotion"));
-	}
 	if (Potion)
 	{
 		SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("Potion YSE"));
 		FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
 		                                          EAttachmentRule::SnapToTarget, true);
 		Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
-	}
-}
-
-void ASPCharacterPlayer::ServerRPCShowProjectilePath_Implementation()
-{
-	Projectile_Path->ClearSplinePoints(true);
-	for (int i = 0; i < SplineCompArray.Num(); i++)
-	{
-		SplineCompArray[i]->DestroyComponent();
-	}
-	SplineCompArray.Empty();
-	if (bIsThrowReady)
-	{
-		FPredictProjectilePathParams PredictParams;
-		FPredictProjectilePathResult PredictResult;
-
-		FHitResult OutHit;
-		TArray<FVector> OutPathPositions;
-		FVector OutLastTraceDestination;
-
-		FVector StartPos = PotionThrowStartLocation->GetComponentLocation();
-		//GetController()->GetControlRotation();
-		//FVector LaunchVelocity = ; 
-		FVector LaunchVelocity = (UKismetMathLibrary::GetForwardVector(GetController()->GetControlRotation())
-			+ FVector{0.0f, 0.0f, 0.4f}) * 1500.0f;
-		//(ForwardVector + FVector{ 0.0f,0.0f,0.4f })* Mul
-		float ProjectileRadius = 0.0f;
-		TEnumAsByte<ECollisionChannel> TraceChannel = ECollisionChannel::ECC_Camera;
-		TArray<AActor*> ActorsToIgnore;
-		ActorsToIgnore.Add(this);
-		EDrawDebugTrace::Type DrawDebugType = EDrawDebugTrace::None;
-		float DrawDebugTime = 0.0f;
-		float SimFrequency = 15.0f;
-		float MaxSimTime = 2.0f;
-		float OverrideGravityZ = 0.0;
-
-		UGameplayStatics::Blueprint_PredictProjectilePath_ByTraceChannel(GetWorld(), OutHit, OutPathPositions,
-		                                                                 OutLastTraceDestination, StartPos,
-		                                                                 LaunchVelocity, true, ProjectileRadius,
-		                                                                 TraceChannel, false, ActorsToIgnore,
-		                                                                 DrawDebugType, DrawDebugTime, SimFrequency,
-		                                                                 MaxSimTime, OverrideGravityZ);
-
-		FHitResult SweepHitResult;
-		DecalSphere->SetVisibility(true);
-		MyDecal->SetVisibility(true);
-		DecalSphere->SetWorldLocation(OutHit.Location, false, &SweepHitResult, ETeleportType::TeleportPhysics);
-
-		for (int i = 0; i < OutPathPositions.Num(); i++)
-		{
-			Projectile_Path->AddSplinePointAtIndex(OutPathPositions[i], i, ESplineCoordinateSpace::Type::Local, true);
-		}
-		for (int i = 0; i < Projectile_Path->GetNumberOfSplinePoints() - 1; ++i)
-		{
-			UClass* whyClass = USplineMeshComponent::StaticClass();
-			FTransform RelativeTransform = FTransform();
-
-			USplineMeshComponent* NewSplineMeshComp = NewObject<USplineMeshComponent>(
-				this, USplineMeshComponent::StaticClass());
-			if (NewSplineMeshComp == nullptr)
-			{
-				continue;
-			}
-			float Radius = 50.0f;
-			FColor Color1 = FColor::Red;
-			FColor Color2 = FColor::Blue;
-			FColor Color3 = FColor::Black;
-			NewSplineMeshComp->OnComponentCreated();
-			NewSplineMeshComp->SetRelativeTransform(RelativeTransform);
-			NewSplineMeshComp->SetStaticMesh(StaticMeshforSpline);
-			NewSplineMeshComp->SetMobility(EComponentMobility::Movable);
-			NewSplineMeshComp->SetCollisionProfileName(TEXT("SplineCollision"));
-			FVector StartPointLocation;
-			FVector StartPointTangent;
-			FVector EndPointLocation;
-			FVector EndPointTangent;
-
-			bool bIsSuccessStart = false;
-			bool bIsSuccessEnd = false;
-			if (i < Projectile_Path->GetNumberOfSplinePoints())
-			{
-				StartPointLocation = Projectile_Path->GetLocationAtSplinePoint(i, ESplineCoordinateSpace::Local);
-				StartPointTangent = Projectile_Path->GetTangentAtSplinePoint(i, ESplineCoordinateSpace::Local);
-				bIsSuccessStart = true;
-			}
-			if (i + 1 < Projectile_Path->GetNumberOfSplinePoints())
-			{
-				EndPointLocation = Projectile_Path->GetLocationAtSplinePoint(i + 1, ESplineCoordinateSpace::Local);
-				EndPointTangent = Projectile_Path->GetTangentAtSplinePoint(i + 1, ESplineCoordinateSpace::Local);
-				bIsSuccessEnd = true;
-			}
-			if (bIsSuccessStart && bIsSuccessEnd)
-			{
-				NewSplineMeshComp->SetStartAndEnd(StartPointLocation, StartPointTangent, EndPointLocation,
-				                                  EndPointTangent, true);
-			}
-			SplineCompArray.Emplace(NewSplineMeshComp);
-			NewSplineMeshComp->RegisterComponent();
-		}
-		FTimerHandle TimerHandle;
-		float DelayTime = 0.01f;
-
-		GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this]()
-		{
-			ShowProjectilePath();
-		}, DelayTime, false);
-	}
-	else
-	{
-		DecalSphere->SetVisibility(false);
-		MyDecal->SetVisibility(false);
 	}
 }
 
@@ -920,22 +725,113 @@ void ASPCharacterPlayer::ClientRPCStopAnimation_Implementation(ASPCharacterPlaye
 	}
 }
 
+
+void ASPCharacterPlayer::ServerRPCGreenPotionSpawn_Implementation()
+{
+	if (false == bIsSpawn)
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
+		Potion = GetWorld()->SpawnActor<ASPGreenPotion>(ASPGreenPotion::StaticClass(),
+														GetMesh()->GetSocketLocation("Item_Socket"),
+														FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
+		//Potion->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+		//Potion->SetupAttachment(RootComponent);
+		//Potion->RegisterComponent();
+		bIsSpawn = true;
+		if (Potion)
+		{
+			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+													  EAttachmentRule::SnapToTarget, true);
+			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
+		}
+	}
+	else
+	{
+		if (Potion)
+		{
+			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+													  EAttachmentRule::SnapToTarget, true);
+			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
+		}
+	}
+}
+
+void ASPCharacterPlayer::ServerRPCOrangePotionSpawn_Implementation()
+{
+	if (false == bIsSpawn)
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
+		Potion = GetWorld()->SpawnActor<ASPOrangePotion>(ASPOrangePotion::StaticClass(),
+														 GetMesh()->GetSocketLocation("Item_Socket"),
+														 FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
+		bIsSpawn = true;
+		if (Potion)
+		{
+			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+													  EAttachmentRule::SnapToTarget, true);
+			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
+		}
+	}
+	else
+	{
+		if (Potion)
+		{
+			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+													  EAttachmentRule::SnapToTarget, true);
+			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
+		}
+	}
+}
+
+void ASPCharacterPlayer::ServerRPCPurplePotionSpawn_Implementation()
+{
+	if (false == bIsSpawn)
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
+		Potion = GetWorld()->SpawnActor<ASPPurplePotion>(ASPPurplePotion::StaticClass(),
+														 GetMesh()->GetSocketLocation("Item_Socket"),
+														 FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
+		bIsSpawn = true;
+		if (Potion)
+		{
+			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+													  EAttachmentRule::SnapToTarget, true);
+			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
+		}
+	}
+	else
+	{
+		if (Potion)
+		{
+			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+													  EAttachmentRule::SnapToTarget, true);
+			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
+		}
+	}
+}
+
+
+void ASPCharacterPlayer::ClientRPCTurnAnimation_Implementation(ASPCharacterPlayer* CharacterToPlay)
+{
+	if (CharacterToPlay)
+	{
+		CharacterToPlay->PlayTurnAnimation();
+	}
+}
+
 void ASPCharacterPlayer::OnRep_PotionSpawn()
 {
 	SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("Potionspawn"));
-
-	// if (Potion)
-	// {
-	//
-	// 	FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
-	// 	                                          EAttachmentRule::SnapToTarget, true);
-	// 	Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
-	// }
 }
 
 void ASPCharacterPlayer::PlayTurnAnimation()
 {
-	SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("PlayTurnAnimation"));
 
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	UAnimInstance* TorsoAnimInstance = Torso->GetAnimInstance();
@@ -965,13 +861,6 @@ void ASPCharacterPlayer::ServerRPCdirection_Implementation(bool TurnRight, bool 
 	bIsTurnLeft = Turnleft;
 }
 
-void ASPCharacterPlayer::ClientRPCTurnAnimation_Implementation(ASPCharacterPlayer* CharacterToPlay)
-{
-	if (CharacterToPlay)
-	{
-		CharacterToPlay->PlayTurnAnimation();
-	}
-}
 
 void ASPCharacterPlayer::ServerRPCThrowPotion_Implementation(bool IsThrowReady)
 {
@@ -1038,13 +927,126 @@ void ASPCharacterPlayer::HandleMontageAnimNotify(FName NotifyName,
 	if (NotifyName == FName("PlayMontageNotify"))
 	{
 		bIsThrowReady = true;
-		// ShowProjectilePath();
+		ShowProjectilePath();
 	}
 }
 
 void ASPCharacterPlayer::ShowProjectilePath()
 {
-	//ServerRPCShowProjectilePath();
+	if (IsLocallyControlled())
+	{
+		Projectile_Path->ClearSplinePoints(true);
+		for (int i = 0; i < SplineCompArray.Num(); i++)
+		{
+			SplineCompArray[i]->DestroyComponent();
+		}
+		SplineCompArray.Empty();
+		if (bIsThrowReady)
+		{
+			FPredictProjectilePathParams PredictParams;
+			FPredictProjectilePathResult PredictResult;
+
+			FHitResult OutHit;
+			TArray<FVector> OutPathPositions;
+			FVector OutLastTraceDestination;
+			FVector StartPos = PotionThrowStartLocation->GetComponentLocation();
+			FVector LaunchVelocity = (UKismetMathLibrary::GetForwardVector(GetController()->GetControlRotation())
+				+ FVector{0.0f, 0.0f, 0.4f}) * 1500.0f;
+			float ProjectileRadius = 0.0f;
+			TEnumAsByte<ECollisionChannel> TraceChannel = ECollisionChannel::ECC_Camera;
+			TArray<AActor*> ActorsToIgnore;
+			ActorsToIgnore.Add(this);
+			EDrawDebugTrace::Type DrawDebugType = EDrawDebugTrace::None;
+			float DrawDebugTime = 0.0f;
+			float SimFrequency = 15.0f;
+			float MaxSimTime = 2.0f;
+			float OverrideGravityZ = 0.0;
+
+			UGameplayStatics::Blueprint_PredictProjectilePath_ByTraceChannel(GetWorld(), OutHit, OutPathPositions,
+			                                                                 OutLastTraceDestination, StartPos,
+			                                                                 LaunchVelocity, true, ProjectileRadius,
+			                                                                 TraceChannel, false, ActorsToIgnore,
+			                                                                 DrawDebugType, DrawDebugTime, SimFrequency,
+			                                                                 MaxSimTime, OverrideGravityZ);
+
+			FHitResult SweepHitResult;
+
+			DecalSphere->SetVisibility(true);
+			MyDecal->SetVisibility(true);
+			DecalSphere->SetWorldLocation(OutHit.Location, false, &SweepHitResult, ETeleportType::TeleportPhysics);
+
+			for (int i = 0; i < OutPathPositions.Num(); i++)
+			{
+				Projectile_Path->AddSplinePointAtIndex(OutPathPositions[i], i, ESplineCoordinateSpace::Type::Local,
+				                                       true);
+			}
+			for (int i = 0; i < Projectile_Path->GetNumberOfSplinePoints() - 1; ++i)
+			{
+				UClass* whyClass = USplineMeshComponent::StaticClass();
+				FTransform RelativeTransform = FTransform();
+
+				USplineMeshComponent* NewSplineMeshComp = NewObject<USplineMeshComponent>(
+					this, USplineMeshComponent::StaticClass());
+
+				if (NewSplineMeshComp == nullptr)
+				{
+					continue;
+				}
+				float Radius = 50.0f;
+				FColor Color1 = FColor::Red;
+				FColor Color2 = FColor::Blue;
+				FColor Color3 = FColor::Black;
+
+				NewSplineMeshComp->OnComponentCreated();
+				NewSplineMeshComp->SetRelativeTransform(RelativeTransform);
+				//NewSplineMeshComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+				//NewSplineMeshComp->SetupAttachment(RootComponent);
+				NewSplineMeshComp->SetStaticMesh(StaticMeshforSpline);
+				NewSplineMeshComp->SetMobility(EComponentMobility::Movable);
+				NewSplineMeshComp->SetCollisionProfileName(TEXT("SplineCollision"));
+				FVector StartPointLocation;
+				FVector StartPointTangent;
+				FVector EndPointLocation;
+				FVector EndPointTangent;
+
+
+				bool bIsSuccessStart = false;
+				bool bIsSuccessEnd = false;
+				if (i < Projectile_Path->GetNumberOfSplinePoints())
+				{
+					StartPointLocation = Projectile_Path->GetLocationAtSplinePoint(i, ESplineCoordinateSpace::Local);
+					StartPointTangent = Projectile_Path->GetTangentAtSplinePoint(i, ESplineCoordinateSpace::Local);
+					bIsSuccessStart = true;
+				}
+
+				if (i + 1 < Projectile_Path->GetNumberOfSplinePoints())
+				{
+					EndPointLocation = Projectile_Path->GetLocationAtSplinePoint(i + 1, ESplineCoordinateSpace::Local);
+					EndPointTangent = Projectile_Path->GetTangentAtSplinePoint(i + 1, ESplineCoordinateSpace::Local);
+					bIsSuccessEnd = true;
+				}
+				if (bIsSuccessStart && bIsSuccessEnd)
+				{
+					NewSplineMeshComp->SetStartAndEnd(StartPointLocation, StartPointTangent, EndPointLocation,
+					                                  EndPointTangent, true);
+				}
+				SplineCompArray.Emplace(NewSplineMeshComp);
+				NewSplineMeshComp->RegisterComponent();
+			}
+			FTimerHandle TimerHandle;
+			float DelayTime = 0.01f;
+
+			GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this]()
+			{
+				ShowProjectilePath();
+			}, DelayTime, false);
+		}
+		else
+		{
+			DecalSphere->SetVisibility(false);
+			MyDecal->SetVisibility(false);
+		}
+	}
 }
 
 
@@ -1063,7 +1065,6 @@ void ASPCharacterPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 
 void ASPCharacterPlayer::ServerRPCBlackPotionSpawn_Implementation()
 {
-	SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("Spawn"));
 	if (false == bIsSpawn)
 	{
 		FVector ItemLocation = GetMesh()->GetSocketLocation("Item_Socket");
@@ -1090,9 +1091,7 @@ void ASPCharacterPlayer::ServerRPCBlackPotionSpawn_Implementation()
 			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
 		}
 	}
-	//MulticastRPCPotion();
 }
-
 
 void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 {

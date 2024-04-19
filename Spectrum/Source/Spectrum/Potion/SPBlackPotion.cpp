@@ -41,8 +41,6 @@ void ASPBlackPotion::HandleActorHit(AActor* SelfActor, AActor* OtherActor, FVect
 	//서버만 들어옴.. 
 	// ServerRPCStopAiming();
 	// MultiRPCExplosion();
-	SP_LOG(LogSPNetwork,Log,TEXT("=========================================="));
-	SP_LOG(LogSPNetwork,Log,TEXT("HandleActorHit!!! "));
 	ExplosionComponent->Explode();
 	this->SetLifeSpan(0.1f);
 	
@@ -50,8 +48,6 @@ void ASPBlackPotion::HandleActorHit(AActor* SelfActor, AActor* OtherActor, FVect
 
 void ASPBlackPotion::MultiRPCExplosion_Implementation()
 {
-	SP_LOG(LogSPNetwork,Log,TEXT("=========================================="));
-	SP_LOG(LogSPNetwork,Log,TEXT("HandleActorHit!!! "));
 	ExplosionComponent->Explode();
 	this->SetLifeSpan(0.1f);
 }

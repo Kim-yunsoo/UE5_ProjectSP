@@ -249,6 +249,7 @@ protected:
 
 protected:
 	void ShowProjectilePath();
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile", Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class USplineComponent> Projectile_Path;
 
@@ -259,7 +260,6 @@ protected:
 	TObjectPtr<class USceneComponent> PotionThrowStartLocation;
 
 	UPROPERTY()
-	//TObjectPtr<class USplineMeshComponent> SplineCoin;
 	TArray<class USplineMeshComponent*> SplineCompArray;
 
 	UPROPERTY()
@@ -273,7 +273,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Decal")
 	TObjectPtr<class UDecalComponent> MyDecal;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Decal")
+	UPROPERTY(BlueprintReadWrite, Category = "Decal")
 	TObjectPtr<class UStaticMeshComponent> DecalSphere;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Decal")
@@ -301,9 +301,6 @@ protected:
 	
 	UFUNCTION(Server, Unreliable)
 	void ServerRPCdirection(bool TurnRight, bool Turnleft);
-	
-	UFUNCTION(Server, Unreliable)
-	void ServerRPCShowProjectilePath();
 
 	UFUNCTION(Server, Unreliable)
 	void ServerRPCStopAiming();
@@ -314,6 +311,15 @@ protected:
 	UFUNCTION(Server, Unreliable)
 	void ServerRPCStopGraping();
 	
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCGreenPotionSpawn();
+	
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCOrangePotionSpawn();
+
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCPurplePotionSpawn();
+	
 	//ClientRPC
 	UFUNCTION(Client, Unreliable)
 	void ClientRPCTurnAnimation(ASPCharacterPlayer* CharacterToPlay);
@@ -323,7 +329,9 @@ protected:
 
 	UFUNCTION(Client, Unreliable)
 	void ClientRPCStopAnimation(ASPCharacterPlayer* CharacterToPlay);
-	
+
+	//MultiRPC
+
 	//OnRep
 	UFUNCTION()
 	void OnRep_PotionSpawn();
