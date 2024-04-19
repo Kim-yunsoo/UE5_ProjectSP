@@ -975,35 +975,6 @@ void ASPCharacterPlayer::ServerRPCdirection_Implementation(bool TurnRight, bool 
 	bIsTurnLeft = Turnleft;
 }
 
-void ASPCharacterPlayer::ClientRPCTurnAnimation_Implementation(ASPCharacterPlayer* CharacterToPlay)
-{
-	if (CharacterToPlay)
-	{
-		CharacterToPlay->PlayTurnAnimation();
-	}
-}
-
-void ASPCharacterPlayer::ServerRPCTurnReady_Implementation()
-{
-	bIsTurnReady = true;
-	PlayTurnAnimation();
-	for (APlayerController* PlayerController : TActorRange<APlayerController>(GetWorld())) //플레이어 컨트롤러 목록을 서버에서 가지고 오기
-	{
-		if (PlayerController && GetController() != PlayerController) //시뮬레이트 프록시
-		{
-			if (!PlayerController->IsLocalController())
-			{
-				//서버 아니고 공격 명령 내린 플레이어 컨트롤러도 아닌 시뮬레이트 프록시
-				//폰을 재생하는 플레이어 컨트롤러
-				ASPCharacterPlayer* OtherPlayer = Cast<ASPCharacterPlayer>(PlayerController->GetPawn());
-				if (OtherPlayer)
-				{
-					OtherPlayer->ClientRPCTurnAnimation(this);
-				}
-			}
-		}
-	}
-}
 
 void ASPCharacterPlayer::ServerRPCThrowPotion_Implementation(bool IsThrowReady)
 {
