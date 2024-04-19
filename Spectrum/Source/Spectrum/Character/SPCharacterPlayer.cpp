@@ -556,11 +556,7 @@ void ASPCharacterPlayer::Aiming(const FInputActionValue& Value)
 	if (false == bIsHolding)
 	{
 		Aiming_CameraMove(); //애니메이션 작동
-		// bIsAiming = true;
-		// if (!HasAuthority())
-		// {
 		ServerRPCAiming();
-		// }
 	}
 }
 
