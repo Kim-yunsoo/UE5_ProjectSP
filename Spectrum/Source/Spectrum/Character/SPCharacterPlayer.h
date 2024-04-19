@@ -8,6 +8,7 @@
 #include "Interface/SPCharacterHUDInterface.h"
 #include "InputActionValue.h"
 #include "Protocol.pb.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "SPCharacterPlayer.generated.h"
 
 /**
@@ -22,19 +23,6 @@ enum class ECharacterControlType : uint8
 	Quater
 };
 
-UENUM()
-enum class EDecalMesh : uint8
-{
-	SphereBlack,
-	DecalBlack,
-	SphereGreen,
-	DecalGreen,
-	SphereOrange,
-	DecalOrange,
-	SpherePurple,
-	DecalPurple
-};
-
 
 UCLASS()
 class SPECTRUM_API ASPCharacterPlayer : public ACharacter
@@ -42,25 +30,21 @@ class SPECTRUM_API ASPCharacterPlayer : public ACharacter
 	GENERATED_BODY()
 
 public:
-	ASPCharacterPlayer();
+	ASPCharacterPlayer(const FObjectInitializer& ObjectInitializer);
 
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;	// 매번 계속 해야 하는 것들 여기에
 
-
 public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
 
 protected:
 	void ChangeCharacterControl();
 	void SetCharacterControl(ECharacterControlType NewCharacterControlType);
 	virtual void SetCharacterControlData(const class USPCharacterControlData* CharacterControlData);
 	void CameraMove();
-
-
-
+//
 	void ShoulderMove(const FInputActionValue& Value);
 	void ShoulderLook(const FInputActionValue& Value);
 	void StopShoulderLook(const FInputActionValue& Value);
@@ -111,7 +95,6 @@ protected:
 
 	FVector2D LastDesiredInput;
 
-
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	TObjectPtr<class USkeletalMeshComponent>Face;
@@ -134,39 +117,38 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gravity Gun")
 	TObjectPtr<class UPhysicsHandleComponent> PhysicsHandleComponent;
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(Replicated, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
 	uint8 bIsTurnRight : 1;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(Replicated, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
 	uint8 bIsTurnLeft : 1;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
-	uint8 bIsTurnReady : 1; // TurnReady?
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
+	uint8 bIsTurnReady : 1; 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
 	float PreControlYawRotation;
 
 protected:
-
-	
-
 	UPROPERTY(EditAnywhere, Category = CharacterControl, Meta = (AllowPrivateAccess = "true"))
 	TMap<ECharacterControlType, class USPCharacterControlData*> CharacterControlManager;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Object, Meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(ReplicatedUsing = OnRep_Potion, EditAnywhere, BlueprintReadWrite, Category = Object, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class ASPPotionBase> Potion;
 
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	UFUNCTION()
+	void OnRep_Potion();
+	
+	UPROPERTY(Replicated,BlueprintReadWrite, Category = "Character")
 	uint8 bIsAiming : 1;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	UPROPERTY(Replicated, BlueprintReadWrite, Category = "Character")
 	uint8 bIsHolding : 1;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	UPROPERTY(ReplicatedUsing = OnRep_PotionSpawn, EditAnywhere, BlueprintReadWrite, Category = "Character")
 	uint8 bIsSpawn : 1; //Spawn check
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	UPROPERTY(Replicated, BlueprintReadWrite, Category = "Character")
 	uint8 bIsThrowReady : 1; //Throw Ready? 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat, Meta = (AllowPrivateAccess = "true"))
@@ -182,8 +164,6 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Camera, Meta = (AllowPrivateAccess = "ture"))
 	TObjectPtr<class UCameraComponent> FollowCamera;
-
-
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
@@ -239,11 +219,7 @@ protected:
 	//TObjectPtr<class UAnimMontage> ThrowMontage; 
 
 protected:
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-	//uint8 bIsAiming : 1; //���� 
-
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-	//uint8 bIsHolding : 1; 
+ 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	FVector UILocation; 
@@ -257,9 +233,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	FVector UIRotator;
 
-
-
-
 protected:
 	UPrimitiveComponent* HitComponent;
 	//AActor* HitActor;
@@ -271,12 +244,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UArrowComponent> GravityArrow;
 
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Object, Meta = (AllowPrivateAccess = "true"))
-	//TObjectPtr<class ASPPotionBase> Potion;
-
 	UFUNCTION()
 	void HandleMontageAnimNotify(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload);
-
 
 protected:
 	void ShowProjectilePath();
@@ -309,7 +278,68 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Decal")
 	TArray<UStaticMesh*> MeshArray;
-
-//widget
 	
+
+// ServerRPC
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCSpeedUp();
+
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCSpeedUpStop();
+
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCAiming();
+	
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCBlackPotionSpawn();
+
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCThrowPotion(bool IsThrowReady);
+	
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCTurnReady();
+	
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCdirection(bool TurnRight, bool Turnleft);
+	
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCShowProjectilePath();
+
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCStopAiming();
+	
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCGraping();
+
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCStopGraping();
+	
+	//ClientRPC
+	UFUNCTION(Client, Unreliable)
+	void ClientRPCTurnAnimation(ASPCharacterPlayer* CharacterToPlay);
+
+	UFUNCTION(Client, Unreliable)
+	void ClientRPCThrowAnimation(ASPCharacterPlayer* CharacterToPlay);
+
+	UFUNCTION(Client, Unreliable)
+	void ClientRPCStopAnimation(ASPCharacterPlayer* CharacterToPlay);
+	
+	//OnRep
+	UFUNCTION()
+	void OnRep_PotionSpawn();
+
+	//function
+	void Aiming_CameraMove();
+	void PlayTurnAnimation();
+	void PlayThrowAnimation();
+	void PlayStopAnimation();
+	void Aiming_CameraMove();
+
+	//virtual void PossessedBy(AController* NewController) override;
+	
+	// virtual void MoveAutonomous( float ClientTimeStamp, float DeltaTime, uint8 CompressedFlags, const FVector& NewAccel);
+
+protected:
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const;
+
 };

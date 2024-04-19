@@ -15,6 +15,8 @@ class SPECTRUM_API USPAnimInstance : public UAnimInstance
 	GENERATED_BODY()
 	public:
 	USPAnimInstance();
+protected:
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 protected:
 	virtual void NativeInitializeAnimation() override; //애님그래프 시작시 작동
@@ -56,10 +58,9 @@ protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character)
 	float DeltaY;
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character)
 	float DeltaZ;
-
+	
 	//turn in place
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
 	uint8 bIsTurnRight : 1;
