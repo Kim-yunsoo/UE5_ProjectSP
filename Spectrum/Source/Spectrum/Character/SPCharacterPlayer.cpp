@@ -504,18 +504,22 @@ void ASPCharacterPlayer::ShoulderLook(const FInputActionValue& Value)
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
 
-		if (GetControlRotation().Yaw > PreControlYawRotation)
+		if (GetBaseAimRotation().Yaw > PreControlYawRotation)
 		{
 			//UE_LOG(LogTemp, Log, TEXT("TEST1"));
 			bIsTurnRight = true;
 			bIsTurnLeft = false;
+			if (!HasAuthority())
+				ServerRPCdirection(bIsTurnRight, bIsTurnLeft);
 		}
 		else
 		{
 			bIsTurnRight = false;
 			bIsTurnLeft = true;
+			if (!HasAuthority())
+				ServerRPCdirection(bIsTurnRight, bIsTurnLeft);
 		}
-		PreControlYawRotation = GetControlRotation().Yaw;
+		PreControlYawRotation = GetBaseAimRotation().Yaw;
 	}
 }
 
@@ -523,6 +527,8 @@ void ASPCharacterPlayer::StopShoulderLook(const FInputActionValue& Value)
 {
 	bIsTurnRight = false;
 	bIsTurnLeft = false;
+	if (!HasAuthority())
+		ServerRPCdirection(bIsTurnRight, bIsTurnLeft);
 }
 
 void ASPCharacterPlayer::SpeedUp(const FInputActionValue& Value)
@@ -753,47 +759,55 @@ void ASPCharacterPlayer::StopGraping(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::AimPotion(const FInputActionValue& Value)
 {
-	if (bIsSpawn)
+	if (!HasAuthority())
 	{
-		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-		UAnimInstance* TorsoAnimInstance = Torso->GetAnimInstance();
-		AnimInstance->Montage_Play(ThrowMontage, 1.0f);
-		// TorsoAnimInstance->Montage_Play(ThrowMontage, 1.0f);
-		GetCharacterMovement()->bOrientRotationToMovement = false;
-		GetCharacterMovement()->bUseControllerDesiredRotation = true;
-		bIsTurnReady = true;
+		if (bIsSpawn)
+		{
+			UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+			UAnimInstance* TorsoAnimInstance = Torso->GetAnimInstance();
+			AnimInstance->Montage_Play(ThrowMontage, 1.0f);
+			// TorsoAnimInstance->Montage_Play(ThrowMontage, 1.0f);
+			GetCharacterMovement()->bOrientRotationToMovement = false;
+			GetCharacterMovement()->bUseControllerDesiredRotation = true;
+			bIsTurnReady = true;
+			ServerRPCTurnReady();
+		}
 	}
 }
 
 void ASPCharacterPlayer::ThrowPotion(const FInputActionValue& Value)
 {
-	if (bIsThrowReady)
+	if(!HasAuthority())
 	{
-		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-		UAnimInstance* TorsoAnimInstance = GetMesh()->GetAnimInstance();
-		AnimInstance->Montage_JumpToSection(FName("End"), ThrowMontage);
-		// TorsoAnimInstance->Montage_JumpToSection(FName("End"), ThrowMontage);
-		bIsThrowReady = false;
-		if (Potion)
+		if (bIsThrowReady)
 		{
-			GetController()->GetControlRotation();
-			FVector ForwardVector = UKismetMathLibrary::GetForwardVector(GetController()->GetControlRotation());
-			float Mul = 1500.0f;
-			Potion->Throw((ForwardVector + FVector{0.0f, 0.0f, 0.4f}) * Mul);
+			UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+			UAnimInstance* TorsoAnimInstance = GetMesh()->GetAnimInstance();
+			AnimInstance->Montage_JumpToSection(FName("End"), ThrowMontage);
+			// TorsoAnimInstance->Montage_JumpToSection(FName("End"), ThrowMontage);
+			bIsThrowReady = false;
+			if (Potion)
+			{
+				GetController()->GetControlRotation();
+				FVector ForwardVector = UKismetMathLibrary::GetForwardVector(GetController()->GetControlRotation());
+				float Mul = 1500.0f;
+				Potion->Throw((ForwardVector + FVector{0.0f, 0.0f, 0.4f}) * Mul);
+			}
+			GetCharacterMovement()->bOrientRotationToMovement = true;
+			GetCharacterMovement()->bUseControllerDesiredRotation = false;
+			bIsTurnReady = false;
+			bIsSpawn = false;
+			Potion = nullptr;
 		}
-		GetCharacterMovement()->bOrientRotationToMovement = true;
-		GetCharacterMovement()->bUseControllerDesiredRotation = false;
-		bIsTurnReady = false;
-		bIsSpawn = false;
-		Potion = nullptr;
+		else
+		{
+			UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+			UAnimInstance* TorsoAnimInstance = GetMesh()->GetAnimInstance();
+			AnimInstance->Montage_Stop(0.0f);
+			// TorsoAnimInstance->Montage_Stop(0.0f);
+		}
 	}
-	else
-	{
-		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-		UAnimInstance* TorsoAnimInstance = GetMesh()->GetAnimInstance();
-		AnimInstance->Montage_Stop(0.0f);
-		// TorsoAnimInstance->Montage_Stop(0.0f);
-	}
+	ServerRPCThrowPotion();
 }
 
 void ASPCharacterPlayer::Jumping(const FInputActionValue& Value)
@@ -813,37 +827,7 @@ void ASPCharacterPlayer::MyStopJumping(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::BlackPotionSpawn(const FInputActionValue& Value)
 {
-	if (!HasAuthority())
-	{
-		// if (false == bIsSpawn)
-		// {
-		// 	FVector ItemLocation = GetMesh()->GetSocketLocation("Item_Socket");
-		// 	FActorSpawnParameters SpawnParams;
-		// 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-		// 	SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
-		// 	Potion = GetWorld()->SpawnActor<ASPBlackPotion>(ASPBlackPotion::StaticClass(),
-		// 													GetMesh()->GetSocketLocation("Item_Socket"),
-		// 													FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
-		// 	bIsSpawn = true;
-		// 	if (Potion)
-		// 	{
-		// 		FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
-		// 												  EAttachmentRule::SnapToTarget, true);
-		// 		Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
-		// 	}
-		// }
-		// else
-		// {
-		// 	if (Potion)
-		// 	{
-		// 		FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
-		// 												  EAttachmentRule::SnapToTarget, true);
-		// 		Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
-		// 	}
-		// }
-	}
 	ServerRPCBlackPotionSpawn();
-	//
 }
 
 void ASPCharacterPlayer::GreenPotionSpawn(const FInputActionValue& Value)
@@ -954,8 +938,8 @@ void ASPCharacterPlayer::OnRep_Potion()
 
 void ASPCharacterPlayer::OnRep_PotionSpawn()
 {
-	// SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("Potionspawn"));
-	//
+	SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("Potionspawn"));
+	
 	// if (Potion)
 	// {
 	//
@@ -963,6 +947,61 @@ void ASPCharacterPlayer::OnRep_PotionSpawn()
 	// 	                                          EAttachmentRule::SnapToTarget, true);
 	// 	Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
 	// }
+}
+
+void ASPCharacterPlayer::PlayTurnAnimation()
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	UAnimInstance* TorsoAnimInstance = Torso->GetAnimInstance();
+	AnimInstance->Montage_Play(ThrowMontage, 1.0f);
+	// TorsoAnimInstance->Montage_Play(ThrowMontage, 1.0f);
+	GetCharacterMovement()->bOrientRotationToMovement = false;
+	GetCharacterMovement()->bUseControllerDesiredRotation = true;
+}
+
+void ASPCharacterPlayer::ServerRPCdirection_Implementation(bool TurnRight, bool Turnleft)
+{
+	bIsTurnRight = TurnRight;
+	bIsTurnLeft = Turnleft;
+}
+
+void ASPCharacterPlayer::ClientRPCTurnAnimation_Implementation(ASPCharacterPlayer* CharacterToPlay)
+{
+	if (CharacterToPlay)
+	{
+		CharacterToPlay->PlayTurnAnimation();
+	}
+}
+
+void ASPCharacterPlayer::ServerRPCTurnReady_Implementation()
+{
+	if (!bIsTurnReady)
+	{
+		bIsTurnReady = true;
+		PlayTurnAnimation();
+		
+		for (APlayerController* PlayerController : TActorRange<APlayerController>(GetWorld())) //플레이어 컨트롤러 목록을 서버에서 가지고 오기
+		{
+			if (PlayerController && GetController() != PlayerController) //시뮬레이트 프록시
+			{
+				if(!PlayerController->IsLocalController())
+				{
+					//서버 아니고 공격 명령 내린 플레이어 컨트롤러도 아닌 시뮬레이트 프록시
+					//폰을 재생하는 플레이어 컨트롤러
+					ASPCharacterPlayer* OtherPlayer = Cast<ASPCharacterPlayer>(PlayerController->GetPawn());
+					if (OtherPlayer)
+					{
+						OtherPlayer->ClientRPCTurnAnimation(this);
+					}
+				}
+			}
+		}
+	}
+}
+
+void ASPCharacterPlayer::ServerRPCThrowPotion_Implementation()
+{
+
 }
 
 void ASPCharacterPlayer::HandleMontageAnimNotify(FName NotifyName,
@@ -1121,8 +1160,10 @@ void ASPCharacterPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(ASPCharacterPlayer, bIsSpawn);
-	DOREPLIFETIME(ASPCharacterPlayer, Potion);
 	DOREPLIFETIME(ASPCharacterPlayer, bIsAiming);
+	DOREPLIFETIME(ASPCharacterPlayer, Potion);
+	DOREPLIFETIME(ASPCharacterPlayer, bIsTurnLeft);
+	DOREPLIFETIME(ASPCharacterPlayer, bIsTurnRight);
 }
 
 void ASPCharacterPlayer::ServerRPCBlackPotionSpawn_Implementation()

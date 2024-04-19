@@ -122,10 +122,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gravity Gun")
 	TObjectPtr<class UPhysicsHandleComponent> PhysicsHandleComponent;
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(Replicated, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
 	uint8 bIsTurnRight : 1;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(Replicated, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
 	uint8 bIsTurnLeft : 1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
@@ -144,7 +144,7 @@ protected:
 
 	UFUNCTION()
 	void OnRep_Potion();
-
+	
 	UPROPERTY(Replicated,BlueprintReadWrite, Category = "Character")
 	uint8 bIsAiming : 1;
 
@@ -156,6 +156,23 @@ protected:
 
 	UFUNCTION()
 	void OnRep_PotionSpawn();
+
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCBlackPotionSpawn();
+
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCThrowPotion();
+
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCTurnReady();
+
+	void PlayTurnAnimation();
+
+	UFUNCTION(Client, Unreliable)
+	void ClientRPCTurnAnimation(ASPCharacterPlayer* CharacterToPlay);
+
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCdirection(bool TurnRight, bool Turnleft);
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	uint8 bIsThrowReady : 1; //Throw Ready? 
@@ -248,9 +265,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	FVector UIRotator;
 
-
-
-
 protected:
 	UPrimitiveComponent* HitComponent;
 	//AActor* HitActor;
@@ -262,12 +276,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UArrowComponent> GravityArrow;
 
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Object, Meta = (AllowPrivateAccess = "true"))
-	//TObjectPtr<class ASPPotionBase> Potion;
-
 	UFUNCTION()
 	void HandleMontageAnimNotify(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload);
-
 
 protected:
 	void ShowProjectilePath();
@@ -319,11 +329,9 @@ protected:
 	void ServerRPCBlackPotionSpawn();
 	
 	void Aiming_CameraMove();
-public:
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;;
+
 	//funtion
 	//virtual void PossessedBy(AController* NewController) override;
-
 	
 	// virtual void MoveAutonomous( float ClientTimeStamp, float DeltaTime, uint8 CompressedFlags, const FVector& NewAccel);
 };
