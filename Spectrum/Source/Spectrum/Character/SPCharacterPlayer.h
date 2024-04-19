@@ -331,7 +331,7 @@ protected:
 	void ClientRPCStopAnimation(ASPCharacterPlayer* CharacterToPlay);
 
 	//MultiRPC
-	
+
 	//OnRep
 	UFUNCTION()
 	void OnRep_PotionSpawn();

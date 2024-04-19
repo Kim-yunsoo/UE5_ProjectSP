@@ -600,15 +600,12 @@ void ASPCharacterPlayer::AimPotion(const FInputActionValue& Value)
 {
 	if (bIsSpawn)
 	{
-		if(!bIsTurnReady)
-		{
 			if (!HasAuthority())
 			{
 				bIsTurnReady = true;
 				PlayTurnAnimation();
 			}
 			ServerRPCTurnReady();
-		}
 	}
 }
 
@@ -826,15 +823,14 @@ void ASPCharacterPlayer::ServerRPCPurplePotionSpawn_Implementation()
 	}
 }
 
+
 void ASPCharacterPlayer::OnRep_PotionSpawn()
 {
 	SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("Potionspawn"));
-
 }
 
 void ASPCharacterPlayer::PlayTurnAnimation()
 {
-	SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("PlayTurnAnimation"));
 
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	UAnimInstance* TorsoAnimInstance = Torso->GetAnimInstance();
