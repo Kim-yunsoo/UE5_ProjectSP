@@ -517,14 +517,18 @@ void ASPCharacterPlayer::ShoulderLook(const FInputActionValue& Value)
 			bIsTurnRight = true;
 			bIsTurnLeft = false;
 			if (!HasAuthority())
+			{
 				ServerRPCdirection(bIsTurnRight, bIsTurnLeft);
+			}
 		}
 		else
 		{
 			bIsTurnRight = false;
 			bIsTurnLeft = true;
 			if (!HasAuthority())
+			{
 				ServerRPCdirection(bIsTurnRight, bIsTurnLeft);
+			}
 		}
 		PreControlYawRotation = GetBaseAimRotation().Yaw;
 	}
@@ -761,19 +765,14 @@ void ASPCharacterPlayer::StopGraping(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::AimPotion(const FInputActionValue& Value)
 {
-	if (!HasAuthority())
+	if (bIsSpawn)
 	{
-		if (bIsSpawn)
+		if (!HasAuthority())
 		{
-			UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-			UAnimInstance* TorsoAnimInstance = Torso->GetAnimInstance();
-			AnimInstance->Montage_Play(ThrowMontage, 1.0f);
-			// TorsoAnimInstance->Montage_Play(ThrowMontage, 1.0f);
-			GetCharacterMovement()->bOrientRotationToMovement = false;
-			GetCharacterMovement()->bUseControllerDesiredRotation = true;
 			bIsTurnReady = true;
-			ServerRPCTurnReady();
+			PlayTurnAnimation();
 		}
+		ServerRPCTurnReady();
 	}
 }
 
@@ -954,6 +953,8 @@ void ASPCharacterPlayer::OnRep_PotionSpawn()
 
 void ASPCharacterPlayer::PlayTurnAnimation()
 {
+	SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("PlayTurnAnimation"));
+
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	UAnimInstance* TorsoAnimInstance = Torso->GetAnimInstance();
 	AnimInstance->Montage_Play(ThrowMontage, 1.0f);
@@ -978,24 +979,20 @@ void ASPCharacterPlayer::ClientRPCTurnAnimation_Implementation(ASPCharacterPlaye
 
 void ASPCharacterPlayer::ServerRPCTurnReady_Implementation()
 {
-	if (!bIsTurnReady)
+	bIsTurnReady = true;
+	PlayTurnAnimation();
+	for (APlayerController* PlayerController : TActorRange<APlayerController>(GetWorld())) //플레이어 컨트롤러 목록을 서버에서 가지고 오기
 	{
-		bIsTurnReady = true;
-		PlayTurnAnimation();
-		
-		for (APlayerController* PlayerController : TActorRange<APlayerController>(GetWorld())) //플레이어 컨트롤러 목록을 서버에서 가지고 오기
+		if (PlayerController && GetController() != PlayerController) //시뮬레이트 프록시
 		{
-			if (PlayerController && GetController() != PlayerController) //시뮬레이트 프록시
+			if (!PlayerController->IsLocalController())
 			{
-				if(!PlayerController->IsLocalController())
+				//서버 아니고 공격 명령 내린 플레이어 컨트롤러도 아닌 시뮬레이트 프록시
+				//폰을 재생하는 플레이어 컨트롤러
+				ASPCharacterPlayer* OtherPlayer = Cast<ASPCharacterPlayer>(PlayerController->GetPawn());
+				if (OtherPlayer)
 				{
-					//서버 아니고 공격 명령 내린 플레이어 컨트롤러도 아닌 시뮬레이트 프록시
-					//폰을 재생하는 플레이어 컨트롤러
-					ASPCharacterPlayer* OtherPlayer = Cast<ASPCharacterPlayer>(PlayerController->GetPawn());
-					if (OtherPlayer)
-					{
-						OtherPlayer->ClientRPCTurnAnimation(this);
-					}
+					OtherPlayer->ClientRPCTurnAnimation(this);
 				}
 			}
 		}
@@ -1019,143 +1016,142 @@ void ASPCharacterPlayer::HandleMontageAnimNotify(FName NotifyName,
 
 void ASPCharacterPlayer::ShowProjectilePath()
 {
-	Projectile_Path->ClearSplinePoints(true);
-	for (int i = 0; i < SplineCompArray.Num(); i++)
-	{
-		SplineCompArray[i]->DestroyComponent();
-	}
-	SplineCompArray.Empty();
-	if (bIsThrowReady)
-	{
-		FPredictProjectilePathParams PredictParams;
-		FPredictProjectilePathResult PredictResult;
-
-		FHitResult OutHit;
-		TArray<FVector> OutPathPositions;
-		FVector OutLastTraceDestination;
-
-		FVector StartPos = PotionThrowStartLocation->GetComponentLocation();
-		//GetController()->GetControlRotation();
-		//FVector LaunchVelocity = ; 
-		FVector LaunchVelocity = (UKismetMathLibrary::GetForwardVector(GetController()->GetControlRotation())
-			+ FVector{0.0f, 0.0f, 0.4f}) * 1500.0f;
-		//(ForwardVector + FVector{ 0.0f,0.0f,0.4f })* Mul
-		float ProjectileRadius = 0.0f;
-		TEnumAsByte<ECollisionChannel> TraceChannel = ECollisionChannel::ECC_Camera;
-		TArray<AActor*> ActorsToIgnore;
-		ActorsToIgnore.Add(this);
-		EDrawDebugTrace::Type DrawDebugType = EDrawDebugTrace::None;
-		float DrawDebugTime = 0.0f;
-		float SimFrequency = 15.0f;
-		float MaxSimTime = 2.0f;
-		float OverrideGravityZ = 0.0;
-
-		UGameplayStatics::Blueprint_PredictProjectilePath_ByTraceChannel(GetWorld(), OutHit, OutPathPositions,
-		                                                                 OutLastTraceDestination, StartPos,
-		                                                                 LaunchVelocity, true, ProjectileRadius,
-		                                                                 TraceChannel, false, ActorsToIgnore,
-		                                                                 DrawDebugType, DrawDebugTime, SimFrequency,
-		                                                                 MaxSimTime, OverrideGravityZ);
-
-		FHitResult SweepHitResult;
-		/*ProjectileCircle->SetWorldLocation(OutHit.Location, false, &SweepHitResult, ETeleportType::None);
-		ProjectileCircle->SetVisibility(true, false);*/
-
-		//FVector DecalSize{ 100,200,200 };
-		//UGameplayStatics::SpawnDecalAtLocation(GetWorld(), Decal, DecalSize, OutHit.Location, GetControlRotation(), 0.1);
-		//UE_LOG(LogTemp, Log, TEXT("TEST"));
-		//DecalSphere->SetStaticMesh();
-		//DecalSphere->SetStaticMesh(MeshArray[1]);
-
-		//DecalSphere->SetVisibility(true);
-
-		//Decal->SetVisibility(true);
-		//DecalSphere->SetWorldLocation(OutHit.Location, false, &SweepHitResult, ETeleportType::None);
-		//DecalSphere->SetVisibility(true, false);
-
-		DecalSphere->SetVisibility(true);
-		MyDecal->SetVisibility(true);
-		DecalSphere->SetWorldLocation(OutHit.Location, false, &SweepHitResult, ETeleportType::TeleportPhysics);
-
-		for (int i = 0; i < OutPathPositions.Num(); i++)
-		{
-			Projectile_Path->AddSplinePointAtIndex(OutPathPositions[i], i, ESplineCoordinateSpace::Type::Local, true);
-		}
-		for (int i = 0; i < Projectile_Path->GetNumberOfSplinePoints() - 1; ++i)
-		{
-			UClass* whyClass = USplineMeshComponent::StaticClass();
-			FTransform RelativeTransform = FTransform();
-
-			USplineMeshComponent* NewSplineMeshComp = NewObject<USplineMeshComponent>(
-				this, USplineMeshComponent::StaticClass());
-			//UActorComponent* ActorComponent = AddComponentByClass(USplineMeshComponent::StaticClass(), true, RelativeTransform, false);
-			//USplineMeshComponent* NewSplineMeshComp = Cast<USplineMeshComponent>(ActorComponent);
-
-			if (NewSplineMeshComp == nullptr)
-			{
-				continue;
-			}
-			float Radius = 50.0f;
-			FColor Color1 = FColor::Red;
-			FColor Color2 = FColor::Blue;
-			FColor Color3 = FColor::Black;
-
-			NewSplineMeshComp->OnComponentCreated();
-			NewSplineMeshComp->SetRelativeTransform(RelativeTransform);
-			//NewSplineMeshComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
-			//NewSplineMeshComp->SetupAttachment(RootComponent);
-			NewSplineMeshComp->SetStaticMesh(StaticMeshforSpline);
-			NewSplineMeshComp->SetMobility(EComponentMobility::Movable);
-			NewSplineMeshComp->SetCollisionProfileName(TEXT("SplineCollision"));
-			//NewSplineMeshComp->SetGenerateOverlapEvents(true);
-			/*if (StaticMeshforSpline)
-			{
-				UE_LOG(LogTemp, Log, TEXT("MeshName: [%s]"), *GetNameSafe(StaticMeshforSpline));
-			}*/
-
-			FVector StartPointLocation;
-			FVector StartPointTangent;
-			FVector EndPointLocation;
-			FVector EndPointTangent;
-
-
-			bool bIsSuccessStart = false;
-			bool bIsSuccessEnd = false;
-			if (i < Projectile_Path->GetNumberOfSplinePoints())
-			{
-				StartPointLocation = Projectile_Path->GetLocationAtSplinePoint(i, ESplineCoordinateSpace::Local);
-				StartPointTangent = Projectile_Path->GetTangentAtSplinePoint(i, ESplineCoordinateSpace::Local);
-				bIsSuccessStart = true;
-			}
-
-			if (i + 1 < Projectile_Path->GetNumberOfSplinePoints())
-			{
-				EndPointLocation = Projectile_Path->GetLocationAtSplinePoint(i + 1, ESplineCoordinateSpace::Local);
-				EndPointTangent = Projectile_Path->GetTangentAtSplinePoint(i + 1, ESplineCoordinateSpace::Local);
-				bIsSuccessEnd = true;
-			}
-			if (bIsSuccessStart && bIsSuccessEnd)
-			{
-				NewSplineMeshComp->SetStartAndEnd(StartPointLocation, StartPointTangent, EndPointLocation,
-				                                  EndPointTangent, true);
-			}
-			SplineCompArray.Emplace(NewSplineMeshComp);
-			NewSplineMeshComp->RegisterComponent();
-		}
-		FTimerHandle TimerHandle;
-		float DelayTime = 0.01f;
-
-		GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this]()
-		{
-			ShowProjectilePath();
-		}, DelayTime, false);
-	}
-	else
-	{
-		//ProjectileCircle->SetVisibility(false);
-		DecalSphere->SetVisibility(false);
-		MyDecal->SetVisibility(false);
-	}
+	// Projectile_Path->ClearSplinePoints(true);
+	// for (int i = 0; i < SplineCompArray.Num(); i++)
+	// {
+	// 	SplineCompArray[i]->DestroyComponent();
+	// }
+	// SplineCompArray.Empty();
+	// if (bIsThrowReady)
+	// {
+	// 	FPredictProjectilePathParams PredictParams;
+	// 	FPredictProjectilePathResult PredictResult;
+	//
+	// 	FHitResult OutHit;
+	// 	TArray<FVector> OutPathPositions;
+	// 	FVector OutLastTraceDestination;
+	//
+	// 	FVector StartPos = PotionThrowStartLocation->GetComponentLocation();
+	// 	//GetController()->GetControlRotation();
+	// 	//FVector LaunchVelocity = ; 
+	// 	FVector LaunchVelocity = (UKismetMathLibrary::GetForwardVector(GetController()->GetControlRotation())
+	// 		+ FVector{0.0f, 0.0f, 0.4f}) * 1500.0f;
+	// 	//(ForwardVector + FVector{ 0.0f,0.0f,0.4f })* Mul
+	// 	float ProjectileRadius = 0.0f;
+	// 	TEnumAsByte<ECollisionChannel> TraceChannel = ECollisionChannel::ECC_Camera;
+	// 	TArray<AActor*> ActorsToIgnore;
+	// 	ActorsToIgnore.Add(this);
+	// 	EDrawDebugTrace::Type DrawDebugType = EDrawDebugTrace::None;
+	// 	float DrawDebugTime = 0.0f;
+	// 	float SimFrequency = 15.0f;
+	// 	float MaxSimTime = 2.0f;
+	// 	float OverrideGravityZ = 0.0;
+	//
+	// 	UGameplayStatics::Blueprint_PredictProjectilePath_ByTraceChannel(GetWorld(), OutHit, OutPathPositions,
+	// 	                                                                 OutLastTraceDestination, StartPos,
+	// 	                                                                 LaunchVelocity, true, ProjectileRadius,
+	// 	                                                                 TraceChannel, false, ActorsToIgnore,
+	// 	                                                                 DrawDebugType, DrawDebugTime, SimFrequency,
+	// 	                                                                 MaxSimTime, OverrideGravityZ);
+	//
+	// 	FHitResult SweepHitResult;
+	// 	/*ProjectileCircle->SetWorldLocation(OutHit.Location, false, &SweepHitResult, ETeleportType::None);
+	// 	ProjectileCircle->SetVisibility(true, false);*/
+	//
+	// 	//FVector DecalSize{ 100,200,200 };
+	// 	//UGameplayStatics::SpawnDecalAtLocation(GetWorld(), Decal, DecalSize, OutHit.Location, GetControlRotation(), 0.1);
+	// 	//UE_LOG(LogTemp, Log, TEXT("TEST"));
+	// 	//DecalSphere->SetStaticMesh();
+	// 	//DecalSphere->SetStaticMesh(MeshArray[1]);
+	//
+	// 	//DecalSphere->SetVisibility(true);
+	//
+	// 	//Decal->SetVisibility(true);
+	// 	//DecalSphere->SetWorldLocation(OutHit.Location, false, &SweepHitResult, ETeleportType::None);
+	// 	//DecalSphere->SetVisibility(true, false);
+	//
+	// 	DecalSphere->SetVisibility(true);
+	// 	MyDecal->SetVisibility(true);
+	// 	DecalSphere->SetWorldLocation(OutHit.Location, false, &SweepHitResult, ETeleportType::TeleportPhysics);
+	//
+	// 	for (int i = 0; i < OutPathPositions.Num(); i++)
+	// 	{
+	// 		Projectile_Path->AddSplinePointAtIndex(OutPathPositions[i], i, ESplineCoordinateSpace::Type::Local, true);
+	// 	}
+	// 	for (int i = 0; i < Projectile_Path->GetNumberOfSplinePoints() - 1; ++i)
+	// 	{
+	// 		UClass* whyClass = USplineMeshComponent::StaticClass();
+	// 		FTransform RelativeTransform = FTransform();
+	//
+	// 		USplineMeshComponent* NewSplineMeshComp = NewObject<USplineMeshComponent>(
+	// 			this, USplineMeshComponent::StaticClass());
+	// 		//UActorComponent* ActorComponent = AddComponentByClass(USplineMeshComponent::StaticClass(), true, RelativeTransform, false);
+	// 		//USplineMeshComponent* NewSplineMeshComp = Cast<USplineMeshComponent>(ActorComponent);
+	//
+	// 		if (NewSplineMeshComp == nullptr)
+	// 		{
+	// 			continue;
+	// 		}
+	// 		float Radius = 50.0f;
+	// 		FColor Color1 = FColor::Red;
+	// 		FColor Color2 = FColor::Blue;
+	// 		FColor Color3 = FColor::Black;
+	//
+	// 		NewSplineMeshComp->OnComponentCreated();
+	// 		NewSplineMeshComp->SetRelativeTransform(RelativeTransform);
+	// 		//NewSplineMeshComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	// 		//NewSplineMeshComp->SetupAttachment(RootComponent);
+	// 		NewSplineMeshComp->SetStaticMesh(StaticMeshforSpline);
+	// 		NewSplineMeshComp->SetMobility(EComponentMobility::Movable);
+	// 		NewSplineMeshComp->SetCollisionProfileName(TEXT("SplineCollision"));
+	// 		//NewSplineMeshComp->SetGenerateOverlapEvents(true);
+	// 		/*if (StaticMeshforSpline)
+	// 		{
+	// 			UE_LOG(LogTemp, Log, TEXT("MeshName: [%s]"), *GetNameSafe(StaticMeshforSpline));
+	// 		}*/
+	//
+	// 		FVector StartPointLocation;
+	// 		FVector StartPointTangent;
+	// 		FVector EndPointLocation;
+	// 		FVector EndPointTangent;
+	// 		
+	// 		bool bIsSuccessStart = false;
+	// 		bool bIsSuccessEnd = false;
+	// 		if (i < Projectile_Path->GetNumberOfSplinePoints())
+	// 		{
+	// 			StartPointLocation = Projectile_Path->GetLocationAtSplinePoint(i, ESplineCoordinateSpace::Local);
+	// 			StartPointTangent = Projectile_Path->GetTangentAtSplinePoint(i, ESplineCoordinateSpace::Local);
+	// 			bIsSuccessStart = true;
+	// 		}
+	//
+	// 		if (i + 1 < Projectile_Path->GetNumberOfSplinePoints())
+	// 		{
+	// 			EndPointLocation = Projectile_Path->GetLocationAtSplinePoint(i + 1, ESplineCoordinateSpace::Local);
+	// 			EndPointTangent = Projectile_Path->GetTangentAtSplinePoint(i + 1, ESplineCoordinateSpace::Local);
+	// 			bIsSuccessEnd = true;
+	// 		}
+	// 		if (bIsSuccessStart && bIsSuccessEnd)
+	// 		{
+	// 			NewSplineMeshComp->SetStartAndEnd(StartPointLocation, StartPointTangent, EndPointLocation,
+	// 			                                  EndPointTangent, true);
+	// 		}
+	// 		SplineCompArray.Emplace(NewSplineMeshComp);
+	// 		NewSplineMeshComp->RegisterComponent();
+	// 	}
+	// 	FTimerHandle TimerHandle;
+	// 	float DelayTime = 0.01f;
+	//
+	// 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this]()
+	// 	{
+	// 		ShowProjectilePath();
+	// 	}, DelayTime, false);
+	// }
+	// else
+	// {
+	// 	//ProjectileCircle->SetVisibility(false);
+	// 	DecalSphere->SetVisibility(false);
+	// 	MyDecal->SetVisibility(false);
+	// }
 }
 
 
@@ -1167,6 +1163,7 @@ void ASPCharacterPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 	DOREPLIFETIME(ASPCharacterPlayer, Potion);
 	DOREPLIFETIME(ASPCharacterPlayer, bIsTurnLeft);
 	DOREPLIFETIME(ASPCharacterPlayer, bIsTurnRight);
+	DOREPLIFETIME(ASPCharacterPlayer, bIsTurnReady);
 }
 
 void ASPCharacterPlayer::ServerRPCBlackPotionSpawn_Implementation()

@@ -128,7 +128,7 @@ public:
 	UPROPERTY(Replicated, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
 	uint8 bIsTurnLeft : 1;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
 	uint8 bIsTurnReady : 1; 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
@@ -154,25 +154,6 @@ protected:
 	UPROPERTY(ReplicatedUsing = OnRep_PotionSpawn, EditAnywhere, BlueprintReadWrite, Category = "Character")
 	uint8 bIsSpawn : 1; //Spawn check
 
-	UFUNCTION()
-	void OnRep_PotionSpawn();
-
-	UFUNCTION(Server, Unreliable)
-	void ServerRPCBlackPotionSpawn();
-
-	UFUNCTION(Server, Unreliable)
-	void ServerRPCThrowPotion();
-
-	UFUNCTION(Server, Unreliable)
-	void ServerRPCTurnReady();
-
-	void PlayTurnAnimation();
-
-	UFUNCTION(Client, Unreliable)
-	void ClientRPCTurnAnimation(ASPCharacterPlayer* CharacterToPlay);
-
-	UFUNCTION(Server, Unreliable)
-	void ServerRPCdirection(bool TurnRight, bool Turnleft);
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	uint8 bIsThrowReady : 1; //Throw Ready? 
@@ -314,7 +295,7 @@ protected:
 protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-//RPC
+// ServerRPC
 	UFUNCTION(Server, Unreliable)
 	void ServerRPCSpeedUp();
 
@@ -324,9 +305,34 @@ protected:
 	UFUNCTION(Server, Unreliable)
 	void ServerRPCAiming();
 	
-	void Aiming_CameraMove();
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCBlackPotionSpawn();
 
-	//funtion
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCThrowPotion();
+
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCTurnReady();
+	
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCdirection(bool TurnRight, bool Turnleft);
+	
+	
+	//ClientRPC
+	UFUNCTION(Client, Unreliable)
+	void ClientRPCTurnAnimation(ASPCharacterPlayer* CharacterToPlay);
+
+
+	
+	//OnRep
+	UFUNCTION()
+	void OnRep_PotionSpawn();
+
+	//function
+	void Aiming_CameraMove();
+	void PlayTurnAnimation();
+
+
 	//virtual void PossessedBy(AController* NewController) override;
 	
 	// virtual void MoveAutonomous( float ClientTimeStamp, float DeltaTime, uint8 CompressedFlags, const FVector& NewAccel);
