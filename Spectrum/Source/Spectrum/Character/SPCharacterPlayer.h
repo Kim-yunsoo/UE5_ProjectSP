@@ -333,7 +333,7 @@ protected:
 	void PlayTurnAnimation();
 	void PlayThrowAnimation();
 	void PlayStopAnimation();
-	void Aiming_CameraMove();
+	//void Aiming_CameraMove();
 
 	//virtual void PossessedBy(AController* NewController) override;
 	
