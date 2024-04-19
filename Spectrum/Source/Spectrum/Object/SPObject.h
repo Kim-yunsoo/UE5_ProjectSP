@@ -58,7 +58,7 @@ protected:
 	float MovePacketSendTimer = MOVE_PACKET_SEND_DELAY;
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (AllowPrivateAccess = "ture"))
+	UPROPERTY(BlueprintReadWrite, Meta = (AllowPrivateAccess = "ture"))
 	TObjectPtr<UStaticMeshComponent> ObjectMesh ;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (AllowPrivateAccess = "ture"))
@@ -82,10 +82,13 @@ protected://DynamicMaterial
 	TArray<FLinearColor> LinearColors;
 
 	int32 ElementIndex = 0;
-	// UPROPERTY()
-	// FLinearColor GreenLinearColor{0.03f,1.0f,0.181f,1.0f};
-	// UPROPERTY()
-	// FLinearColor OrangeLinearColor{ 0.942f ,0.0266f ,0.0f,1.0f};
-	// UPROPERTY()
-	// FLinearColor PurpleLinearColor{ 0.263f,0.0f,0.6f,1.0f};
+
+	//RPC
+	UFUNCTION(NetMulticast, Unreliable)
+	void MultiRPCExplosionHit();
+
+	//funtion
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	
+	
 };

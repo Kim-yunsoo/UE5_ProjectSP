@@ -632,13 +632,6 @@ void ASPCharacterPlayer::ServerRPCTurnReady_Implementation()
 	}
 }
 
-void ASPCharacterPlayer::ClientRPCTurnAnimation_Implementation(ASPCharacterPlayer* CharacterToPlay)
-{
-	if (CharacterToPlay)
-	{
-		CharacterToPlay->PlayTurnAnimation();
-	}
-}
 
 void ASPCharacterPlayer::ThrowPotion(const FInputActionValue& Value)
 {

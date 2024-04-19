@@ -3,6 +3,9 @@
 #include "Component/SPExplosionComponent.h"
 #include <Kismet/GameplayStatics.h>
 
+#include "SpectrumLog.h"
+#include "Net/UnrealNetwork.h"
+
 // Sets default values
 ASPBlackPotion::ASPBlackPotion()
 {
@@ -29,9 +32,31 @@ void ASPBlackPotion::BeginPlay()
 	OnActorHit.AddDynamic(this, &ASPBlackPotion::HandleActorHit);
 }
 
+
+
 void ASPBlackPotion::HandleActorHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
 {
-	//UE_LOG(LogTemp, Log, TEXT("HandleActorHit"));
+
+	//서버만 들어옴.. 
+	// ServerRPCStopAiming();
+	// MultiRPCExplosion();
+	SP_LOG(LogSPNetwork,Log,TEXT("=========================================="));
+	SP_LOG(LogSPNetwork,Log,TEXT("HandleActorHit!!! "));
+	ExplosionComponent->Explode();
+	this->SetLifeSpan(0.1f);
+	
+}
+
+void ASPBlackPotion::MultiRPCExplosion_Implementation()
+{
+	SP_LOG(LogSPNetwork,Log,TEXT("=========================================="));
+	SP_LOG(LogSPNetwork,Log,TEXT("HandleActorHit!!! "));
 	ExplosionComponent->Explode();
 	this->SetLifeSpan(0.1f);
 }
+void ASPBlackPotion::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+}
+
+
