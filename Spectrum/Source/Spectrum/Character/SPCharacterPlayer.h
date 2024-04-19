@@ -128,7 +128,7 @@ public:
 	UPROPERTY(Replicated, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
 	uint8 bIsTurnLeft : 1;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(Replicated,EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
 	uint8 bIsTurnReady : 1; 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TurnInPlace", Meta = (AllowPrivateAccess = "true"))
@@ -148,7 +148,7 @@ protected:
 	UPROPERTY(Replicated,BlueprintReadWrite, Category = "Character")
 	uint8 bIsAiming : 1;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	UPROPERTY(Replicated, BlueprintReadWrite, Category = "Character")
 	uint8 bIsHolding : 1;
 
 	UPROPERTY(ReplicatedUsing = OnRep_PotionSpawn, EditAnywhere, BlueprintReadWrite, Category = "Character")
@@ -247,11 +247,7 @@ protected:
 	//TObjectPtr<class UAnimMontage> ThrowMontage; 
 
 protected:
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-	//uint8 bIsAiming : 1; //     
-
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-	//uint8 bIsHolding : 1; 
+ 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	FVector UILocation; 
@@ -324,14 +320,17 @@ protected:
 	
 	UFUNCTION(Server, Unreliable)
 	void ServerRPCStopAiming();
+	
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCGraping();
 
 	UFUNCTION(Server, Unreliable)
-	void ServerRPCBlackPotionSpawn();
-	
-	void Aiming_CameraMove();
+	void ServerRPCStopGraping();
 
 	//funtion
-	//virtual void PossessedBy(AController* NewController) override;
-	
-	// virtual void MoveAutonomous( float ClientTimeStamp, float DeltaTime, uint8 CompressedFlags, const FVector& NewAccel);
+	void Aiming_CameraMove();
+
+protected:
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const;
+
 };
