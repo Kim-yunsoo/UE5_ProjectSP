@@ -23,4 +23,7 @@ protected:
 
 public:
 	virtual void Explode() override;
+	//RPC
+	UFUNCTION(NetMulticast, Unreliable)
+	void MultiRPCExplosion(const TArray<AActor*>& Array);
 };
