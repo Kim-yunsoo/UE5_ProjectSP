@@ -8,7 +8,6 @@ ASPBlackPotion::ASPBlackPotion()
 {
 	SphereComponent->SetSphereRadius(35.46f);
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> PotionMeshRef(TEXT("/Script/Engine.StaticMesh'/Game/Spectrum/Assets/Potion/B_Potion/B_Potion.B_Potion'"));
-
 	if (PotionMeshRef.Object)
 	{
 		PotionMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BlackPotionMesh"));
@@ -19,7 +18,6 @@ ASPBlackPotion::ASPBlackPotion()
 		PotionMesh->SetCollisionProfileName(TEXT("NoCollision"));
 	}
 	ExplosionComponent = CreateDefaultSubobject<USPExplosionComponent>(TEXT("ExplosionComponent"));
-	//ConstructorHelpers::FObjectFinder<UStaticMeshComponent> BlackPotionRef(TEXT(""));
 	this->SetReplicates(true);
 	this->AActor::SetReplicateMovement(true);
 }

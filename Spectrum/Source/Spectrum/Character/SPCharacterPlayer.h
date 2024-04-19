@@ -142,7 +142,7 @@ protected:
 	UPROPERTY(Replicated,BlueprintReadWrite, Category = "Character")
 	uint8 bIsAiming : 1;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	UPROPERTY(Replicated, BlueprintReadWrite, Category = "Character")
 	uint8 bIsHolding : 1;
 
 	UPROPERTY(ReplicatedUsing = OnRep_PotionSpawn, EditAnywhere, BlueprintReadWrite, Category = "Character")
@@ -219,11 +219,7 @@ protected:
 	//TObjectPtr<class UAnimMontage> ThrowMontage; 
 
 protected:
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-	//uint8 bIsAiming : 1; //     
-
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-	//uint8 bIsHolding : 1; 
+ 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	FVector UILocation; 
@@ -283,8 +279,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Decal")
 	TArray<UStaticMesh*> MeshArray;
 	
-protected:
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 // ServerRPC
 	UFUNCTION(Server, Unreliable)
@@ -310,6 +304,15 @@ protected:
 	
 	UFUNCTION(Server, Unreliable)
 	void ServerRPCShowProjectilePath();
+
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCStopAiming();
+	
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCGraping();
+
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCStopGraping();
 	
 	//ClientRPC
 	UFUNCTION(Client, Unreliable)
@@ -330,7 +333,13 @@ protected:
 	void PlayTurnAnimation();
 	void PlayThrowAnimation();
 	void PlayStopAnimation();
+	void Aiming_CameraMove();
+
 	//virtual void PossessedBy(AController* NewController) override;
 	
 	// virtual void MoveAutonomous( float ClientTimeStamp, float DeltaTime, uint8 CompressedFlags, const FVector& NewAccel);
+
+protected:
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const;
+
 };
