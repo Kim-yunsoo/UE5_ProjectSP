@@ -34,6 +34,7 @@
 #include "SpectrumLog.h"
 #include "EngineUtils.h"
 #include "Net/UnrealNetwork.h"
+#include "UI/SPWidgetComponent.h"
 
 ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<USPCharacterMovementComponent>(
@@ -305,6 +306,10 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 	DecalSphere->SetVisibility(false);
 	MyDecal->SetVisibility(false);
 	// DecalSphere->SetIsReplicated(true);
+
+	//Widget
+	//Target = CreateDefaultSubobject<USPWidgetComponent>(TEXT("Widget"));
+	
 	
 	CurrentCharacterControlType = ECharacterControlType::Shoulder;
 	LastInput = FVector2D::ZeroVector;

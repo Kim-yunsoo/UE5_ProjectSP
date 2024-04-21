@@ -8,7 +8,7 @@ USPTargetUI::USPTargetUI(const FObjectInitializer& ObjectInitializer) : Super(Ob
 {
 }
 
-void USPTargetUI::NativeConstruct()
+void USPTargetUI::NativeConstruct() //위젯에 관련된 UI 요소들이 모두 준비 완료 되면
 {
 	Super::NativeConstruct();
 	

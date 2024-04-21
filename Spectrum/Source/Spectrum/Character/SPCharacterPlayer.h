@@ -279,7 +279,14 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Decal")
 	TArray<UStaticMesh*> MeshArray;
 	
+//UI Widget Section
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget)
+	TObjectPtr<class USPWidgetComponent> Target;
+ 
 
+
+	
 // ServerRPC
 	UFUNCTION(Server, Unreliable)
 	void ServerRPCSpeedUp();

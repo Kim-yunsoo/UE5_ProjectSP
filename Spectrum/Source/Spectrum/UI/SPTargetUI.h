@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include "SPUserWidget.h"
 #include "SPTargetUI.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class SPECTRUM_API USPTargetUI : public UUserWidget
+class SPECTRUM_API USPTargetUI : public USPUserWidget
 {
 	GENERATED_BODY()
 public:
