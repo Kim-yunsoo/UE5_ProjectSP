@@ -83,13 +83,13 @@ void ASPObject::OnExplosionHit()
 			}
 			Geometry->RegisterComponent();
 			Geometry->AddImpulse(FVector(0.0f, 0.0f, 125.f));
-			FTimerHandle ChangeCollisionProfileTimer;
-			float DelayInSeconds = 1.0f;
-			GetWorld()->GetTimerManager().SetTimer(ChangeCollisionProfileTimer, [this, Geometry]()
-			{
-				Geometry->SetCollisionProfileName(TEXT("OnlyStaticCollision"));
-				ObjectMesh->SetCollisionProfileName(TEXT("OnlyStaticCollision"));
-			}, DelayInSeconds, false);
+			// FTimerHandle ChangeCollisionProfileTimer;
+			// float DelayInSeconds = 1.0f;
+			// GetWorld()->GetTimerManager().SetTimer(ChangeCollisionProfileTimer, [this, Geometry]()
+			// {
+			// 	Geometry->SetCollisionProfileName(TEXT("OnlyStaticCollision"));
+			// 	ObjectMesh->SetCollisionProfileName(TEXT("OnlyStaticCollision"));
+			// }, DelayInSeconds, false);
 			this->SetLifeSpan(5.0f);
 		}
 
