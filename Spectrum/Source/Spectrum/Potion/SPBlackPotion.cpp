@@ -33,17 +33,13 @@ void ASPBlackPotion::BeginPlay()
 	OnActorHit.AddDynamic(this, &ASPBlackPotion::HandleActorHit);
 }
 
-
-
 void ASPBlackPotion::HandleActorHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
 {
-
 	//서버만 들어옴.. 
 	// ServerRPCStopAiming();
 	// MultiRPCExplosion();
 	ExplosionComponent->Explode();
 	this->SetLifeSpan(0.1f);
-	
 }
 
 void ASPBlackPotion::MultiRPCExplosion_Implementation()

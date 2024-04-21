@@ -54,6 +54,9 @@ void ASPObject::BeginPlay()
 	OriginMaterial = ObjectMesh->GetMaterial(ElementIndex); // mesh origin
 	ObjectDynamic = ObjectMesh->CreateDynamicMaterialInstance(ElementIndex, nullptr, FName(TEXT("None")));
 	ChaosDynamic = UMaterialInstanceDynamic::Create(OriginMaterial, nullptr, NAME_None);
+
+	// GeometryCollection->mesh
+	
 }
 
 void ASPObject::OnExplosionHit()
@@ -89,7 +92,6 @@ void ASPObject::OnExplosionHit()
 			// }, DelayInSeconds, false);
 			this->SetLifeSpan(5.0f);
 		}
-
 		bHasBeenCalled = false;
 	}
 }

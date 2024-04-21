@@ -9,6 +9,7 @@
 #include "InputActionValue.h"
 #include "Protocol.pb.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Interface/SPSkillInterface.h"
 #include "SPCharacterPlayer.generated.h"
 
 /**
@@ -25,7 +26,7 @@ enum class ECharacterControlType : uint8
 
 
 UCLASS()
-class SPECTRUM_API ASPCharacterPlayer : public ACharacter
+class SPECTRUM_API ASPCharacterPlayer : public ACharacter , public ISPSkillInterface
 {
 	GENERATED_BODY()
 
@@ -44,7 +45,7 @@ protected:
 	void SetCharacterControl(ECharacterControlType NewCharacterControlType);
 	virtual void SetCharacterControlData(const class USPCharacterControlData* CharacterControlData);
 	void CameraMove();
-//
+//input action Function
 	void ShoulderMove(const FInputActionValue& Value);
 	void ShoulderLook(const FInputActionValue& Value);
 	void StopShoulderLook(const FInputActionValue& Value);
@@ -70,6 +71,7 @@ protected:
 	void GreenPotionSpawn(const FInputActionValue& Value);
 	void OrangePotionSpawn(const FInputActionValue& Value);
 	void PurplePotionSpawn(const FInputActionValue& Value);
+	void SlowSKill(const FInputActionValue& Value);
 
 	ECharacterControlType CurrentCharacterControlType;
 
@@ -151,6 +153,9 @@ protected:
 	UPROPERTY(Replicated, BlueprintReadWrite, Category = "Character")
 	uint8 bIsThrowReady : 1; //Throw Ready? 
 
+	UPROPERTY(Replicated, BlueprintReadWrite, Category = "Character")
+	uint8 bIsActiveSlowSkill : 1; //Throw Ready?
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UAnimMontage> ThrowMontage;
 
@@ -206,6 +211,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> ThrowCtrl;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> SlowQ;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputMappingContext* DefaultMappingContext;
 
@@ -235,7 +243,6 @@ protected:
 
 protected:
 	UPrimitiveComponent* HitComponent;
-	//AActor* HitActor;
 	AActor* HitActor;
 	FHitResult outHitResult;
 
@@ -319,6 +326,12 @@ protected:
 
 	UFUNCTION(Server, Unreliable)
 	void ServerRPCPurplePotionSpawn();
+
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCSlowSkill();
+
+	UFUNCTION(NetMulticast, Unreliable)
+	void MultiRPCSlowSkill( const TArray<FHitResult>& OutHits);
 	
 	//ClientRPC
 	UFUNCTION(Client, Unreliable)
@@ -348,5 +361,14 @@ protected:
 
 protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const;
+
+	// skill interface
+	virtual void MovementSlow();
+
+
+	//Effect
+protected:
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
+	TObjectPtr<UParticleSystem> SlowEffect;
 
 };
