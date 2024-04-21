@@ -17,9 +17,6 @@ class SPECTRUM_API USPHUDWidget : public UUserWidget
 public:
 	USPHUDWidget(const FObjectInitializer& ObjectInitializer);
 
-public:
-	void UpdateTargetUI(bool Iswidget);
-
 protected:
 	virtual void NativeConstruct() override;
 

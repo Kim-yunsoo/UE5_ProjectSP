@@ -19,8 +19,7 @@ class USPCharacterHUDInterface : public UInterface
 class SPECTRUM_API ISPCharacterHUDInterface
 {
 	GENERATED_BODY()
-
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	//virtual void CheckTargetUI(class USPHUDWidget* InHUDWidget) = 0;
+	virtual void SetupTargetWidget(class USPUserWidget* InUserWidget) = 0;
 };

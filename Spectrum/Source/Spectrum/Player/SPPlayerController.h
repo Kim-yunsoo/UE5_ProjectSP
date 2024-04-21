@@ -28,6 +28,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = HUD)
 	TObjectPtr<class USPHUDWidget> SPHUDWidget;
 
-protected:
-	
+public:
+
 };
