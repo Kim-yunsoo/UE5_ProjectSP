@@ -21,6 +21,8 @@ ASPObject::ASPObject()
 	MyColorType = ColorType::None;
 	//bHasBeenCalled = false; 
 	//MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
+
+	
 	ObjectMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ObjectMesh"));
 	ObjectMesh->SetCollisionProfileName(TEXT("PropCollision"));
 	ObjectMesh->SetMobility(EComponentMobility::Movable);
@@ -31,9 +33,22 @@ ASPObject::ASPObject()
 	this->SetReplicates(true);
 	this->AActor::SetReplicateMovement(true);
 
-	LinearColors.Add(FLinearColor(0.043333, 0.390625, 0.0f, 1.0f));
-	LinearColors.Add(FLinearColor(0.973958f, 0.036101f, 0.0f, 1.0f));
-	LinearColors.Add(FLinearColor(0.263f, 0.0f, 0.6f, 1.0f));
+	static ConstructorHelpers::FObjectFinder<UDataTable>GreenDataRef(TEXT("/Game/Spectrum/ColorDataTable/DT_Green.DT_Green"));
+	if(GreenDataRef.Object)
+	{
+		GreenData=GreenDataRef.Object;
+	}
+	static ConstructorHelpers::FObjectFinder<UDataTable>OrangeDataRef(TEXT("/Game/Spectrum/ColorDataTable/DT_Orange.DT_Orange"));
+	if(OrangeDataRef.Object)
+	{
+		OrangeData=OrangeDataRef.Object;
+	}
+	static ConstructorHelpers::FObjectFinder<UDataTable>PurpleDataRef(TEXT("/Game/Spectrum/ColorDataTable/DT_Purple.DT_Purple"));
+	if(PurpleDataRef.Object)
+	{
+		PurpleData=PurpleDataRef.Object;
+	}
+
 }
 
 ASPObject::~ASPObject()
@@ -44,19 +59,11 @@ ASPObject::~ASPObject()
 void ASPObject::BeginPlay()
 {
 	Super::BeginPlay();
-	//UE_LOG(LogTemp,Log,TEXT("MyActor's name is: %s, and its mesh is: %s"),*GetName(), *GetMesh()->GetName());
-	//UE_LOG(LogTemp,Log,TEXT("MyActor's name is : %s, and its mesh is: %s"),*GetName(),*(ObjectMesh->GetStaticMesh()->GetName()));
-	//UE_LOG(LogTemp,Log,TEXT("It was called from C++"));
-	//GEngine->AddOnScreenDebugMessage(1,10,FColor::Blue,TEXT("It was called from C++"));
-
 	RootComponent->SetMobility(EComponentMobility::Movable);
 	ObjectLocation = GetActorLocation();
 	OriginMaterial = ObjectMesh->GetMaterial(ElementIndex); // mesh origin
 	ObjectDynamic = ObjectMesh->CreateDynamicMaterialInstance(ElementIndex, nullptr, FName(TEXT("None")));
 	ChaosDynamic = UMaterialInstanceDynamic::Create(OriginMaterial, nullptr, NAME_None);
-
-	// GeometryCollection->mesh
-	
 }
 
 void ASPObject::OnExplosionHit()
@@ -76,20 +83,9 @@ void ASPObject::OnExplosionHit()
 			Geometry->SetRestCollection(GeometryCollection);
 			Geometry->SetCollisionProfileName(TEXT("DestructionCollision"));
 			Geometry->SetMaterial(ElementIndex, ChaosDynamic);
-			if (MyColorType != ColorType::None)
-			{
-				ChaosDynamic->SetVectorParameterValue(FName(TEXT("Base Color Tint")),
-				                                      LinearColors[static_cast<uint8>(MyColorType)]);
-			}
+		
 			Geometry->RegisterComponent();
 			Geometry->AddImpulse(FVector(0.0f, 0.0f, 125.f));
-			// FTimerHandle ChangeCollisionProfileTimer;
-			// float DelayInSeconds = 0.5f;
-			// GetWorld()->GetTimerManager().SetTimer(ChangeCollisionProfileTimer, [this, Geometry]()
-			// {
-			// 	Geometry->SetCollisionProfileName(TEXT("OnlyStaticCollision"));
-			// 	ObjectMesh->SetCollisionProfileName(TEXT("OnlyStaticCollision"));
-			// }, DelayInSeconds, false);
 			this->SetLifeSpan(5.0f);
 		}
 		bHasBeenCalled = false;
@@ -109,7 +105,6 @@ void ASPObject::Tick(float DeltaTime)
 	}
 	DelayTime = 1.0;
 	bool Equal = UKismetMathLibrary::EqualEqual_VectorVector(ObjectLocation, GetActorLocation(), 0.0);
-	//UE_LOG(LogTemp, Log, TEXT("%s"), *GetActorLocation().ToString());
 	if (Equal)
 	{
 		ObjectMesh->SetSimulatePhysics(false);
@@ -129,8 +124,16 @@ void ASPObject::MultiRPCExplosionHit_Implementation()
 void ASPObject::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+}
 
-	// DOREPLIFETIME(ASPObject, bHasBeenCalled);
+void ASPObject::DynamicSetColor(const UDataTable* Table)
+{
+	//ColorType
+	FColorData* ColorRow = Table->FindRow<FColorData>(RowName, "");
+	MyColorType = ColorRow->Color;
+	
+	ObjectDynamic->SetVectorParameterValue(DynamicParam,ColorRow->ColorData);
+	ChaosDynamic->SetVectorParameterValue(DynamicParam,ColorRow->ColorData);
 }
 
 // Called every frame
@@ -139,10 +142,7 @@ void ASPObject::OnChangeColorGreen()
 {
 	if (ObjectDynamic)
 	{
-		
-		MyColorType = ColorType::Green;
-		ObjectDynamic->SetVectorParameterValue(FName(TEXT("Base Color Tint")),
-		                                       LinearColors[static_cast<uint8>(MyColorType)]);
+		DynamicSetColor(GreenData);
 	}
 }
 
@@ -150,9 +150,7 @@ void ASPObject::OnChangeColorOrange()
 {
 	if (ObjectDynamic)
 	{
-		MyColorType = ColorType::Orange;
-		ObjectDynamic->SetVectorParameterValue(FName(TEXT("Base Color Tint")),
-		                                       LinearColors[static_cast<uint8>(MyColorType)]);
+		DynamicSetColor(OrangeData);
 	}
 }
 
@@ -160,8 +158,6 @@ void ASPObject::OnChangeColorPurple()
 {
 	if (ObjectDynamic)
 	{
-		MyColorType = ColorType::Purple;
-		ObjectDynamic->SetVectorParameterValue(FName(TEXT("Base Color Tint")),
-		                                       LinearColors[static_cast<uint8>(MyColorType)]);
+		DynamicSetColor(PurpleData);
 	}
 }

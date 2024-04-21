@@ -726,11 +726,6 @@ void ASPCharacterPlayer::SlowSKill(const FInputActionValue& Value)
 void ASPCharacterPlayer::ServerRPCSlowSkill_Implementation()
 {
 	bIsActiveSlowSkill=false;
-	// FTimerHandle TimerHandle;
-	// GetWorld()->GetTimerMaddddnddddager().SetTimer(TimerHandle,this,[&]()
-	// {
-	// 	
-	// },10,false);
 	FVector TracePointStart = GetActorLocation();
 	FVector TracePointEnd = GetActorLocation() + GetActorForwardVector() * 100;
 	float Radius = 20.f;

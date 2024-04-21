@@ -7,19 +7,18 @@
 #include "Interface/SPDamageInterface.h"
 //D:\UE_5.3\Engine\Source\Runtime\Experimental\GeometryCollectionEngine\Public\GeometryCollection\GeometryCollectionObject.h
 //#include "GeometryCollection\GeometryCollectionObject.h"GeometryCollectionEngine
-#include "Protocol.pb.h"
+#include "DataTable/SPColorDataTable.h"
 #include "SPObject.generated.h"
 
 
-UENUM()
-enum class ColorType :uint8
-{
-	
-	Green=0,
-	Orange=1,
-	Purple=2,
-	None
-};
+// UENUM()
+// enum class ColorType :uint8
+// {
+// 	Green=0,
+// 	Orange=1,
+// 	Purple=2,
+// 	None
+// };
 
 
 UCLASS()
@@ -78,9 +77,7 @@ protected://DynamicMaterial
 	UPROPERTY()
 	ColorType MyColorType;
 
-	UPROPERTY()
-	TArray<FLinearColor> LinearColors;
-
+	//Get Material Index
 	int32 ElementIndex = 0;
 
 	//RPC
@@ -89,6 +86,24 @@ protected://DynamicMaterial
 
 	//funtion
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-	
+
+	//Data Table
+	UPROPERTY()
+	TObjectPtr<UDataTable> GreenData;
+
+	UPROPERTY()
+	TObjectPtr<UDataTable> OrangeData;
+
+	UPROPERTY()
+	TObjectPtr<UDataTable> PurpleData;
+
+	UPROPERTY()
+	FName RowName{TEXT("ColorType")};
+
+	UPROPERTY()
+	FName DynamicParam{TEXT("Base Color Tint")};
+
+	//DataFunction
+	void DynamicSetColor(const UDataTable* Table);
 	
 };
