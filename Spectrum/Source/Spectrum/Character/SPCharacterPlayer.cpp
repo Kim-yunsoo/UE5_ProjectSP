@@ -35,6 +35,7 @@
 #include "EngineUtils.h"
 #include "Net/UnrealNetwork.h"
 #include "UI/SPWidgetComponent.h"
+#include "UI/SPTargetUI.h"
 
 ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<USPCharacterMovementComponent>(
@@ -560,7 +561,12 @@ void ASPCharacterPlayer::Aiming(const FInputActionValue& Value)
 	{
 		Aiming_CameraMove(); //애니메이션 작동
 		ServerRPCAiming();
+		bIsAiming = true;
+		UE_LOG(LogTemp, Log, TEXT("Aiming"));
+		OnAimChanged.Broadcast(bIsAiming);
+		
 	}
+
 }
 
 void ASPCharacterPlayer::ServerRPCAiming_Implementation()
@@ -571,7 +577,8 @@ void ASPCharacterPlayer::ServerRPCAiming_Implementation()
 void ASPCharacterPlayer::StopAiming(const FInputActionValue& Value)
 {
 	bIsAiming = false;
-
+	UE_LOG(LogTemp, Log, TEXT("StopAiming"));
+	OnAimChanged.Broadcast(bIsAiming);
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->bUseControllerDesiredRotation = false;
 	FollowCamera->K2_AttachToComponent(CameraBoom, NAME_None, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld,
@@ -1054,6 +1061,16 @@ void ASPCharacterPlayer::ShowProjectilePath()
 	}
 }
 
+void ASPCharacterPlayer::SetupTargetWidget(USPUserWidget* InUserWidget)
+{
+	USPTargetUI* TargetWidget = Cast<USPTargetUI>(InUserWidget);
+	if(TargetWidget)
+	{
+		UE_LOG(LogTemp, Log, TEXT("SetupTargetWidget"));
+		TargetWidget->UpdateTargetUI(bIsAiming);
+		//this->OnAimChanged.AddUObject(TargetWidget, &USPTargetUI::UpdateTargetUI);
+	}
+}
 
 void ASPCharacterPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {

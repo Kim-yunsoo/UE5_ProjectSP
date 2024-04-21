@@ -5,11 +5,13 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Potion/SPBlackPotion.h" 
-#include "Interface/SPCharacterHUDInterface.h"
 #include "InputActionValue.h"
 #include "Protocol.pb.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Interface/SPCharacterHUDInterface.h"
 #include "SPCharacterPlayer.generated.h"
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnAimChangedDelegate, bool /*aim*/)
 
 /**
  *
@@ -25,10 +27,10 @@ enum class ECharacterControlType : uint8
 
 
 UCLASS()
-class SPECTRUM_API ASPCharacterPlayer : public ACharacter
+class SPECTRUM_API ASPCharacterPlayer : public ACharacter, public ISPCharacterHUDInterface
 {
 	GENERATED_BODY()
-
+	
 public:
 	ASPCharacterPlayer(const FObjectInitializer& ObjectInitializer);
 
@@ -39,6 +41,10 @@ protected:
 public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+
+public:
+	FOnAimChangedDelegate OnAimChanged;
+	
 protected:
 	void ChangeCharacterControl();
 	void SetCharacterControl(ECharacterControlType NewCharacterControlType);
@@ -283,7 +289,8 @@ protected:
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget)
 	TObjectPtr<class USPWidgetComponent> Target;
- 
+
+	virtual void SetupTargetWidget(USPUserWidget* InUserWidget) override;
 
 
 	

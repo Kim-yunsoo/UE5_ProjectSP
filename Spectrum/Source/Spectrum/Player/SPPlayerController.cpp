@@ -20,7 +20,7 @@ void ASPPlayerController::BeginPlay()
 	FInputModeGameOnly GameOblyInputMode;
 	SetInputMode(GameOblyInputMode);
 
-	if(!HasAuthority() || (HasAuthority() && GetRemoteRole() == ROLE_SimulatedProxy))
+	if(IsLocalPlayerController())
 	{
 		SPHUDWidget = CreateWidget<USPHUDWidget>(this, SPHUDWidgetClass);
 		if (SPHUDWidget)
