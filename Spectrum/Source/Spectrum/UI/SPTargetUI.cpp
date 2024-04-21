@@ -9,6 +9,7 @@
 
 USPTargetUI::USPTargetUI(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
+	
 }
 
 void USPTargetUI::UpdateTargetUI(bool IsAim)
@@ -23,7 +24,6 @@ void USPTargetUI::UpdateTargetUI(bool IsAim)
 	}
 }
 
-
 void USPTargetUI::NativeConstruct() //위젯에 관련된 UI 요소들이 모두 준비 완료 되면
 {
 	Super::NativeConstruct();
@@ -32,9 +32,12 @@ void USPTargetUI::NativeConstruct() //위젯에 관련된 UI 요소들이 모두 준비 완료 �
 	ensure(TargetUIImage);
 	this->SetVisibility(ESlateVisibility::Hidden);
 
-	ISPCharacterHUDInterface* CharacterWidget = Cast<ISPCharacterHUDInterface>(OwningActor);
+	UE_LOG(LogTemp, Log, TEXT("SetupTargetWidget"));
+
+	ISPCharacterHUDInterface* CharacterWidget = Cast<ISPCharacterHUDInterface>(GetOwningPlayerPawn());
 	if(CharacterWidget)
 	{
+		UE_LOG(LogTemp, Log, TEXT("SetupTargetWidget!!!!!"));
 		CharacterWidget->SetupTargetWidget(this);
 	}
 }

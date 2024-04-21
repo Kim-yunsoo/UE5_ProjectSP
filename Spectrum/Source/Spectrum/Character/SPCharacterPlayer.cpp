@@ -323,6 +323,7 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 	bIsTurnLeft = false;
 	bIsTurnReady = false;
 	HitDistance = 1800.f;
+	
 }
 
 void ASPCharacterPlayer::BeginPlay()
@@ -1063,12 +1064,14 @@ void ASPCharacterPlayer::ShowProjectilePath()
 
 void ASPCharacterPlayer::SetupTargetWidget(USPUserWidget* InUserWidget)
 {
+	UE_LOG(LogTemp, Log, TEXT("SetupTargetWidget"));
+
 	USPTargetUI* TargetWidget = Cast<USPTargetUI>(InUserWidget);
 	if(TargetWidget)
 	{
-		UE_LOG(LogTemp, Log, TEXT("SetupTargetWidget"));
+		UE_LOG(LogTemp, Log, TEXT("TEST"));
 		TargetWidget->UpdateTargetUI(bIsAiming);
-		//this->OnAimChanged.AddUObject(TargetWidget, &USPTargetUI::UpdateTargetUI);
+		this->OnAimChanged.AddUObject(TargetWidget, &USPTargetUI::UpdateTargetUI);
 	}
 }
 
