@@ -6,20 +6,12 @@
 
 USPHUDWidget::USPHUDWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
+	
 }
-
-
-
 void USPHUDWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
 	TargetUI = Cast<USPTargetUI>(GetWidgetFromName(TEXT("WBTargetUI")));
 	ensure(TargetUI);
-	//TargetUI->SetVisibility(ESlateVisibility::Hidden);
-	
-	
 }
-	
-
-

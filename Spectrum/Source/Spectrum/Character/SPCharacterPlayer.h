@@ -12,6 +12,7 @@
 #include "Interface/SPCharacterHUDInterface.h"
 #include "SPCharacterPlayer.generated.h"
 
+class USPSkillCastComponent;
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnAimChangedDelegate, bool /*aim*/)
 
 /**
@@ -28,7 +29,7 @@ enum class ECharacterControlType : uint8
 
 
 UCLASS()
-class SPECTRUM_API ASPCharacterPlayer : public ACharacter, public ISPCharacterHUDInterface, public ISPSkillInterface
+class SPECTRUM_API ASPCharacterPlayer : public ACharacter, public ISPCharacterHUDInterface
 {
 	GENERATED_BODY()
 	
@@ -159,12 +160,13 @@ protected:
 	UPROPERTY(Replicated, BlueprintReadWrite, Category = "Character")
 	uint8 bIsThrowReady : 1; //Throw Ready? 
 
-	UPROPERTY(Replicated, BlueprintReadWrite, Category = "Character")
-	uint8 bIsActiveSlowSkill : 1; //Throw Ready?
+	// UPROPERTY(Replicated, BlueprintReadWrite, Category = "Character")
+	// uint8 bIsActiveSlowSkill : 1; //Throw Ready?
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UAnimMontage> ThrowMontage;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UAnimMontage> SkillMontage;
 	//Camera
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, Meta = (AllowPrivateAccess = "ture"))
@@ -344,8 +346,7 @@ protected:
 	UFUNCTION(Server, Unreliable)
 	void ServerRPCSlowSkill();
 
-	UFUNCTION(NetMulticast, Unreliable)
-	void MultiRPCSlowSkill( const TArray<FHitResult>& OutHits);
+	
 	
 	//ClientRPC
 	UFUNCTION(Client, Unreliable)
@@ -377,12 +378,14 @@ protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const;
 
 	// skill interface
-	virtual void MovementSlow();
+	// virtual void MovementSlow();
 
 
 	//Effect
 protected:
-	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
-	TObjectPtr<UParticleSystem> SlowEffect;
+	// UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
+	// TObjectPtr<UParticleSystem> SlowEffect;
 
+	UPROPERTY()
+	TObjectPtr<USPSkillCastComponent> SkillCastComponent;
 };

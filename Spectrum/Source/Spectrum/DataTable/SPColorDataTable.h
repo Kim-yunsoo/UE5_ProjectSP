@@ -19,7 +19,7 @@ USTRUCT(BlueprintType)
 struct FColorData : public FTableRowBase
 {
 	GENERATED_BODY()
-
+	
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Color")
 	ColorType Color;

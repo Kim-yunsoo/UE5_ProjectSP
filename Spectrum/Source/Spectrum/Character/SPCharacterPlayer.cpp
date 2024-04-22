@@ -34,6 +34,8 @@
 #include "SpectrumLog.h"
 #include "EngineUtils.h"
 #include "Net/UnrealNetwork.h"
+#include "Skill/SPSkillCastComponent.h"
+#include "Skill/SPSlowSkill.h"
 #include "UI/SPWidgetComponent.h"
 #include "UI/SPTargetUI.h"
 
@@ -84,7 +86,8 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 	Staff->SetupAttachment(GetMesh(), TEXT("Staff_Socket"));
 	Staff->SetCollisionProfileName(TEXT("AllCollisionIgnore"));
 
-
+	//Skill
+	SkillCastComponent = CreateDefaultSubobject<USPSkillCastComponent>(TEXT("SkillComponent"));
 	//Sphere
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereMeshRef(
 		TEXT("/Script/Engine.StaticMesh'/Engine/EditorMeshes/ArcadeEditorSphere.ArcadeEditorSphere'"));
@@ -326,8 +329,8 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 
 	//Widget
 	//Target = CreateDefaultSubobject<USPWidgetComponent>(TEXT("Widget"));
-	
-	
+
+
 	CurrentCharacterControlType = ECharacterControlType::Shoulder;
 	LastInput = FVector2D::ZeroVector;
 	bIsAiming = false;
@@ -338,7 +341,7 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 	bIsTurnReady = false;
 	bIsTurnLeft = false;
 	bIsTurnReady = false;
-	bIsActiveSlowSkill = true;
+	// bIsActiveSlowSkill = true;
 	HitDistance = 1800.f;
 }
 
@@ -584,9 +587,7 @@ void ASPCharacterPlayer::Aiming(const FInputActionValue& Value)
 		bIsAiming = true;
 		UE_LOG(LogTemp, Log, TEXT("Aiming"));
 		OnAimChanged.Broadcast(bIsAiming);
-		
 	}
-
 }
 
 void ASPCharacterPlayer::ServerRPCAiming_Implementation()
@@ -597,6 +598,7 @@ void ASPCharacterPlayer::ServerRPCAiming_Implementation()
 void ASPCharacterPlayer::StopAiming(const FInputActionValue& Value)
 {
 	bIsAiming = false;
+
 	UE_LOG(LogTemp, Log, TEXT("StopAiming"));
 	OnAimChanged.Broadcast(bIsAiming);
 	GetCharacterMovement()->bOrientRotationToMovement = true;
@@ -729,63 +731,47 @@ void ASPCharacterPlayer::PurplePotionSpawn(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::SlowSKill(const FInputActionValue& Value)
 {
-	if (bIsActiveSlowSkill)
-	{ //여기서 공격 받은 유형을 넘겨주면 ? 
-		ServerRPCSlowSkill(); // 스킬이 발동되면 서버로 바로 넘긴다. 
-	}
+	ServerRPCSlowSkill(); // 스킬이 발동되면 서버로 바로 넘긴다.  //발사대 컴포넌트를 이용해서 넣어주자. 
 }
 
 void ASPCharacterPlayer::ServerRPCSlowSkill_Implementation()
 {
-	bIsActiveSlowSkill=false;
-	FVector TracePointStart = GetActorLocation();
-	FVector TracePointEnd = GetActorLocation() + GetActorForwardVector() * 100;
-	float Radius = 20.f;
-	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
-	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn));
-	TArray<AActor*> ActorsToIgnore;
-	ActorsToIgnore.Add(this);
-	TArray<FHitResult> OutHits;
-	FLinearColor GreenColor(0.0f, 1.0f, 0.0f);
-	FLinearColor RedColor(1.0f, 0.0f, 0.0f);
-	float DrawTime = 3.0f;
-	bool Success = UKismetSystemLibrary::SphereTraceMultiForObjects(GetWorld(), TracePointStart, TracePointEnd,
-	                                                                Radius, ObjectTypes, false, ActorsToIgnore,
-	                                                                EDrawDebugTrace::ForDuration, OutHits, true,
-	                                                                GreenColor, RedColor, DrawTime);
-	if (Success) //서버에서 판정 성공하면 판정된 배열 모두 멀티로 작업
+	//서버로 넘어와서 호출
+	SP_LOG(LogSPNetwork, Log, TEXT("Skill RPC"));
+	UObject* SkillObject = NewObject<UObject>(GetOwner(), USPSlowSkill::StaticClass());
+	if (SkillObject)
 	{
-		MultiRPCSlowSkill(OutHits);
+		SkillCastComponent->SetActiveSkill(SkillObject);
 	}
 }
 
-void ASPCharacterPlayer::MultiRPCSlowSkill_Implementation(const TArray<FHitResult>& OutHits)
-{
-	for (const FHitResult& HitResult : OutHits)
-	{
-		TArray<AActor*> ActorArray;
-		AActor* HitPawn = HitResult.GetActor();
-		FVector Location = HitPawn->GetActorLocation();
-		FRotator Rotation = FRotator(0.0f, 0.0f, 0.0f);
-		FVector Scale{1.0f, 1.0f, 1.0f};
-		FTransform SpawnTransform{Rotation, Location, Scale};
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), SlowEffect, SpawnTransform, true, EPSCPoolMethod::None,
-		                                         true);
-//Enum으로 공격 받은 
-		ISPSkillInterface* SkillInterface = Cast<ISPSkillInterface>(HitPawn);
-		if (SkillInterface)
-		{
-			SkillInterface->MovementSlow();
-		}
-	}
-}
+// void ASPCharacterPlayer::MultiRPCSlowSkill_Implementation(const TArray<FHitResult>& OutHits)
+// {
+// 	for (const FHitResult& HitResult : OutHits)
+// 	{
+// 		TArray<AActor*> ActorArray;
+// 		AActor* HitPawn = HitResult.GetActor();
+// 		FVector Location = HitPawn->GetActorLocation();
+// 		FRotator Rotation = FRotator(0.0f, 0.0f, 0.0f);
+// 		FVector Scale{1.0f, 1.0f, 1.0f};
+// 		FTransform SpawnTransform{Rotation, Location, Scale};
+// 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), SlowEffect, SpawnTransform, true, EPSCPoolMethod::None,
+// 		                                         true);
+// //Enum으로 공격 받은 
+// 		ISPSkillInterface* SkillInterface = Cast<ISPSkillInterface>(HitPawn);
+// 		if (SkillInterface)
+// 		{
+// 			SkillInterface->MovementSlow();
+// 		}
+// 	}
+// }
 
-void ASPCharacterPlayer::MovementSlow()
-{
-	SP_LOG(LogSPNetwork, Log, TEXT("MovementSlow"));
-
-	GetCharacterMovement()->MaxWalkSpeed = 100.f;
-}
+// void ASPCharacterPlayer::MovementSlow()
+// {
+// 	SP_LOG(LogSPNetwork, Log, TEXT("MovementSlow"));
+//
+// 	GetCharacterMovement()->MaxWalkSpeed = 100.f;
+// }
 
 
 void ASPCharacterPlayer::OnRep_Potion()
@@ -1141,13 +1127,14 @@ void ASPCharacterPlayer::ShowProjectilePath()
 
 void ASPCharacterPlayer::SetupTargetWidget(USPUserWidget* InUserWidget)
 {
-	USPTargetUI* TargetWidget = Cast<USPTargetUI>(InUserWidget);
-	if(TargetWidget)
-	{
-		UE_LOG(LogTemp, Log, TEXT("SetupTargetWidget"));
-		TargetWidget->UpdateTargetUI(bIsAiming);
-		//this->OnAimChanged.AddUObject(TargetWidget, &USPTargetUI::UpdateTargetUI);
-	}
+	// USPTargetUI* TargetWidget = Cast<USPTargetUI>(InUserWidget);
+	// Target->GetWidget().UpdateTarget;
+	// if(TargetWidget)
+	// {
+	// 	UE_LOG(LogTemp, Log, TEXT("SetupTargetWidget"));
+	// 	TargetWidget->UpdateTargetUI(bIsAiming);
+	// 	//this->OnAimChanged.AddUObject(TargetWidget, &USPTargetUI::UpdateTargetUI);
+	// }
 }
 
 void ASPCharacterPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

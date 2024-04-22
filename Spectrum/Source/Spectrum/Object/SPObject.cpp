@@ -33,17 +33,17 @@ ASPObject::ASPObject()
 	this->SetReplicates(true);
 	this->AActor::SetReplicateMovement(true);
 
-	static ConstructorHelpers::FObjectFinder<UDataTable>GreenDataRef(TEXT("/Game/Spectrum/ColorDataTable/DT_Green.DT_Green"));
+	static ConstructorHelpers::FObjectFinder<UDataTable>GreenDataRef(TEXT("/Game/Spectrum/ColorData/DT_Green.DT_Green"));
 	if(GreenDataRef.Object)
 	{
 		GreenData=GreenDataRef.Object;
 	}
-	static ConstructorHelpers::FObjectFinder<UDataTable>OrangeDataRef(TEXT("/Game/Spectrum/ColorDataTable/DT_Orange.DT_Orange"));
+	static ConstructorHelpers::FObjectFinder<UDataTable>OrangeDataRef(TEXT("/Game/Spectrum/ColorData/DT_Orange.DT_Orange"));
 	if(OrangeDataRef.Object)
 	{
 		OrangeData=OrangeDataRef.Object;
 	}
-	static ConstructorHelpers::FObjectFinder<UDataTable>PurpleDataRef(TEXT("/Game/Spectrum/ColorDataTable/DT_Purple.DT_Purple"));
+	static ConstructorHelpers::FObjectFinder<UDataTable>PurpleDataRef(TEXT("/Game/Spectrum/ColorData/DT_Purple.DT_Purple"));
 	if(PurpleDataRef.Object)
 	{
 		PurpleData=PurpleDataRef.Object;
