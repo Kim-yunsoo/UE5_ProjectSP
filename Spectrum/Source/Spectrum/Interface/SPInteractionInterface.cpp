@@ -2,6 +2,7 @@
 
 
 #include "Interface/SPInteractionInterface.h"
+#include "Character/SPCharacterPlayer.h"
 
 // Add default functionality here for any ISPInteractionInterface functions that are not pure virtual.
 void ISPInteractionInterface::BeginFocus()
@@ -20,6 +21,6 @@ void ISPInteractionInterface::EndInteract()
 {
 }
 
-void ISPInteractionInterface::Interact()
+void ISPInteractionInterface::Interact(ASPCharacterPlayer* PlayerCharacter)
 {
 }

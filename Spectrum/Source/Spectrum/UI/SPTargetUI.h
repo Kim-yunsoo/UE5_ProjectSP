@@ -18,8 +18,7 @@ public:
 	void UpdateTargetUI(bool IsAim);
 protected:
 	virtual void NativeConstruct() override;
-	
-	
+
 protected:
 	UPROPERTY()
 	TObjectPtr<class UImage> TargetUIImage;

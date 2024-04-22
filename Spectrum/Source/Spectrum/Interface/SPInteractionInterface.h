@@ -6,6 +6,8 @@
 #include "UObject/Interface.h"
 #include "SPInteractionInterface.generated.h"
 
+class ASPCharacterPlayer;
+
 UENUM()
 enum class EInteractableType : uint8
 {
@@ -70,7 +72,7 @@ public:
 	virtual void EndFocus();
 	virtual void BeginInteract();
 	virtual void EndInteract();
-	virtual void Interact();
+	virtual void Interact(ASPCharacterPlayer* PlayerCharacter);
 
 	FInteractableData InteractableData;
 };

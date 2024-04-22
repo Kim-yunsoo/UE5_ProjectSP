@@ -37,6 +37,8 @@
 #include "UI/SPWidgetComponent.h"
 #include "UI/SPTargetUI.h"
 #include "DrawDebugHelpers.h"
+#include "Player/SPPlayerController.h"
+#include "UI/SPHUDWidget.h"
 
 
 ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializer)
@@ -345,7 +347,9 @@ void ASPCharacterPlayer::BeginPlay()
 	SetCharacterControl(CurrentCharacterControlType);
 	GetMesh()->GetAnimInstance()->OnPlayMontageNotifyBegin.AddDynamic(
 		this, &ASPCharacterPlayer::HandleMontageAnimNotify);
-}
+
+
+};
 
 void ASPCharacterPlayer::Tick(float DeltaTime)
 {
@@ -484,6 +488,12 @@ void ASPCharacterPlayer::SetCharacterControl(ECharacterControlType NewCharacterC
 	}
 
 	CurrentCharacterControlType = NewCharacterControlType;
+
+	ASPPlayerController* SPController = Cast<ASPPlayerController>(GetController());
+	if(SPController)
+	{
+		HUDWidget = SPController->GetSPHUDWidget();
+	}
 }
 
 void ASPCharacterPlayer::ShoulderMove(const FInputActionValue& Value)
@@ -1151,9 +1161,7 @@ void ASPCharacterPlayer::PerformInteractionCheck()
 		{
 			if(TraceHit.GetActor()->GetClass()->ImplementsInterface(USPInteractionInterface::StaticClass()))
 			{
-				const float Distance = (TraceStart - TraceHit.ImpactPoint).Size();
-
-				if(TraceHit.GetActor()!= InteractionData.CurrentInteractable && Distance <= InteractionCheckDistance)
+				if(TraceHit.GetActor()!= InteractionData.CurrentInteractable)
 				{
 					FoundInteractable(TraceHit.GetActor());
 					return;
@@ -1188,6 +1196,12 @@ void ASPCharacterPlayer::FoundInteractable(AActor* NewInteractable)
 	InteractionData.CurrentInteractable = NewInteractable;
 	TargetInteractable = NewInteractable;
 
+	//Todo 좀 더 효율적이게 바꾸기
+	if (HUDWidget)
+	{
+		HUDWidget->UpdateInteractionWidget(&TargetInteractable->InteractableData);
+	}
+			
 	TargetInteractable->BeginFocus();
 }
 
@@ -1206,6 +1220,10 @@ void ASPCharacterPlayer::NoInteractableFound()
 			TargetInteractable->EndFocus();
 		}
 
+		if (HUDWidget)
+		{
+			HUDWidget->HideInteractionWidget();
+		}
 		// 인터렉션 위젯 지우기
 		InteractionData.CurrentInteractable = nullptr;
 		TargetInteractable = nullptr;
@@ -1256,7 +1274,7 @@ void ASPCharacterPlayer::Interact()
 	GetWorldTimerManager().ClearTimer(TimerHandle_Interaction);
 	if(IsValid(TargetInteractable.GetObject()))
 	{
-		TargetInteractable->Interact();
+		TargetInteractable->Interact(this);
 	}
 }
 

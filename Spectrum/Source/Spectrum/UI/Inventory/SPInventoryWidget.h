@@ -13,7 +13,5 @@ UCLASS()
 class SPECTRUM_API USPInventoryWidget : public USPUserWidget
 {
 	GENERATED_BODY()
-protected:
-	virtual void NativeConstruct() override;
 	
 };

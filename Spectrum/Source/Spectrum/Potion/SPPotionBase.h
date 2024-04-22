@@ -47,22 +47,22 @@ public:
 	// UPROPERTY()
 	// UInventoryComponent* OwningInventory;
 	
-	UPROPERTY(VisibleAnywhere, Category = "Item Data", meta = (UIMin=1, UIMax = 100))
+	UPROPERTY(VisibleAnywhere, Category = "Item")
 	int32 Quantity; //항목이 인벤토리로 이동할 때 수량
 	
-	UPROPERTY(EditAnywhere, Category = "Item Data")
+	UPROPERTY(VisibleAnywhere, Category = "Item")
 	FName ID;
 	
-	UPROPERTY(EditAnywhere, Category = "Item Data")
+	UPROPERTY(VisibleAnywhere, Category = "Item")
 	EItemType ItemType;
 	
-	UPROPERTY(EditAnywhere, Category = "Item Data")
+	UPROPERTY(VisibleAnywhere, Category = "Item")
 	FItemTextData ItemTextData;
 	
-	UPROPERTY(EditAnywhere, Category = "Item Data")
+	UPROPERTY(VisibleAnywhere, Category = "Item")
 	FItemNumericData ItemNumericData;
 	
-	UPROPERTY(EditAnywhere, Category = "Item Data")
+	UPROPERTY(VisibleAnywhere, Category = "Item")
 	FItemAssetData ItemAssetData;
 
 	UFUNCTION(Category = "Item")
@@ -77,6 +77,6 @@ public:
 protected: //항목 검색할 때 사용
 	bool operator==(const FName& OtherID) const
 	{
-		return ID == OtherID;
+		return this->ID == OtherID;
 	}
 };

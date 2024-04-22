@@ -11,6 +11,7 @@
 #include "Interface/SPInteractionInterface.h"
 #include "SPCharacterPlayer.generated.h"
 
+class USPHUDWidget;
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnAimChangedDelegate, bool /*aim*/)
 
 /**
@@ -313,7 +314,9 @@ protected:
 
 	virtual void SetupTargetWidget(USPUserWidget* InUserWidget) override;
 
-
+	UPROPERTY()
+	TObjectPtr<class USPHUDWidget> HUDWidget;
+	
 //Interaction
 protected:
 	UPROPERTY(VisibleAnywhere, Category = "Character | Interaction")

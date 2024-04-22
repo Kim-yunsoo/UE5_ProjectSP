@@ -2,6 +2,7 @@
 
 
 #include "TEST/InterfaceTestActor.h"
+#include "Character/SPCharacterPlayer.h"
 
 #include "NavigationSystemTypes.h"
 
@@ -19,7 +20,8 @@ AInterfaceTestActor::AInterfaceTestActor()
 void AInterfaceTestActor::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	InteractableData = InstanceInteractableDate;
 }
 
 // Called every frame
@@ -56,7 +58,7 @@ void AInterfaceTestActor::EndInteract()
 
 }
 
-void AInterfaceTestActor::Interact()
+void AInterfaceTestActor::Interact(ASPCharacterPlayer* PlayerCharacter)
 {
 	UE_LOG(LogTemp, Log, TEXT("Interact"));
 

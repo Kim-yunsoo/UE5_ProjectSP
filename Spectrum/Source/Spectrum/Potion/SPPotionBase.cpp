@@ -6,7 +6,6 @@
 #include "SpectrumLog.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "UI/SPInventoryWidget.h"
 #include "GameFramework/HUD.h"
 
 // Sets default values

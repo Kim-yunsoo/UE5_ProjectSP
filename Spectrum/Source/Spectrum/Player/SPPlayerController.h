@@ -29,5 +29,5 @@ protected:
 	TObjectPtr<class USPHUDWidget> SPHUDWidget;
 
 public:
-
+	USPHUDWidget* GetSPHUDWidget() const;
 };

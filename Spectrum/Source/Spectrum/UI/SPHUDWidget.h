@@ -7,6 +7,10 @@
 #include "Character/SPCharacterPlayer.h"
 #include "SPHUDWidget.generated.h"
 
+
+class USPInteractionWidget;
+class USPMainMenu;
+
 /**
  * 
  */
@@ -26,5 +30,27 @@ protected:
 	TObjectPtr<class USPTargetUI> TargetUI;
 
 	UPROPERTY()
-	TObjectPtr<class USPInventoryWidget> Inventory;
+	TObjectPtr<class USPMainMenu> MainMenuWidget;
+	
+	UPROPERTY()
+	TObjectPtr<class USPInteractionWidget> InteractionWidget;
+	
+public:
+	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
+	TSubclassOf<USPMainMenu> MainMenuClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
+	TSubclassOf<USPInteractionWidget> InteractionWidgetClass;
+
+	bool bIsMenuVisible;
+
+
+	/////////////////
+	void DisplayMenu();
+	void HideMenu();
+
+	void ShowInteractionWidget();
+	void HideInteractionWidget();
+	void UpdateInteractionWidget(const FInteractableData* InteractableData);
+protected:
 };
