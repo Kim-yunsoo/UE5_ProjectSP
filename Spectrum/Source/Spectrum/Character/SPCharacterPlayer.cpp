@@ -251,6 +251,13 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 		PurpleThree = PurpleThreeRef.Object;
 	}
 
+	static ConstructorHelpers::FObjectFinder<UInputAction> InteractionKeyRef(TEXT(
+	"/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_Interaction.IA_SP_Interaction'"));
+	if (nullptr != InteractionKeyRef.Object)
+	{
+		InteractionKey = InteractionKeyRef.Object;
+	}
+	
 	/*static ConstructorHelpers::FObjectFinder<UAnimMontage> ThrowMontageRef(TEXT("/Script/Engine.AnimMontage'/Game/Spectrum/Animation/AniMeta/Man/AM_SP_Throw.AM_SP_Throw'"));
 	if (ThrowMontageRef.Object)
 	{
@@ -392,6 +399,8 @@ void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Player
 		                                   &ASPCharacterPlayer::OrangePotionSpawn);
 		EnhancedInputComponent->BindAction(PurpleThree, ETriggerEvent::Triggered, this,
 		                                   &ASPCharacterPlayer::PurplePotionSpawn);
+		EnhancedInputComponent->BindAction(InteractionKey, ETriggerEvent::Triggered, this,
+								   &ASPCharacterPlayer::Interaction);
 	}
 }
 
@@ -708,6 +717,37 @@ void ASPCharacterPlayer::OrangePotionSpawn(const FInputActionValue& Value)
 void ASPCharacterPlayer::PurplePotionSpawn(const FInputActionValue& Value)
 {
 	ServerRPCPurplePotionSpawn();
+	
+}
+
+void ASPCharacterPlayer::Interaction(const FInputActionValue& Value)
+{
+	//Todo 멀티 연결하기
+	SP_LOG(LogSPNetwork, Log, TEXT("Interaction"));
+	
+	TArray<AActor*> OverlappingActors;
+	GetOverlappingActors(OverlappingActors);
+
+	for(AActor* Actor : OverlappingActors)
+	{
+		//Todo if를 두번 해야하는건가?
+		if(Actor->GetClass()->ImplementsInterface(USPGetInterface::StaticClass()))
+		{
+			ISPGetInterface* PotionActor = Cast<ISPGetInterface>(Actor);
+			if (PotionActor)
+			{
+				SP_LOG(LogSPNetwork, Log, TEXT("IsPotion"));
+				PotionActor->GetPotion();
+				break;
+			}
+
+		}
+	}
+
+
+
+
+
 	
 }
 

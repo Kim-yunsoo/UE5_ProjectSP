@@ -16,7 +16,7 @@ class SPECTRUM_API USPHUDWidget : public UUserWidget
 	GENERATED_BODY()
 public:
 	USPHUDWidget(const FObjectInitializer& ObjectInitializer);
-
+	
 protected:
 	virtual void NativeConstruct() override;
 
@@ -24,4 +24,7 @@ protected:
 protected:
 	UPROPERTY()
 	TObjectPtr<class USPTargetUI> TargetUI;
+
+	UPROPERTY()
+	TObjectPtr<class USPInventoryWidget> Inventory;
 };

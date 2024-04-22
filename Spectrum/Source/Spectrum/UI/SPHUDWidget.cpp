@@ -3,6 +3,7 @@
 
 #include "UI/SPHUDWidget.h"
 #include "UI/SPTargetUI.h"
+#include "UI/SPInventoryWidget.h"
 
 USPHUDWidget::USPHUDWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -16,8 +17,9 @@ void USPHUDWidget::NativeConstruct()
 
 	TargetUI = Cast<USPTargetUI>(GetWidgetFromName(TEXT("WBTargetUI")));
 	ensure(TargetUI);
-	//TargetUI->SetVisibility(ESlateVisibility::Hidden);
-	
+
+	Inventory = Cast<USPInventoryWidget>(GetWidgetFromName(TEXT("Inventory")));
+	ensure(TargetUI);
 	
 }
 	
