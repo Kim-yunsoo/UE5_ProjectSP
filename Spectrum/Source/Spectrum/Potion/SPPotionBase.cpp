@@ -56,10 +56,46 @@ void ASPPotionBase::MoveTo()
 
 void ASPPotionBase::GetPotion()
 {
-	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
-	SP_LOG(LogSPNetwork, Log, TEXT("GetPotion"));
-	AHUD* PlayerHUD = PlayerController->GetHUD();
-	//USPInventoryWidget* InventoryWidget = Cast<USPInventoryWidget>(PlayerHUD->GetWidgetFromName(TEXT("Inventory")));
+	// APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+	// SP_LOG(LogSPNetwork, Log, TEXT("GetPotion"));
+	// AHUD* PlayerHUD = PlayerController->GetHUD();
+	// //USPInventoryWidget* InventoryWidget = Cast<USPInventoryWidget>(PlayerHUD->GetWidgetFromName(TEXT("Inventory")));
+}
+
+ASPPotionBase* ASPPotionBase::CreatePotionCopy()
+{
+	//인벤토리에 있는건 포인터를 통해서 관리될 예정
+	//추가할 때 복사해야한다.
+	ASPPotionBase* PotionCopy = NewObject<ASPPotionBase>(StaticClass());
+
+	PotionCopy->ID = this->ID;
+	PotionCopy->Quantity = this->Quantity;
+	PotionCopy->ItemType = this->ItemType;
+	PotionCopy->ItemTextData = this->ItemTextData;
+	PotionCopy->ItemNumericData = this->ItemNumericData;
+	PotionCopy->ItemAssetData = this->ItemAssetData;
+
+	return PotionCopy;
+}
+
+void ASPPotionBase::SetQuantity(const int32 NewQuantity)
+{
+	if(NewQuantity != Quantity)
+	{
+		Quantity = FMath::Clamp(NewQuantity, 0 , ItemNumericData.bIsStackable ? ItemNumericData.MaxStackSize : 1);
+
+		// if(OwningInventory)
+		// {
+		// 	if(Quantity <= 0)
+		// 	{
+		// 		OwningInventory->RemoveItem(this);
+		// 	}
+		// }
+	}
+}
+
+void ASPPotionBase::Use(ASPCharacterPlayer* Character)
+{
 }
 
 

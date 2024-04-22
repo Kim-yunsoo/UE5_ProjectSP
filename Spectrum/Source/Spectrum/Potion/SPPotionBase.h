@@ -3,10 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Character/SPCharacterPlayer.h"
 #include "GameFramework/Actor.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Interface/SPGetInterface.h"
+#include "Data/ItemDataStructs.h"
 #include "SPPotionBase.generated.h"
 
 UCLASS()
@@ -38,4 +40,43 @@ public:
 	void MoveTo();
 
 	virtual  void GetPotion() override;
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
+public:
+	// UPROPERTY()
+	// UInventoryComponent* OwningInventory;
+	
+	UPROPERTY(VisibleAnywhere, Category = "Item Data", meta = (UIMin=1, UIMax = 100))
+	int32 Quantity; //항목이 인벤토리로 이동할 때 수량
+	
+	UPROPERTY(EditAnywhere, Category = "Item Data")
+	FName ID;
+	
+	UPROPERTY(EditAnywhere, Category = "Item Data")
+	EItemType ItemType;
+	
+	UPROPERTY(EditAnywhere, Category = "Item Data")
+	FItemTextData ItemTextData;
+	
+	UPROPERTY(EditAnywhere, Category = "Item Data")
+	FItemNumericData ItemNumericData;
+	
+	UPROPERTY(EditAnywhere, Category = "Item Data")
+	FItemAssetData ItemAssetData;
+
+	UFUNCTION(Category = "Item")
+	ASPPotionBase* CreatePotionCopy();
+
+	UFUNCTION(Category = "Item")
+	void SetQuantity(const int32 NewQuantity);
+
+	UFUNCTION(Category = "Item")
+	virtual void Use(ASPCharacterPlayer* Character);
+
+protected: //항목 검색할 때 사용
+	bool operator==(const FName& OtherID) const
+	{
+		return ID == OtherID;
+	}
 };

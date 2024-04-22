@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "Potion/SPBlackPotion.h" 
 #include "InputActionValue.h"
 #include "Protocol.pb.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Interface/SPCharacterHUDInterface.h"
+#include "Interface/SPInteractionInterface.h"
 #include "SPCharacterPlayer.generated.h"
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnAimChangedDelegate, bool /*aim*/)
@@ -25,6 +25,22 @@ enum class ECharacterControlType : uint8
 	Quater
 };
 
+USTRUCT()
+struct FInteractionData
+{
+	GENERATED_USTRUCT_BODY()
+
+	FInteractionData() : CurrentInteractable(nullptr), LastInteractionCheckTime(0.0f)
+	{
+		
+	};
+	
+	UPROPERTY()
+	AActor* CurrentInteractable;
+
+	UPROPERTY()
+	float LastInteractionCheckTime;
+};
 
 UCLASS()
 class SPECTRUM_API ASPCharacterPlayer : public ACharacter, public ISPCharacterHUDInterface
@@ -298,7 +314,28 @@ protected:
 	virtual void SetupTargetWidget(USPUserWidget* InUserWidget) override;
 
 
+//Interaction
+protected:
+	UPROPERTY(VisibleAnywhere, Category = "Character | Interaction")
+	TScriptInterface<ISPInteractionInterface> TargetInteractable;
+
+	float InteractionCheckFrequency;
+
+	float InteractionCheckDistance;
+
+	FTimerHandle TimerHandle_Interaction;
 	
+	FInteractionData InteractionData;
+
+	void PerformInteractionCheck();
+	void FoundInteractable(AActor* NewInteractable);
+	void NoInteractableFound();
+	void BeginInteract();
+	void EndInteract();
+	void Interact();
+
+public:
+	FORCEINLINE bool IsInteracting() const { return GetWorldTimerManager().IsTimerActive(TimerHandle_Interaction);};
 // ServerRPC
 	UFUNCTION(Server, Unreliable)
 	void ServerRPCSpeedUp();

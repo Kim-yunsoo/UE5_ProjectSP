@@ -36,6 +36,8 @@
 #include "Net/UnrealNetwork.h"
 #include "UI/SPWidgetComponent.h"
 #include "UI/SPTargetUI.h"
+#include "DrawDebugHelpers.h"
+
 
 ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<USPCharacterMovementComponent>(
@@ -330,7 +332,11 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 	bIsTurnLeft = false;
 	bIsTurnReady = false;
 	HitDistance = 1800.f;
-	
+
+	InteractionCheckFrequency = 0.1;
+	InteractionCheckDistance = 225.0f;
+
+	BaseEyeHeight = 74.0f;
 }
 
 void ASPCharacterPlayer::BeginPlay()
@@ -348,6 +354,12 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 	if (bIsHolding)
 	{
 		PhysicsHandleComponent->SetTargetLocation(GravityArrow->K2_GetComponentLocation());
+	}
+
+	//
+	if(GetWorld()->TimeSince(InteractionData.LastInteractionCheckTime) > InteractionCheckFrequency)
+	{
+		PerformInteractionCheck();
 	}
 }
 
@@ -400,7 +412,9 @@ void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Player
 		EnhancedInputComponent->BindAction(PurpleThree, ETriggerEvent::Triggered, this,
 		                                   &ASPCharacterPlayer::PurplePotionSpawn);
 		EnhancedInputComponent->BindAction(InteractionKey, ETriggerEvent::Triggered, this,
-								   &ASPCharacterPlayer::Interaction);
+								   &ASPCharacterPlayer::BeginInteract);
+		EnhancedInputComponent->BindAction(InteractionKey, ETriggerEvent::Completed, this,
+						   &ASPCharacterPlayer::EndInteract);
 	}
 }
 
@@ -1112,6 +1126,137 @@ void ASPCharacterPlayer::SetupTargetWidget(USPUserWidget* InUserWidget)
 		UE_LOG(LogTemp, Log, TEXT("TEST"));
 		TargetWidget->UpdateTargetUI(bIsAiming);
 		this->OnAimChanged.AddUObject(TargetWidget, &USPTargetUI::UpdateTargetUI);
+	}
+}
+
+void ASPCharacterPlayer::PerformInteractionCheck()
+{
+	InteractionData.LastInteractionCheckTime = GetWorld()->GetTimeSeconds();
+
+	FVector TraceStart{GetPawnViewLocation()};
+	FVector TraceEnd{TraceStart + (GetViewRotation().Vector() * InteractionCheckDistance)};
+
+	float LookDirection = FVector::DotProduct(GetActorForwardVector(), GetViewRotation().Vector());
+
+	if(LookDirection > 0) //양수 음수에 따라 같은 방향인지 아닌지 판단
+	{
+		DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Red, false, 1.0f, 0, 2.0f);
+	
+	
+		FCollisionQueryParams QueryParams;
+		QueryParams.AddIgnoredActor(this); //나는 쏘는 사람이니까 나를 무시해야 함
+		FHitResult TraceHit;
+	
+		if(GetWorld()->LineTraceSingleByChannel(TraceHit, TraceStart, TraceEnd, ECC_Visibility, QueryParams))
+		{
+			if(TraceHit.GetActor()->GetClass()->ImplementsInterface(USPInteractionInterface::StaticClass()))
+			{
+				const float Distance = (TraceStart - TraceHit.ImpactPoint).Size();
+
+				if(TraceHit.GetActor()!= InteractionData.CurrentInteractable && Distance <= InteractionCheckDistance)
+				{
+					FoundInteractable(TraceHit.GetActor());
+					return;
+				}
+
+				if(TraceHit.GetActor() == InteractionData.CurrentInteractable)
+				{
+					return;
+				}
+			}
+		}
+	}
+	
+
+	NoInteractableFound();
+}
+
+void ASPCharacterPlayer::FoundInteractable(AActor* NewInteractable)
+{
+	//이전 상호 작용이 있는지 확인
+	if(IsInteracting())
+	{
+		EndInteract();
+	}
+
+	if(InteractionData.CurrentInteractable) //상호작용 데이터 있으면!
+	{
+		TargetInteractable = InteractionData.CurrentInteractable;
+		TargetInteractable->EndFocus();
+	}
+
+	InteractionData.CurrentInteractable = NewInteractable;
+	TargetInteractable = NewInteractable;
+
+	TargetInteractable->BeginFocus();
+}
+
+void ASPCharacterPlayer::NoInteractableFound()
+{
+	if(IsInteracting())
+	{
+		GetWorldTimerManager().ClearTimer(TimerHandle_Interaction);
+	}
+
+	//pickup 후 물체가 세계에서 사라짐
+	if(InteractionData.CurrentInteractable)
+	{
+		if(IsValid(TargetInteractable.GetObject())) //한번 더 확인
+		{
+			TargetInteractable->EndFocus();
+		}
+
+		// 인터렉션 위젯 지우기
+		InteractionData.CurrentInteractable = nullptr;
+		TargetInteractable = nullptr;
+	}
+}
+
+void ASPCharacterPlayer::BeginInteract()
+{
+	PerformInteractionCheck(); //인터렉트 대상이 변하지 않는지 체크
+
+	//인터렉트 가능한 대상 있는지
+	if(InteractionData.CurrentInteractable)
+	{
+		if(IsValid(TargetInteractable.GetObject())) //한번 더 확인
+		{
+			TargetInteractable->BeginInteract();
+
+			//시간을 확인한다!
+			if(FMath::IsNearlyZero(TargetInteractable->InteractableData.InteractionDuration, 0.1f)) //상호작용 시간 비교
+			{ // 상호작용 시간이 거의 즉시이므로 바로 Interact 함수 호출
+				Interact(); 
+			}
+			else
+			{	// 상호작용에 시간이 필요하므로 타이머를 설정하여 지정된 시간 후에 Interact 함수 호출
+				GetWorldTimerManager().SetTimer(TimerHandle_Interaction,
+					this,
+					&ASPCharacterPlayer::Interact,
+					TargetInteractable->InteractableData.InteractionDuration,
+					false);
+			}
+		}
+	}
+}
+
+void ASPCharacterPlayer::EndInteract()
+{
+	//상호작용을 제대로 종료하면 지운다. 타이머 끝났다고 가정하고 지운다.
+	GetWorldTimerManager().ClearTimer(TimerHandle_Interaction);
+	if(IsValid(TargetInteractable.GetObject()))
+	{
+		TargetInteractable->EndInteract();
+	}
+}
+
+void ASPCharacterPlayer::Interact()
+{
+	//타이머 끝났다고 가정하고 지운다.
+	GetWorldTimerManager().ClearTimer(TimerHandle_Interaction);
+	if(IsValid(TargetInteractable.GetObject()))
+	{
+		TargetInteractable->Interact();
 	}
 }
 
