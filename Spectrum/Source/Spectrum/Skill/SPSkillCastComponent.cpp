@@ -17,6 +17,7 @@ USPSkillCastComponent::USPSkillCastComponent()
 void USPSkillCastComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	this->SetIsReplicated(true);
 }
 
 
@@ -27,7 +28,7 @@ void USPSkillCastComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
-void USPSkillCastComponent::SetActiveSkill(UObject* SkillType)
+void USPSkillCastComponent::SetActiveSkill(UActorComponent* SkillType)
 {
 	USPSkillBase* Skillbase = Cast<USPSkillBase>(SkillType);
 
@@ -37,3 +38,5 @@ void USPSkillCastComponent::SetActiveSkill(UObject* SkillType)
 		// SetActiveSkill(GetOwner());
 	}
 }
+
+

@@ -21,9 +21,7 @@ ASPBlackPotion::ASPBlackPotion()
 		PotionMesh->SetCollisionProfileName(TEXT("NoCollision"));
 	}
 	ExplosionComponent = CreateDefaultSubobject<USPExplosionComponent>(TEXT("ExplosionComponent"));
-	this->SetReplicates(true);
-	this->AActor::SetReplicateMovement(true);
-	ExplosionComponent->SetIsReplicated(true);
+
 }
 
 // Called when the game starts or when spawned
@@ -31,6 +29,12 @@ void ASPBlackPotion::BeginPlay()
 {
 	Super::BeginPlay();
 	OnActorHit.AddDynamic(this, &ASPBlackPotion::HandleActorHit);
+	if(HasAuthority())
+	{
+		this->SetReplicates(true);
+		this->AActor::SetReplicateMovement(true);
+		ExplosionComponent->SetIsReplicated(true);
+	}
 }
 
 void ASPBlackPotion::HandleActorHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)

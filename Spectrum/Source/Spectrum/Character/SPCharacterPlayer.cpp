@@ -341,8 +341,11 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 	bIsTurnReady = false;
 	bIsTurnLeft = false;
 	bIsTurnReady = false;
+	bIsActiveSlowSkill = true;
+
 	// bIsActiveSlowSkill = true;
 	HitDistance = 1800.f;
+
 }
 
 void ASPCharacterPlayer::BeginPlay()
@@ -731,18 +734,23 @@ void ASPCharacterPlayer::PurplePotionSpawn(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::SlowSKill(const FInputActionValue& Value)
 {
-	ServerRPCSlowSkill(); // 스킬이 발동되면 서버로 바로 넘긴다.  //발사대 컴포넌트를 이용해서 넣어주자. 
+	if (bIsActiveSlowSkill)
+	{
+		// bIsActiveSlowSkill = false;
+		ServerRPCSlowSkill(); // 스킬이 발동되면 서버로 바로 넘긴다.  //발사대 컴포넌트를 이용해서 넣어주자. 
+	}
 }
 
 void ASPCharacterPlayer::ServerRPCSlowSkill_Implementation()
 {
 	//서버로 넘어와서 호출
 	SP_LOG(LogSPNetwork, Log, TEXT("Skill RPC"));
-	UObject* SkillObject = NewObject<UObject>(GetOwner(), USPSlowSkill::StaticClass());
+	UActorComponent* SkillObject = NewObject<UActorComponent>(GetOwner(), USPSlowSkill::StaticClass());
 	if (SkillObject)
 	{
 		SkillCastComponent->SetActiveSkill(SkillObject);
 	}
+	// SkillObject->RegisterComponent();
 }
 
 // void ASPCharacterPlayer::MultiRPCSlowSkill_Implementation(const TArray<FHitResult>& OutHits)
@@ -1148,6 +1156,7 @@ void ASPCharacterPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 	DOREPLIFETIME(ASPCharacterPlayer, bIsTurnReady);
 	DOREPLIFETIME(ASPCharacterPlayer, bIsThrowReady);
 	DOREPLIFETIME(ASPCharacterPlayer, bIsHolding);
+	// DOREPLIFETIME(ASPCharacterPlayer, bIsActiveSlowSkill);
 }
 
 

@@ -28,10 +28,9 @@ ASPObject::ASPObject()
 	ObjectMesh->SetMobility(EComponentMobility::Movable);
 	ObjectMesh->SetUseCCD(true);
 	ObjectMesh->SetRenderCustomDepth(true);
-	ObjectMesh->SetIsReplicated(true);
+	// ObjectMesh->SetIsReplicated(true);
 	bHasBeenCalled = true;
-	this->SetReplicates(true);
-	this->AActor::SetReplicateMovement(true);
+	
 
 	static ConstructorHelpers::FObjectFinder<UDataTable>GreenDataRef(TEXT("/Game/Spectrum/ColorData/DT_Green.DT_Green"));
 	if(GreenDataRef.Object)
@@ -64,10 +63,17 @@ void ASPObject::BeginPlay()
 	OriginMaterial = ObjectMesh->GetMaterial(ElementIndex); // mesh origin
 	ObjectDynamic = ObjectMesh->CreateDynamicMaterialInstance(ElementIndex, nullptr, FName(TEXT("None")));
 	ChaosDynamic = UMaterialInstanceDynamic::Create(OriginMaterial, nullptr, NAME_None);
+	if(HasAuthority())
+	{
+		this->SetReplicates(true);
+		this->AActor::SetReplicateMovement(true);
+	}
+	
 }
 
 void ASPObject::OnExplosionHit()
 {
+	
 	if (bHasBeenCalled)
 	{
 		ObjectMesh->SetHiddenInGame(true);

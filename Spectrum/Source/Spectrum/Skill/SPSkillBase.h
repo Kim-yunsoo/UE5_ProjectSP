@@ -10,7 +10,7 @@
  * 
  */
 UCLASS()
-class SPECTRUM_API USPSkillBase : public UObject
+class SPECTRUM_API USPSkillBase : public UActorComponent
 {
 	GENERATED_BODY()
 
@@ -27,12 +27,10 @@ protected:
 	UPROPERTY()
 	TObjectPtr<AActor> Owner;
 
-	UPROPERTY(Replicated)
-	uint8 bIsActiveSlowSkill : 1;
+
 
 public:
 	virtual void SkillAction(AActor* MyOwner);
 
-protected:
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 };

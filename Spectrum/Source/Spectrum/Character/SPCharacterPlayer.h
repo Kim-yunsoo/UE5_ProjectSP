@@ -388,4 +388,8 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<USPSkillCastComponent> SkillCastComponent;
+
+	UPROPERTY()
+	uint8 bIsActiveSlowSkill : 1;
+	
 };
