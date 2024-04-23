@@ -18,15 +18,20 @@ ASPOrangePotion::ASPOrangePotion()
 		PotionMesh->SetCollisionProfileName(TEXT("NoCollision"));
 	}
 	OrangeExplosionComponent = CreateDefaultSubobject<USPOrangeExplosionComponent>(TEXT("ExplosionComponent"));
-	this->SetReplicates(true);
-	this->AActor::SetReplicateMovement(true);
-	OrangeExplosionComponent->SetIsReplicated(true);
+	
 }
 
 void ASPOrangePotion::BeginPlay()
 {
 	Super::BeginPlay();
 	OnActorHit.AddDynamic(this, &ASPOrangePotion::HandleActorHit);
+
+	if(HasAuthority())
+	{
+		this->SetReplicates(true);
+		this->AActor::SetReplicateMovement(true);
+		OrangeExplosionComponent->SetIsReplicated(true);
+	}
 }
 
 void ASPOrangePotion::HandleActorHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse,

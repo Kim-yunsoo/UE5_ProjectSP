@@ -20,15 +20,19 @@ ASPGreenPotion::ASPGreenPotion()
 		PotionMesh->SetCollisionProfileName(TEXT("NoCollision"));
 	}
 	GreenExplosionComponent = CreateDefaultSubobject<USPGreenExplosionComponent>(TEXT("ExplosionComponent"));
-	this->SetReplicates(true);
-	this->AActor::SetReplicateMovement(true);
-	GreenExplosionComponent->SetIsReplicated(true);
+	
 }
 
 void ASPGreenPotion::BeginPlay()
 {
 	Super::BeginPlay();
 	OnActorHit.AddDynamic(this, &ASPGreenPotion::HandleActorHit);
+	if(HasAuthority())
+	{
+		this->SetReplicates(true);
+		this->AActor::SetReplicateMovement(true);
+		GreenExplosionComponent->SetIsReplicated(true);
+	}
 }
 
 void ASPGreenPotion::HandleActorHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)

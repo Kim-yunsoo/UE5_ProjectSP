@@ -56,7 +56,6 @@ void USPExplosionComponent::Explode()
 
 void USPExplosionComponent::MultiRPCExplosion_Implementation(const TArray<FHitResult>& OutHits)
 {
-	SP_SUBLOG(LogSPNetwork,Log,TEXT("OnExplosionHit first!! "));
 	for (const FHitResult& HitResult : OutHits)
 	{
 		AActor* HitActor = HitResult.GetActor();
@@ -72,7 +71,6 @@ void USPExplosionComponent::MultiRPCExplosion_Implementation(const TArray<FHitRe
 				ISPDamageInterface* DamageInterface = Cast<ISPDamageInterface>(HitActor);
 				if (DamageInterface)
 				{
-					SP_SUBLOG(LogSPNetwork,Log,TEXT("OnExplosionHit !! "));
 					DamageInterface->OnExplosionHit();
 				}
 			}

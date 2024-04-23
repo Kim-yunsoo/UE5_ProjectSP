@@ -8,10 +8,8 @@
 
 USPHUDWidget::USPHUDWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
+	
 }
-
-
-
 void USPHUDWidget::NativeConstruct()
 {
 	Super::NativeConstruct();

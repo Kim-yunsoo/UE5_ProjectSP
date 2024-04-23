@@ -7,11 +7,13 @@
 #include "InputActionValue.h"
 #include "Protocol.pb.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Interface/SPSkillInterface.h"
 #include "Interface/SPCharacterHUDInterface.h"
 #include "Interface/SPInteractionInterface.h"
 #include "SPCharacterPlayer.generated.h"
 
 class USPHUDWidget;
+class USPSkillCastComponent;
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnAimChangedDelegate, bool /*aim*/)
 
 /**
@@ -67,7 +69,7 @@ protected:
 	void SetCharacterControl(ECharacterControlType NewCharacterControlType);
 	virtual void SetCharacterControlData(const class USPCharacterControlData* CharacterControlData);
 	void CameraMove();
-//
+//input action Function
 	void ShoulderMove(const FInputActionValue& Value);
 	void ShoulderLook(const FInputActionValue& Value);
 	void StopShoulderLook(const FInputActionValue& Value);
@@ -93,6 +95,7 @@ protected:
 	void GreenPotionSpawn(const FInputActionValue& Value);
 	void OrangePotionSpawn(const FInputActionValue& Value);
 	void PurplePotionSpawn(const FInputActionValue& Value);
+	void SlowSKill(const FInputActionValue& Value);
 
 	void Interaction(const FInputActionValue& Value);
 	
@@ -176,9 +179,13 @@ protected:
 	UPROPERTY(Replicated, BlueprintReadWrite, Category = "Character")
 	uint8 bIsThrowReady : 1; //Throw Ready? 
 
+	// UPROPERTY(Replicated, BlueprintReadWrite, Category = "Character")
+	// uint8 bIsActiveSlowSkill : 1; //Throw Ready?
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UAnimMontage> ThrowMontage;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UAnimMontage> SkillMontage;
 	//Camera
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, Meta = (AllowPrivateAccess = "ture"))
@@ -233,6 +240,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> InteractionKey;
+	TObjectPtr<class UInputAction> SlowQ;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputMappingContext* DefaultMappingContext;
@@ -263,7 +271,6 @@ protected:
 
 protected:
 	UPrimitiveComponent* HitComponent;
-	//AActor* HitActor;
 	AActor* HitActor;
 	FHitResult outHitResult;
 
@@ -378,6 +385,11 @@ public:
 
 	UFUNCTION(Server, Unreliable)
 	void ServerRPCPurplePotionSpawn();
+
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCSlowSkill();
+
+	
 	
 	//ClientRPC
 	UFUNCTION(Client, Unreliable)
@@ -408,4 +420,19 @@ public:
 protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const;
 
+	// skill interface
+	// virtual void MovementSlow();
+
+
+	//Effect
+protected:
+	// UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
+	// TObjectPtr<UParticleSystem> SlowEffect;
+
+	UPROPERTY()
+	TObjectPtr<USPSkillCastComponent> SkillCastComponent;
+
+	UPROPERTY()
+	uint8 bIsActiveSlowSkill : 1;
+	
 };
