@@ -9,7 +9,6 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Net/UnrealNetwork.h"
 
-
 class ISPSkillInterface;
 
 USPSkillBase::USPSkillBase()

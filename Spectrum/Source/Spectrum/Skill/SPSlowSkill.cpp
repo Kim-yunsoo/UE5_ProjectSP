@@ -24,7 +24,7 @@ void USPSlowSkill::BeginPlay()
 void USPSlowSkill::SkillAction(AActor* MyOwner)
 {
 	Super::SkillAction(MyOwner);
-
+	SP_SUBLOG(LogSPNetwork,Log,TEXT("USPSlowSkill!!!!!!!!!!!")); 
 	FVector TracePointStart = Owner->GetActorLocation();
 	FVector TracePointEnd = Owner->GetActorLocation() + Owner->GetActorForwardVector() * 100;
 	float Radius = 20.f;
@@ -45,7 +45,6 @@ void USPSlowSkill::SkillAction(AActor* MyOwner)
 		SP_SUBLOG(LogSPNetwork,Log,TEXT("USPSlowSkill")); 
 		MultiRPCSkill(OutHits);
 	}
-	
 }
 
 void USPSlowSkill::MultiRPCSkill_Implementation(const TArray<FHitResult>& OutHits)

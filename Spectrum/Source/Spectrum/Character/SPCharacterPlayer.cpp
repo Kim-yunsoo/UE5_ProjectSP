@@ -812,7 +812,9 @@ void ASPCharacterPlayer::ServerRPCSlowSkill_Implementation()
 	UActorComponent* SkillObject = NewObject<UActorComponent>(GetOwner(), USPSlowSkill::StaticClass());
 	if (SkillObject)
 	{
+		SP_LOG(LogSPNetwork, Log, TEXT("SkillObject"));
 		SkillCastComponent->SetActiveSkill(SkillObject);
+		
 	}
 	// SkillObject->RegisterComponent();
 }
@@ -1356,6 +1358,7 @@ void ASPCharacterPlayer::Interact()
 	// 	//this->OnAimChanged.AddUObject(TargetWidget, &USPTargetUI::UpdateTargetUI);
 	// }
 }
+
 
 void ASPCharacterPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {

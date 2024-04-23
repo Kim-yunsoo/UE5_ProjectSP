@@ -21,6 +21,12 @@ struct FItemTextData
 	
 	UPROPERTY(EditAnywhere)
 	FText Description; //고민
+
+	UPROPERTY(EditAnywhere)
+	FText InteractionText; //고민
+
+	UPROPERTY(EditAnywhere)
+	FText UsageText; //고민
 };
 
 USTRUCT()

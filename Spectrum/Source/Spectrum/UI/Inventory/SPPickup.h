@@ -8,6 +8,7 @@
 #include "Interface/SPInteractionInterface.h"
 #include "SPPickup.generated.h"
 
+class USPItemBase;
 class ASPPotionBase;
 
 UCLASS()
@@ -19,11 +20,11 @@ public:
 	// Sets default values for this actor's properties
 	ASPPickup();
 	
-	void InitializePickup(const TSubclassOf<ASPPotionBase>CaseClass, const int32 InQuantity); //데이터베이스에서 가지고 오기
+	void InitializePickup(const TSubclassOf<USPItemBase>BaseClass, const int32 InQuantity); //데이터베이스에서 가지고 오기
 
-	void InitializeDrop(ASPPotionBase* ItemToDrop,  const int32 InQuantity); //이미 존재하는 항목 참조해서 가지고 오기
+	void InitializeDrop(USPItemBase* ItemToDrop,  const int32 InQuantity); //이미 존재하는 항목 참조해서 가지고 오기
 
-	FORCEINLINE ASPPotionBase* GetItemData(){return ItemReference;};
+	FORCEINLINE USPItemBase* GetItemData(){return ItemReference;};
 	
 protected:
 	// Called when the game starts or when spawned
@@ -32,27 +33,32 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Pickup | Components")
 	TObjectPtr<UStaticMeshComponent> PickupMesh;
 
-	UPROPERTY(EditInstanceOnly, Category = "Pickup | Item Database")
+	UPROPERTY(EditInstanceOnly, Category = "Pickup | Item Initialization")
 	TObjectPtr<UDataTable> ItemDataTable;
 
-	UPROPERTY(VisibleAnywhere, Category = "Pickup | Item Database")
+	UPROPERTY(EditInstanceOnly, Category = "Pickup | Item Initialization")
 	FName DesiredItemID;
 
 	UPROPERTY(VisibleAnywhere, Category = "Pickup | Item Reference")
-	TObjectPtr<ASPPotionBase> ItemReference; //pick up 가리키기
+	TObjectPtr<USPItemBase> ItemReference; //pick up 가리키기
 
-	UPROPERTY(EditInstanceOnly, Category = "Pickup | Item Reference")
+	UPROPERTY(EditInstanceOnly, Category = "Pickup | Item Initialization")
 	int32 ItemQuantity;
 
 	UPROPERTY(VisibleInstanceOnly, Category = "Pickup | Interaction")
 	FInteractableData InstanceInteractableData;
 	
-public:	
+protected:	
 	// Called every frame
 
 	virtual void BeginFocus() override;
 	virtual void EndFocus() override;
 	
 	virtual void Interact(ASPCharacterPlayer* PlayerCharacter) override;
+	void UpdateInteractableData();
 	void TakePickup(const ASPCharacterPlayer* Taker);
+#if WITH_EDITOR
+	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override; //에디터있으면 실행
+#endif
+	
 };

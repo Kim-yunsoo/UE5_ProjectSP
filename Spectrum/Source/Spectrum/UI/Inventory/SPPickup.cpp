@@ -3,6 +3,7 @@
 
 #include "UI/Inventory/SPPickup.h"
 
+#include "Potion/SPItemBase.h"
 #include "Potion/SPPotionBase.h"
 
 // Sets default values
@@ -16,45 +17,99 @@ ASPPickup::ASPPickup()
 	SetRootComponent(PickupMesh);
 }
 
-void ASPPickup::InitializePickup(const TSubclassOf<ASPPotionBase> CaseClass, const int32 InQuantity)
+void ASPPickup::InitializePickup(const TSubclassOf<USPItemBase> BaseClass, const int32 InQuantity)
 {
-	if(ItemDataTable&& !DesiredItemID.IsNone())
+	if (ItemDataTable && !DesiredItemID.IsNone())
 	{
-		const FItemData* ItemData = ItemDataTable->FindRow<FItemData>(DesiredItemID, DesiredItemID.ToString()); // 원하는 항목 찾기
+		const FItemData* ItemData = ItemDataTable->FindRow<FItemData>(DesiredItemID, DesiredItemID.ToString());
+		// 원하는 항목 찾기
+
+
+		ItemReference = NewObject<USPItemBase>(this, BaseClass);
+
+		ItemReference->ID = ItemData->ID;
+		ItemReference->ItemType = ItemData->ItemType;
+		ItemReference->ItemTextData = ItemData->ItemTextData;
+		ItemReference->ItemNumericData = ItemData->ItemNumericData;
+		ItemReference->ItemAssetData = ItemData->ItemAssetData;
 
 		//아이템 호출하기
-		ItemReference = NewObject<ASPPotionBase>(this, ASPPotionBase::StaticClass());
+		InQuantity <= 0 ? ItemReference->SetQuantity(1) : ItemReference->SetQuantity(InQuantity);
+
+		PickupMesh->SetStaticMesh(ItemData->ItemAssetData.Mesh);
+
+		UpdateInteractableData();
 	}
 }
 
-void ASPPickup::InitializeDrop(ASPPotionBase* ItemToDrop, const int32 InQuantity)
+void ASPPickup::InitializeDrop(USPItemBase* ItemToDrop, const int32 InQuantity)
 {
+	ItemReference = ItemToDrop;
+	InQuantity <= 0 ? ItemReference->SetQuantity(1) : ItemReference->SetQuantity(InQuantity);
+	PickupMesh->SetStaticMesh(ItemToDrop->ItemAssetData.Mesh);
+	UpdateInteractableData();
 }
 
 void ASPPickup::BeginFocus()
 {
-
+	if(PickupMesh)
+	{
+		PickupMesh->SetRenderCustomDepth(true);
+	}
 }
 
 void ASPPickup::EndFocus()
 {
-	
+	if(PickupMesh)
+	{
+		PickupMesh->SetRenderCustomDepth(false);
+	}
 }
 
 void ASPPickup::Interact(ASPCharacterPlayer* PlayerCharacter)
 {
-	
+	if(PlayerCharacter)
+	{
+		TakePickup(PlayerCharacter);
+	}
+}
+
+void ASPPickup::UpdateInteractableData()
+{
+	InstanceInteractableData.InteractableType = EInteractableType::Pickup;
+	InstanceInteractableData.Action = ItemReference->ItemTextData.Description;
+	InstanceInteractableData.Name = ItemReference->ItemTextData.Name;
+	InstanceInteractableData.Quantity = ItemReference->Quantity;
+	InteractableData = InstanceInteractableData;
 }
 
 void ASPPickup::TakePickup(const ASPCharacterPlayer* Taker)
 {
+	if (!IsPendingKillPending()) //IsPendingKillPending() 삭제되는지 확인
+	{
+		if(ItemReference)
+		{
+			//if(UInventoryComponont* PlayerInvetory = Taker->GetInventory());
+			//인벤토리 넣고 선택 되면 항목을 조정하거나 파괴
+
+			
+		}
+	}
+}
+
+void ASPPickup::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
+{
+	// Super::PostEditChangeProperty(PropertyChangedEvent);
+	//
+	// const FName ChangedPropertyName = PropertyChangedEvent.Property?PropertyChangedEvent.Property->GetFName() : NAME_None;
+	//
+	//Todo 에디터에서 편하게 하기 위해서!
 }
 
 // Called when the game starts or when spawned
 void ASPPickup::BeginPlay()
 {
 	Super::BeginPlay();
-
-	InitializePickup(ASPPotionBase::StaticClass(), ItemQuantity);
+	InitializePickup(USPItemBase::StaticClass(), ItemQuantity);
 }
 

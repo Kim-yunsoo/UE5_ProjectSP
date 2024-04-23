@@ -361,7 +361,7 @@ public:
 
 	UFUNCTION(Server, Unreliable)
 	void ServerRPCThrowPotion(bool IsThrowReady);
-	
+
 	UFUNCTION(Server, Unreliable)
 	void ServerRPCTurnReady();
 	
