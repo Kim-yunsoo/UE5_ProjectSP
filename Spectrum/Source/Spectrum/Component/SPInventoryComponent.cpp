@@ -86,13 +86,14 @@ void USPInventoryComponent::SplitExistingStack(USPItemBase* ItemIn, const int32 
 int32 USPInventoryComponent::CalculateWeightAddAmount(USPItemBase* ItemIn, int32 RequestedAddAmount)
 {
 	//const int32 WeightMaxAddAmount = FMath::FloorToInt((GetWeightCapactiy() - InventoryTotalWeight)/ItemIn->GetIm)
-	return 0;
+	
+	return 1; 
 }
 
 int32 USPInventoryComponent::CalculatenumberForFullStack(USPItemBase* StackablItem, int32 InirialRequestedAddAmount)
 {
-	AddNewItem(StackablItem, InirialRequestedAddAmount);
-	return 0;
+	//AddNewItem(StackablItem, InirialRequestedAddAmount);
+	return 10;
 }
 
 
@@ -111,13 +112,64 @@ FItemAddResult USPInventoryComponent::HandleNonStackableItems(USPItemBase* ItemI
 
 int32 USPInventoryComponent::HandleStackableItems(USPItemBase* ItemIn, int32 RequestedAddAmount)
 {
-	AddNewItem(ItemIn, RequestedAddAmount);
-	return RequestedAddAmount;
+	//AddNewItem(ItemIn, 1);
+	int32 AmountToDistribute = RequestedAddAmount;
+
+	USPItemBase* Existingitem = FindNextPartialStack(ItemIn);
+	//Todo 10개 제한으로 다시 바꾸기 
+	while(Existingitem)
+	{
+		const int32 AmountToMakeFullStack = CalculatenumberForFullStack(Existingitem, AmountToDistribute);
+		const int32 WeightLimitAddAmount = CalculateWeightAddAmount(Existingitem, AmountToMakeFullStack);
+		if(WeightLimitAddAmount > 0)
+		{
+			Existingitem->SetQuantity(Existingitem->Quantity + WeightLimitAddAmount);
+
+			AmountToDistribute -= WeightLimitAddAmount;
+
+			ItemIn->SetQuantity(AmountToDistribute);
+
+			if(InventoryTotalWeight >= inventoryWeightCapacity)
+			{
+				OnInventoryUpdated.Broadcast();
+				return RequestedAddAmount - AmountToDistribute;
+			}
+		}
+		else if (WeightLimitAddAmount <= 0)
+		{
+			if(AmountToDistribute != RequestedAddAmount)
+			{
+				OnInventoryUpdated.Broadcast();
+				return RequestedAddAmount - AmountToDistribute;
+			}
+			return 0;
+		}
+		if(AmountToDistribute <= 0)
+		{
+			OnInventoryUpdated.Broadcast();
+			return RequestedAddAmount;
+		}
+		Existingitem = FindNextPartialStack(ItemIn);
+	}
+	if(InventoryContents.Num() + 1 <= InventorySlotsCapacity)
+	{
+		const int32 WeightLimitAddAmount = CalculateWeightAddAmount(ItemIn, AmountToDistribute);
+
+		if(WeightLimitAddAmount > 0)
+		{
+			UE_LOG(LogTemp,Warning, TEXT("here2"));
+			AddNewItem(ItemIn, AmountToDistribute);
+			return RequestedAddAmount;
+		}
+	}
+
+	OnInventoryUpdated.Broadcast();
+	return RequestedAddAmount - AmountToDistribute;
 }
 
 FItemAddResult USPInventoryComponent::HandleAddItem(USPItemBase* InputItem)
 {
-	UE_LOG(LogTemp,Warning, TEXT("%s"), *GetOwner()->GetName());
+	
 	if(GetOwner())
 	{
 		const int32 InitialRequestedAddmount = InputItem->Quantity;

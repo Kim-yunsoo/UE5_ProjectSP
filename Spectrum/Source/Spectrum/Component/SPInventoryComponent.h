@@ -123,7 +123,7 @@ protected:
 	FItemAddResult HandleNonStackableItems(USPItemBase* ItemIn, int32 RequestedAddAmount);
 	int32 HandleStackableItems(USPItemBase* ItemIn, int32 RequestedAddAmount);
 	int32 CalculateWeightAddAmount(USPItemBase* ItemIn, int32 RequestedAddAmount);
-	int32 CalculatenumberForFullStack(USPItemBase* StackablItem, int32 InirialRequestedAddAmount);
+	int32 CalculatenumberForFullStack(USPItemBase* StackablItem, int32 RequestedAddAmount);
 
 	void AddNewItem(USPItemBase* Item, const int32 AmountToAdd);
 public:	
