@@ -47,7 +47,7 @@ void USPHUDWidget::HideMenu()
 	if(MainMenuWidget)
 	{
 		bIsMenuVisible = false;
-		MainMenuWidget->SetVisibility(ESlateVisibility::Collapsed);
+		MainMenuWidget->SetVisibility(ESlateVisibility::Visible);
 	}
 }
 
@@ -58,15 +58,15 @@ void USPHUDWidget::ToggleMenu()
 		HideMenu();
 
 		const FInputModeGameOnly InputMode;
-		// GetOwningPlayer()->SetInputMode(InputMode);
-		// GetOwningPlayer()->SetShowMouseCursor(false);
+		GetOwningPlayer()->SetInputMode(InputMode);
+		GetOwningPlayer()->SetShowMouseCursor(false);
 	}
 	else
 	{
 		DisplayMenu();
-		const FInputModeGameOnly InputMode;
-		//GetOwningPlayer()->SetInputMode(InputMode);
-		//GetOwningPlayer()->SetShowMouseCursor(true);
+		const FInputModeGameAndUI InputMode;
+		GetOwningPlayer()->SetInputMode(InputMode);
+		GetOwningPlayer()->SetShowMouseCursor(true);
 	}
 }
 

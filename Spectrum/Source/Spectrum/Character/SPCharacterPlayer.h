@@ -10,6 +10,7 @@
 #include "Interface/SPSkillInterface.h"
 #include "Interface/SPCharacterHUDInterface.h"
 #include "Interface/SPInteractionInterface.h"
+#include "Potion/SPItemBase.h"
 #include "SPCharacterPlayer.generated.h"
 
 class USPInventoryComponent;
@@ -358,7 +359,8 @@ public:
 
 	void UpdateInteractionWidget() const;
 
-//
+// 아이템 드롭
+	void DropItem(USPItemBase* ItemToDrop, const int32 QuantityToDrop);
 public:
 	FORCEINLINE bool IsInteracting() const { return GetWorldTimerManager().IsTimerActive(TimerHandle_Interaction);};
 // ServerRPC

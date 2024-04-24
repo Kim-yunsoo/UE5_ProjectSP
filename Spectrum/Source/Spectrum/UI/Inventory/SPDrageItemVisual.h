@@ -17,7 +17,7 @@ class SPECTRUM_API USPDrageItemVisual : public USPUserWidget
 {
 	GENERATED_BODY()
 
-protected:
+public:
 	UPROPERTY(VisibleAnywhere, Category = "Drag Item Visual" , meta=(BindWidget))
 	TObjectPtr<UBorder> ItemBorder;
 	

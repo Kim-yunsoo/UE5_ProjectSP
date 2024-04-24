@@ -43,6 +43,7 @@
 #include "Player/SPPlayerController.h"
 #include "Potion/SPItemBase.h"
 #include "UI/SPHUDWidget.h"
+#include "UI/Inventory/SPPickup.h"
 
 
 ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializer)
@@ -537,7 +538,9 @@ void ASPCharacterPlayer::SetCharacterControl(ECharacterControlType NewCharacterC
 	{
 		HUDWidget = SPController->GetSPHUDWidget();
 	}
+	HUDWidget->bIsMenuVisible = true;
 	HUDWidget->ToggleMenu();
+	
 }
 
 void ASPCharacterPlayer::ShoulderMove(const FInputActionValue& Value)
@@ -1299,7 +1302,7 @@ void ASPCharacterPlayer::FoundInteractable(AActor* NewInteractable)
 		HUDWidget->UpdateInteractionWidget(&TargetInteractable->InteractableData);
 	}
 			
-	TargetInteractable->BeginFocus();
+	// TargetInteractable->BeginFocus();
 }
 
 void ASPCharacterPlayer::NoInteractableFound()
@@ -1391,6 +1394,30 @@ void ASPCharacterPlayer::UpdateInteractionWidget() const
 	}
 }
 
+void ASPCharacterPlayer::DropItem(USPItemBase* ItemToDrop, const int32 QuantityToDrop)
+{
+	if(PlayerInventory->FindMatchingItem(ItemToDrop))
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+		SpawnParams.bNoFail = true;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+		const FVector SpawnLocation{GetActorLocation()+(GetActorForwardVector() * 50.f)};
+
+		const FTransform SpawnTransform(GetActorRotation(), SpawnLocation);
+
+		const int32 RemovedQuantity = PlayerInventory->RemoveAmountOfItem(ItemToDrop, QuantityToDrop);
+
+		ASPPickup* Pickup = GetWorld()->SpawnActor<ASPPickup>(ASPPickup::StaticClass(), SpawnTransform, SpawnParams);
+
+		Pickup->InitializeDrop(ItemToDrop, RemovedQuantity);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Item to drop was somehow null"));
+	}
+}
 
 
 void ASPCharacterPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
