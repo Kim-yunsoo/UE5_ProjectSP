@@ -12,6 +12,7 @@
 #include "Interface/SPInteractionInterface.h"
 #include "SPCharacterPlayer.generated.h"
 
+class USPInventoryComponent;
 class USPHUDWidget;
 class USPSkillCastComponent;
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnAimChangedDelegate, bool /*aim*/)
@@ -343,7 +344,16 @@ protected:
 	void BeginInteract();
 	void EndInteract();
 	void Interact();
+// Inventory
+	
+	UPROPERTY(VisibleAnywhere, Category = "Character | Inventory")
+	TObjectPtr<USPInventoryComponent> PlayerInventory;
 
+public:
+	//인벤토리 가지고 오기
+	FORCEINLINE USPInventoryComponent* GetInventory() const {return PlayerInventory;};
+
+	void UpdateInteractionWidget() const;
 public:
 	FORCEINLINE bool IsInteracting() const { return GetWorldTimerManager().IsTimerActive(TimerHandle_Interaction);};
 // ServerRPC

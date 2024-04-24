@@ -2,10 +2,17 @@
 
 
 #include "Potion/SPItemBase.h"
+#include "Component/SPInventoryComponent.h"
 
-USPItemBase::USPItemBase()
+USPItemBase::USPItemBase() : bIsCopy(false), bIsPickup(false)
 {
 	
+}
+
+void USPItemBase::ResetItemFlags()
+{
+	bIsCopy = false;
+	bIsPickup = false;
 }
 
 USPItemBase* USPItemBase::CreatePotionCopy()
@@ -20,7 +27,7 @@ USPItemBase* USPItemBase::CreatePotionCopy()
 	PotionCopy->ItemTextData = this->ItemTextData;
 	PotionCopy->ItemNumericData = this->ItemNumericData;
 	PotionCopy->ItemAssetData = this->ItemAssetData;
-
+	PotionCopy->bIsCopy = true;
 	return PotionCopy;
 }
 
@@ -31,13 +38,13 @@ void USPItemBase::SetQuantity(const int32 NewQuantity)
 		//10까지만 가능하게!
 		Quantity = FMath::Clamp(NewQuantity, 0 , ItemNumericData.bIsStackable ? ItemNumericData.MaxStackSize : 1);
 
-		// if(OwningInventory)
-		// {
-		// 	if(Quantity <= 0)
-		// 	{
-		// 		OwningInventory->RemoveItem(this);
-		// 	}
-		// }
+		if(OwningInventory)
+		{
+			if(Quantity <= 0)
+			{
+				OwningInventory->RemoveSingleinstanceOfItem(this);
+			}
+		}
 	}
 }
 

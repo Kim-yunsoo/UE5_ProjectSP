@@ -2,9 +2,8 @@
 
 
 #include "UI/Inventory/SPPickup.h"
-
+#include "Component/SPInventoryComponent.h"
 #include "Potion/SPItemBase.h"
-#include "Potion/SPPotionBase.h"
 
 // Sets default values
 ASPPickup::ASPPickup()
@@ -89,10 +88,39 @@ void ASPPickup::TakePickup(const ASPCharacterPlayer* Taker)
 	{
 		if(ItemReference)
 		{
-			//if(UInventoryComponont* PlayerInvetory = Taker->GetInventory());
 			//인벤토리 넣고 선택 되면 항목을 조정하거나 파괴
+			if(USPInventoryComponent* PlayerInvetory = Taker->GetInventory())
+			{
+				const FItemAddResult AddResult = PlayerInvetory->HandleAddItem(ItemReference);
+
+				switch(AddResult.OperationResult)
+				{
+				case EItemAddResult::IAR_NoItemAdded:
+					break;
+				case EItemAddResult::IAR_PartialAmountItemAdded:
+					UpdateInteractableData();
+					Taker->UpdateInteractionWidget();
+					break;
+				case EItemAddResult::IAR_AllItemAdded:
+					Destroy();
+					break;
+					
+				}
+
+				UE_LOG(LogTemp, Warning, TEXT("%s"), *AddResult.ResultMessage.ToString());
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Inventory is null"));
+
+			}
 
 			
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Pickup internal item reference was somehow null!"));
+
 		}
 	}
 }

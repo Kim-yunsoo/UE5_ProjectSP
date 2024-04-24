@@ -39,7 +39,9 @@
 #include "UI/SPWidgetComponent.h"
 #include "UI/SPTargetUI.h"
 #include "DrawDebugHelpers.h"
+#include "Component/SPInventoryComponent.h"
 #include "Player/SPPlayerController.h"
+#include "Potion/SPItemBase.h"
 #include "UI/SPHUDWidget.h"
 
 
@@ -361,6 +363,13 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 	InteractionCheckDistance = 225.0f;
 
 	BaseEyeHeight = 74.0f;
+
+
+	//Inventory
+	PlayerInventory = CreateDefaultSubobject<USPInventoryComponent>(TEXT("playerInventory"));
+	this->AddOwnedComponent(PlayerInventory);
+	PlayerInventory->SetSlotsCapacity(5);
+	PlayerInventory->SetWeightCapacity(50.f); //무게 의미 없음!
 }
 
 void ASPCharacterPlayer::BeginPlay()
@@ -1357,6 +1366,14 @@ void ASPCharacterPlayer::Interact()
 	// 	TargetWidget->UpdateTargetUI(bIsAiming);
 	// 	//this->OnAimChanged.AddUObject(TargetWidget, &USPTargetUI::UpdateTargetUI);
 	// }
+}
+
+void ASPCharacterPlayer::UpdateInteractionWidget() const
+{
+	if(IsValid(TargetInteractable.GetObject()))
+	{
+		HUDWidget->UpdateInteractionWidget(&TargetInteractable->InteractableData);
+	}
 }
 
 

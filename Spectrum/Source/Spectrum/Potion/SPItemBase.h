@@ -7,6 +7,8 @@
 #include "UObject/NoExportTypes.h"
 #include "SPItemBase.generated.h"
 
+class USPInventoryComponent;
+class UInventoryComponent;
 class ASPCharacterPlayer;
 /**
  * 
@@ -18,6 +20,14 @@ class SPECTRUM_API USPItemBase : public UObject
 public:
 
 	USPItemBase();
+
+	bool bIsCopy;
+	bool bIsPickup;
+
+	void ResetItemFlags();
+		
+	UPROPERTY()
+	TObjectPtr<USPInventoryComponent> OwningInventory;
 	
 	UPROPERTY(VisibleAnywhere, Category = "Item")
 	int32 Quantity; //항목이 인벤토리로 이동할 때 수량

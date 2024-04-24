@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "InventoryComponent.generated.h"
+#include "SPInventoryComponent.generated.h"
 
 DECLARE_MULTICAST_DELEGATE(FOnInventoryUpdated);
 
@@ -69,7 +69,7 @@ struct FItemAddResult
 };
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class SPECTRUM_API UInventoryComponent : public UActorComponent
+class SPECTRUM_API USPInventoryComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
@@ -77,9 +77,9 @@ public:
 	FOnInventoryUpdated OnInventoryUpdated;
 	
 	// Sets default values for this component's properties
-	UInventoryComponent();
+	USPInventoryComponent();
 	UFUNCTION(Category = "Inventory")
-	FItemAddResult HandleAddItem(USPItemBase* ItemIn);
+	FItemAddResult HandleAddItem(USPItemBase* InputItem);
 
 	UFUNCTION(Category = "Inventory")	
 	USPItemBase* FindMatchingItem(USPItemBase* ItemIn) const;
@@ -88,7 +88,7 @@ public:
 	UFUNCTION(Category = "Inventory")
 	USPItemBase* FindNextPartialStack(USPItemBase* ItemIn) const;
 	UFUNCTION(Category = "Inventory")
-	void RemoveSingleinstanceOfItem(USPItemBase* ItemIn); //인벤토리 배열에서 삭제
+	void RemoveSingleinstanceOfItem(USPItemBase* ItemToRemove); //인벤토리 배열에서 삭제
 	UFUNCTION(Category = "Inventory")
 	int32 RemoveAmountOfItem(USPItemBase* ItemIn, int32 DesiredAmountToRemove); //인벤토리는 있고 부분적으로 삭제
 	UFUNCTION(Category = "Inventory")
@@ -120,10 +120,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Inventory")
 	TArray<TObjectPtr<USPItemBase>> InventoryContents;
 
-	FItemAddResult HandleNonStackableItems(USPItemBase*, int32 RequestedAddAmount);
-	int32 HandleStackableItems(USPItemBase*, int32 RequestedAddAmount);
-	int32 CalculateWeightAddAmount(USPItemBase*, int32 RequestedAddAmount);
-	int32 CalculatenumberForFullStack(USPItemBase* ExistingItem, int32 InirialRequestedAddAmount);
+	FItemAddResult HandleNonStackableItems(USPItemBase* ItemIn, int32 RequestedAddAmount);
+	int32 HandleStackableItems(USPItemBase* ItemIn, int32 RequestedAddAmount);
+	int32 CalculateWeightAddAmount(USPItemBase* ItemIn, int32 RequestedAddAmount);
+	int32 CalculatenumberForFullStack(USPItemBase* StackablItem, int32 InirialRequestedAddAmount);
 
 	void AddNewItem(USPItemBase* Item, const int32 AmountToAdd);
 public:	
