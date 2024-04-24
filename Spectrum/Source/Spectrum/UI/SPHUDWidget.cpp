@@ -8,7 +8,6 @@
 
 USPHUDWidget::USPHUDWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
-	
 }
 void USPHUDWidget::NativeConstruct()
 {
@@ -49,6 +48,25 @@ void USPHUDWidget::HideMenu()
 	{
 		bIsMenuVisible = false;
 		MainMenuWidget->SetVisibility(ESlateVisibility::Collapsed);
+	}
+}
+
+void USPHUDWidget::ToggleMenu()
+{
+	if(bIsMenuVisible)
+	{
+		HideMenu();
+
+		const FInputModeGameOnly InputMode;
+		// GetOwningPlayer()->SetInputMode(InputMode);
+		// GetOwningPlayer()->SetShowMouseCursor(false);
+	}
+	else
+	{
+		DisplayMenu();
+		const FInputModeGameOnly InputMode;
+		//GetOwningPlayer()->SetInputMode(InputMode);
+		//GetOwningPlayer()->SetShowMouseCursor(true);
 	}
 }
 

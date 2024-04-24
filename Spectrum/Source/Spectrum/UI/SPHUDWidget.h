@@ -7,6 +7,7 @@
 #include "SPHUDWidget.generated.h"
 
 
+struct FInteractableData;
 class USPInteractionWidget;
 class USPMainMenu;
 
@@ -47,6 +48,7 @@ public:
 	/////////////////
 	void DisplayMenu();
 	void HideMenu();
+	void ToggleMenu();
 
 	void ShowInteractionWidget();
 	void HideInteractionWidget();

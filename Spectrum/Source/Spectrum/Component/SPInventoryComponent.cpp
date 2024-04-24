@@ -111,7 +111,8 @@ FItemAddResult USPInventoryComponent::HandleNonStackableItems(USPItemBase* ItemI
 
 int32 USPInventoryComponent::HandleStackableItems(USPItemBase* ItemIn, int32 RequestedAddAmount)
 {
-	return 0;
+	AddNewItem(ItemIn, RequestedAddAmount);
+	return RequestedAddAmount;
 }
 
 FItemAddResult USPInventoryComponent::HandleAddItem(USPItemBase* InputItem)

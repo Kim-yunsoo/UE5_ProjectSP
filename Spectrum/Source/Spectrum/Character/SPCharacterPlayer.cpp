@@ -326,7 +326,13 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 		MyDecal->SetMaterial(0, MeshFinder2.Object);
 		// 필요에 따라 추가적인 MeshFinder 사용하여 다른 메시 로드 및 추가
 	}
-
+	
+	static ConstructorHelpers::FObjectFinder<UInputAction> ToggleMenuRef(
+		TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_Inventory.IA_SP_Inventory'"));
+	if (nullptr != ToggleMenuRef.Object)
+	{
+		ToggleMenu = ToggleMenuRef.Object;
+	}
 	//Effect
 
 	// static ConstructorHelpers::FObjectFinder<UParticleSystem> SlowEffectRef(
@@ -368,7 +374,7 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 	//Inventory
 	PlayerInventory = CreateDefaultSubobject<USPInventoryComponent>(TEXT("playerInventory"));
 	this->AddOwnedComponent(PlayerInventory);
-	PlayerInventory->SetSlotsCapacity(5);
+	PlayerInventory->SetSlotsCapacity(10);
 	PlayerInventory->SetWeightCapacity(50.f); //무게 의미 없음!
 }
 
@@ -379,6 +385,7 @@ void ASPCharacterPlayer::BeginPlay()
 	GetMesh()->GetAnimInstance()->OnPlayMontageNotifyBegin.AddDynamic(
 		this, &ASPCharacterPlayer::HandleMontageAnimNotify);
 
+	//
 
 };
 
@@ -453,6 +460,8 @@ void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Player
 
 		EnhancedInputComponent->BindAction(SlowQ, ETriggerEvent::Triggered, this,
 		                                   &ASPCharacterPlayer::SlowSKill);
+		EnhancedInputComponent->BindAction(ToggleMenu, ETriggerEvent::Triggered, this,
+								   &ASPCharacterPlayer::ToggleMenuAction);
 	}
 }
 
@@ -528,6 +537,7 @@ void ASPCharacterPlayer::SetCharacterControl(ECharacterControlType NewCharacterC
 	{
 		HUDWidget = SPController->GetSPHUDWidget();
 	}
+	HUDWidget->ToggleMenu();
 }
 
 void ASPCharacterPlayer::ShoulderMove(const FInputActionValue& Value)
@@ -803,6 +813,11 @@ void ASPCharacterPlayer::Interaction(const FInputActionValue& Value)
 
 
 	
+}
+
+void ASPCharacterPlayer::ToggleMenuAction(const FInputActionValue& Value)
+{
+	HUDWidget->ToggleMenu();
 }
 
 void ASPCharacterPlayer::SlowSKill(const FInputActionValue& Value)
@@ -1375,6 +1390,7 @@ void ASPCharacterPlayer::UpdateInteractionWidget() const
 		HUDWidget->UpdateInteractionWidget(&TargetInteractable->InteractableData);
 	}
 }
+
 
 
 void ASPCharacterPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

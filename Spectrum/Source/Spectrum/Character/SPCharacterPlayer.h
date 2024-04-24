@@ -99,7 +99,7 @@ protected:
 	void SlowSKill(const FInputActionValue& Value);
 
 	void Interaction(const FInputActionValue& Value);
-	
+	void ToggleMenuAction(const FInputActionValue& Value);
 	ECharacterControlType CurrentCharacterControlType;
 
 public:
@@ -243,6 +243,9 @@ protected:
 	TObjectPtr<class UInputAction> InteractionKey;
 	TObjectPtr<class UInputAction> SlowQ;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> ToggleMenu;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputMappingContext* DefaultMappingContext;
 
@@ -354,6 +357,8 @@ public:
 	FORCEINLINE USPInventoryComponent* GetInventory() const {return PlayerInventory;};
 
 	void UpdateInteractionWidget() const;
+
+//
 public:
 	FORCEINLINE bool IsInteracting() const { return GetWorldTimerManager().IsTimerActive(TimerHandle_Interaction);};
 // ServerRPC
