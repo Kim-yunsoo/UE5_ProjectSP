@@ -112,10 +112,11 @@ void ASPPickup::TakePickup(ASPCharacterPlayer* Taker)
 				GetWorld()->GetTimerManager().SetTimer(TimerHandle,[this](){
 					                                       this->Destroy();
 				                                       }, 0.1f, false);
+				//SP_LOG(LogSPNetwork, Log, TEXT("%s"),*GetOwner()->GetName());
 				//Destroy(); //이거 문제 업나!?!?!? 바로 지우는거!???
 				// if(HasAuthority() && )
 				// {
-				// 	SP_LOG(LogSPNetwork, Log, TEXT("%s"),*GetOwner()->GetName());
+				 	
 				// 	const FItemAddResult AddResult = PlayerInvetory->HandleAddItem(ItemReference);
 				// 	
 				// }
