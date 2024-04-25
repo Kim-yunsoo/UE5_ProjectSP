@@ -2,23 +2,29 @@
 
 
 #include "Skill/SPSkillBase.h"
-
-#include "GameFramework/Character.h"
-#include "GameFramework/CharacterMovementComponent.h"
-#include "Interface/SPSkillInterface.h"
-#include "Kismet/KismetSystemLibrary.h"
-#include "Net/UnrealNetwork.h"
+//D:\UE_5.3\Engine\Source\Runtime\Engine\Classes\GameFramework\ProjectileMovementComponent.h
+#include "Components/BoxComponent.h"
+#include "GameFramework\ProjectileMovementComponent.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "Particles/ParticleSystemComponent.h"
 
 class ISPSkillInterface;
 
 USPSkillBase::USPSkillBase()
 {
 	CoolDown = -1;
+	this->SetIsReplicated(true);
+
 }
 
-void USPSkillBase::SkillAction(AActor* MyOwner)
+void USPSkillBase::BeginPlay()
+{
+	Super::BeginPlay();
+
+}
+
+void USPSkillBase::SkillAction(ASPCharacterPlayer* MyOwner)
 {
 	Owner = MyOwner;
 }
-
 
