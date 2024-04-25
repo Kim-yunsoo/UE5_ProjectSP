@@ -105,10 +105,14 @@ void ASPPickup::TakePickup(ASPCharacterPlayer* Taker)
 		if(ItemReference)
 		{
 			//인벤토리 넣고 선택 되면 항목을 조정하거나 파괴
-			if(USPInventoryComponent* PlayerInvetory = Taker->GetInventory())
+			if (USPInventoryComponent* PlayerInvetory = Taker->GetInventory())
 			{
 				ClientRPCUpdateWidget(Taker);
-				Destroy(); //이거 문제 업나!?!?!? 바로 지우는거!???
+				FTimerHandle TimerHandle;
+				GetWorld()->GetTimerManager().SetTimer(TimerHandle,[this](){
+					                                       this->Destroy();
+				                                       }, 0.1f, false);
+				//Destroy(); //이거 문제 업나!?!?!? 바로 지우는거!???
 				// if(HasAuthority() && )
 				// {
 				// 	SP_LOG(LogSPNetwork, Log, TEXT("%s"),*GetOwner()->GetName());
@@ -139,7 +143,6 @@ void ASPPickup::TakePickup(ASPCharacterPlayer* Taker)
 
 			}
 
-			
 		}
 		else
 		{
