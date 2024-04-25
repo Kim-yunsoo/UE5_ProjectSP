@@ -1237,15 +1237,15 @@ void ASPCharacterPlayer::PlaySkillAnimation()
 	AnimInstance->Montage_Play(SkillMontage);
 }
 
-void ASPCharacterPlayer::SlowAction()
+void ASPCharacterPlayer::HitSlowSkillResult()
 {
 	GetCharacterMovement()->MaxWalkSpeed = 100.f;
 	FTimerHandle Handle;
 	GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([&]
-		                                       {
-			                                       GetCharacterMovement()->MaxWalkSpeed = 500.f;
-		                                       }
-	                                       ), 5, false, -1.0f);
+											   {
+												   GetCharacterMovement()->MaxWalkSpeed = 500.f;
+											   }
+										   ), 5, false, -1.0f);
 }
 
 

@@ -52,7 +52,7 @@ void USPSlowSkill::TickComponent(float DeltaTime, ELevelTick TickType, FActorCom
 	
 	if (bIsActiveSlowSkill) //참이라면? 
 	{
-		UE_LOG(LogTemp, Log, TEXT("return"));
+		// UE_LOG(LogTemp, Log, TEXT("return"));
 		return;
 	}
 
@@ -60,10 +60,10 @@ void USPSlowSkill::TickComponent(float DeltaTime, ELevelTick TickType, FActorCom
 	if (CurrentGameTime.GetWorldTimeSeconds() < ActivetedTimeStamp + CoolDown)
 	{
 		float ElapsedTime = CurrentGameTime.GetWorldTimeSeconds() - ActivetedTimeStamp;
-		UE_LOG(LogTemp, Log, TEXT("%f"), ElapsedTime);
+		// UE_LOG(LogTemp, Log, TEXT("%f"), ElapsedTime);
 	}
 	else
-	{
+	{ //다이나믹으로 알려주자. (수정 필요)
 		bIsActiveSlowSkill = true;
 	}
 }
@@ -125,23 +125,38 @@ void USPSlowSkill::SkillAction(ASPCharacterPlayer* MyOwner)
 	                                                                Radius, ObjectTypes, false, ActorsToIgnore,
 	                                                                EDrawDebugTrace::ForDuration, OutHits, true,
 	                                                                GreenColor, RedColor, DrawTime);
-	if(Success) //배열에 히트된 물체가 있는 경우 
-	{
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.Owner=Owner;
-		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-		// SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
-		 GetWorld()->SpawnActor<ASPSlowSkillActor>(ASPSlowSkillActor::StaticClass(),Owner->SkillLocation->GetComponentLocation(),
-														Owner->SkillLocation->GetComponentRotation(), SpawnParams);
-	}
-	else
-	{
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Owner=Owner;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
-		GetWorld()->SpawnActor<ASPSlowSkillActor>(ASPSlowSkillActor::StaticClass(),Owner->SkillLocation->GetComponentLocation(),
+	if(Success) //배열에 히트된 물체가 있는 경우 
+	{
+		AActor* HitActor = OutHits[0].GetActor();
+		if(Cast<ASPCharacterPlayer>(HitActor))
+		{
+			UE_LOG(LogTemp,Log,TEXT("Cast Success"));
+			FTransform SpawnLocAndRotation(Owner->SkillLocation->GetComponentRotation(), Owner->SkillLocation->GetComponentLocation());
+			ASPSlowSkillActor* MyActor = GetWorld()->SpawnActorDeferred<ASPSlowSkillActor>(ASPSlowSkillActor::StaticClass(), SpawnLocAndRotation);
+			MyActor->SetOwner(Owner);
+			MyActor->InitTarget(HitActor);
+			MyActor->FinishSpawning(SpawnLocAndRotation);
+		}
+		else
+		{
+			ASPSlowSkillActor* MyActor =GetWorld()->SpawnActor<ASPSlowSkillActor>(ASPSlowSkillActor::StaticClass(),Owner->SkillLocation->GetComponentLocation(),
 													   Owner->SkillLocation->GetComponentRotation(), SpawnParams);
+			MyActor->SetOwner(Owner);
+
+		}
+		
+	}
+	else
+	{
+		ASPSlowSkillActor* MyActor =GetWorld()->SpawnActor<ASPSlowSkillActor>(ASPSlowSkillActor::StaticClass(),Owner->SkillLocation->GetComponentLocation(),
+													   Owner->SkillLocation->GetComponentRotation(), SpawnParams);
+		MyActor->SetOwner(Owner);
+
+		UE_LOG(LogTemp,Log,TEXT("SpawnPoint"));
 	}
 	//
 	// if(OutHits.Num()>0)
@@ -194,22 +209,22 @@ void USPSlowSkill::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 // 	MultiRPCSkill(OutHits);
 // }
 
-void USPSlowSkill::MultiRPCSkill_Implementation(const TArray<FHitResult>& OutHits)
-{
-
-	for (const FHitResult& HitResult : OutHits)
-	{
-		TArray<AActor*> ActorArray;
-		AActor* HitPawn = HitResult.GetActor();
-		FVector Location = HitPawn->GetActorLocation();
-		FRotator Rotation = FRotator(0.0f, 0.0f, 0.0f);
-		FVector Scale{1.0f, 1.0f, 1.0f};
-		FTransform SpawnTransform{Rotation, Location, Scale};
-		ASPCharacterPlayer* HitCharacter = Cast<ASPCharacterPlayer>(HitResult.GetActor());
-		if (HitCharacter)
-		{
-			HitCharacter->SlowAction();
-		}
-	}
-}
-
+// void USPSlowSkill::MultiRPCSkill_Implementation(const TArray<FHitResult>& OutHits)
+// {
+//
+// 	// for (const FHitResult& HitResult : OutHits)
+// 	// {
+// 	// 	TArray<AActor*> ActorArray;
+// 	// 	AActor* HitPawn = HitResult.GetActor();
+// 	// 	FVector Location = HitPawn->GetActorLocation();
+// 	// 	FRotator Rotation = FRotator(0.0f, 0.0f, 0.0f);
+// 	// 	FVector Scale{1.0f, 1.0f, 1.0f};
+// 	// 	FTransform SpawnTransform{Rotation, Location, Scale};
+// 	// 	ASPCharacterPlayer* HitCharacter = Cast<ASPCharacterPlayer>(HitResult.GetActor());
+// 	// 	if (HitCharacter)
+// 	// 	{
+// 	// 		HitCharacter->SlowAction();
+// 	// 	}
+// 	// }
+// }
+//

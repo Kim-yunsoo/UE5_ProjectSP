@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "SPSlowSkillActor.generated.h"
 
+class ISPSkillInterface;
+
 UCLASS()
 class SPECTRUM_API ASPSlowSkillActor : public AActor
 {
@@ -14,10 +16,15 @@ class SPECTRUM_API ASPSlowSkillActor : public AActor
 public:	
 	// Sets default values for this actor's properties
 	ASPSlowSkillActor();
-	ASPSlowSkillActor(AActor* TargetPlayer);
+	// ASPSlowSkillActor(AActor* TargetPlayer);
 
 protected:
-	// Called when the game starts or when spawned
+	UFUNCTION(NetMulticast, Unreliable)
+	void MultiRPCSlowSkill(AActor* HitActor);
+	
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCSlowSkill(const FHitResult& Hit);
+	
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Projectile")
@@ -53,7 +60,10 @@ protected:
 						   const FHitResult& Hit);
 
 	void RotateToTarget();
-public:	
+public:
+	void InitTarget( AActor* TargetPlayer);
+
+
 	// Called every frame
 	// virtual void Tick(float DeltaTime) override;
 

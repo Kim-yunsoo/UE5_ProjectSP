@@ -29,7 +29,7 @@ enum class ECharacterControlType : uint8
 
 
 UCLASS()
-class SPECTRUM_API ASPCharacterPlayer : public ACharacter, public ISPCharacterHUDInterface
+class SPECTRUM_API ASPCharacterPlayer : public ACharacter, public ISPCharacterHUDInterface ,public ISPSkillInterface
 {
 	GENERATED_BODY()
 
@@ -409,8 +409,7 @@ public:
 
 	void PlaySkillAnimation();
 
-	void SlowAction();
-
+	// void SlowAction();
 public:
 	// void SetIsActiveSlowSkill(bool isskill){ bIsActiveSlowSkill=isskill ;}
 	// // bool GetIsActiveSlowSkill() const {return bIsActiveSlowSkill;}
@@ -419,6 +418,9 @@ public:
 
 	// UPROPERTY(Replicated)
 	// uint8 bIsActiveSlowSkill : 1;
+
+	virtual void HitSlowSkillResult()override;
+
 
 	
 };
