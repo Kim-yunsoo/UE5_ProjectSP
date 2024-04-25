@@ -101,7 +101,7 @@ void USPSlowSkill::TickComponent(float DeltaTime, ELevelTick TickType, FActorCom
 void USPSlowSkill::SkillAction(ASPCharacterPlayer* MyOwner)
 {
 	// OnSkillCool.Broadcast();
-	UE_LOG(LogTemp, Log, TEXT("SkillAction"));
+	// UE_LOG(LogTemp, Log, TEXT("SkillAction"));
 	
 
 	GameTime = GetWorld()->GetTime();
@@ -126,7 +126,6 @@ void USPSlowSkill::SkillAction(ASPCharacterPlayer* MyOwner)
 	                                                                EDrawDebugTrace::ForDuration, OutHits, true,
 	                                                                GreenColor, RedColor, DrawTime);
 		FActorSpawnParameters SpawnParams;
-		SpawnParams.Owner=Owner;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
 	if(Success) //�迭�� ��Ʈ�� ��ü�� �ִ� ��� 
@@ -158,6 +157,9 @@ void USPSlowSkill::SkillAction(ASPCharacterPlayer* MyOwner)
 
 		UE_LOG(LogTemp,Log,TEXT("SpawnPoint"));
 	}
+
+	TEXTRPCSkill();
+	
 	//
 	// if(OutHits.Num()>0)
 	// {
@@ -178,6 +180,11 @@ void USPSlowSkill::SkillAction(ASPCharacterPlayer* MyOwner)
 	// 	SP_SUBLOG(LogSPNetwork, Log, TEXT("USPSlowSkill"));
 	// 	MultiRPCSkill(OutHits);
 	// }
+}
+
+void USPSlowSkill::TEXTRPCSkill_Implementation()
+{
+	SP_SUBLOG(LogSPNetwork,Log,TEXT("TEST!!"));
 }
 
 void USPSlowSkill::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -227,4 +234,4 @@ void USPSlowSkill::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 // 	// 	}
 // 	// }
 // }
-//
+

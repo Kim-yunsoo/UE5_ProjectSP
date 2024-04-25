@@ -4,6 +4,8 @@
 #include "Skill/SkillActor/SPSlowSkillActor.h"
 
 #include "SpectrumLog.h"
+#include "Character/SPCharacterMovementComponent.h"
+#include "Character/SPCharacterPlayer.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Interface/SPSkillInterface.h"
@@ -51,6 +53,7 @@ ASPSlowSkillActor::ASPSlowSkillActor()
 
 	Speed = 1000.f;
 	Gravity = 0.0f;
+	BoxCollision->SetIsReplicated(true);
 	bIsHoming = false;
 }
 
@@ -91,24 +94,14 @@ ASPSlowSkillActor::ASPSlowSkillActor()
 //
 // }
 
+// void ASPSlowSkillActor::ServerRPCSlowSkill_Implementation(const FHitResult& Hit)
+// {
+//
+// }
+
 void ASPSlowSkillActor::ServerRPCSlowSkill_Implementation(const FHitResult& Hit)
 {
-	if(GetOwner())
-	{
-		SP_LOG(LogSPNetwork,Log,TEXT("%s"),*GetOwner()->GetName() );
-	}
-	SP_LOG(LogSPNetwork, Log, TEXT("OnBoxCollisionHit"));
-	// UE_LOG(LogTemp,Log,TEXT("speed %f"),ProjectileMovement->InitialSpeed);
-	FVector HitLocation = Hit.GetActor()->GetActorLocation();
-	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), EmitterHit, HitLocation, FRotator::ZeroRotator,
-											 FVector(1.0f), true, EPSCPoolMethod::None, true);
-	//사운드 코드 넣기
-	//느려지게 만들자
-	//HitSlowSkillResult
-
-	MultiRPCSlowSkill(Hit.GetActor());
-	// CheckSlowAction->HitSlowSkillResult();	
-	this->Destroy();
+	
 }
 
 // Called when the game starts or when spawned
@@ -148,10 +141,46 @@ void ASPSlowSkillActor::BeginPlay()
 void ASPSlowSkillActor::OnBoxCollisionHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
                                           UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
+		// ServerRPCSlowSkill(Hit);
 	if(HasAuthority())
 	{
-		ServerRPCSlowSkill(Hit);
+		if(GetOwner())
+		{
+			SP_LOG(LogSPNetwork,Log,TEXT("%s"),*GetOwner()->GetName() );
+		}
+		SP_LOG(LogSPNetwork, Log, TEXT("OnBoxCollisionHit"));
+		// UE_LOG(LogTemp,Log,TEXT("speed %f"),ProjectileMovement->InitialSpeed);
+		if(Hit.GetActor())
+		{
+			SP_LOG(LogSPNetwork,Log,TEXT("YES %s ") ,*Hit.GetActor()->GetName());
+		}
+		else
+		{
+			SP_LOG(LogSPNetwork,Log,TEXT("NO"));
+			
+		}
+		FVector HitLocation = Hit.GetActor()->GetActorLocation();
+
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), EmitterHit, HitLocation, FRotator::ZeroRotator,
+												 FVector(1.0f), true, EPSCPoolMethod::None, true);
+		//사운드 코드 넣기
+		//느려지게 만들자
+		//HitSlowSkillResult
+		ISPSkillInterface* CheckSlowAction = Cast<ISPSkillInterface>(Hit.GetActor());
+		if (CheckSlowAction)
+		{
+			CheckSlowAction->HitSlowSkillResult();
+		}
+		// MultiRPCSlowSkill(Hit.GetActor());
+		this->Destroy();
 	}
+
+		// ASPCharacterPlayer* testplayer= Cast<ASPCharacterPlayer>(Hit.GetActor());
+		// //testplayer->GetMovementComponent();
+		// USPCharacterMovementComponent* testcom= Cast<USPCharacterMovementComponent>(testplayer->GetMovementComponent());
+		// testcom->Slow();
+		// CheckSlowAction->HitSlowSkillResult();	
+	
 }
 
 void ASPSlowSkillActor::RotateToTarget()
@@ -180,11 +209,3 @@ void ASPSlowSkillActor::MultiRPCSlowSkill_Implementation(AActor* HitActor)
 		CheckSlowAction->HitSlowSkillResult();
 	}
 }
-
-// // Called every frame
-// void ASPSlowSkillActor::Tick(float DeltaTime)
-// {
-// 	Super::Tick(DeltaTime);
-//
-// }
-//
