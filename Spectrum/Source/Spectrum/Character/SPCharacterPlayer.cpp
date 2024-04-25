@@ -1371,11 +1371,13 @@ void ASPCharacterPlayer::EndInteract()
 void ASPCharacterPlayer::Interact()
 {
 	//타이머 끝났다고 가정하고 지운다.
+
+	ServerRPCInteract();
 	GetWorldTimerManager().ClearTimer(TimerHandle_Interaction);
-	if(IsValid(TargetInteractable.GetObject()))
-	{
-		TargetInteractable->Interact(this);
-	}
+	// if(IsValid(TargetInteractable.GetObject()))
+	// {
+	// 	TargetInteractable->Interact(this);
+	// }
 	// USPTargetUI* TargetWidget = Cast<USPTargetUI>(InUserWidget);
 	// Target->GetWidget().UpdateTarget;
 	// if(TargetWidget)
@@ -1384,6 +1386,15 @@ void ASPCharacterPlayer::Interact()
 	// 	TargetWidget->UpdateTargetUI(bIsAiming);
 	// 	//this->OnAimChanged.AddUObject(TargetWidget, &USPTargetUI::UpdateTargetUI);
 	// }
+}
+
+void ASPCharacterPlayer::ServerRPCInteract_Implementation()
+{
+	GetWorldTimerManager().ClearTimer(TimerHandle_Interaction);
+	if(IsValid(TargetInteractable.GetObject()))
+	{
+		TargetInteractable->Interact(this);
+	}
 }
 
 void ASPCharacterPlayer::UpdateInteractionWidget() const

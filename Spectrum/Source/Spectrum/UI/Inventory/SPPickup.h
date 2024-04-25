@@ -56,9 +56,14 @@ protected:
 	
 	virtual void Interact(ASPCharacterPlayer* PlayerCharacter) override;
 	void UpdateInteractableData();
-	void TakePickup(const ASPCharacterPlayer* Taker);
+	void TakePickup(ASPCharacterPlayer* Taker);
 #if WITH_EDITOR
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override; //에디터있으면 실행
 #endif
+
+protected:
+	UFUNCTION(Client, Unreliable)
+	void ClientRPCUpdateWidget(ASPCharacterPlayer* Taker);
+
 	
 };

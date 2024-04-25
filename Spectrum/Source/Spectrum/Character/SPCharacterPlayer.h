@@ -348,6 +348,10 @@ protected:
 	void BeginInteract();
 	void EndInteract();
 	void Interact();
+
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCInteract();
+	
 // Inventory
 	
 	UPROPERTY(VisibleAnywhere, Category = "Character | Inventory")

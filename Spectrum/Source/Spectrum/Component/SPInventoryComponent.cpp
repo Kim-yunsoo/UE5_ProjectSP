@@ -15,8 +15,6 @@ USPInventoryComponent::USPInventoryComponent()
 	// ...
 }
 
-
-
 USPItemBase* USPInventoryComponent::FindMatchingItem(USPItemBase* ItemIn) const
 {
 	if (ItemIn)
