@@ -93,6 +93,9 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 	SlowSkillComponent->SetIsReplicated(true);
 	// SlowSkillComponent = CreateDefaultSubobject<USPSlowSkill>(TEXT("SlowSkill"));
 
+	SkillLocation = CreateDefaultSubobject<USceneComponent>(TEXT("SkillLocation"));
+	SkillLocation->SetupAttachment(RootComponent);
+	
 	//Sphere
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereMeshRef(
 		TEXT("/Script/Engine.StaticMesh'/Engine/EditorMeshes/ArcadeEditorSphere.ArcadeEditorSphere'"));
@@ -159,8 +162,8 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 	PotionThrowStartLocation = CreateDefaultSubobject<USceneComponent>(TEXT("PotionThrowStartLocation"));
 	PotionThrowStartLocation->SetupAttachment(GetMesh(), FName(TEXT("Item_Socket")));
 
-	SkillLocation = CreateDefaultSubobject<USceneComponent>(TEXT("SkillLocation"));
-	SkillLocation->SetupAttachment(RootComponent);
+	// SkillLocation = CreateDefaultSubobject<USceneComponent>(TEXT("SkillLocation"));
+	// SkillLocation->SetupAttachment(RootComponent);
 	
 	Projectile_Path = CreateDefaultSubobject<USplineComponent>(TEXT("Projectile_Path"));
 	Projectile_Path->SetupAttachment(RootComponent);
@@ -759,6 +762,7 @@ void ASPCharacterPlayer::SlowSKill(const FInputActionValue& Value)
 		if (SlowSkillComponent->bIsActiveSlowSkill)
 		{
 			SlowSkillComponent->bIsActiveSlowSkill = false;
+			UE_LOG(LogTemp,Log,TEXT("SkillHere!! "));
 			if (!HasAuthority())
 			{
 				FTimerHandle Handle;
@@ -813,7 +817,6 @@ void ASPCharacterPlayer::ServerRPCSlowSkill_Implementation(float AttackStartTime
 		}
 	}
 
-	SlowSkillComponent->SkillAction(this);
 }
 
 void ASPCharacterPlayer::ClientRPCSlowAnimation_Implementation(ASPCharacterPlayer* CharacterToPlay)
@@ -1055,12 +1058,11 @@ void ASPCharacterPlayer::HandleMontageAnimNotify(FName NotifyName,
 
 	if(NotifyName == FName("SkillNotify"))
 	{
-		// if(HasAuthority()) //서버의 경우 생성한다. 
-		// {
+		if(HasAuthority())
+		{
 		UE_LOG(LogTemp,Log,TEXT("Here!!"));
-		// ServerRPCSlowSkillMake();
-		
-		// }
+			SlowSkillComponent->SkillAction(this);
+		}
 	}
 }
 

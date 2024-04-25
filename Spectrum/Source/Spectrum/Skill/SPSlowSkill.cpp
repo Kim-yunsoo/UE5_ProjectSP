@@ -13,6 +13,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Net/UnrealNetwork.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "SkillActor/SPSlowSkillActor.h"
 
 USPSlowSkill::USPSlowSkill()
 {
@@ -124,7 +125,24 @@ void USPSlowSkill::SkillAction(ASPCharacterPlayer* MyOwner)
 	                                                                Radius, ObjectTypes, false, ActorsToIgnore,
 	                                                                EDrawDebugTrace::ForDuration, OutHits, true,
 	                                                                GreenColor, RedColor, DrawTime);
-	
+	if(Success) //배열에 히트된 물체가 있는 경우 
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner=Owner;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		// SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
+		 GetWorld()->SpawnActor<ASPSlowSkillActor>(ASPSlowSkillActor::StaticClass(),Owner->SkillLocation->GetComponentLocation(),
+														Owner->SkillLocation->GetComponentRotation(), SpawnParams);
+	}
+	else
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner=Owner;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
+		GetWorld()->SpawnActor<ASPSlowSkillActor>(ASPSlowSkillActor::StaticClass(),Owner->SkillLocation->GetComponentLocation(),
+													   Owner->SkillLocation->GetComponentRotation(), SpawnParams);
+	}
 	//
 	// if(OutHits.Num()>0)
 	// {
@@ -140,11 +158,11 @@ void USPSlowSkill::SkillAction(ASPCharacterPlayer* MyOwner)
 	// 									   ), 5, false, 0.0f);
 
 
-	if (Success) //서버에서 판정 성공하면 판정된 배열 모두 멀티로 작업
-	{
-		SP_SUBLOG(LogSPNetwork, Log, TEXT("USPSlowSkill"));
-		MultiRPCSkill(OutHits);
-	}
+	// if (Success) //서버에서 판정 성공하면 판정된 배열 모두 멀티로 작업
+	// {
+	// 	SP_SUBLOG(LogSPNetwork, Log, TEXT("USPSlowSkill"));
+	// 	MultiRPCSkill(OutHits);
+	// }
 }
 
 void USPSlowSkill::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
