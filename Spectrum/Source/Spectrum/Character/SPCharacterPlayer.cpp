@@ -1060,7 +1060,7 @@ void ASPCharacterPlayer::HandleMontageAnimNotify(FName NotifyName,
 	{
 		if(HasAuthority())
 		{
-		UE_LOG(LogTemp,Log,TEXT("Here!!"));
+			UE_LOG(LogTemp,Log,TEXT("Here!!"));
 			SlowSkillComponent->SkillAction(this);
 		}
 	}
@@ -1239,13 +1239,27 @@ void ASPCharacterPlayer::PlaySkillAnimation()
 
 void ASPCharacterPlayer::HitSlowSkillResult()
 {
-	GetCharacterMovement()->MaxWalkSpeed = 100.f;
-	FTimerHandle Handle;
-	GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([&]
-											   {
-												   GetCharacterMovement()->MaxWalkSpeed = 500.f;
-											   }
-										   ), 5, false, -1.0f);
+
+
+	NetTESTRPCSlowSkill();
+	// GetCharacterMovement()->MaxWalkSpeed = 100.f;
+	// FTimerHandle Handle;
+	// GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([&]
+	// 										   {
+	// 											   GetCharacterMovement()->MaxWalkSpeed = 500.f;
+	// 										   }
+	// 									   ), 5, false, -1.0f);
+}
+
+void ASPCharacterPlayer::NetTESTRPCSlowSkill_Implementation()
+{
+	SP_LOG(LogSPNetwork,Log,TEXT("HitSlowSkillResult"));
+
+	USPCharacterMovementComponent* SPMovement = Cast<USPCharacterMovementComponent>(GetCharacterMovement());
+	if(SPMovement)
+	{
+		SPMovement->SetSlowSkillCommand();
+	}
 }
 
 

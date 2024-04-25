@@ -23,8 +23,8 @@ public:
 	virtual void SkillAction(ASPCharacterPlayer* MyOwner) override;
 	
 	
-	// UFUNCTION(NetMulticast, Unreliable)
-	// void MultiRPCSkill(const TArray<FHitResult>& OutHits);
+	UFUNCTION(NetMulticast, Unreliable)
+	void TEXTRPCSkill();
 	// UFUNCTION(Server, Unreliable)
 	// void ServerRPC( const TArray<FHitResult>& OutHits);
 

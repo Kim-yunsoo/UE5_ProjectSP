@@ -421,6 +421,7 @@ public:
 
 	virtual void HitSlowSkillResult()override;
 
-
+	UFUNCTION(NetMulticast, Unreliable)
+	void NetTESTRPCSlowSkill();
 	
 };
