@@ -24,6 +24,8 @@ ASPSlowSkillActor::ASPSlowSkillActor()
 	BoxCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
 	BoxCollision->SetBoxExtent(FVector(84, 31, 29));
 	BoxCollision->SetCollisionProfileName(TEXT("PropCollision"));
+	// BoxCollision->IgnoreActorWhenMoving(this,true);
+	// BoxCollision->ignore
 	SetRootComponent(BoxCollision); //루트 컴포넌트로 만들기
 
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Projectile"));
@@ -51,10 +53,15 @@ ASPSlowSkillActor::ASPSlowSkillActor()
 	}
 
 
-	Speed = 1000.f;
+	Speed = 1500.f;
 	Gravity = 0.0f;
 	BoxCollision->SetIsReplicated(true);
 	bIsHoming = false;
+}
+
+void ASPSlowSkillActor::TESTRPCSlowSkill_Implementation()
+{
+	SP_LOG(LogSPNetwork,Log,TEXT("HIHIHI"));
 }
 
 // ASPSlowSkillActor::ASPSlowSkillActor(AActor* TargetPlayer)
@@ -116,7 +123,7 @@ void ASPSlowSkillActor::BeginPlay()
 	ProjectileMovement->InitialSpeed = Speed;
 	ProjectileMovement->MaxSpeed = Speed;
 	ProjectileMovement->ProjectileGravityScale = Gravity;
-	ProjectileMovement->HomingAccelerationMagnitude = 2000.f;
+	ProjectileMovement->HomingAccelerationMagnitude = 5000.f;
 	//BoxCollision->IgnoreActorWhenMoving(GetOwner(),true);
 
 	BoxCollision->OnComponentHit.AddDynamic(this, &ASPSlowSkillActor::OnBoxCollisionHit);
@@ -136,6 +143,7 @@ void ASPSlowSkillActor::BeginPlay()
 		this->SetReplicates(true);
 		this->AActor::SetReplicateMovement(true);
 	}
+	// TESTRPCSlowSkill();
 }
 
 void ASPSlowSkillActor::OnBoxCollisionHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
@@ -161,18 +169,24 @@ void ASPSlowSkillActor::OnBoxCollisionHit(UPrimitiveComponent* HitComponent, AAc
 		}
 		FVector HitLocation = Hit.GetActor()->GetActorLocation();
 
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), EmitterHit, HitLocation, FRotator::ZeroRotator,
+		UParticleSystemComponent* HitParticle=UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), EmitterHit, HitLocation, FRotator::ZeroRotator,
 												 FVector(1.0f), true, EPSCPoolMethod::None, true);
+		
+		HitParticle->SetIsReplicated(true);
+		
+		
 		//사운드 코드 넣기
 		//느려지게 만들자
 		//HitSlowSkillResult
-		ISPSkillInterface* CheckSlowAction = Cast<ISPSkillInterface>(Hit.GetActor());
-		if (CheckSlowAction)
-		{
-			CheckSlowAction->HitSlowSkillResult();
-		}
-		// MultiRPCSlowSkill(Hit.GetActor());
-		this->Destroy();
+		// ISPSkillInterface* CheckSlowAction = Cast<ISPSkillInterface>(Hit.GetActor());
+		// if (CheckSlowAction)
+		// {
+		// 	CheckSlowAction->HitSlowSkillResult();
+		// }
+		MultiRPCSlowSkill(Hit.GetActor());
+		this->SetActorHiddenInGame(true);
+		this->SetLifeSpan(1.0f);
+		// this->Destroy();
 	}
 
 		// ASPCharacterPlayer* testplayer= Cast<ASPCharacterPlayer>(Hit.GetActor());

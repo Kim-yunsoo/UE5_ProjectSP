@@ -1239,27 +1239,32 @@ void ASPCharacterPlayer::PlaySkillAnimation()
 
 void ASPCharacterPlayer::HitSlowSkillResult()
 {
-
-
-	NetTESTRPCSlowSkill();
-	// GetCharacterMovement()->MaxWalkSpeed = 100.f;
-	// FTimerHandle Handle;
-	// GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([&]
-	// 										   {
-	// 											   GetCharacterMovement()->MaxWalkSpeed = 500.f;
-	// 										   }
-	// 									   ), 5, false, -1.0f);
+	// Cast<USPCharacterMovementComponent>(GetMovementComponent());
+	// NetTESTRPCSlowSkill();
+	GetCharacterMovement()->MaxWalkSpeed = 100.f;
+	FTimerHandle Handle;
+	GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([&]
+											   {
+												   GetCharacterMovement()->MaxWalkSpeed = 500.f;
+											   }
+										   ), 5, false, -1.0f);
 }
 
 void ASPCharacterPlayer::NetTESTRPCSlowSkill_Implementation()
 {
 	SP_LOG(LogSPNetwork,Log,TEXT("HitSlowSkillResult"));
-
-	USPCharacterMovementComponent* SPMovement = Cast<USPCharacterMovementComponent>(GetCharacterMovement());
-	if(SPMovement)
-	{
-		SPMovement->SetSlowSkillCommand();
-	}
+	GetCharacterMovement()->MaxWalkSpeed = 100.f;
+	FTimerHandle Handle;
+	GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([&]
+											   {
+												   GetCharacterMovement()->MaxWalkSpeed = 500.f;
+											   }
+										   ), 5, false, -1.0f);
+	// USPCharacterMovementComponent* SPMovement = Cast<USPCharacterMovementComponent>(GetCharacterMovement());
+	// if(SPMovement)
+	// {
+	// 	// SPMovement->SetSlowSkillCommand();
+	// }
 }
 
 

@@ -21,6 +21,9 @@ public:
 protected:
 	UFUNCTION(NetMulticast, Unreliable)
 	void MultiRPCSlowSkill(AActor* HitActor);
+
+	UFUNCTION(NetMulticast, Unreliable)
+	void TESTRPCSlowSkill();
 	
 	UFUNCTION(Server, Unreliable)
 	void ServerRPCSlowSkill(const FHitResult& Hit);
@@ -46,6 +49,7 @@ protected:
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Projectile")
 	TObjectPtr<UParticleSystem> EmitterHit;
+	// EmitterHit->replic
 
 	UPROPERTY()
 	TObjectPtr<AActor> TargetActor;

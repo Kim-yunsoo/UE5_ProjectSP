@@ -131,22 +131,25 @@ void USPSlowSkill::SkillAction(ASPCharacterPlayer* MyOwner)
 	if(Success) //배열에 히트된 물체가 있는 경우 
 	{
 		AActor* HitActor = OutHits[0].GetActor();
-		if(Cast<ASPCharacterPlayer>(HitActor))
-		{
-			UE_LOG(LogTemp,Log,TEXT("Cast Success"));
-			FTransform SpawnLocAndRotation(Owner->SkillLocation->GetComponentRotation(), Owner->SkillLocation->GetComponentLocation());
-			ASPSlowSkillActor* MyActor = GetWorld()->SpawnActorDeferred<ASPSlowSkillActor>(ASPSlowSkillActor::StaticClass(), SpawnLocAndRotation);
-			MyActor->SetOwner(Owner);
-			MyActor->InitTarget(HitActor);
-			MyActor->FinishSpawning(SpawnLocAndRotation);
-		}
-		else
-		{
-			ASPSlowSkillActor* MyActor =GetWorld()->SpawnActor<ASPSlowSkillActor>(ASPSlowSkillActor::StaticClass(),Owner->SkillLocation->GetComponentLocation(),
-													   Owner->SkillLocation->GetComponentRotation(), SpawnParams);
-			MyActor->SetOwner(Owner);
-
-		}
+		ASPSlowSkillActor* MyActor =GetWorld()->SpawnActor<ASPSlowSkillActor>(ASPSlowSkillActor::StaticClass(),Owner->SkillLocation->GetComponentLocation(),
+												   Owner->SkillLocation->GetComponentRotation(), SpawnParams);
+		MyActor->SetOwner(Owner);
+		// if(Cast<ASPCharacterPlayer>(HitActor))
+		// {
+		// 	UE_LOG(LogTemp,Log,TEXT("Cast Success"));
+		// 	FTransform SpawnLocAndRotation(Owner->SkillLocation->GetComponentRotation(), Owner->SkillLocation->GetComponentLocation());
+		// 	ASPSlowSkillActor* MyActor = GetWorld()->SpawnActorDeferred<ASPSlowSkillActor>(ASPSlowSkillActor::StaticClass(), SpawnLocAndRotation);
+		// 	MyActor->SetOwner(Owner);
+		// 	MyActor->InitTarget(HitActor);
+		// 	MyActor->FinishSpawning(SpawnLocAndRotation);
+		// }
+		// else
+		// {
+		// 	ASPSlowSkillActor* MyActor =GetWorld()->SpawnActor<ASPSlowSkillActor>(ASPSlowSkillActor::StaticClass(),Owner->SkillLocation->GetComponentLocation(),
+		// 											   Owner->SkillLocation->GetComponentRotation(), SpawnParams);
+		// 	MyActor->SetOwner(Owner);
+		//
+		// }
 		
 	}
 	else
