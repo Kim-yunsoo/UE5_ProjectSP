@@ -6,10 +6,11 @@
 #include "GameFramework/Actor.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Interface/SPGetInterface.h"
 #include "SPPotionBase.generated.h"
 
 UCLASS()
-class SPECTRUM_API ASPPotionBase : public AActor
+class SPECTRUM_API ASPPotionBase : public AActor, public ISPGetInterface
 {
 	GENERATED_BODY()
 	
@@ -35,4 +36,14 @@ public:
 	void Throw(const FVector& PotionDirection);
 
 	void MoveTo();
+
+	virtual  void GetPotion() override;
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
+public:
+	// UPROPERTY()
+	// UInventoryComponent* OwningInventory;
+	
+	
 };

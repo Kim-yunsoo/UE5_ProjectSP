@@ -31,3 +31,8 @@ void ASPPlayerController::BeginPlay()
 	}
 	
 }
+
+USPHUDWidget* ASPPlayerController::GetSPHUDWidget() const
+{
+	return SPHUDWidget;
+}

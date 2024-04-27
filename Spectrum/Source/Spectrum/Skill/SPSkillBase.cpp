@@ -8,7 +8,6 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Particles/ParticleSystemComponent.h"
 
-
 class ISPSkillInterface;
 
 USPSkillBase::USPSkillBase()

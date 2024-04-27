@@ -2,8 +2,12 @@
 
 
 #include "Potion/SPPotionBase.h"
+
+#include "SpectrumLog.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "GameFramework/HUD.h"
+
 // Sets default values
 ASPPotionBase::ASPPotionBase()
 {
@@ -48,4 +52,14 @@ void ASPPotionBase::MoveTo()
 	LatentInfo.CallbackTarget = this;
 	UKismetSystemLibrary::MoveComponentTo(PotionMesh, TargetRelativeLocation, TargetRelativeRotation, false, false, 0.5, false, EMoveComponentAction::Type::Move, LatentInfo);
 }
+
+void ASPPotionBase::GetPotion()
+{
+	// APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+	// SP_LOG(LogSPNetwork, Log, TEXT("GetPotion"));
+	// AHUD* PlayerHUD = PlayerController->GetHUD();
+	// //USPInventoryWidget* InventoryWidget = Cast<USPInventoryWidget>(PlayerHUD->GetWidgetFromName(TEXT("Inventory")));
+}
+
+
 

@@ -6,12 +6,14 @@
 #include "GameFramework/Character.h"
 #include "Potion/SPBlackPotion.h"
 #include "InputActionValue.h"
-#include "Protocol.pb.h"
-#include "GameFramework/CharacterMovementComponent.h"
 #include "Interface/SPSkillInterface.h"
 #include "Interface/SPCharacterHUDInterface.h"
+#include "Interface/SPInteractionInterface.h"
+#include "Potion/SPItemBase.h"
 #include "SPCharacterPlayer.generated.h"
 
+class USPInventoryComponent;
+class USPHUDWidget;
 class USPSkillCastComponent;
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnAimChangedDelegate, bool /*aim*/)
 
@@ -27,6 +29,22 @@ enum class ECharacterControlType : uint8
 	Quater
 };
 
+USTRUCT()
+struct FInteractionData
+{
+	GENERATED_USTRUCT_BODY()
+
+	FInteractionData() : CurrentInteractable(nullptr), LastInteractionCheckTime(0.0f)
+	{
+		
+	};
+	
+	UPROPERTY()
+	AActor* CurrentInteractable;
+
+	UPROPERTY()
+	float LastInteractionCheckTime;
+};
 
 UCLASS()
 class SPECTRUM_API ASPCharacterPlayer : public ACharacter, public ISPCharacterHUDInterface ,public ISPSkillInterface
@@ -79,6 +97,8 @@ protected:
 	void PurplePotionSpawn(const FInputActionValue& Value);
 	void SlowSKill(const FInputActionValue& Value);
 
+	void Interaction(const FInputActionValue& Value);
+	void ToggleMenuAction(const FInputActionValue& Value);
 	ECharacterControlType CurrentCharacterControlType;
 
 public:
@@ -224,7 +244,11 @@ protected:
 	TObjectPtr<class UInputAction> ThrowCtrl;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> InteractionKey;
 	TObjectPtr<class UInputAction> SlowQ;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> ToggleMenu;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputMappingContext* DefaultMappingContext;
@@ -310,8 +334,48 @@ protected:
 
 	virtual void SetupTargetWidget(USPUserWidget* InUserWidget) override;
 
+	UPROPERTY()
+	TObjectPtr<class USPHUDWidget> HUDWidget;
+	
+//Interaction
+protected:
+	UPROPERTY(VisibleAnywhere, Category = "Character | Interaction")
+	TScriptInterface<ISPInteractionInterface> TargetInteractable;
 
-	// ServerRPC
+	float InteractionCheckFrequency;
+
+	float InteractionCheckDistance;
+
+	FTimerHandle TimerHandle_Interaction;
+	
+	FInteractionData InteractionData;
+
+	void PerformInteractionCheck();
+	void FoundInteractable(AActor* NewInteractable);
+	void NoInteractableFound();
+	void BeginInteract();
+	void EndInteract();
+	void Interact();
+
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCInteract();
+	
+// Inventory
+	
+	UPROPERTY(VisibleAnywhere, Category = "Character | Inventory")
+	TObjectPtr<USPInventoryComponent> PlayerInventory;
+
+public:
+	//인벤토리 가지고 오기
+	FORCEINLINE USPInventoryComponent* GetInventory() const {return PlayerInventory;};
+	
+	void UpdateInteractionWidget() const;
+
+// 아이템 드롭
+	void DropItem(USPItemBase* ItemToDrop, const int32 QuantityToDrop);
+public:
+	FORCEINLINE bool IsInteracting() const { return GetWorldTimerManager().IsTimerActive(TimerHandle_Interaction);};
+// ServerRPC
 	UFUNCTION(Server, Unreliable)
 	void ServerRPCSpeedUp();
 

@@ -14,12 +14,11 @@ class SPECTRUM_API USPTargetUI : public USPUserWidget
 {
 	GENERATED_BODY()
 public:
-	USPTargetUI(const FObjectInitializer& ObjectInitializer);
+	//USPTargetUI(const FObjectInitializer& ObjectInitializer);
 	void UpdateTargetUI(bool IsAim);
 protected:
 	virtual void NativeConstruct() override;
-	
-	
+
 protected:
 	UPROPERTY()
 	TObjectPtr<class UImage> TargetUIImage;

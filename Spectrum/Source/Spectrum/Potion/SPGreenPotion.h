@@ -2,6 +2,7 @@
 
 #pragma once
 
+
 #include "CoreMinimal.h"
 #include "Component/SPExplosionComponent.h"
 #include "Potion/SPPotionBase.h"
@@ -33,4 +34,5 @@ public:
 		const FHitResult& Hit
 	);
 
+	
 };

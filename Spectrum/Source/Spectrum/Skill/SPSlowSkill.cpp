@@ -40,7 +40,7 @@ void USPSlowSkill::TickComponent(float DeltaTime, ELevelTick TickType, FActorCom
 		return;
 	}
 	
-	if (Owner-> bIsActiveSlowSkill) //ÂüÀÌ¶ó¸é? 
+	if (Owner-> bIsActiveSlowSkill) //ï¿½ï¿½ï¿½Ì¶ï¿½ï¿½? 
 	{
 		return;
 	}
@@ -49,7 +49,7 @@ void USPSlowSkill::TickComponent(float DeltaTime, ELevelTick TickType, FActorCom
 	if (CurrentGameTime.GetWorldTimeSeconds() < ActivetedTimeStamp + CoolDown)
 	{
 		float ElapsedTime = CurrentGameTime.GetWorldTimeSeconds() - ActivetedTimeStamp;
-		UE_LOG(LogTemp, Log, TEXT("%f"),ElapsedTime); //ÄðÅ¸ÀÓ ÁøÇà Áß 
+		UE_LOG(LogTemp, Log, TEXT("%f"),ElapsedTime); //ï¿½ï¿½Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ 
 		// Owner->bIsActiveSlowSkill = true;
 	}
 	else
@@ -73,7 +73,7 @@ void USPSlowSkill::SkillAction(ASPCharacterPlayer* MyOwner)
 	// ActivetedTimeStamp = GameTime.GetWorldTimeSeconds();
 
 	Super::SkillAction(MyOwner);
-
+	SP_SUBLOG(LogSPNetwork,Log,TEXT("USPSlowSkill!!!!!!!!!!!")); 
 	FVector TracePointStart = Owner->GetActorLocation();
 	//this->GetOuter()
 	FVector TracePointEnd = Owner->GetActorLocation() + Owner->GetActorForwardVector() * 4000;
@@ -93,7 +93,7 @@ void USPSlowSkill::SkillAction(ASPCharacterPlayer* MyOwner)
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
-	if(Success) //¹è¿­¿¡ È÷Æ®µÈ ¹°Ã¼°¡ ÀÖ´Â °æ¿ì 
+	if(Success) //ï¿½è¿­ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ 
 	{
 		AActor* HitActor = OutHits[0].GetActor();
 		ASPSlowSkillActor* MyActor =GetWorld()->SpawnActor<ASPSlowSkillActor>(ASPSlowSkillActor::StaticClass(),Owner->SkillLocation->GetComponentLocation(),

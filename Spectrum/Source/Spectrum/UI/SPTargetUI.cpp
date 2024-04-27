@@ -7,10 +7,6 @@
 #include "Interface/SPCharacterHUDInterface.h"
 // #include "Character/SP"
 
-USPTargetUI::USPTargetUI(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
-{
-}
-
 void USPTargetUI::UpdateTargetUI(bool IsAim)
 {
 	UE_LOG(LogTemp, Log, TEXT("UpdateTargetUI"));
@@ -22,7 +18,6 @@ void USPTargetUI::UpdateTargetUI(bool IsAim)
 	}
 }
 
-
 void USPTargetUI::NativeConstruct() //위젯에 관련된 UI 요소들이 모두 준비 완료 되면
 {
 	Super::NativeConstruct();
@@ -31,7 +26,7 @@ void USPTargetUI::NativeConstruct() //위젯에 관련된 UI 요소들이 모두 준비 완료 �
 	ensure(TargetUIImage);
 	this->SetVisibility(ESlateVisibility::Hidden);
 
-	ISPCharacterHUDInterface* CharacterWidget = Cast<ISPCharacterHUDInterface>(OwningActor);
+	ISPCharacterHUDInterface* CharacterWidget = Cast<ISPCharacterHUDInterface>(GetOwningPlayerPawn());
 	if(CharacterWidget)
 	{
 		CharacterWidget->SetupTargetWidget(this);
