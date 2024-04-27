@@ -15,8 +15,6 @@ USPInventoryComponent::USPInventoryComponent()
 	// ...
 }
 
-
-
 USPItemBase* USPInventoryComponent::FindMatchingItem(USPItemBase* ItemIn) const
 {
 	if (ItemIn)
@@ -46,29 +44,45 @@ USPItemBase* USPInventoryComponent::FindNextPartialStack(USPItemBase* ItemIn) co
 {
 	//부분 스택이 있는 경우 인벤토리에 있는 항목 살펴보기
 
-	if(const TArray<TObjectPtr<USPItemBase>>::ElementType* Result =
+	if(ItemIn->ItemType==EItemType::IngredientPotion)
+	{
+		if(const TArray<TObjectPtr<USPItemBase>>::ElementType* Result =
+		InventoryMiniContents.FindByPredicate([&ItemIn](const USPItemBase* InventoryItem)
+		{
+			return InventoryItem->ID == ItemIn->ID; //&& !InventoryItem->IsFullItemStack();
+		}
+		))
+		{
+			return *Result;
+		}
+	}
+	else
+	{
+		if(const TArray<TObjectPtr<USPItemBase>>::ElementType* Result =
 		InventoryContents.FindByPredicate([&ItemIn](const USPItemBase* InventoryItem)
 		{
 			return InventoryItem->ID == ItemIn->ID; //&& !InventoryItem->IsFullItemStack();
 		}
 		))
-	{
-		return *Result;
+		{
+			return *Result;
+		}
 	}
+	
 	return nullptr;
 }
 
 void USPInventoryComponent::RemoveSingleinstanceOfItem(USPItemBase* ItemToRemove)
 {
 	InventoryContents.RemoveSingle(ItemToRemove);
-	OnInventoryUpdated.Broadcast();
+	OnInventoryUpdated.Broadcast(InventoryContents);
 }
 
 int32 USPInventoryComponent::RemoveAmountOfItem(USPItemBase* ItemIn, int32 DesiredAmountToRemove)
 {
 	const int32 ActualAmountToRemove = FMath::Min(DesiredAmountToRemove, ItemIn->Quantity);
 	ItemIn->SetQuantity(ItemIn->Quantity- ActualAmountToRemove);
-	OnInventoryUpdated.Broadcast();
+	OnInventoryUpdated.Broadcast(InventoryContents);
 
 	return ActualAmountToRemove;
 }
@@ -123,6 +137,7 @@ int32 USPInventoryComponent::HandleStackableItems(USPItemBase* ItemIn, int32 Req
 		const int32 WeightLimitAddAmount = CalculateWeightAddAmount(Existingitem, AmountToMakeFullStack);
 		if(WeightLimitAddAmount > 0)
 		{
+			UE_LOG(LogTemp,Warning, TEXT("here1"));
 			Existingitem->SetQuantity(Existingitem->Quantity + WeightLimitAddAmount);
 
 			AmountToDistribute -= WeightLimitAddAmount;
@@ -131,22 +146,25 @@ int32 USPInventoryComponent::HandleStackableItems(USPItemBase* ItemIn, int32 Req
 
 			if(InventoryTotalWeight >= inventoryWeightCapacity)
 			{
-				OnInventoryUpdated.Broadcast();
+				OnInventoryUpdated.Broadcast(InventoryContents);
 				return RequestedAddAmount - AmountToDistribute;
 			}
 		}
 		else if (WeightLimitAddAmount <= 0)
 		{
+			UE_LOG(LogTemp,Warning, TEXT("2"));
+
 			if(AmountToDistribute != RequestedAddAmount)
 			{
-				OnInventoryUpdated.Broadcast();
+				OnInventoryUpdated.Broadcast(InventoryContents);
 				return RequestedAddAmount - AmountToDistribute;
 			}
 			return 0;
 		}
 		if(AmountToDistribute <= 0)
 		{
-			OnInventoryUpdated.Broadcast();
+			UE_LOG(LogTemp,Warning, TEXT("3"));
+			OnInventoryUpdated.Broadcast(InventoryContents);
 			return RequestedAddAmount;
 		}
 		Existingitem = FindNextPartialStack(ItemIn);
@@ -157,19 +175,72 @@ int32 USPInventoryComponent::HandleStackableItems(USPItemBase* ItemIn, int32 Req
 
 		if(WeightLimitAddAmount > 0)
 		{
+			UE_LOG(LogTemp,Warning, TEXT("here1111"));
+			AddNewItem(ItemIn, AmountToDistribute);
+			return RequestedAddAmount;
+		}
+	}
+
+	OnInventoryUpdated.Broadcast(InventoryContents);
+	return RequestedAddAmount - AmountToDistribute;
+}
+
+
+int32 USPInventoryComponent::HandleStackableItemsMini(USPItemBase* ItemIn, int32 RequestedAddAmount)
+{
+	//AddNewItem(ItemIn, 1);
+	int32 AmountToDistribute = RequestedAddAmount;
+	USPItemBase* Existingitem = FindNextPartialStack(ItemIn);
+	//Todo 10개 제한으로 다시 바꾸기 
+	while(Existingitem)
+	{
+		const int32 AmountToMakeFullStack = CalculatenumberForFullStack(Existingitem, AmountToDistribute);
+		const int32 WeightLimitAddAmount = CalculateWeightAddAmount(Existingitem, AmountToMakeFullStack);
+		if(WeightLimitAddAmount > 0)
+		{
+			Existingitem->SetQuantity(Existingitem->Quantity + WeightLimitAddAmount);
+
+			AmountToDistribute -= WeightLimitAddAmount;
+			ItemIn->SetQuantity(AmountToDistribute);
+			if(InventoryTotalWeight >= inventoryWeightCapacity)
+			{
+				OnInventoryMiniUpdated.Broadcast(InventoryMiniContents);
+				return RequestedAddAmount - AmountToDistribute;
+			}
+		}
+		else if (WeightLimitAddAmount <= 0)
+		{
+			if(AmountToDistribute != RequestedAddAmount)
+			{
+				OnInventoryMiniUpdated.Broadcast(InventoryMiniContents);
+				return RequestedAddAmount - AmountToDistribute;
+			}
+			return 0;
+		}
+		if(AmountToDistribute <= 0)
+		{
+			OnInventoryMiniUpdated.Broadcast(InventoryMiniContents);
+			return RequestedAddAmount;
+		}
+		Existingitem = FindNextPartialStack(ItemIn);
+	}
+	if(InventoryMiniContents.Num() + 1 <= InventorySlotsCapacity)
+	{
+		const int32 WeightLimitAddAmount = CalculateWeightAddAmount(ItemIn, AmountToDistribute);
+		if(WeightLimitAddAmount > 0)
+		{
 			UE_LOG(LogTemp,Warning, TEXT("here2"));
 			AddNewItem(ItemIn, AmountToDistribute);
 			return RequestedAddAmount;
 		}
 	}
 
-	OnInventoryUpdated.Broadcast();
+	OnInventoryMiniUpdated.Broadcast(InventoryMiniContents);
 	return RequestedAddAmount - AmountToDistribute;
 }
 
 FItemAddResult USPInventoryComponent::HandleAddItem(USPItemBase* InputItem)
 {
-	
 	if(GetOwner())
 	{
 		const int32 InitialRequestedAddmount = InputItem->Quantity;
@@ -181,8 +252,17 @@ FItemAddResult USPInventoryComponent::HandleAddItem(USPItemBase* InputItem)
 		}
 
 		//쌓을 수 있는 것
-		const int32 StackableAmountAdded = HandleStackableItems(InputItem, InitialRequestedAddmount);
-
+		int32 StackableAmountAdded = 0;
+		if(InputItem->ItemType == EItemType::IngredientPotion)
+		{
+			StackableAmountAdded = HandleStackableItemsMini(InputItem, InitialRequestedAddmount);
+			UE_LOG(LogTemp, Warning, TEXT("TEST"));
+		}
+		else
+		{
+			StackableAmountAdded = HandleStackableItems(InputItem, InitialRequestedAddmount);
+		}
+	
 		if(StackableAmountAdded == InitialRequestedAddmount) //모두 다 넣기 
 		{
 			//return added all result;
@@ -228,8 +308,17 @@ void USPInventoryComponent::AddNewItem(USPItemBase* Item, const int32 AmountToAd
 	NewItem->OwningInventory = this;
 	NewItem->SetQuantity(AmountToAdd);
 
-	InventoryContents.Add(NewItem);
-	OnInventoryUpdated.Broadcast();
+	if(Item->ItemType == EItemType::IngredientPotion)
+	{
+		InventoryMiniContents.Add(NewItem);
+		OnInventoryMiniUpdated.Broadcast(InventoryMiniContents);
+	}
+	else
+	{
+		InventoryContents.Add(NewItem);
+		OnInventoryUpdated.Broadcast(InventoryContents);
+	}
+	
 }
 
 // Called when the game starts

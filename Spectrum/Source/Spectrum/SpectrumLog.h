@@ -15,3 +15,4 @@
 #define SP_SUBLOG(LogCat, Verbosity, Format, ...) UE_LOG(LogCat, Verbosity, TEXT("[%s][%s/%s] %s %s"), LOG_NETMODEINFO, LOG_SUBLOCALROLEINFO, LOG_SUBREMOTEROLEINFO, LOG_CALLINFO, *FString::Printf(Format, ##__VA_ARGS__))
 
 DECLARE_LOG_CATEGORY_EXTERN(LogSPNetwork, Log, All);
+DECLARE_LOG_CATEGORY_EXTERN(LogSPSkill, Log, All);

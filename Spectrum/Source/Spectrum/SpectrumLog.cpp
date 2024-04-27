@@ -4,3 +4,4 @@
 #include "SpectrumLog.h"
 
 DEFINE_LOG_CATEGORY(LogSPNetwork);
+DEFINE_LOG_CATEGORY(LogSPSkill);

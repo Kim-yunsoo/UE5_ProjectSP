@@ -6,10 +6,13 @@
 #include "Components/ActorComponent.h"
 #include "SPInventoryComponent.generated.h"
 
-DECLARE_MULTICAST_DELEGATE(FOnInventoryUpdated);
-
-
 class USPItemBase;
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnInventoryUpdated, const TArray<TObjectPtr<USPItemBase>>);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnInventoryMiniUpdated, const TArray<TObjectPtr<USPItemBase>>);
+
+
+
 
 UENUM(BlueprintType)
 enum class EItemAddResult : uint8
@@ -75,7 +78,7 @@ class SPECTRUM_API USPInventoryComponent : public UActorComponent
 
 public:
 	FOnInventoryUpdated OnInventoryUpdated;
-	
+	FOnInventoryUpdated OnInventoryMiniUpdated;
 	// Sets default values for this component's properties
 	USPInventoryComponent();
 	UFUNCTION(Category = "Inventory")
@@ -103,6 +106,8 @@ public:
 	UFUNCTION(Category = "Inventory")
 	FORCEINLINE TArray<USPItemBase*> GetInventoryContents() const{return InventoryContents;};
 	UFUNCTION(Category = "Inventory")
+	FORCEINLINE TArray<USPItemBase*> GetInventorMiniContents() const{return InventoryMiniContents;};
+	UFUNCTION(Category = "Inventory")
 	FORCEINLINE void SetSlotsCapacity(const int32 NewSlotsCapacity){InventorySlotsCapacity = NewSlotsCapacity;};
 	UFUNCTION(Category = "Inventory")
 	FORCEINLINE void SetWeightCapacity(const float NewWeightCapacity){inventoryWeightCapacity = NewWeightCapacity;};
@@ -120,8 +125,12 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Inventory")
 	TArray<TObjectPtr<USPItemBase>> InventoryContents;
 
+	UPROPERTY(VisibleAnywhere, Category = "Inventory")
+	TArray<TObjectPtr<USPItemBase>> InventoryMiniContents;
+	
 	FItemAddResult HandleNonStackableItems(USPItemBase* ItemIn, int32 RequestedAddAmount);
 	int32 HandleStackableItems(USPItemBase* ItemIn, int32 RequestedAddAmount);
+	int32 HandleStackableItemsMini(USPItemBase* ItemIn, int32 RequestedAddAmount);
 	int32 CalculateWeightAddAmount(USPItemBase* ItemIn, int32 RequestedAddAmount);
 	int32 CalculatenumberForFullStack(USPItemBase* StackablItem, int32 RequestedAddAmount);
 

@@ -6,6 +6,7 @@
 #include "Skill/SPSkillBase.h"
 #include "SPSlowSkill.generated.h"
 
+
 UCLASS()
 class SPECTRUM_API USPSlowSkill : public USPSkillBase
 {
@@ -14,16 +15,32 @@ class SPECTRUM_API USPSlowSkill : public USPSkillBase
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
+	// virtual void Tick(float DeltaSeconds) override;
 
-	// virtual Tick
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	// virtual void Tick(float DeltaSeconds) override;
 public:
-	virtual void SkillAction(AActor* MyOwner) override;
+	virtual void SkillAction(ASPCharacterPlayer* MyOwner) override;
+	
 	
 	UFUNCTION(NetMulticast, Unreliable)
-	void MultiRPCSkill( const TArray<FHitResult>& OutHits);
+	void TEXTRPCSkill();
+	// UFUNCTION(Server, Unreliable)
+	// void ServerRPC( const TArray<FHitResult>& OutHits);
+
+	FGameTime GameTime;
+	float ActivetedTimeStamp;
+	UPROPERTY(Replicated)
+	uint8 bIsActiveSlowSkill : 1;
 	
-
 protected:
-	// virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
+	// UFUNCTION()
+	// void OnBoxCollisionHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
+	// 					   UPrimitiveComponent* OtherComp, FVector NormalImpulse,
+	// 					   const FHitResult& Hit);
+	// UPROPERTY(Replicated)
+	// TObjectPtr<AActor> TargetActor;
+	// void RotateToTarget();
 };

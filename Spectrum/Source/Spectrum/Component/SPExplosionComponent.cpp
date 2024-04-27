@@ -12,7 +12,7 @@
 // Sets default values for this component's properties
 USPExplosionComponent::USPExplosionComponent()
 {
-	//파티클 로드
+	
 	static ConstructorHelpers::FObjectFinder<UParticleSystem> EffectRef(
 		TEXT("/Script/Engine.ParticleSystem'/Game/Box/MagicStaff/Demo/Particles/P_Explosion.P_Explosion'"));
 	if (EffectRef.Object)

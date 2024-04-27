@@ -4,6 +4,7 @@
 #include "UI/Inventory/SPPickup.h"
 #include "Component/SPInventoryComponent.h"
 #include "Potion/SPItemBase.h"
+#include "SpectrumLog.h"
 
 // Sets default values
 ASPPickup::ASPPickup()
@@ -14,6 +15,18 @@ ASPPickup::ASPPickup()
 	PickupMesh = CreateDefaultSubobject<UStaticMeshComponent>("PickupMesh");
 	PickupMesh->SetSimulatePhysics(true); //시뮬레이션 true 고민해보기
 	SetRootComponent(PickupMesh);
+}
+
+// Called when the game starts or when spawned
+void ASPPickup::BeginPlay()
+{
+	Super::BeginPlay();
+	if(HasAuthority())
+	{
+		this->SetReplicates(true);
+		this->AActor::SetReplicateMovement(true);
+	}
+	InitializePickup(USPItemBase::StaticClass(), ItemQuantity);
 }
 
 void ASPPickup::InitializePickup(const TSubclassOf<USPItemBase> BaseClass, const int32 InQuantity)
@@ -55,6 +68,7 @@ void ASPPickup::BeginFocus()
 	{
 		PickupMesh->SetRenderCustomDepth(true);
 	}
+	
 }
 
 void ASPPickup::EndFocus()
@@ -69,6 +83,8 @@ void ASPPickup::Interact(ASPCharacterPlayer* PlayerCharacter)
 {
 	if(PlayerCharacter)
 	{
+		AActor* TEST = Cast<AActor>(PlayerCharacter);
+		this->SetOwner(TEST);
 		TakePickup(PlayerCharacter);
 	}
 }
@@ -82,32 +98,45 @@ void ASPPickup::UpdateInteractableData()
 	InteractableData = InstanceInteractableData;
 }
 
-void ASPPickup::TakePickup(const ASPCharacterPlayer* Taker)
+void ASPPickup::TakePickup(ASPCharacterPlayer* Taker)
 {
 	if (!IsPendingKillPending()) //IsPendingKillPending() 삭제되는지 확인
 	{
 		if(ItemReference)
 		{
 			//인벤토리 넣고 선택 되면 항목을 조정하거나 파괴
-			if(USPInventoryComponent* PlayerInvetory = Taker->GetInventory())
+			if (USPInventoryComponent* PlayerInvetory = Taker->GetInventory())
 			{
-				const FItemAddResult AddResult = PlayerInvetory->HandleAddItem(ItemReference);
+				ClientRPCUpdateWidget(Taker);
+				FTimerHandle TimerHandle;
+				GetWorld()->GetTimerManager().SetTimer(TimerHandle,[this](){
+					                                       this->Destroy();
+				                                       }, 0.1f, false);
+				//SP_LOG(LogSPNetwork, Log, TEXT("%s"),*GetOwner()->GetName());
+				//Destroy(); //이거 문제 업나!?!?!? 바로 지우는거!???
+				// if(HasAuthority() && )
+				// {
+				 	
+				// 	const FItemAddResult AddResult = PlayerInvetory->HandleAddItem(ItemReference);
+				// 	
+				// }
+				// switch(AddResult.OperationResult)
+				// {
+				// case EItemAddResult::IAR_NoItemAdded:
+				// 	break;
+				// case EItemAddResult::IAR_PartialAmountItemAdded:
+				// 	UpdateInteractableData();
+				// 	Taker->UpdateInteractionWidget();
+				// 	break;
+				// case EItemAddResult::IAR_AllItemAdded:
+				// 	//ServerRPCDestroy();
+				// 	
+				// 	SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("client Destroy()"));
+				// 	break;
+				// 	
+				// }
 
-				switch(AddResult.OperationResult)
-				{
-				case EItemAddResult::IAR_NoItemAdded:
-					break;
-				case EItemAddResult::IAR_PartialAmountItemAdded:
-					UpdateInteractableData();
-					Taker->UpdateInteractionWidget();
-					break;
-				case EItemAddResult::IAR_AllItemAdded:
-					Destroy();
-					break;
-					
-				}
-
-				UE_LOG(LogTemp, Warning, TEXT("%s"), *AddResult.ResultMessage.ToString());
+				//UE_LOG(LogTemp, Warning, TEXT("%s"), *AddResult.ResultMessage.ToString());
 			}
 			else
 			{
@@ -115,7 +144,6 @@ void ASPPickup::TakePickup(const ASPCharacterPlayer* Taker)
 
 			}
 
-			
 		}
 		else
 		{
@@ -134,10 +162,18 @@ void ASPPickup::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEve
 	//Todo 에디터에서 편하게 하기 위해서!
 }
 
-// Called when the game starts or when spawned
-void ASPPickup::BeginPlay()
+void ASPPickup::ClientRPCUpdateWidget_Implementation(ASPCharacterPlayer* Taker)
 {
-	Super::BeginPlay();
-	InitializePickup(USPItemBase::StaticClass(), ItemQuantity);
+	USPInventoryComponent* PlayerInvetory = Taker->GetInventory();
+	const FItemAddResult AddResult = PlayerInvetory->HandleAddItem(ItemReference);
+
+	// SP_LOG(LogSPNetwork, Log, TEXT("TEST"));
+	// for(USPItemBase* const& InventoryItem : PlayerInvetory->GetInventoryContents())
+	// {
+	// 	SP_LOG(LogSPNetwork, Log, TEXT("%s"), *InventoryItem->ItemTextData.Name.ToString());
+	// }
+	
 }
+
+
 
