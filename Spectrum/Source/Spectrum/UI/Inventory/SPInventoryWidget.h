@@ -29,7 +29,6 @@ public:
 	
 	UPROPERTY()
 	TObjectPtr<USPInventoryComponent> InventoryReference;
-
 	
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<USPInventoryItemSlot> InventorySlotClass;
