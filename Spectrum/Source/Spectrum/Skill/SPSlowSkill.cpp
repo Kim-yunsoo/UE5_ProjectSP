@@ -52,7 +52,7 @@ void USPSlowSkill::TickComponent(float DeltaTime, ELevelTick TickType, FActorCom
 	
 	if (bIsActiveSlowSkill) //���̶��? 
 	{
-		// UE_LOG(LogTemp, Log, TEXT("return"));
+		UE_LOG(LogTemp, Log, TEXT("return"));
 		return;
 	}
 
@@ -60,7 +60,7 @@ void USPSlowSkill::TickComponent(float DeltaTime, ELevelTick TickType, FActorCom
 	if (CurrentGameTime.GetWorldTimeSeconds() < ActivetedTimeStamp + CoolDown)
 	{
 		float ElapsedTime = CurrentGameTime.GetWorldTimeSeconds() - ActivetedTimeStamp;
-		// UE_LOG(LogTemp, Log, TEXT("%f"), ElapsedTime);
+		UE_LOG(LogTemp, Log, TEXT("%f"), ElapsedTime);
 	}
 	else
 	{ //���̳������� �˷�����. (���� �ʿ�)

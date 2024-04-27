@@ -6,8 +6,6 @@
 #include "GameFramework/Character.h"
 #include "Potion/SPBlackPotion.h"
 #include "InputActionValue.h"
-#include "Protocol.pb.h"
-#include "GameFramework/CharacterMovementComponent.h"
 #include "Interface/SPSkillInterface.h"
 #include "Interface/SPCharacterHUDInterface.h"
 #include "Interface/SPInteractionInterface.h"

@@ -3,12 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Character/SPCharacterPlayer.h"
 #include "GameFramework/Actor.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Interface/SPGetInterface.h"
-#include "Data/ItemDataStructs.h"
 #include "SPPotionBase.generated.h"
 
 UCLASS()
