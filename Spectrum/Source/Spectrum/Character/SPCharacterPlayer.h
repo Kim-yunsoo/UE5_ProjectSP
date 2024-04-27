@@ -251,6 +251,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	FVector UIRotator;
 
+	
+	
+
 protected:
 	UPrimitiveComponent* HitComponent;
 	AActor* HitActor;
@@ -423,5 +426,7 @@ public:
 
 	UFUNCTION(NetMulticast, Unreliable)
 	void NetTESTRPCSlowSkill();
-	
+
+	UPROPERTY()
+	uint8 bIsActiveSlowSkill : 1;
 };
