@@ -807,7 +807,7 @@ void ASPCharacterPlayer::ServerRPCSlowSkill_Implementation(float AttackStartTime
 		for (APlayerController* PlayerController : TActorRange<APlayerController>(GetWorld()))
 		{
 			ASPCharacterPlayer* OtherPlayer = Cast<ASPCharacterPlayer>(PlayerController->GetPawn());
-			if (OtherPlayer && !HasAuthority())
+			if (OtherPlayer )
 			{
 				OtherPlayer->ClientRPCSlowAnimation(this);
 			}
