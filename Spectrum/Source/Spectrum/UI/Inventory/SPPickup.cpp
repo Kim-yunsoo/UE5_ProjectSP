@@ -166,6 +166,13 @@ void ASPPickup::ClientRPCUpdateWidget_Implementation(ASPCharacterPlayer* Taker)
 {
 	USPInventoryComponent* PlayerInvetory = Taker->GetInventory();
 	const FItemAddResult AddResult = PlayerInvetory->HandleAddItem(ItemReference);
+
+	// SP_LOG(LogSPNetwork, Log, TEXT("TEST"));
+	// for(USPItemBase* const& InventoryItem : PlayerInvetory->GetInventoryContents())
+	// {
+	// 	SP_LOG(LogSPNetwork, Log, TEXT("%s"), *InventoryItem->ItemTextData.Name.ToString());
+	// }
+	
 }
 
 
