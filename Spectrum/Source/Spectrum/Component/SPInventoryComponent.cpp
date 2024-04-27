@@ -165,6 +165,64 @@ int32 USPInventoryComponent::HandleStackableItems(USPItemBase* ItemIn, int32 Req
 	return RequestedAddAmount - AmountToDistribute;
 }
 
+
+int32 USPInventoryComponent::HandleStackableItemsMini(USPItemBase* ItemIn, int32 RequestedAddAmount)
+{
+	//AddNewItem(ItemIn, 1);
+	int32 AmountToDistribute = RequestedAddAmount;
+
+	USPItemBase* Existingitem = FindNextPartialStack(ItemIn);
+	//Todo 10개 제한으로 다시 바꾸기 
+	while(Existingitem)
+	{
+		const int32 AmountToMakeFullStack = CalculatenumberForFullStack(Existingitem, AmountToDistribute);
+		const int32 WeightLimitAddAmount = CalculateWeightAddAmount(Existingitem, AmountToMakeFullStack);
+		if(WeightLimitAddAmount > 0)
+		{
+			Existingitem->SetQuantity(Existingitem->Quantity + WeightLimitAddAmount);
+
+			AmountToDistribute -= WeightLimitAddAmount;
+
+			ItemIn->SetQuantity(AmountToDistribute);
+
+			if(InventoryTotalWeight >= inventoryWeightCapacity)
+			{
+				OnInventoryMiniUpdated.Broadcast();
+				return RequestedAddAmount - AmountToDistribute;
+			}
+		}
+		else if (WeightLimitAddAmount <= 0)
+		{
+			if(AmountToDistribute != RequestedAddAmount)
+			{
+				OnInventoryMiniUpdated.Broadcast();
+				return RequestedAddAmount - AmountToDistribute;
+			}
+			return 0;
+		}
+		if(AmountToDistribute <= 0)
+		{
+			OnInventoryMiniUpdated.Broadcast();
+			return RequestedAddAmount;
+		}
+		Existingitem = FindNextPartialStack(ItemIn);
+	}
+	if(InventoryMiniContents.Num() + 1 <= InventorySlotsCapacity)
+	{
+		const int32 WeightLimitAddAmount = CalculateWeightAddAmount(ItemIn, AmountToDistribute);
+
+		if(WeightLimitAddAmount > 0)
+		{
+			UE_LOG(LogTemp,Warning, TEXT("here2"));
+			AddNewItem(ItemIn, AmountToDistribute);
+			return RequestedAddAmount;
+		}
+	}
+
+	OnInventoryMiniUpdated.Broadcast();
+	return RequestedAddAmount - AmountToDistribute;
+}
+
 FItemAddResult USPInventoryComponent::HandleAddItem(USPItemBase* InputItem)
 {
 	
@@ -179,8 +237,17 @@ FItemAddResult USPInventoryComponent::HandleAddItem(USPItemBase* InputItem)
 		}
 
 		//쌓을 수 있는 것
-		const int32 StackableAmountAdded = HandleStackableItems(InputItem, InitialRequestedAddmount);
-
+		int32 StackableAmountAdded = 0;
+		if(InputItem->ItemType == EItemType::IngredientPotion)
+		{
+			StackableAmountAdded = HandleStackableItemsMini(InputItem, InitialRequestedAddmount);
+			UE_LOG(LogTemp, Warning, TEXT("TEST"));
+		}
+		else
+		{
+			StackableAmountAdded = HandleStackableItems(InputItem, InitialRequestedAddmount);
+		}
+	
 		if(StackableAmountAdded == InitialRequestedAddmount) //모두 다 넣기 
 		{
 			//return added all result;
@@ -226,8 +293,17 @@ void USPInventoryComponent::AddNewItem(USPItemBase* Item, const int32 AmountToAd
 	NewItem->OwningInventory = this;
 	NewItem->SetQuantity(AmountToAdd);
 
-	InventoryContents.Add(NewItem);
-	OnInventoryUpdated.Broadcast();
+	if(Item->ItemType == EItemType::IngredientPotion)
+	{
+		InventoryMiniContents.Add(NewItem);
+		OnInventoryMiniUpdated.Broadcast();
+	}
+	else
+	{
+		InventoryContents.Add(NewItem);
+		OnInventoryUpdated.Broadcast();
+	}
+	
 }
 
 // Called when the game starts

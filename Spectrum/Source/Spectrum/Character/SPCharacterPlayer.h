@@ -365,7 +365,7 @@ protected:
 public:
 	//인벤토리 가지고 오기
 	FORCEINLINE USPInventoryComponent* GetInventory() const {return PlayerInventory;};
-
+	
 	void UpdateInteractionWidget() const;
 
 // 아이템 드롭

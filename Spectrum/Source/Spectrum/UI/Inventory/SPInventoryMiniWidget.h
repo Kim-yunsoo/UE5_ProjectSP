@@ -6,6 +6,10 @@
 #include "UI/SPUserWidget.h"
 #include "SPInventoryMiniWidget.generated.h"
 
+class USPInventoryComponent;
+class USPInventoryItemSlot;
+class ASPCharacterPlayer;
+class UWrapBox;
 /**
  * 
  */
@@ -13,5 +17,25 @@ UCLASS()
 class SPECTRUM_API USPInventoryMiniWidget : public USPUserWidget
 {
 	GENERATED_BODY()
+public:
+	void RefreshInventory();
+
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<UWrapBox> InventoryPanel;
 	
+	UPROPERTY()
+	TObjectPtr<ASPCharacterPlayer> PlayerCharacter;
+	
+	UPROPERTY()
+	TObjectPtr<USPInventoryComponent> InventoryReference;
+	
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<USPInventoryItemSlot> InventorySlotClass;
+
+protected:
+	void SetInfoText();
+	virtual void NativeOnInitialized() override;
+	virtual bool NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent,
+		UDragDropOperation* InOperation) override;
 };
+
