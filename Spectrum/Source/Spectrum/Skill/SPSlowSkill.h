@@ -34,4 +34,6 @@ public:
 protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
+	UFUNCTION(Client,Unreliable)
+	void ClientSkillRPC(float Time);
 };

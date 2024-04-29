@@ -65,7 +65,7 @@ protected:
 public:
 	void InitTarget( AActor* TargetPlayer);
 
-
+	uint8 bIsOnce :1 ;
 	// Called every frame
 	// virtual void Tick(float DeltaTime) override;
 

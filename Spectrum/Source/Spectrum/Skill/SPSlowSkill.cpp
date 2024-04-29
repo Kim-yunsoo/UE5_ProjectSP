@@ -48,19 +48,22 @@ void USPSlowSkill::TickComponent(float DeltaTime, ELevelTick TickType, FActorCom
 	FGameTime CurrentGameTime = GetWorld()->GetTime();
 	if (CurrentGameTime.GetWorldTimeSeconds() < ActivetedTimeStamp + CoolDown)
 	{
-		float ElapsedTime = CurrentGameTime.GetWorldTimeSeconds() - ActivetedTimeStamp;
-		float CDTime= FMath::Clamp(1.0f-ElapsedTime, 0.0f, 1.0f)/CoolDown;
+		float ElapsedTime =( CurrentGameTime.GetWorldTimeSeconds() - ActivetedTimeStamp)/CoolDown;
+		float CDTime= FMath::Clamp(1.0f-ElapsedTime, 0.0f, 1.0f);
 		// CDTime = FMath::Clamp(CDTime, 0.0f, 1.0f);
-		SlowCoolDown(CDTime);
-		UE_LOG(LogTemp, Log, TEXT("%f"),ElapsedTime); //��Ÿ�� ���� �� 
+		ClientSkillRPC(CDTime);
+
+		// UE_LOG(LogTemp, Log, TEXT("%f"),ElapsedTime); //��Ÿ�� ���� ��
+		SP_SUBLOG(LogSPNetwork,Log,TEXT("%f"),ElapsedTime);
 		// Owner->bIsActiveSlowSkill = true;
 	}
 	else
 	{
-		float ElapsedTime = CurrentGameTime.GetWorldTimeSeconds() - ActivetedTimeStamp;
+		float ElapsedTime =( CurrentGameTime.GetWorldTimeSeconds() - ActivetedTimeStamp)/CoolDown;
+
 		float CDTime=  FMath::Clamp(1.0f-ElapsedTime, 0.0f, 1.0f)/CoolDown;
 		// CDTime = FMath::Clamp(1.0f-ElapsedTime, 0.0f, 1.0f);
-		SlowCoolDown(CDTime);
+		ClientSkillRPC(CDTime);
 		UE_LOG(LogTemp, Log, TEXT("TRUE!!"));
 		UE_LOG(LogTemp, Log, TEXT("%f"),ElapsedTime);
 		// ActivetedTimeStamp=0.0f;
@@ -78,7 +81,6 @@ void USPSlowSkill::SkillAction(ASPCharacterPlayer* MyOwner)
 	// ActivetedTimeStamp = GameTime.GetWorldTimeSeconds();
 
 	Super::SkillAction(MyOwner);
-	SP_SUBLOG(LogSPNetwork,Log,TEXT("USPSlowSkill!!!!!!!!!!!")); 
 	FVector TracePointStart = Owner->GetActorLocation();
 	//this->GetOuter()
 	FVector TracePointEnd = Owner->GetActorLocation() + Owner->GetActorForwardVector() * 4000;
@@ -98,12 +100,31 @@ void USPSlowSkill::SkillAction(ASPCharacterPlayer* MyOwner)
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
-	if(Success) //�迭�� ��Ʈ�� ��ü�� �ִ� ��� 
+	if(Success) 
 	{
 		AActor* HitActor = OutHits[0].GetActor();
-		ASPSlowSkillActor* MyActor =GetWorld()->SpawnActor<ASPSlowSkillActor>(ASPSlowSkillActor::StaticClass(),Owner->SkillLocation->GetComponentLocation(),
+		if(Cast<ASPCharacterPlayer>(HitActor))
+		{
+			// FTransform SpawnLocAndRotation(Owner->SkillLocation->GetComponentRotation(),
+			//                                Owner->SkillLocation->GetComponentLocation());
+			// ASPSlowSkillActor* MyActor = GetWorld()->SpawnActorDeferred<ASPSlowSkillActor>(
+			// 	ASPSlowSkillActor::StaticClass(), SpawnLocAndRotation);
+			// MyActor->SetOwner(Owner);
+			// MyActor->InitTarget(HitActor);
+			// MyActor->FinishSpawning(SpawnLocAndRotation);
+			ASPSlowSkillActor* MyActor =GetWorld()->SpawnActor<ASPSlowSkillActor>(ASPSlowSkillActor::StaticClass(),Owner->SkillLocation->GetComponentLocation(),
+											   Owner->SkillLocation->GetComponentRotation(), SpawnParams);
+			MyActor->SetOwner(Owner);
+
+			
+		}
+		else
+		{
+			ASPSlowSkillActor* MyActor =GetWorld()->SpawnActor<ASPSlowSkillActor>(ASPSlowSkillActor::StaticClass(),Owner->SkillLocation->GetComponentLocation(),
 												   Owner->SkillLocation->GetComponentRotation(), SpawnParams);
-		MyActor->SetOwner(Owner);
+			MyActor->SetOwner(Owner);
+
+		}
 	}
 	else
 	{
@@ -119,4 +140,9 @@ void USPSlowSkill::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	// DOREPLIFETIME(USPSlowSkill, bIsActiveSlowSkill);
+}
+
+void USPSlowSkill::ClientSkillRPC_Implementation(float Time)
+{
+	SlowCoolDown(Time);
 }

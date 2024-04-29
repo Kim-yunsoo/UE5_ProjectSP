@@ -21,6 +21,7 @@ ASPSlowSkillActor::ASPSlowSkillActor()
 
 	UE_LOG(LogTemp, Log, TEXT("NO Parm"));
 
+
 	BoxCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
 	BoxCollision->SetBoxExtent(FVector(84, 31, 29));
 	BoxCollision->SetCollisionProfileName(TEXT("PropCollision"));
@@ -58,14 +59,14 @@ ASPSlowSkillActor::ASPSlowSkillActor()
 	Speed = 1500.f;
 	Gravity = 0.0f;
 	// HitParticle->SetIsReplicated(true);
-	BoxCollision->SetIsReplicated(true);
+	// BoxCollision->SetIsReplicated(true);
 	bIsHoming = false;
+	bIsOnce = true;
 }
 
 
 void ASPSlowSkillActor::ServerRPCSlowSkill_Implementation(const FHitResult& Hit)
 {
-	
 }
 
 // Called when the game starts or when spawned
@@ -80,7 +81,7 @@ void ASPSlowSkillActor::BeginPlay()
 	ProjectileMovement->InitialSpeed = Speed;
 	ProjectileMovement->MaxSpeed = Speed;
 	ProjectileMovement->ProjectileGravityScale = Gravity;
-	ProjectileMovement->HomingAccelerationMagnitude = 5000.f;
+	ProjectileMovement->HomingAccelerationMagnitude = 7000.f;
 	//BoxCollision->IgnoreActorWhenMoving(GetOwner(),true);
 
 	BoxCollision->OnComponentHit.AddDynamic(this, &ASPSlowSkillActor::OnBoxCollisionHit);
@@ -105,16 +106,13 @@ void ASPSlowSkillActor::BeginPlay()
 void ASPSlowSkillActor::OnBoxCollisionHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
                                           UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-		// ServerRPCSlowSkill(Hit);
-	if(HasAuthority())
+	// ServerRPCSlowSkill(Hit);
+	if (HasAuthority())
 	{
-		if(GetOwner())
-		{
-			SP_LOG(LogSPNetwork,Log,TEXT("%s"),*GetOwner()->GetName() );
-		}
 		MultiRPCSlowSkill(Hit);
+		
 		this->SetActorHiddenInGame(true);
-		this->SetLifeSpan(1.0f);
+		this->SetLifeSpan(0.1f);
 	}
 }
 
@@ -133,11 +131,15 @@ void ASPSlowSkillActor::InitTarget(AActor* TargetPlayer)
 	bIsHoming = true;
 }
 
-void ASPSlowSkillActor::MultiRPCSlowSkill_Implementation( const FHitResult& Hit )
+void ASPSlowSkillActor::MultiRPCSlowSkill_Implementation(const FHitResult& Hit)
 {
-	FVector HitLocation =Hit.ImpactPoint;
+	FVector HitLocation = Hit.ImpactPoint;
+	if(bIsOnce)
+	{
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), EmitterHit, HitLocation, FRotator::ZeroRotator,
-													 FVector(1.0f), true, EPSCPoolMethod::None, true);
+	                                         FVector(1.0f), true, EPSCPoolMethod::None, true);
+		bIsOnce=false;
+	}
 	ISPSkillInterface* CheckSlowAction = Cast<ISPSkillInterface>(Hit.GetActor());
 	if (CheckSlowAction)
 	{
