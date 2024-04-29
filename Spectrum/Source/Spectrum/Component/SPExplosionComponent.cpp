@@ -47,7 +47,6 @@ void USPExplosionComponent::Explode()
 																	Radius, ObjectTypes, false, ActorsToIgnore,
 																	EDrawDebugTrace::ForDuration, OutHits, true,
 																	GreenColor, RedColor, DrawTime);
-
 	if (Success)
 	{
 		MultiRPCExplosion(OutHits);

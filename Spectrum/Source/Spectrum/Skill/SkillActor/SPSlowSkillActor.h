@@ -20,7 +20,8 @@ public:
 
 protected:
 	UFUNCTION(NetMulticast, Unreliable)
-	void MultiRPCSlowSkill(AActor* HitActor);
+	void MultiRPCSlowSkill(const FHitResult& Hit );
+
 	
 	UFUNCTION(Server, Unreliable)
 	void ServerRPCSlowSkill(const FHitResult& Hit);
@@ -49,6 +50,7 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<AActor> TargetActor;
+
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Projectile")
 	uint8 bIsHoming:1;

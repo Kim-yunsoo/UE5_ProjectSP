@@ -2,9 +2,14 @@
 
 
 #include "UI/SPHUDWidget.h"
+
+#include "SPSkillWidget.h"
+#include "Interface/SPCharacterHUDInterface.h"
 #include "UI/SPTargetUI.h"
 #include "UI/SPMainMenu.h"
 #include "UI/Interaction/SPInteractionWidget.h"
+
+class ISPCharacterHUDInterface;
 
 USPHUDWidget::USPHUDWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -12,6 +17,8 @@ USPHUDWidget::USPHUDWidget(const FObjectInitializer& ObjectInitializer) : Super(
 void USPHUDWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
+
+	SlowSkillWidget = Cast<USPSkillWidget>(GetWidgetFromName("WBSkill"));
 
 	TargetUI = Cast<USPTargetUI>(GetWidgetFromName(TEXT("WBTargetUI")));
 	ensure(TargetUI);
@@ -29,6 +36,12 @@ void USPHUDWidget::NativeConstruct()
 		InteractionWidget = CreateWidget<USPInteractionWidget>(GetWorld(), InteractionWidgetClass);
 		InteractionWidget->AddToViewport(-1);
 		InteractionWidget->SetVisibility(ESlateVisibility::Collapsed); 
+	}
+
+	ISPCharacterHUDInterface* CharacterWidget = Cast<ISPCharacterHUDInterface>(GetOwningPlayerPawn());
+	if(CharacterWidget)
+	{
+		CharacterWidget->SetupHUDWidget(this);
 	}
 }
 
@@ -68,6 +81,11 @@ void USPHUDWidget::ToggleMenu()
 		GetOwningPlayer()->SetInputMode(InputMode);
 		GetOwningPlayer()->SetShowMouseCursor(true);
 	}
+}
+
+void USPHUDWidget::UpdateSlowCDTime(float NewCurrentTime)
+{
+	SlowSkillWidget->UpdateSlowBar(NewCurrentTime);
 }
 
 void USPHUDWidget::ShowInteractionWidget()
