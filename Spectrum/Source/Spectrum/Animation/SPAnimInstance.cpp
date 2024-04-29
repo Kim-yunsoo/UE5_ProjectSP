@@ -4,7 +4,7 @@
 #include "Animation/SPAnimInstance.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "Character/SPCharacterPlayer.h"
+#include "Character/SPCharacterBase.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Net/UnrealNetwork.h"
 #include "SpectrumLog.h"
@@ -56,6 +56,12 @@ void USPAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		bIsJumping = bIsFalling & (Velocity.Z > JumpingThreshould);
 
 		bIsAiming = Owner->GetIsAiming();
+
+		if (Owner->IsMyPlayer() == false && bIsJumping == true)
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("OTHER JUMP")));
+		//else if(Owner->IsMyPlayer() == false && bIsJumping == false)
+		//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("333333333")));
+
 		bIsHolding = Owner->GetIsHolding();
 
 		bIsTurnRight = Owner->bIsTurnRight;

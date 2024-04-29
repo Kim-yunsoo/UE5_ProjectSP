@@ -32,8 +32,6 @@ PROTOBUF_CONSTEXPR PositionInfo::PositionInfo(
   , /*decltype(_impl_.is_aiming_)*/false
   , /*decltype(_impl_.is_holding_)*/false
   , /*decltype(_impl_.is_jumping_)*/false
-  , /*decltype(_impl_.is_throwpotion_)*/false
-  , /*decltype(_impl_.is_spawnpotion_)*/false
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct PositionInfoDefaultTypeInternal {
   PROTOBUF_CONSTEXPR PositionInfoDefaultTypeInternal()
@@ -137,68 +135,15 @@ const uint32_t TableStruct_Struct_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(p
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::Protocol::PositionInfo, _impl_.object_id_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::PositionInfo, _impl_.x_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::PositionInfo, _impl_.y_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::PositionInfo, _impl_.z_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::PositionInfo, _impl_.yaw_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::PositionInfo, _impl_.state_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::PositionInfo, _impl_.is_aiming_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::PositionInfo, _impl_.is_holding_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::PositionInfo, _impl_.is_jumping_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::PositionInfo, _impl_.is_throwpotion_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::PositionInfo, _impl_.is_spawnpotion_),
-  ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::Protocol::ObjectInfo, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::Protocol::ObjectInfo, _impl_.object_id_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::ObjectInfo, _impl_.object_type_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::ObjectInfo, _impl_.pos_info_),
-  ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::Protocol::ThingInfo, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::Protocol::ThingInfo, _impl_.object_id_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::ThingInfo, _impl_.x_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::ThingInfo, _impl_.y_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::ThingInfo, _impl_.z_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::ThingInfo, _impl_.yaw_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::ThingInfo, _impl_.pitch_),
-  ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::Protocol::BurstInfo, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::Protocol::BurstInfo, _impl_.object_id_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::BurstInfo, _impl_.is_burst_),
-  ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::Protocol::PlayerPotionInfo, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::Protocol::PlayerPotionInfo, _impl_.object_id_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::PlayerPotionInfo, _impl_.is_blackspawn_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::PlayerPotionInfo, _impl_.is_aimpotion_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::PlayerPotionInfo, _impl_.is_throwpotion_),
-  ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::Protocol::PlayerTurnInfo, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::Protocol::PlayerTurnInfo, _impl_.object_id_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::PlayerTurnInfo, _impl_.is_turnright_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::PlayerTurnInfo, _impl_.is_turnleft_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::PlayerTurnInfo, _impl_.is_turnready_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::PlayerTurnInfo, _impl_.yaw_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::PlayerTurnInfo, _impl_.pitch_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::PlayerInfo, _impl_.object_id_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::PlayerInfo, _impl_.x_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::PlayerInfo, _impl_.y_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::PlayerInfo, _impl_.z_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::PlayerInfo, _impl_.yaw_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::PlayerInfo, _impl_.state_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::PlayerInfo, _impl_.is_aiming_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::PlayerInfo, _impl_.is_holding_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::PlayerInfo, _impl_.is_jumping_),
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::Protocol::PositionInfo)},
@@ -219,33 +164,19 @@ static const ::_pb::Message* const file_default_instances[] = {
 };
 
 const char descriptor_table_protodef_Struct_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
-  "\n\014Struct.proto\022\010Protocol\032\nEnum.proto\"\336\001\n"
-  "\014PositionInfo\022\021\n\tobject_id\030\001 \001(\004\022\t\n\001x\030\002 "
-  "\001(\002\022\t\n\001y\030\003 \001(\002\022\t\n\001z\030\004 \001(\002\022\013\n\003yaw\030\005 \001(\002\022\""
-  "\n\005state\030\006 \001(\0162\023.Protocol.MoveState\022\021\n\tis"
-  "_aiming\030\007 \001(\010\022\022\n\nis_holding\030\010 \001(\010\022\022\n\nis_"
-  "jumping\030\t \001(\010\022\026\n\016is_throwpotion\030\n \001(\010\022\026\n"
-  "\016is_spawnpotion\030\013 \001(\010\"t\n\nObjectInfo\022\021\n\to"
-  "bject_id\030\001 \001(\004\022)\n\013object_type\030\002 \001(\0162\024.Pr"
-  "otocol.ObjectType\022(\n\010pos_info\030\003 \001(\0132\026.Pr"
-  "otocol.PositionInfo\"[\n\tThingInfo\022\021\n\tobje"
-  "ct_id\030\001 \001(\004\022\t\n\001x\030\002 \001(\002\022\t\n\001y\030\003 \001(\002\022\t\n\001z\030\004"
-  " \001(\002\022\013\n\003yaw\030\005 \001(\002\022\r\n\005pitch\030\006 \001(\002\"0\n\tBurs"
-  "tInfo\022\021\n\tobject_id\030\001 \001(\004\022\020\n\010is_burst\030\002 \001"
-  "(\010\"j\n\020PlayerPotionInfo\022\021\n\tobject_id\030\001 \001("
-  "\004\022\025\n\ris_blackspawn\030\002 \001(\010\022\024\n\014is_aimpotion"
-  "\030\003 \001(\010\022\026\n\016is_throwpotion\030\004 \001(\010\"\200\001\n\016Playe"
-  "rTurnInfo\022\021\n\tobject_id\030\001 \001(\004\022\024\n\014is_turnr"
-  "ight\030\002 \001(\010\022\023\n\013is_turnleft\030\003 \001(\010\022\024\n\014is_tu"
-  "rnready\030\004 \001(\010\022\013\n\003yaw\030\005 \001(\002\022\r\n\005pitch\030\006 \001("
-  "\002b\006proto3"
+  "\n\014Struct.proto\022\010Protocol\032\nEnum.proto\"\254\001\n"
+  "\nPlayerInfo\022\021\n\tobject_id\030\001 \001(\004\022\t\n\001x\030\002 \001("
+  "\002\022\t\n\001y\030\003 \001(\002\022\t\n\001z\030\004 \001(\002\022\013\n\003yaw\030\005 \001(\002\022\"\n\005"
+  "state\030\006 \001(\0162\023.Protocol.MoveState\022\021\n\tis_a"
+  "iming\030\007 \001(\010\022\022\n\nis_holding\030\010 \001(\010\022\022\n\nis_ju"
+  "mping\030\t \001(\010b\006proto3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Struct_2eproto_deps[1] = {
   &::descriptor_table_Enum_2eproto,
 };
 static ::_pbi::once_flag descriptor_table_Struct_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Struct_2eproto = {
-    false, false, 769, descriptor_table_protodef_Struct_2eproto,
+    false, false, 219, descriptor_table_protodef_Struct_2eproto,
     "Struct.proto",
     &descriptor_table_Struct_2eproto_once, descriptor_table_Struct_2eproto_deps, 1, 6,
     schemas, file_default_instances, TableStruct_Struct_2eproto::offsets,
@@ -285,15 +216,13 @@ PositionInfo::PositionInfo(const PositionInfo& from)
     , decltype(_impl_.is_aiming_){}
     , decltype(_impl_.is_holding_){}
     , decltype(_impl_.is_jumping_){}
-    , decltype(_impl_.is_throwpotion_){}
-    , decltype(_impl_.is_spawnpotion_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   ::memcpy(&_impl_.object_id_, &from._impl_.object_id_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.is_spawnpotion_) -
-    reinterpret_cast<char*>(&_impl_.object_id_)) + sizeof(_impl_.is_spawnpotion_));
-  // @@protoc_insertion_point(copy_constructor:Protocol.PositionInfo)
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.is_jumping_) -
+    reinterpret_cast<char*>(&_impl_.object_id_)) + sizeof(_impl_.is_jumping_));
+  // @@protoc_insertion_point(copy_constructor:Protocol.PlayerInfo)
 }
 
 inline void PositionInfo::SharedCtor(
@@ -310,8 +239,6 @@ inline void PositionInfo::SharedCtor(
     , decltype(_impl_.is_aiming_){false}
     , decltype(_impl_.is_holding_){false}
     , decltype(_impl_.is_jumping_){false}
-    , decltype(_impl_.is_throwpotion_){false}
-    , decltype(_impl_.is_spawnpotion_){false}
     , /*decltype(_impl_._cached_size_)*/{}
   };
 }
@@ -340,8 +267,8 @@ void PositionInfo::Clear() {
   (void) cached_has_bits;
 
   ::memset(&_impl_.object_id_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&_impl_.is_spawnpotion_) -
-      reinterpret_cast<char*>(&_impl_.object_id_)) + sizeof(_impl_.is_spawnpotion_));
+      reinterpret_cast<char*>(&_impl_.is_jumping_) -
+      reinterpret_cast<char*>(&_impl_.object_id_)) + sizeof(_impl_.is_jumping_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -420,22 +347,6 @@ const char* PositionInfo::_InternalParse(const char* ptr, ::_pbi::ParseContext* 
       case 9:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 72)) {
           _impl_.is_jumping_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // bool is_throwpotion = 10;
-      case 10:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 80)) {
-          _impl_.is_throwpotion_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // bool is_spawnpotion = 11;
-      case 11:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 88)) {
-          _impl_.is_spawnpotion_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -540,18 +451,6 @@ uint8_t* PositionInfo::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteBoolToArray(9, this->_internal_is_jumping(), target);
   }
 
-  // bool is_throwpotion = 10;
-  if (this->_internal_is_throwpotion() != 0) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteBoolToArray(10, this->_internal_is_throwpotion(), target);
-  }
-
-  // bool is_spawnpotion = 11;
-  if (this->_internal_is_spawnpotion() != 0) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteBoolToArray(11, this->_internal_is_spawnpotion(), target);
-  }
-
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -630,16 +529,6 @@ size_t PositionInfo::ByteSizeLong() const {
     total_size += 1 + 1;
   }
 
-  // bool is_throwpotion = 10;
-  if (this->_internal_is_throwpotion() != 0) {
-    total_size += 1 + 1;
-  }
-
-  // bool is_spawnpotion = 11;
-  if (this->_internal_is_spawnpotion() != 0) {
-    total_size += 1 + 1;
-  }
-
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
@@ -701,12 +590,6 @@ void PositionInfo::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::P
   if (from._internal_is_jumping() != 0) {
     _this->_internal_set_is_jumping(from._internal_is_jumping());
   }
-  if (from._internal_is_throwpotion() != 0) {
-    _this->_internal_set_is_throwpotion(from._internal_is_throwpotion());
-  }
-  if (from._internal_is_spawnpotion() != 0) {
-    _this->_internal_set_is_spawnpotion(from._internal_is_spawnpotion());
-  }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
@@ -725,9 +608,9 @@ void PositionInfo::InternalSwap(PositionInfo* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(PositionInfo, _impl_.is_spawnpotion_)
-      + sizeof(PositionInfo::_impl_.is_spawnpotion_)
-      - PROTOBUF_FIELD_OFFSET(PositionInfo, _impl_.object_id_)>(
+      PROTOBUF_FIELD_OFFSET(PlayerInfo, _impl_.is_jumping_)
+      + sizeof(PlayerInfo::_impl_.is_jumping_)
+      - PROTOBUF_FIELD_OFFSET(PlayerInfo, _impl_.object_id_)>(
           reinterpret_cast<char*>(&_impl_.object_id_),
           reinterpret_cast<char*>(&other->_impl_.object_id_));
 }
