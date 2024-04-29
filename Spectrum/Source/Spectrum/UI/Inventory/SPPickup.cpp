@@ -164,6 +164,7 @@ void ASPPickup::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEve
 
 void ASPPickup::ClientRPCUpdateWidget_Implementation(ASPCharacterPlayer* Taker)
 {
+	SP_LOG(LogSPNetwork,Log,TEXT("ClientRPC"));
 	USPInventoryComponent* PlayerInvetory = Taker->GetInventory();
 	const FItemAddResult AddResult = PlayerInvetory->HandleAddItem(ItemReference);
 }

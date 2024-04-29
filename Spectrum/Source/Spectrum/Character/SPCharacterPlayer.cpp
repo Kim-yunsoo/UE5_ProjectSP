@@ -827,12 +827,6 @@ void ASPCharacterPlayer::Interaction(const FInputActionValue& Value)
 
 		}
 	}
-
-
-
-
-
-	
 }
 
 void ASPCharacterPlayer::ToggleMenuAction(const FInputActionValue& Value)
