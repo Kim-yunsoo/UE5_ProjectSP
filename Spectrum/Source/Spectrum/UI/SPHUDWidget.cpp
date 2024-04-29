@@ -5,6 +5,7 @@
 
 #include "SPSkillWidget.h"
 #include "Interface/SPCharacterHUDInterface.h"
+#include "Potion/Make/SPMakingPotionWidget.h"
 #include "UI/SPTargetUI.h"
 #include "UI/SPMainMenu.h"
 #include "UI/Interaction/SPInteractionWidget.h"
@@ -21,7 +22,14 @@ void USPHUDWidget::NativeConstruct()
 	SlowSkillWidget = Cast<USPSkillWidget>(GetWidgetFromName("WBSkill"));
 
 	TargetUI = Cast<USPTargetUI>(GetWidgetFromName(TEXT("WBTargetUI")));
-	ensure(TargetUI);
+
+	MakingPotionWidget = Cast<USPMakingPotionWidget>(GetWidgetFromName(TEXT("WBPSPMakingPotionWidget")));
+
+	if(!MakingPotionWidget)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("isit?????"));
+	}
+	//ensure(TargetUI);
 
 	//MainMenuWidget = Cast<USPMainMenu>(GetWidgetFromName(TEXT("WBTargetUI")));
 	if(MainMenuClass)
@@ -38,11 +46,6 @@ void USPHUDWidget::NativeConstruct()
 		InteractionWidget->SetVisibility(ESlateVisibility::Collapsed); 
 	}
 
-	ISPCharacterHUDInterface* CharacterWidget = Cast<ISPCharacterHUDInterface>(GetOwningPlayerPawn());
-	if(CharacterWidget)
-	{
-		CharacterWidget->SetupHUDWidget(this);
-	}
 }
 
 void USPHUDWidget::DisplayMenu()
@@ -83,9 +86,25 @@ void USPHUDWidget::ToggleMenu()
 	}
 }
 
-void USPHUDWidget::UpdateSlowCDTime(float NewCurrentTime)
+void USPHUDWidget::UpdateSlowCDTime(float NewCurrentTime )
 {
 	SlowSkillWidget->UpdateSlowBar(NewCurrentTime);
+}
+
+void USPHUDWidget::UpdateMakingPotionWidget(bool bIsVisible)
+{
+	if(bIsVisible)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("MakingPotionWidget"));
+		MakingPotionWidget->SetVisibility(ESlateVisibility::Visible);
+
+	}
+	else
+	{
+		MakingPotionWidget->SetVisibility(ESlateVisibility::Hidden);
+		UE_LOG(LogTemp, Warning, TEXT("NoMakingPotionWidget"));
+
+	}
 }
 
 void USPHUDWidget::ShowInteractionWidget()

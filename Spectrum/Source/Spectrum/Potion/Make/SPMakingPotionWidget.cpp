@@ -22,15 +22,15 @@ void USPMakingPotionWidget::NativeConstruct()
 	// }
 }
 
-void USPMakingPotionWidget::UpdatePotionWidget(bool IsVisible)
-{
-	if(IsVisible)
-		this->SetVisibility(ESlateVisibility::Visible);
-	else
-	{
-		this->SetVisibility(ESlateVisibility::Hidden);
-	}
-}
+// void USPMakingPotionWidget::UpdatePotionWidget(bool IsVisible)
+// {
+// 	if(IsVisible)
+// 		this->SetVisibility(ESlateVisibility::Visible);
+// 	else
+// 	{
+// 		this->SetVisibility(ESlateVisibility::Hidden);
+// 	}
+// }
 
 
 

@@ -51,12 +51,12 @@ protected:
 	// UPROPERTY(EditDefaultsOnly)
 	// TSubclassOf<USPInventoryItemSlot> InventorySlotClass;
 
-	UPROPERTY(meta=(BindWidget))
-	TObjectPtr<UWrapBox> InventoryPanel;
+	// UPROPERTY(meta=(BindWidget))
+	// TObjectPtr<UWrapBox> InventoryPanel;
 	
 	void NativeConstruct() override;
 	
 
-	void UpdatePotionWidget(bool IsVisible);
+	//void UpdatePotionWidget(bool IsVisible);
 	
 };

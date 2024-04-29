@@ -36,6 +36,9 @@ protected:
 	TObjectPtr<class USPInteractionWidget> InteractionWidget;
 
 	UPROPERTY()
+	TObjectPtr<class USPMakingPotionWidget> MakingPotionWidget;
+	
+	UPROPERTY()
 	TObjectPtr<class USPSkillWidget> SlowSkillWidget;
 	
 public:
@@ -54,6 +57,7 @@ public:
 	void ToggleMenu();
 
 	void UpdateSlowCDTime(float NewCurrentTime);
+	void UpdateMakingPotionWidget(bool bIsVisible);
 	void ShowInteractionWidget();
 	void HideInteractionWidget();
 	void UpdateInteractionWidget(const FInteractableData* InteractableData);

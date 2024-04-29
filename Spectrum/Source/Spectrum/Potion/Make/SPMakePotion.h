@@ -4,10 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Interface/SPCharacterHUDInterface.h"
 #include "Interface/SPInteractionInterface.h"
 #include "SPMakePotion.generated.h"
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnWidgetDelegate, bool /*aim*/)
+
 
 UCLASS()
 class SPECTRUM_API ASPMakePotion : public AActor,  public ISPInteractionInterface
@@ -17,7 +18,7 @@ class SPECTRUM_API ASPMakePotion : public AActor,  public ISPInteractionInterfac
 public:	
 	// Sets default values for this actor's properties
 	ASPMakePotion();
-	FOnWidgetDelegate OnWidgetDelegate;
+
 	
 protected:
 	// Called when the game starts or when spawned
@@ -27,17 +28,23 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	
-	virtual void Interact(ASPCharacterPlayer* PlayerCharacter) override;
-
+	virtual void Interact(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget) override;
+	virtual void EndInteract() override;
+protected:
+	UPROPERTY(EditInstanceOnly, Category = "Test Actor")
+	FInteractableData InstanceInteractableDate;
+	
 	UPROPERTY()
 	TObjectPtr<class USPMakingPotionWidget> MakingPotionWidget;
 	
 	UPROPERTY()
 	uint8 bIsVisible : 1;
-
+	
 	UPROPERTY(VisibleAnywhere, Category = "MakePotion | Components")
 	TObjectPtr<UStaticMeshComponent> Mesh;
 
-	UPROPERTY(EditInstanceOnly, Category = "Test Actor")
-	FInteractableData InstanceInteractableDate;
+	UPROPERTY()
+	TObjectPtr<USPHUDWidget> HUDWidgetTest;
+ 
+
 };

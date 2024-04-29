@@ -556,6 +556,7 @@ void ASPCharacterPlayer::SetCharacterControl(ECharacterControlType NewCharacterC
 		HUDWidget = SPController->GetSPHUDWidget();
 	}
 	HUDWidget->bIsMenuVisible = true;
+	HUDWidget->UpdateMakingPotionWidget(false);
 	HUDWidget->ToggleMenu();
 	
 }
@@ -1447,7 +1448,7 @@ void ASPCharacterPlayer::ServerRPCInteract_Implementation()
 	GetWorldTimerManager().ClearTimer(TimerHandle_Interaction);
 	if(IsValid(TargetInteractable.GetObject()))
 	{
-		TargetInteractable->Interact(this);
+		TargetInteractable->Interact(this, HUDWidget);
 	}
 }
 

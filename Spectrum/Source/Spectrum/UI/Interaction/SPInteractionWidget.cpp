@@ -29,6 +29,18 @@ void USPInteractionWidget::UpdateWidget(const FInteractableData* InteractableDat
 	case EInteractableType::Device:
 		break;
 	case EInteractableType::Toggle:
+		KeyPressText->SetText(FText::FromString("Press"));
+		InteractionProgressBar->SetVisibility(ESlateVisibility::Collapsed);
+		if(InteractableData->Quantity < 2)
+		{
+			QuantityText->SetVisibility(ESlateVisibility::Collapsed);
+		}
+		else
+		{
+			QuantityText->SetText(FText::Format(NSLOCTEXT("InteractionWidget", "QuantityText", "x{0}"),
+				InteractableData->Quantity));
+			QuantityText->SetVisibility(ESlateVisibility::Visible);
+		}
 		break;
 	case EInteractableType::Container:
 		break;

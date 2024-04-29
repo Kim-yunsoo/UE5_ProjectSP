@@ -54,7 +54,7 @@ protected:
 	virtual void BeginFocus() override;
 	virtual void EndFocus() override;
 	
-	virtual void Interact(ASPCharacterPlayer* PlayerCharacter) override;
+	virtual void Interact(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget) override;
 	void UpdateInteractableData();
 	void TakePickup(ASPCharacterPlayer* Taker);
 #if WITH_EDITOR

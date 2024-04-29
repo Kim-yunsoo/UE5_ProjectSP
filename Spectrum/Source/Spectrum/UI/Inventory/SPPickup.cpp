@@ -50,6 +50,7 @@ void ASPPickup::InitializePickup(const TSubclassOf<USPItemBase> BaseClass, const
 
 		PickupMesh->SetStaticMesh(ItemData->ItemAssetData.Mesh);
 
+
 		UpdateInteractableData();
 	}
 }
@@ -79,7 +80,7 @@ void ASPPickup::EndFocus()
 	}
 }
 
-void ASPPickup::Interact(ASPCharacterPlayer* PlayerCharacter)
+void ASPPickup::Interact(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget)
 {
 	if(PlayerCharacter)
 	{
