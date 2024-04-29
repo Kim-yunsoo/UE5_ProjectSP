@@ -64,6 +64,4 @@ protected:
 protected:
 	UFUNCTION(Client, Unreliable)
 	void ClientRPCUpdateWidget(ASPCharacterPlayer* Taker);
-
-	
 };
