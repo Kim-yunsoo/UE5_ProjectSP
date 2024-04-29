@@ -588,6 +588,7 @@ void ASPCharacterPlayer::ShoulderMove(const FInputActionValue& Value)
 
 		AddMovementInput(ForwardDirection, MovementVector.X);
 		AddMovementInput(RightDirection, MovementVector.Y);
+
 		{
 			DesiredInput = MovementVector;
 
@@ -615,6 +616,7 @@ void ASPCharacterPlayer::ShoulderLook(const FInputActionValue& Value)
 
 		if (GetControlRotation().Yaw > PreControlYawRotation)
 		{
+			//UE_LOG(LogTemp, Log, TEXT("TEST1"));
 			bIsTurnRight = true;
 			bIsTurnLeft = false;
 			if (!HasAuthority())
@@ -1367,7 +1369,7 @@ void ASPCharacterPlayer::PerformInteractionCheck()
 
 	if (LookDirection > 0) //양수 음수에 따라 같은 방향인지 아닌지 판단
 	{
-		// DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Red, false, 1.0f, 0, 2.0f);
+		DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Red, false, 1.0f, 0, 2.0f);
 
 
 		FCollisionQueryParams QueryParams;
