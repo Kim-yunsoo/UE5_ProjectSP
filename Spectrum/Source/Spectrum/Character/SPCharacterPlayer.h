@@ -426,6 +426,9 @@ public:
 
 	UFUNCTION(Server, Unreliable)
 	void ServerRPCSlowSkill(float AttackStartTime);
+
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCIceSkill(float AttackStartTime);
 	// UFUNCTION(Server, Unreliable)
 	// void ServerRPCSlowSkillMake();
 
@@ -441,6 +444,9 @@ public:
 
 	UFUNCTION(Client, Unreliable)
 	void ClientRPCSlowAnimation(ASPCharacterPlayer* CharacterToPlay);
+
+	UFUNCTION(Client, Unreliable)
+	void ClientRPCIceAnimation(ASPCharacterPlayer* CharacterToPlay);
 	//AABCharacterPlayer* CharacterToPlay
 	//MultiRPC
 
@@ -480,10 +486,14 @@ public:
 	UPROPERTY()
 	TObjectPtr<class USPSlowSkill> SlowSkillComponent;
 
+	UPROPERTY()
+	TObjectPtr<class USPIceSkill> IceSkillComponent;
+
 	float SlowAttackTime = 2.5;
 	float AttackTimeDifference = 0.0f;
 
 	void PlaySkillAnimation();
+	void PlayIceSkillAnimation();
 
 	// void SlowAction();
 public:
@@ -495,11 +505,19 @@ public:
 	// UPROPERTY(Replicated)
 	// uint8 bIsActiveSlowSkill : 1;
 
-	virtual void HitSlowSkillResult()override;
+	virtual void HitSlowSkillResult() override;
+	virtual void HitIceSkillResult() override;
+	
 
 	UFUNCTION(NetMulticast, Unreliable)
 	void NetTESTRPCSlowSkill();
 
 	UPROPERTY()
 	uint8 bIsActiveSlowSkill : 1;
+
+	UPROPERTY()
+	uint8 bIsActiveIceSkill : 1;
+
+	UPROPERTY()
+	uint8 bIsDamage :1;
 };

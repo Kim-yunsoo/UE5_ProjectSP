@@ -20,6 +20,7 @@ protected:
 	virtual void NativeConstruct() override;
 public:
 	void UpdateSlowBar(float NewCurrentPercent);
+	void UpdateIceBar(float NewCurrentPercent);
 
 protected:
 	UPROPERTY()
@@ -27,5 +28,7 @@ protected:
 	
 	UPROPERTY()
 	TObjectPtr<class UProgressBar> SlowBar;
-	
+
+	UPROPERTY()
+	TObjectPtr<class UProgressBar> IceBar;
 };

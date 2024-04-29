@@ -44,6 +44,7 @@
 #include "Component/SPInventoryComponent.h"
 #include "Player/SPPlayerController.h"
 #include "Potion/SPItemBase.h"
+#include "Skill/SPIceSkill.h"
 #include "UI/SPHUDWidget.h"
 #include "UI/Inventory/SPPickup.h"
 
@@ -97,6 +98,8 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 
 	// //Skill
 	SlowSkillComponent = CreateDefaultSubobject<USPSlowSkill>(TEXT("SkillComponent"));
+
+	IceSkillComponent = CreateDefaultSubobject<USPIceSkill>(TEXT("IceSkillComponent"));
 	// SlowSkillComponent->SetIsReplicated(true);
 	// SlowSkillComponent = CreateDefaultSubobject<USPSlowSkill>(TEXT("SlowSkill"));
 
@@ -287,7 +290,7 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 	}
 
 	static ConstructorHelpers::FObjectFinder<UInputAction> IceERef(
-	TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_IceSkill.IA_SP_IceSkill'"));
+		TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_IceSkill.IA_SP_IceSkill'"));
 	if (nullptr != IceERef.Object)
 	{
 		IceE = IceERef.Object;
@@ -381,8 +384,10 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 	bIsTurnReady = false;
 	bIsTurnLeft = false;
 	bIsTurnReady = false;
+	bIsDamage = false;
 
 	bIsActiveSlowSkill = true;
+	bIsActiveIceSkill = true;
 
 	// bIsActiveSlowSkill = true;
 	HitDistance = 1800.f;
@@ -487,7 +492,7 @@ void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Player
 		EnhancedInputComponent->BindAction(SlowQ, ETriggerEvent::Triggered, this,
 		                                   &ASPCharacterPlayer::SlowSKill);
 		EnhancedInputComponent->BindAction(IceE, ETriggerEvent::Triggered, this,
-										   &ASPCharacterPlayer::IceSKill);
+		                                   &ASPCharacterPlayer::IceSKill);
 		EnhancedInputComponent->BindAction(ToggleMenu, ETriggerEvent::Triggered, this,
 		                                   &ASPCharacterPlayer::ToggleMenuAction);
 	}
@@ -591,7 +596,6 @@ void ASPCharacterPlayer::ShoulderMove(const FInputActionValue& Value)
 			DesiredMoveDirection -= ForwardDirection * MovementVector.Y;
 			DesiredMoveDirection += RightDirection * MovementVector.X;
 			DesiredMoveDirection.Normalize();
-
 			const FVector Location = GetActorLocation();
 			FRotator Rotator = UKismetMathLibrary::FindLookAtRotation(Location, Location + DesiredMoveDirection);
 			DesiredYaw = Rotator.Yaw;
@@ -612,7 +616,6 @@ void ASPCharacterPlayer::ShoulderLook(const FInputActionValue& Value)
 
 		if (GetControlRotation().Yaw > PreControlYawRotation)
 		{
-			//UE_LOG(LogTemp, Log, TEXT("TEST1"));
 			bIsTurnRight = true;
 			bIsTurnLeft = false;
 			if (!HasAuthority())
@@ -640,13 +643,38 @@ void ASPCharacterPlayer::StopShoulderLook(const FInputActionValue& Value)
 	if (!HasAuthority())
 		ServerRPCdirection(bIsTurnRight, bIsTurnLeft);
 }
-void ASPCharacterPlayer::IceSKill(const FInputActionValue& Value)
+
+void ASPCharacterPlayer::HandleMontageAnimNotify(FName NotifyName,
+                                                 const FBranchingPointNotifyPayload& BranchingPointPayload)
 {
+	if (NotifyName == FName("PlayMontageNotify"))
+	{
+		bIsThrowReady = true;
+		ShowProjectilePath();
+	}
+
+	if (NotifyName == FName("SkillNotify"))
+	{
+		if (HasAuthority())
+		{
+			SlowSkillComponent->SkillAction();
+		}
+	}
+
+	if (NotifyName == FName("IceSkillNotify"))
+	{
+		if (HasAuthority())
+		{
+			IceSkillComponent->SkillAction();
+			// SlowSkillComponent->SkillAction();
+		}
+	}
 }
+
 
 void ASPCharacterPlayer::SpeedUp(const FInputActionValue& Value)
 {
-	if (false == bIsAiming && false == bIsHolding)
+	if (false == bIsAiming && false == bIsHolding && false == bIsDamage)
 	{
 		if (!HasAuthority())
 		{
@@ -658,7 +686,7 @@ void ASPCharacterPlayer::SpeedUp(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::StopSpeedUp(const FInputActionValue& Value)
 {
-	if (!HasAuthority())
+	if (!HasAuthority() && false == bIsDamage)
 	{
 		GetCharacterMovement()->MaxWalkSpeed = 500.f;
 	}
@@ -845,13 +873,55 @@ void ASPCharacterPlayer::ToggleMenuAction(const FInputActionValue& Value)
 	HUDWidget->ToggleMenu();
 }
 
+void ASPCharacterPlayer::IceSKill(const FInputActionValue& Value)
+{
+	UE_LOG(LogTemp, Log, TEXT("IceSKill"));
+	if ((GetCharacterMovement()->MovementMode == EMovementMode::MOVE_Walking || GetCharacterMovement()->MovementMode ==
+		EMovementMode::MOVE_None) && !GetMesh()->GetAnimInstance()->Montage_IsPlaying(SkillMontage))
+	{
+		ServerRPCIceSkill(GetWorld()->GetGameState()->GetServerWorldTimeSeconds());
+	}
+}
+
+void ASPCharacterPlayer::ServerRPCIceSkill_Implementation(float AttackStartTime)
+{
+	if (bIsActiveIceSkill)
+	{
+		bIsActiveIceSkill = false;
+		IceSkillComponent->ActivetedTimeStamp = GetWorld()->GetTime().GetRealTimeSeconds();
+		AttackTimeDifference = GetWorld()->GetTimeSeconds() - AttackStartTime;
+		AttackTimeDifference = FMath::Clamp(AttackTimeDifference, 0.0f, SlowAttackTime - 0.01f);
+
+		FTimerHandle Handle;
+		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+
+		GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([&]
+			                                       {
+				                                       GetCharacterMovement()->SetMovementMode(
+					                                       EMovementMode::MOVE_Walking);
+			                                       }
+		                                       ), SlowAttackTime - AttackTimeDifference, false, -1.0f);
+
+		PlayIceSkillAnimation();
+
+		for (APlayerController* PlayerController : TActorRange<APlayerController>(GetWorld()))
+		{
+			ASPCharacterPlayer* OtherPlayer = Cast<ASPCharacterPlayer>(PlayerController->GetPawn());
+			if (OtherPlayer)
+			{
+				OtherPlayer->ClientRPCIceAnimation(this);
+			}
+		}
+	}
+}
+
 void ASPCharacterPlayer::SlowSKill(const FInputActionValue& Value)
 {
-	if (GetCharacterMovement()->MovementMode == EMovementMode::MOVE_Walking || GetCharacterMovement()->MovementMode ==
-		EMovementMode::MOVE_None)
+	if ((GetCharacterMovement()->MovementMode == EMovementMode::MOVE_Walking || GetCharacterMovement()->MovementMode ==
+		EMovementMode::MOVE_None ) && !GetMesh()->GetAnimInstance()->Montage_IsPlaying(SkillIceMontage))
 	{
 		// bIsActiveSlowSkill = false;
-	
+
 		ServerRPCSlowSkill(GetWorld()->GetGameState()->GetServerWorldTimeSeconds());
 
 		// if (!HasAuthority())
@@ -877,7 +947,7 @@ void ASPCharacterPlayer::ServerRPCSlowSkill_Implementation(float AttackStartTime
 {
 	if (bIsActiveSlowSkill)
 	{
-		bIsActiveSlowSkill = false; 
+		bIsActiveSlowSkill = false;
 		SlowSkillComponent->ActivetedTimeStamp = GetWorld()->GetTime().GetRealTimeSeconds();
 		AttackTimeDifference = GetWorld()->GetTimeSeconds() - AttackStartTime;
 		AttackTimeDifference = FMath::Clamp(AttackTimeDifference, 0.0f, SlowAttackTime - 0.01f);
@@ -901,18 +971,6 @@ void ASPCharacterPlayer::ServerRPCSlowSkill_Implementation(float AttackStartTime
 			{
 				OtherPlayer->ClientRPCSlowAnimation(this);
 			}
-			// if (PlayerController && GetController() != PlayerController) //현재 로직을 수행하고 있는 컨트롤러가 아닌 경우 
-			// {
-			// 	if (!PlayerController->IsLocalController()) //이미 재생을 했기에 
-			// 	{
-			// 		ASPCharacterPlayer* OtherPlayer = Cast<ASPCharacterPlayer>(PlayerController->GetPawn());
-			// 		//서버도 아니고 공격 명령을 내린 플레이어 컨트롤러도 아닌 시뮬레이트 프록시
-			// 		if (OtherPlayer)
-			// 		{
-			// 			OtherPlayer->ClientRPCSlowAnimation(this);
-			// 		}
-			// 	}
-			// }
 		}
 	}
 }
@@ -1050,6 +1108,14 @@ void ASPCharacterPlayer::ClientRPCTurnAnimation_Implementation(ASPCharacterPlaye
 }
 
 
+void ASPCharacterPlayer::ClientRPCIceAnimation_Implementation(ASPCharacterPlayer* CharacterToPlay)
+{
+	if (CharacterToPlay)
+	{
+		CharacterToPlay->PlayIceSkillAnimation();
+	}
+}
+
 void ASPCharacterPlayer::OnRep_PotionSpawn()
 {
 	SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("Potionspawn"));
@@ -1143,23 +1209,6 @@ void ASPCharacterPlayer::ServerRPCThrowPotion_Implementation(bool IsThrowReady)
 	}
 }
 
-void ASPCharacterPlayer::HandleMontageAnimNotify(FName NotifyName,
-                                                 const FBranchingPointNotifyPayload& BranchingPointPayload)
-{
-	if (NotifyName == FName("PlayMontageNotify"))
-	{
-		bIsThrowReady = true;
-		ShowProjectilePath();
-	}
-
-	if (NotifyName == FName("SkillNotify"))
-	{
-		if (HasAuthority())
-		{
-			SlowSkillComponent->SkillAction();
-		}
-	}
-}
 
 // void ASPCharacterPlayer::ServerRPCSlowSkillMake_Implementation()
 // {
@@ -1305,6 +1354,7 @@ void ASPCharacterPlayer::SetupHUDWidget(USPHUDWidget* InUserWidget)
 	// 	this->OnAimChanged.AddUObject(TargetWidget, &USPTargetUI::UpdateTargetUI);
 	// }
 	SlowSkillComponent->OnSlowCDChange.AddUObject(InUserWidget, &USPHUDWidget::UpdateSlowCDTime);
+	IceSkillComponent->OnIceCDChange.AddUObject(InUserWidget, &USPHUDWidget::UpdateIceCDTime);
 }
 
 void ASPCharacterPlayer::PerformInteractionCheck()
@@ -1342,8 +1392,6 @@ void ASPCharacterPlayer::PerformInteractionCheck()
 			}
 		}
 	}
-
-
 	NoInteractableFound();
 }
 
@@ -1526,22 +1574,44 @@ void ASPCharacterPlayer::PlaySkillAnimation()
 	AnimInstance->Montage_Play(SkillMontage);
 }
 
+void ASPCharacterPlayer::PlayIceSkillAnimation()
+{
+	UE_LOG(LogTemp, Log, TEXT("PlayIceSkillAnimation"));
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	AnimInstance->StopAllMontages(0.0f);
+	AnimInstance->Montage_Play(SkillIceMontage);
+}
+
 void ASPCharacterPlayer::HitSlowSkillResult()
 {
 	// Cast<USPCharacterMovementComponent>(GetMovementComponent());
 	// NetTESTRPCSlowSkill();
+	bIsDamage = true;
 	GetCharacterMovement()->MaxWalkSpeed = 100.f;
 	FTimerHandle Handle;
 	GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([&]
 		                                       {
 			                                       GetCharacterMovement()->MaxWalkSpeed = 500.f;
+			                                       bIsDamage = false;
 		                                       }
 	                                       ), 5, false, -1.0f);
 }
 
+void ASPCharacterPlayer::HitIceSkillResult()
+{
+	bIsDamage = true;
+	// GetCharacterMovement()->MaxWalkSpeed = 0.0f;
+	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+	FTimerHandle Handle;
+	GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([&]
+		                                       {
+			                                       GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+			                                       bIsDamage = false;
+		                                       }
+	                                       ), 5, false, -1.0f);
+}
 void ASPCharacterPlayer::NetTESTRPCSlowSkill_Implementation()
 {
-	SP_LOG(LogSPNetwork, Log, TEXT("HitSlowSkillResult"));
 	GetCharacterMovement()->MaxWalkSpeed = 100.f;
 	FTimerHandle Handle;
 	GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([&]
@@ -1702,7 +1772,6 @@ void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 				0,
 				1.0f
 			);
-
 			if (HitSuccess)
 			{
 				DrawDebugPoint(
@@ -1763,7 +1832,7 @@ void ASPCharacterPlayer::Aiming_CameraMove()
 
 void ASPCharacterPlayer::ServerRPCSpeedUpStop_Implementation()
 {
-	if (GetCharacterMovement()->MaxWalkSpeed != 100.f)
+	if (false == bIsDamage)
 	{
 		GetCharacterMovement()->MaxWalkSpeed = 500.f;
 	}
@@ -1771,7 +1840,7 @@ void ASPCharacterPlayer::ServerRPCSpeedUpStop_Implementation()
 
 void ASPCharacterPlayer::ServerRPCSpeedUp_Implementation()
 {
-	if (GetCharacterMovement()->MaxWalkSpeed != 100.f)
+	if (false == bIsDamage)
 	{
 		GetCharacterMovement()->MaxWalkSpeed = 900.f;
 	}

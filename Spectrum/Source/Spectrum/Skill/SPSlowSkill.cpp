@@ -5,14 +5,6 @@
 
 #include "SpectrumLog.h"
 #include "Character/SPCharacterPlayer.h"
-#include "Components/BoxComponent.h"
-#include "GameFramework/Character.h"
-#include "GameFramework/CharacterMovementComponent.h"
-#include "Kismet/GameplayStatics.h"
-#include "Kismet/KismetMathLibrary.h"
-#include "Kismet/KismetSystemLibrary.h"
-#include "Net/UnrealNetwork.h"
-#include "Particles/ParticleSystemComponent.h"
 #include "SkillActor/SPSlowSkillActor.h"
 
 USPSlowSkill::USPSlowSkill()
@@ -51,17 +43,12 @@ void USPSlowSkill::TickComponent(float DeltaTime, ELevelTick TickType, FActorCom
 		float ElapsedTime =( CurrentGameTime.GetWorldTimeSeconds() - ActivetedTimeStamp)/CoolDown;
 		float CDTime= FMath::Clamp(1.0f-ElapsedTime, 0.0f, 1.0f);
 		ClientSkillRPC(CDTime);
-
-		SP_SUBLOG(LogSPNetwork,Log,TEXT("%f"),ElapsedTime);
 	}
 	else
 	{
 		float ElapsedTime =( CurrentGameTime.GetWorldTimeSeconds() - ActivetedTimeStamp)/CoolDown;
-
 		float CDTime=  FMath::Clamp(1.0f-ElapsedTime, 0.0f, 1.0f)/CoolDown;
 		ClientSkillRPC(CDTime);
-		UE_LOG(LogTemp, Log, TEXT("TRUE!!"));
-		UE_LOG(LogTemp, Log, TEXT("%f"),ElapsedTime);
 		Owner->bIsActiveSlowSkill = true;
 	}
 }

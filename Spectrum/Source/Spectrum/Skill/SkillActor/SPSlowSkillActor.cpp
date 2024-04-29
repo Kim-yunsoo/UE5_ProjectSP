@@ -19,11 +19,6 @@ ASPSlowSkillActor::ASPSlowSkillActor()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	// PrimaryActorTick.bCanEverTick = true;
 
-	UE_LOG(LogTemp, Log, TEXT("NO Parm"));
-
-
-
-
 	static ConstructorHelpers::FObjectFinder<UParticleSystem> GreenVfxRef(TEXT(
 		"/Script/Engine.ParticleSystem'/Game/MagicProjectilesVol2/Particles/Projectiles/CP_GreenProjectile.CP_GreenProjectile'"));
 	if (GreenVfxRef.Succeeded())
@@ -107,6 +102,11 @@ void ASPSlowSkillActor::InitTarget(AActor* TargetPlayer)
 
 void ASPSlowSkillActor::MultiRPCSlowSkill_Implementation(const FHitResult& Hit)
 {
+	// ASPCharacterPlayer* palyer=Cast<ASPCharacterPlayer>(GetOwner());
+	// if(palyer)
+	// {
+	// 	palyer->bIsDamage=true;
+	// }
 	FVector HitLocation = Hit.ImpactPoint;
 	if(bIsOnce)
 	{

@@ -60,7 +60,6 @@ protected:
 	void RotateToTarget();
 public:
 	void InitTarget( AActor* TargetPlayer);
-
 	// Called every frame
 	// virtual void Tick(float DeltaTime) override;
 
