@@ -1284,17 +1284,16 @@ void ASPCharacterPlayer::ShowProjectilePath()
 	}
 }
 
-void ASPCharacterPlayer::SetupTargetWidget(USPUserWidget* InUserWidget)
+void ASPCharacterPlayer::SetupHUDWidget(USPHUDWidget* InUserWidget)
 {
-	UE_LOG(LogTemp, Log, TEXT("SetupTargetWidget"));
-
-	USPTargetUI* TargetWidget = Cast<USPTargetUI>(InUserWidget);
-	if(TargetWidget)
-	{
-		UE_LOG(LogTemp, Log, TEXT("TEST"));
-		TargetWidget->UpdateTargetUI(bIsAiming);
-		this->OnAimChanged.AddUObject(TargetWidget, &USPTargetUI::UpdateTargetUI);
-	}
+	// USPTargetUI* TargetWidget = Cast<USPTargetUI>(InUserWidget);
+	// if(TargetWidget)
+	// {
+	// 	UE_LOG(LogTemp, Log, TEXT("TEST"));
+	// 	TargetWidget->UpdateTargetUI(bIsAiming);
+	// 	this->OnAimChanged.AddUObject(TargetWidget, &USPTargetUI::UpdateTargetUI);
+	// }
+	SlowSkillComponent->OnSlowCDChange.AddUObject(InUserWidget,&USPHUDWidget::UpdateSlowCDTime);
 }
 
 void ASPCharacterPlayer::PerformInteractionCheck()

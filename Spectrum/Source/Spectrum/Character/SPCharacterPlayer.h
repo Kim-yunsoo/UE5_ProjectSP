@@ -332,7 +332,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget)
 	TObjectPtr<class USPWidgetComponent> Target;
 
-	virtual void SetupTargetWidget(USPUserWidget* InUserWidget) override;
+	virtual void SetupHUDWidget(USPHUDWidget* InUserWidget) override;
 
 	UPROPERTY()
 	TObjectPtr<class USPHUDWidget> HUDWidget;

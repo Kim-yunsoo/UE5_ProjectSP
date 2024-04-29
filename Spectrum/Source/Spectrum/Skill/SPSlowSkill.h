@@ -6,6 +6,7 @@
 #include "Skill/SPSkillBase.h"
 #include "SPSlowSkill.generated.h"
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnSlowCDChangedDelegate, float /*CurrentHp*/);
 
 UCLASS()
 class SPECTRUM_API USPSlowSkill : public USPSkillBase
@@ -17,6 +18,10 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 public:
+
+	FOnSlowCDChangedDelegate OnSlowCDChange;
+	FORCEINLINE void SlowCoolDown(float CDtime){OnSlowCDChange.Broadcast(CDtime);}
+	
 	virtual void SkillAction(ASPCharacterPlayer* MyOwner) override;
 	
 

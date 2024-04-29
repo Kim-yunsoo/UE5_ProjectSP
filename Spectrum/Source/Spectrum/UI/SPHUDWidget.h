@@ -34,6 +34,9 @@ protected:
 	
 	UPROPERTY()
 	TObjectPtr<class USPInteractionWidget> InteractionWidget;
+
+	UPROPERTY()
+	TObjectPtr<class USPSkillWidget> SlowSkillWidget;
 	
 public:
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
@@ -50,6 +53,7 @@ public:
 	void HideMenu();
 	void ToggleMenu();
 
+	void UpdateSlowCDTime(float NewCurrentTime);
 	void ShowInteractionWidget();
 	void HideInteractionWidget();
 	void UpdateInteractionWidget(const FInteractableData* InteractableData);
