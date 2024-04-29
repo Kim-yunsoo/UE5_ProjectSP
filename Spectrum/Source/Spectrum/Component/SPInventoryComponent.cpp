@@ -133,8 +133,10 @@ int32 USPInventoryComponent::HandleStackableItems(USPItemBase* ItemIn, int32 Req
 	//Todo 10개 제한으로 다시 바꾸기 
 	while(Existingitem)
 	{
-		const int32 AmountToMakeFullStack = CalculatenumberForFullStack(Existingitem, AmountToDistribute);
-		const int32 WeightLimitAddAmount = CalculateWeightAddAmount(Existingitem, AmountToMakeFullStack);
+		// const int32 AmountToMakeFullStack = CalculatenumberForFullStack(Existingitem, AmountToDistribute);
+		// const int32 WeightLimitAddAmount = CalculateWeightAddAmount(Existingitem, AmountToMakeFullStack);
+
+		const int32 WeightLimitAddAmount = 1;
 		if(WeightLimitAddAmount > 0)
 		{
 			UE_LOG(LogTemp,Warning, TEXT("here1"));
@@ -150,17 +152,17 @@ int32 USPInventoryComponent::HandleStackableItems(USPItemBase* ItemIn, int32 Req
 				return RequestedAddAmount - AmountToDistribute;
 			}
 		}
-		else if (WeightLimitAddAmount <= 0)
-		{
-			UE_LOG(LogTemp,Warning, TEXT("2"));
-
-			if(AmountToDistribute != RequestedAddAmount)
-			{
-				OnInventoryUpdated.Broadcast(InventoryContents);
-				return RequestedAddAmount - AmountToDistribute;
-			}
-			return 0;
-		}
+		// else if (WeightLimitAddAmount <= 0)
+		// {
+		// 	UE_LOG(LogTemp,Warning, TEXT("2"));
+		//
+		// 	if(AmountToDistribute != RequestedAddAmount)
+		// 	{
+		// 		OnInventoryUpdated.Broadcast(InventoryContents);
+		// 		return RequestedAddAmount - AmountToDistribute;
+		// 	}
+		// 	return 0;
+		// }
 		if(AmountToDistribute <= 0)
 		{
 			UE_LOG(LogTemp,Warning, TEXT("3"));
