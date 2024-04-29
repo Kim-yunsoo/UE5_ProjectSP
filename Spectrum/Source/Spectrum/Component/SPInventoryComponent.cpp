@@ -19,10 +19,11 @@ USPItemBase* USPInventoryComponent::FindMatchingItem(USPItemBase* ItemIn) const
 {
 	if (ItemIn)
 	{
-		if(InventoryContents.Contains(ItemIn))
+		if(InventoryContents.Contains(ItemIn) || InventoryMiniContents.Contains(ItemIn))
 		{
 			return ItemIn;
 		}
+		
 	}
 	return nullptr;
 }

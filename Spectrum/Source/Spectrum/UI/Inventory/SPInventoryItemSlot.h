@@ -47,4 +47,6 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere, Category = "Inventory Slot" , meta=(BindWidget))
 	TObjectPtr<UTextBlock> ItemQuantity;
+
+	
 };

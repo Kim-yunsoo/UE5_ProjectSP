@@ -47,7 +47,13 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<USPInventoryComponent> InventoryReference;
+	
+	// UPROPERTY(meta=(BindWidget))
+	// TObjectPtr<UWrapBox> InventoryPanel;
 
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<USPInventoryItemSlot> InventorySlotClass;
+	
 	// UPROPERTY(EditDefaultsOnly)
 	// TSubclassOf<USPInventoryItemSlot> InventorySlotClass;
 
@@ -56,7 +62,8 @@ protected:
 	
 	void NativeConstruct() override;
 	
-
+	virtual bool NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent,
+		UDragDropOperation* InOperation) override;
 	//void UpdatePotionWidget(bool IsVisible);
 	
 };

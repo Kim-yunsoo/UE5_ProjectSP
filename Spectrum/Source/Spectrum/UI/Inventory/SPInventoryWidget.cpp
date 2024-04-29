@@ -47,8 +47,8 @@ void USPInventoryWidget::NativeOnInitialized()
 	}
 }
 
-bool USPInventoryWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent,
-	UDragDropOperation* InOperation)
-{
-	return Super::NativeOnDrop(InGeometry, InDragDropEvent, InOperation);
-}
+// bool USPInventoryWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent,
+// 	UDragDropOperation* InOperation)
+// {
+// 	return Super::NativeOnDrop(InGeometry, InDragDropEvent, InOperation);
+// }

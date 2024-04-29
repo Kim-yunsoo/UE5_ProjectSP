@@ -53,7 +53,7 @@ void USPHUDWidget::DisplayMenu()
 	if(MainMenuWidget)
 	{
 		bIsMenuVisible = true;
-		MainMenuWidget->SetVisibility(ESlateVisibility::Visible);
+		MainMenuWidget->SetVisibility(ESlateVisibility::Collapsed);
 	}
 
 }
@@ -63,7 +63,7 @@ void USPHUDWidget::HideMenu()
 	if(MainMenuWidget)
 	{
 		bIsMenuVisible = false;
-		MainMenuWidget->SetVisibility(ESlateVisibility::Visible);
+		MainMenuWidget->SetVisibility(ESlateVisibility::Collapsed);
 	}
 }
 

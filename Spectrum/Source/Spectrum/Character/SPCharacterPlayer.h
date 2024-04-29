@@ -454,8 +454,6 @@ protected:
 
 	// skill interface
 	// virtual void MovementSlow();
-
-
 	//Effect
 protected:
 	// UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
