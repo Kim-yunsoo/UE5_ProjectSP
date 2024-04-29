@@ -13,7 +13,7 @@ class ISPSkillInterface;
 USPSkillBase::USPSkillBase()
 {
 	CoolDown = -1;
-	this->SetIsReplicated(true);
+	//this->SetIsReplicated(true);
 
 }
 
