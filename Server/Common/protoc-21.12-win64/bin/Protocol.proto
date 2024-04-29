@@ -6,13 +6,13 @@ import "Struct.proto";
 
 message C_LOGIN
 {
-
+	string membership_id = 1;
 }
 
 message S_LOGIN
 {
 	bool success = 1;
-	repeated ObjectInfo players = 2;
+
 }
 
 message C_ENTER_GAME
@@ -23,7 +23,20 @@ message C_ENTER_GAME
 message S_ENTER_GAME
 {
 	bool success = 1;
-	ObjectInfo player = 2;
+	PlayerInfo player = 2;
+}
+
+message C_ENTER_ROOM
+{
+	uint64 playerIndex = 1;
+	Membership membership = 2;
+}
+
+message S_ENTER_ROOM
+{
+	bool success = 1;
+	PlayerInfo player = 2;
+	repeated PlayerInfo players = 3;
 }
 
 message C_LEAVE_GAME
@@ -38,27 +51,13 @@ message S_LEAVE_GAME
 
 message S_SPAWN
 {
-	repeated ObjectInfo players = 1;
+	repeated PlayerInfo players = 1;
 }
 
 message S_DESPAWN
 {
 	repeated uint64 object_ids = 1;
 }
-
-
-message C_MOVE
-{
-	PositionInfo info = 1;
-}
-
-message S_MOVE
-{
-	PositionInfo info = 1;
-}
-
-
-
 
 message C_CHAT
 {
