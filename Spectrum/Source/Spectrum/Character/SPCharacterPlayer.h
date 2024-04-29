@@ -22,6 +22,7 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FOnAimChangedDelegate, bool /*aim*/)
  */
 //DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAimingChangedDelegate, bool, bIsAiming);
 
+
 UENUM()
 enum class ECharacterControlType : uint8
 {
@@ -96,6 +97,7 @@ protected:
 	void OrangePotionSpawn(const FInputActionValue& Value);
 	void PurplePotionSpawn(const FInputActionValue& Value);
 	void SlowSKill(const FInputActionValue& Value);
+	void IceSKill(const FInputActionValue& Value);
 
 	void Interaction(const FInputActionValue& Value);
 	void ToggleMenuAction(const FInputActionValue& Value);
@@ -191,7 +193,10 @@ protected:
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UAnimMontage> SkillMontage;
-	//Camera
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UAnimMontage> SkillIceMontage;
+	
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, Meta = (AllowPrivateAccess = "ture"))
 	TObjectPtr<class USpringArmComponent> SpringArm;
@@ -245,7 +250,11 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> InteractionKey;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> SlowQ;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> IceE;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> ToggleMenu;

@@ -286,6 +286,13 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 		SlowQ = SlowQRef.Object;
 	}
 
+	static ConstructorHelpers::FObjectFinder<UInputAction> IceERef(
+	TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_IceSkill.IA_SP_IceSkill'"));
+	if (nullptr != IceERef.Object)
+	{
+		IceE = IceERef.Object;
+	}
+
 	/*static ConstructorHelpers::FObjectFinder<UAnimMontage> ThrowMontageRef(TEXT("/Script/Engine.AnimMontage'/Game/Spectrum/Animation/AniMeta/Man/AM_SP_Throw.AM_SP_Throw'"));
 	if (ThrowMontageRef.Object)
 	{
@@ -479,6 +486,8 @@ void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Player
 
 		EnhancedInputComponent->BindAction(SlowQ, ETriggerEvent::Triggered, this,
 		                                   &ASPCharacterPlayer::SlowSKill);
+		EnhancedInputComponent->BindAction(IceE, ETriggerEvent::Triggered, this,
+										   &ASPCharacterPlayer::IceSKill);
 		EnhancedInputComponent->BindAction(ToggleMenu, ETriggerEvent::Triggered, this,
 		                                   &ASPCharacterPlayer::ToggleMenuAction);
 	}
@@ -630,6 +639,9 @@ void ASPCharacterPlayer::StopShoulderLook(const FInputActionValue& Value)
 	bIsTurnLeft = false;
 	if (!HasAuthority())
 		ServerRPCdirection(bIsTurnRight, bIsTurnLeft);
+}
+void ASPCharacterPlayer::IceSKill(const FInputActionValue& Value)
+{
 }
 
 void ASPCharacterPlayer::SpeedUp(const FInputActionValue& Value)
@@ -859,6 +871,7 @@ void ASPCharacterPlayer::SlowSKill(const FInputActionValue& Value)
 		// }
 	}
 }
+
 
 void ASPCharacterPlayer::ServerRPCSlowSkill_Implementation(float AttackStartTime)
 {
@@ -1143,7 +1156,7 @@ void ASPCharacterPlayer::HandleMontageAnimNotify(FName NotifyName,
 	{
 		if (HasAuthority())
 		{
-			SlowSkillComponent->SkillAction(this);
+			SlowSkillComponent->SkillAction();
 		}
 	}
 }

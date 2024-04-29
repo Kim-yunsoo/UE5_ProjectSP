@@ -3,13 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "SPSkillActorBase.h"
 #include "GameFramework/Actor.h"
 #include "SPSlowSkillActor.generated.h"
 
 class ISPSkillInterface;
 
 UCLASS()
-class SPECTRUM_API ASPSlowSkillActor : public AActor
+class SPECTRUM_API ASPSlowSkillActor : public ASPSkillActorBase
 {
 	GENERATED_BODY()
 	
@@ -28,25 +29,20 @@ protected:
 	
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Projectile")
-	TObjectPtr<class UBoxComponent> BoxCollision;
+	// UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Projectile")
+	// TObjectPtr<class UBoxComponent> BoxCollision;
+	//
+	//
+	// UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Projectile")
+	// TObjectPtr<class UProjectileMovementComponent> ProjectileMovement;
+
+	// UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	// float Speed ;
+	//
+	// UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	// float Gravity ;
 
 	
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Projectile")
-	TObjectPtr<class UProjectileMovementComponent> ProjectileMovement;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Speed ;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Gravity ;
-
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Projectile")
-	TObjectPtr<UParticleSystemComponent> MainVFX;
-
-
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Projectile")
-	TObjectPtr<UParticleSystem> EmitterHit;
 
 	UPROPERTY()
 	TObjectPtr<AActor> TargetActor;
@@ -65,7 +61,6 @@ protected:
 public:
 	void InitTarget( AActor* TargetPlayer);
 
-	uint8 bIsOnce :1 ;
 	// Called every frame
 	// virtual void Tick(float DeltaTime) override;
 
