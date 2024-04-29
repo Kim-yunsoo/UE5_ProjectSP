@@ -174,7 +174,6 @@ int32 USPInventoryComponent::HandleStackableItems(USPItemBase* ItemIn, int32 Req
 	if(InventoryContents.Num() + 1 <= InventorySlotsCapacity)
 	{
 		const int32 WeightLimitAddAmount = CalculateWeightAddAmount(ItemIn, AmountToDistribute);
-
 		if(WeightLimitAddAmount > 0)
 		{
 			UE_LOG(LogTemp,Warning, TEXT("here1111"));

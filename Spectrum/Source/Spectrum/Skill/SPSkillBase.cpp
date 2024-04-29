@@ -13,18 +13,15 @@ class ISPSkillInterface;
 USPSkillBase::USPSkillBase()
 {
 	CoolDown = -1;
-	this->SetIsReplicated(true);
-
+	// this->SetIsReplicated(true);
 }
 
 void USPSkillBase::BeginPlay()
 {
 	Super::BeginPlay();
-
 }
 
 void USPSkillBase::SkillAction(ASPCharacterPlayer* MyOwner)
 {
 	Owner = MyOwner;
 }
-

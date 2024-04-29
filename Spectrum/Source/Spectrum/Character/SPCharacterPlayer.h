@@ -275,6 +275,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	FVector UIRotator;
 
+	
+	
+
 protected:
 	UPrimitiveComponent* HitComponent;
 	AActor* HitActor;
@@ -329,7 +332,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget)
 	TObjectPtr<class USPWidgetComponent> Target;
 
-	virtual void SetupTargetWidget(USPUserWidget* InUserWidget) override;
+	virtual void SetupHUDWidget(USPHUDWidget* InUserWidget) override;
 
 	UPROPERTY()
 	TObjectPtr<class USPHUDWidget> HUDWidget;
@@ -487,5 +490,7 @@ public:
 
 	UFUNCTION(NetMulticast, Unreliable)
 	void NetTESTRPCSlowSkill();
-	
+
+	UPROPERTY()
+	uint8 bIsActiveSlowSkill : 1;
 };
