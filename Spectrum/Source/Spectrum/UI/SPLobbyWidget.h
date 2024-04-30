@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "SpectrumGameInstance.h"
 #include "SPLobbyWidget.generated.h"
 
 /**
@@ -14,15 +15,19 @@ class SPECTRUM_API USPLobbyWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
+	USPLobbyWidget(const FObjectInitializer& ObjectInitializer);
+
 public:
-	// 시작 위젯
-	// 아이디 받는 함수
-	UFUNCTION(BlueprintCallable, Category = "ID Verification")
-	bool ValidateID(const FString& ID);
+	// 시작 로그인 위젯
+	UFUNCTION(BlueprintCallable, Category = "ID Verification")	// 아이디 받는 함수
+	void ValidateID(const FString& ID);
+
+	UFUNCTION(BlueprintCallable, Category = "ID Verification")	// 아이디 받는 함수
+	bool LoginSuccess();
 	
 	// 회원가입 위젯
 	UFUNCTION(BlueprintCallable, Category = "membership")
-	void Membership(const FString& ID, const FString& SCHOOL, const FString& GENDER);
+	void Membership(const FString& ID, const int& SCHOOL, const int& GENDER);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "membership")
 	int School;

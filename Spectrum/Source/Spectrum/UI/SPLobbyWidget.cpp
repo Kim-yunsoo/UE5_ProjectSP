@@ -2,11 +2,20 @@
 
 
 #include "UI/SPLobbyWidget.h"
-#include "Protocol.pb.h"
 #include "Spectrum.h"
+#include "ClientPacketHandler.h"
+#include "Protocol.pb.h"
 
+extern bool issuccess;
 
-bool USPLobbyWidget::ValidateID(const FString& ID)
+USPLobbyWidget::USPLobbyWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
+{
+
+	School = -1;
+	Gender = -1;
+}
+
+void USPLobbyWidget::ValidateID(const FString& ID)
 {
     // 아이디 화면에 출력(확인용)
     //if( !ID.IsEmpty())
@@ -15,28 +24,71 @@ bool USPLobbyWidget::ValidateID(const FString& ID)
 	std::string myid = TCHAR_TO_UTF8(*ID);
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("ID:%s"), myid));
 
-	return myid == "a";
-
 	// 아이디가 DB에 있는지 확인하기 위해 서버로 보냄
 	{ // 로그인	패킷 보내기
 		Protocol::C_LOGIN Pkt;
-		Pkt.set_membership_id("test");
+		Pkt.set_membership_id(myid);
 
 		SEND_PACKET(Pkt);
 	}
 
-	// 없으면 회원가입 위젯으로 넘어감 false 반환
-	//return false;
-	
-	//있으면 true 반환
-	//return true;
+}
+
+bool USPLobbyWidget::LoginSuccess()
+{
+	// 로그인 성공시 true 반환
+	if (issuccess)
+		return true;
+	else
+		return false;
 }
 
 
-void USPLobbyWidget::Membership(const FString& ID, const FString& SCHOOL, const FString& GENDER)
+void USPLobbyWidget::Membership(const FString& ID, const int& SCHOOL, const int& GENDER)
 {
-	// 회원가입 패킷에 넣어서 보내기
+	std::string myid = TCHAR_TO_UTF8(*ID);
+	Protocol::PlayerType mytype;
 
+	/*PLAYER_TYPE_GREEN_MAN = 00;
+	PLAYER_TYPE_GREEN_WOMAN = 01;
+	PLAYER_TYPE_PURPLE_MAN = 10;
+	PLAYER_TYPE_PURPLE_WOMAN = 11;
+	PLAYER_TYPE_ORANGE_MAN = 20;
+	PLAYER_TYPE_ORANGE_WOMAN = 21;*/
+
+	switch (SCHOOL)
+	{
+	case 0:
+		if (GENDER == 0)
+			mytype = Protocol::PlayerType::PLAYER_TYPE_GREEN_MAN;
+		else
+			mytype = Protocol::PlayerType::PLAYER_TYPE_GREEN_WOMAN;
+		break;
+	case 1:
+		if (GENDER == 0)
+			mytype = Protocol::PlayerType::PLAYER_TYPE_PURPLE_MAN;
+		else
+			mytype = Protocol::PlayerType::PLAYER_TYPE_PURPLE_WOMAN;
+		break;
+	case 2:
+		if (GENDER == 0)
+			mytype = Protocol::PlayerType::PLAYER_TYPE_ORANGE_MAN;
+		else
+			mytype = Protocol::PlayerType::PLAYER_TYPE_ORANGE_WOMAN;
+		break;
+
+	}
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::
+		Printf(TEXT("ID:%s, type:%d%d"), *ID, SCHOOL, GENDER));
+
+
+	// 회원가입 패킷에 넣어서 보내기
+	{
+		Protocol::C_MEMBERSHIP Pkt;
+		Pkt.set_membership_id(myid);
+		Pkt.set_membership_type(mytype);
+		SEND_PACKET(Pkt);
+	}
 
 
 

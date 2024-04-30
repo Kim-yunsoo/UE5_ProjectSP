@@ -12,7 +12,21 @@ message C_LOGIN
 message S_LOGIN
 {
 	bool success = 1;
+	string membership_id = 2;
+	PlayerType membership_type = 3;
+}
 
+message C_MEMBERSHIP
+{
+	string membership_id = 1;
+	PlayerType membership_type = 2;
+}
+
+message S_MEMBERSHIP
+{
+	bool success = 1;
+	string membership_id = 2;
+	PlayerType membership_type = 3;
 }
 
 message C_ENTER_GAME

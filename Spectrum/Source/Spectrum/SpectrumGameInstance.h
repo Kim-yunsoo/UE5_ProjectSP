@@ -40,6 +40,7 @@ public:
 	void HandleDespawn(const Protocol::S_DESPAWN& DespawnPkt);			// 패킷으로 삭제
 	
 	void HandleLobby(const Protocol::S_ENTER_GAME& LobbyPkt);
+	void HandleLobby(const Protocol::S_LOGIN& LobbyPkt);
 	void HandleRoom(const Protocol::S_ENTER_ROOM& RoomPkt);			// 방 입장
 	//void HandleMove(const Protocol::S_MOVE& MovePkt);					// 이동
 
@@ -58,4 +59,7 @@ public:
 	ASPCharacterPlayer* MyPlayer;
 	TMap<uint64, ASPCharacterPlayer*> Players;
 	TMap<uint64, ASPObject*> Objects;
+
+public:
+	bool isLogin = false;
 };

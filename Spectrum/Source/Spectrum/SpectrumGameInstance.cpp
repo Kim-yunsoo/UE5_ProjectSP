@@ -179,6 +179,14 @@ void USpectrumGameInstance::HandleLobby(const Protocol::S_ENTER_GAME& LobbyPkt)
 
 }
 
+void USpectrumGameInstance::HandleLobby(const Protocol::S_LOGIN& LobbyPkt)
+{
+	// 받은 정보 저장(자신의 학교, 성별)
+	//const Protocol::PositionInfo& Info = LobbyPkt.info();
+	//Player->SetDestInfo(Info);
+
+}
+
 void USpectrumGameInstance::HandleRoom(const Protocol::S_ENTER_ROOM& RoomPkt)
 {
 	// 방 입장
