@@ -29,3 +29,16 @@ public:
 
 	
 };
+
+USTRUCT(BlueprintType)
+struct FPortalDataBase : public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Position")
+	float PortalX;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Position")
+	float PortalY;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Position")
+	float PortalZ;
+};

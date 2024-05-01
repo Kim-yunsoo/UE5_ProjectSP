@@ -301,12 +301,12 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 
 
 	static ConstructorHelpers::FObjectFinder<UInputAction> TeleRRef(
-	TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_TeleSkill.IA_SP_TeleSkill'"));
+		TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_TeleSkill.IA_SP_TeleSkill'"));
 	if (nullptr != TeleRRef.Object)
 	{
 		TeleR = TeleRRef.Object;
 	}
-	
+
 
 	/*static ConstructorHelpers::FObjectFinder<UAnimMontage> ThrowMontageRef(TEXT("/Script/Engine.AnimMontage'/Game/Spectrum/Animation/AniMeta/Man/AM_SP_Throw.AM_SP_Throw'"));
 	if (ThrowMontageRef.Object)
@@ -509,7 +509,7 @@ void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Player
 		EnhancedInputComponent->BindAction(ToggleMenu, ETriggerEvent::Triggered, this,
 		                                   &ASPCharacterPlayer::ToggleMenuAction);
 		EnhancedInputComponent->BindAction(TeleR, ETriggerEvent::Triggered, this,
-											   &ASPCharacterPlayer::TeleSKill);
+		                                   &ASPCharacterPlayer::TeleSKill);
 	}
 }
 
@@ -771,7 +771,7 @@ void ASPCharacterPlayer::StopGraping(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::AimPotion(const FInputActionValue& Value)
 {
-	if (bIsSpawn &&  false == IsMontagePlaying())
+	if (bIsSpawn && false == IsMontagePlaying())
 	{
 		if (!HasAuthority())
 		{
@@ -808,7 +808,7 @@ void ASPCharacterPlayer::ServerRPCTurnReady_Implementation()
 
 void ASPCharacterPlayer::ThrowPotion(const FInputActionValue& Value)
 {
-	if( GetMesh()->GetAnimInstance()->Montage_IsPlaying(ThrowMontage))
+	if (GetMesh()->GetAnimInstance()->Montage_IsPlaying(ThrowMontage))
 	{
 		if (bIsThrowReady)
 		{
@@ -834,7 +834,6 @@ void ASPCharacterPlayer::ThrowPotion(const FInputActionValue& Value)
 			ServerRPCThrowPotion(bIsThrowReady);
 		}
 	}
-
 }
 
 void ASPCharacterPlayer::Jumping(const FInputActionValue& Value)
@@ -904,7 +903,7 @@ void ASPCharacterPlayer::ToggleMenuAction(const FInputActionValue& Value)
 void ASPCharacterPlayer::IceSKill(const FInputActionValue& Value)
 {
 	if ((GetCharacterMovement()->MovementMode == EMovementMode::MOVE_Walking || GetCharacterMovement()->MovementMode ==
-		EMovementMode::MOVE_None) &&  false == IsMontagePlaying())
+		EMovementMode::MOVE_None) && false == IsMontagePlaying())
 	{
 		ServerRPCIceSkill(GetWorld()->GetGameState()->GetServerWorldTimeSeconds());
 	}
@@ -912,11 +911,10 @@ void ASPCharacterPlayer::IceSKill(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::TeleSKill(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp,Log,TEXT("TeleskilL!!"));
+	UE_LOG(LogTemp, Log, TEXT("TeleskilL!!"));
 	if ((GetCharacterMovement()->MovementMode == EMovementMode::MOVE_Walking || GetCharacterMovement()->MovementMode ==
-		EMovementMode::MOVE_None) &&  false == IsMontagePlaying())
+		EMovementMode::MOVE_None) && false == IsMontagePlaying())
 	{
-
 		ServerRPCTeleSkill(GetWorld()->GetGameState()->GetServerWorldTimeSeconds());
 	}
 }
@@ -934,11 +932,11 @@ void ASPCharacterPlayer::ServerRPCTeleSkill_Implementation(float AttackStartTime
 		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 
 		GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([&]
-												   {
-													   GetCharacterMovement()->SetMovementMode(
-														   EMovementMode::MOVE_Walking);
-												   }
-											   ), SlowAttackTime - AttackTimeDifference, false, -1.0f);
+			                                       {
+				                                       GetCharacterMovement()->SetMovementMode(
+					                                       EMovementMode::MOVE_Walking);
+			                                       }
+		                                       ), SlowAttackTime - AttackTimeDifference, false, -1.0f);
 
 		PlayTeleSkillAnimation();
 
@@ -952,6 +950,7 @@ void ASPCharacterPlayer::ServerRPCTeleSkill_Implementation(float AttackStartTime
 		}
 	}
 }
+
 void ASPCharacterPlayer::ServerRPCIceSkill_Implementation(float AttackStartTime)
 {
 	if (bIsActiveIceSkill)
@@ -987,7 +986,7 @@ void ASPCharacterPlayer::ServerRPCIceSkill_Implementation(float AttackStartTime)
 void ASPCharacterPlayer::SlowSKill(const FInputActionValue& Value)
 {
 	if ((GetCharacterMovement()->MovementMode == EMovementMode::MOVE_Walking || GetCharacterMovement()->MovementMode ==
-		EMovementMode::MOVE_None ) && false == IsMontagePlaying())
+		EMovementMode::MOVE_None) && false == IsMontagePlaying())
 	{
 		// bIsActiveSlowSkill = false;
 
@@ -1662,7 +1661,7 @@ void ASPCharacterPlayer::PlayIceSkillAnimation()
 
 void ASPCharacterPlayer::PlayTeleSkillAnimation()
 {
-	UE_LOG(LogTemp,Log,TEXT("PlayTeleSkillAnimation"));
+	UE_LOG(LogTemp, Log, TEXT("PlayTeleSkillAnimation"));
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	AnimInstance->StopAllMontages(0.0f);
 	AnimInstance->Montage_Play(SkillTeleMontage);
@@ -1715,13 +1714,29 @@ void ASPCharacterPlayer::HitTeleSkillResult(const FVector TeleportLocation)
 	// 									   ), 5, false, -1.0f);
 }
 
+void ASPCharacterPlayer::OverlapPortal(const FVector& Location)
+{
+	// GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+	// this->TeleportTo(Location, this->GetActorRotation(), false, true);
+	// this->SetActorRelativeLocation(Location);
+
+	
+	FTimerHandle Handle;
+	GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([&]
+		                                       {
+		this->SetActorRelativeLocation(Location);
+		UE_LOG(LogTemp, Log, TEXT("%s"), *GetActorLocation().ToString());
+		                                       }
+	                                       ), 1.5f, false);
+}
+
 bool ASPCharacterPlayer::IsMontagePlaying()
 {
-	if(GetMesh()->GetAnimInstance()->Montage_IsPlaying(ThrowMontage)||
-		GetMesh()->GetAnimInstance()->Montage_IsPlaying(SkillMontage)||
-		GetMesh()->GetAnimInstance()->Montage_IsPlaying(SkillIceMontage)||
+	if (GetMesh()->GetAnimInstance()->Montage_IsPlaying(ThrowMontage) ||
+		GetMesh()->GetAnimInstance()->Montage_IsPlaying(SkillMontage) ||
+		GetMesh()->GetAnimInstance()->Montage_IsPlaying(SkillIceMontage) ||
 		GetMesh()->GetAnimInstance()->Montage_IsPlaying(SkillTeleMontage))
-				
+
 	{
 		return true; //어떤 애니메이션 하나라도 플레이 중이면 트루 
 	}

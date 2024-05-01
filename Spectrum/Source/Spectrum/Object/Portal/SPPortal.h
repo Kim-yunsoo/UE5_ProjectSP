@@ -1,0 +1,51 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "Data/SPTeleportData.h"
+#include "GameFramework/Actor.h"
+#include "SPPortal.generated.h"
+
+UCLASS()
+class SPECTRUM_API ASPPortal : public AActor
+{
+	GENERATED_BODY()
+	
+public:	
+	// Sets default values for this actor's properties
+	ASPPortal();
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+public:	
+
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite)
+	TObjectPtr<UStaticMeshComponent> PortalMesh;
+
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite)
+	TObjectPtr<class UBoxComponent> Trigger;
+
+
+	UPROPERTY()
+	TObjectPtr<UDataTable>  PortalData;
+	UFUNCTION()
+	void OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UPROPERTY()
+	FVector LocationResult ; 
+
+	FPortalDataBase* LocationData;
+
+	UFUNCTION(NetMulticast,Unreliable)
+	void MultiRPC(AActor* OverlapActor,const FVector& Location);
+
+	UFUNCTION(Server,Unreliable)
+	void ServerRPC(AActor* OverlapActor,const FVector& Location);
+
+	// UFUNCTION(NetMulticast,Unreliable)
+	// void MultiRPC(AActor* OverlapActor,const FVector& Location);
+
+};
