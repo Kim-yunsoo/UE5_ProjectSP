@@ -13,7 +13,6 @@ PlayerRef ObjectUtils::CreatePlayer(GameSessionRef session)
 
 	PlayerRef player = make_shared<Player>();
 	player->objectInfo->set_object_id(newId);
-	player->posInfo->set_object_id(newId);
 
 	player->session = session;
 	session->player.store(player);
@@ -21,17 +20,3 @@ PlayerRef ObjectUtils::CreatePlayer(GameSessionRef session)
 	return player;
 }
 
-ThingRef ObjectUtils::CreateThing()
-{
-	// ID »ý¼º±â
-	const int64 newId = s_idGenerator.fetch_add(1);
-
-	ThingRef thing = make_shared<Thing>();
-	thing->objectInfo->set_object_id(newId);
-	thing->posInfo->set_object_id(newId);
-	thing->thingInfo->set_object_id(newId);
-	//thing->session = session;
-	//session->thing.store(player);
-
-	return thing;
-}

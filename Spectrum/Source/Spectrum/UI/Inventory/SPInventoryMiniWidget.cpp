@@ -8,13 +8,13 @@
 #include "Components/WrapBox.h"
 #include "Potion/SPItemBase.h"
 
-void USPInventoryMiniWidget::RefreshInventory()
+void USPInventoryMiniWidget::RefreshMiniInventory(TArray<TObjectPtr<USPItemBase>> Inventory)
 {
 	if(InventoryReference && InventorySlotClass)
 	{
 		InventoryPanel->ClearChildren();
 
-		for(USPItemBase* const& InventoryItem : InventoryReference->GetInventoryContents())
+		for(USPItemBase* const& InventoryItem : InventoryReference->GetInventorMiniContents())
 		{
 			USPInventoryItemSlot* ItemSlot = CreateWidget<USPInventoryItemSlot>(this, InventorySlotClass);
 			ItemSlot->SetItemReference(InventoryItem);
@@ -38,7 +38,7 @@ void USPInventoryMiniWidget::NativeOnInitialized()
 		InventoryReference = PlayerCharacter->GetInventory();
 		if(InventoryReference)
 		{
-			InventoryReference->OnInventoryMiniUpdated.AddUObject(this, &USPInventoryMiniWidget::RefreshInventory);
+			InventoryReference->OnInventoryMiniUpdated.AddUObject(this, &USPInventoryMiniWidget::RefreshMiniInventory);
 			SetInfoText();
 		}
 	}

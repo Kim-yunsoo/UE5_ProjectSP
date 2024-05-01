@@ -3,10 +3,7 @@
 
 Object::Object()
 {
-	objectInfo = new Protocol::ObjectInfo();
-	posInfo = new Protocol::PositionInfo();
-	thingInfo = new Protocol::ThingInfo();
-	objectInfo->set_allocated_pos_info(posInfo);
+	objectInfo = new Protocol::PlayerInfo();
 
 }
 

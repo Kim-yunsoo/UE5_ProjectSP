@@ -6,11 +6,13 @@
 #include "Components/ActorComponent.h"
 #include "SPInventoryComponent.generated.h"
 
-DECLARE_MULTICAST_DELEGATE(FOnInventoryUpdated);
-DECLARE_MULTICAST_DELEGATE(FOnInventoryMiniUpdated);
-
-
 class USPItemBase;
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnInventoryUpdated, const TArray<TObjectPtr<USPItemBase>>);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnInventoryMiniUpdated, const TArray<TObjectPtr<USPItemBase>>);
+
+
+
 
 UENUM(BlueprintType)
 enum class EItemAddResult : uint8
@@ -103,6 +105,8 @@ public:
 	FORCEINLINE int32 GetSlotsCapacity() const {return InventorySlotsCapacity;};
 	UFUNCTION(Category = "Inventory")
 	FORCEINLINE TArray<USPItemBase*> GetInventoryContents() const{return InventoryContents;};
+	UFUNCTION(Category = "Inventory")
+	FORCEINLINE TArray<USPItemBase*> GetInventorMiniContents() const{return InventoryMiniContents;};
 	UFUNCTION(Category = "Inventory")
 	FORCEINLINE void SetSlotsCapacity(const int32 NewSlotsCapacity){InventorySlotsCapacity = NewSlotsCapacity;};
 	UFUNCTION(Category = "Inventory")

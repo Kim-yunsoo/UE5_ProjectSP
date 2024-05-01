@@ -9,7 +9,7 @@
 #include "Components/WrapBox.h"
 #include "Potion/SPItemBase.h"
 
-void USPInventoryWidget::RefreshInventory()
+void USPInventoryWidget::RefreshInventory(TArray<TObjectPtr<USPItemBase>> Inventory)
 {
 	if(InventoryReference && InventorySlotClass)
 	{
@@ -19,7 +19,6 @@ void USPInventoryWidget::RefreshInventory()
 		{
 			USPInventoryItemSlot* ItemSlot = CreateWidget<USPInventoryItemSlot>(this, InventorySlotClass);
 			ItemSlot->SetItemReference(InventoryItem);
-
 			InventoryPanel->AddChildToWrapBox(ItemSlot);
 		}
 		SetInfoText();

@@ -47,17 +47,45 @@ PROTOBUF_NAMESPACE_OPEN
 PROTOBUF_NAMESPACE_CLOSE
 namespace Protocol {
 
+enum CreatureType : int {
+  CREATURE_TYPE_NONE = 0,
+  CREATURE_TYPE_PLAYER = 1,
+  CREATURE_TYPE_THING = 2,
+  CreatureType_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
+  CreatureType_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
+};
+bool CreatureType_IsValid(int value);
+constexpr CreatureType CreatureType_MIN = CREATURE_TYPE_NONE;
+constexpr CreatureType CreatureType_MAX = CREATURE_TYPE_THING;
+constexpr int CreatureType_ARRAYSIZE = CreatureType_MAX + 1;
+
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* CreatureType_descriptor();
+template<typename T>
+inline const std::string& CreatureType_Name(T enum_t_value) {
+  static_assert(::std::is_same<T, CreatureType>::value ||
+    ::std::is_integral<T>::value,
+    "Incorrect type passed to function CreatureType_Name.");
+  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
+    CreatureType_descriptor(), enum_t_value);
+}
+inline bool CreatureType_Parse(
+    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, CreatureType* value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<CreatureType>(
+    CreatureType_descriptor(), name, value);
+}
 enum PlayerType : int {
-  PLAYER_TYPE_NONE = 0,
-  PLAYER_TYPE_KNIGHT = 1,
-  PLAYER_TYPE_MAGE = 2,
-  PLAYER_TYPE_ARCHER = 3,
+  PLAYER_TYPE_GREEN_MAN = 0,
+  PLAYER_TYPE_GREEN_WOMAN = 1,
+  PLAYER_TYPE_PURPLE_MAN = 2,
+  PLAYER_TYPE_PURPLE_WOMAN = 3,
+  PLAYER_TYPE_ORANGE_MAN = 4,
+  PLAYER_TYPE_ORANGE_WOMAN = 5,
   PlayerType_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
   PlayerType_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
 };
 bool PlayerType_IsValid(int value);
-constexpr PlayerType PlayerType_MIN = PLAYER_TYPE_NONE;
-constexpr PlayerType PlayerType_MAX = PLAYER_TYPE_ARCHER;
+constexpr PlayerType PlayerType_MIN = PLAYER_TYPE_GREEN_MAN;
+constexpr PlayerType PlayerType_MAX = PLAYER_TYPE_ORANGE_WOMAN;
 constexpr int PlayerType_ARRAYSIZE = PlayerType_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* PlayerType_descriptor();
@@ -123,6 +151,11 @@ inline bool MoveState_Parse(
 
 PROTOBUF_NAMESPACE_OPEN
 
+template <> struct is_proto_enum< ::Protocol::CreatureType> : ::std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::Protocol::CreatureType>() {
+  return ::Protocol::CreatureType_descriptor();
+}
 template <> struct is_proto_enum< ::Protocol::PlayerType> : ::std::true_type {};
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::Protocol::PlayerType>() {

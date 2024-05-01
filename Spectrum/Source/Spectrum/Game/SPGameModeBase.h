@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "Blueprint/UserWidget.h"
 #include "SPGameModeBase.generated.h"
 
 /**
@@ -14,7 +15,13 @@ class SPECTRUM_API ASPGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 
-	public:
+public:
 	ASPGameModeBase();
+
+	virtual void BeginPlay() override;
+
+private:
+	TSubclassOf<UUserWidget> SPLobbyWidgetClass;
+	class USPLobbyWidget* LobbyWidget;
 
 };

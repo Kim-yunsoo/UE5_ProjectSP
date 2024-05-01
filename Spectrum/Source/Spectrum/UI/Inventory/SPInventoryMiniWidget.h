@@ -6,6 +6,7 @@
 #include "UI/SPUserWidget.h"
 #include "SPInventoryMiniWidget.generated.h"
 
+class USPItemBase;
 class USPInventoryComponent;
 class USPInventoryItemSlot;
 class ASPCharacterPlayer;
@@ -18,7 +19,7 @@ class SPECTRUM_API USPInventoryMiniWidget : public USPUserWidget
 {
 	GENERATED_BODY()
 public:
-	void RefreshInventory();
+	void RefreshMiniInventory(TArray<TObjectPtr<USPItemBase>> Inventory);
 
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UWrapBox> InventoryPanel;

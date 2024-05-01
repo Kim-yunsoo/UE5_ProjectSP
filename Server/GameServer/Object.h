@@ -9,9 +9,7 @@ public:
 	bool IsPlayer() { return isPlayer; }
 
 public:
-	Protocol::ObjectInfo* objectInfo;
-	Protocol::PositionInfo* posInfo;
-	Protocol::ThingInfo* thingInfo;
+	Protocol::PlayerInfo* objectInfo;
 
 
 public:
