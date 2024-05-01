@@ -27,4 +27,6 @@ protected:
 
 	UFUNCTION(Client,Unreliable)
 	void ClientSkillRPC(float Time);
+
+	uint8 bIsOnce:1;
 };

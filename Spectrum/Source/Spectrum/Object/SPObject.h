@@ -74,7 +74,7 @@ protected://DynamicMaterial
 	UPROPERTY()
 	TObjectPtr<class UMaterialInstanceDynamic> ChaosDynamic ;
 	
-	UPROPERTY()
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	ColorType MyColorType;
 
 	//Get Material Index

@@ -296,6 +296,15 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 		IceE = IceERef.Object;
 	}
 
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> TeleRRef(
+	TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_TeleSkill.IA_SP_TeleSkill'"));
+	if (nullptr != TeleRRef.Object)
+	{
+		TeleR = TeleRRef.Object;
+	}
+	
+
 	/*static ConstructorHelpers::FObjectFinder<UAnimMontage> ThrowMontageRef(TEXT("/Script/Engine.AnimMontage'/Game/Spectrum/Animation/AniMeta/Man/AM_SP_Throw.AM_SP_Throw'"));
 	if (ThrowMontageRef.Object)
 	{
@@ -670,6 +679,7 @@ void ASPCharacterPlayer::HandleMontageAnimNotify(FName NotifyName,
 			// SlowSkillComponent->SkillAction();
 		}
 	}
+	//TeleSkillNotify
 }
 
 
@@ -876,7 +886,6 @@ void ASPCharacterPlayer::ToggleMenuAction(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::IceSKill(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp, Log, TEXT("IceSKill"));
 	if ((GetCharacterMovement()->MovementMode == EMovementMode::MOVE_Walking || GetCharacterMovement()->MovementMode ==
 		EMovementMode::MOVE_None) && !GetMesh()->GetAnimInstance()->Montage_IsPlaying(SkillMontage))
 	{
@@ -889,7 +898,7 @@ void ASPCharacterPlayer::ServerRPCIceSkill_Implementation(float AttackStartTime)
 	if (bIsActiveIceSkill)
 	{
 		bIsActiveIceSkill = false;
-		IceSkillComponent->ActivetedTimeStamp = GetWorld()->GetTime().GetRealTimeSeconds();
+		IceSkillComponent->ActivetedTimeStamp = GetWorld()->GetTime().GetWorldTimeSeconds();
 		AttackTimeDifference = GetWorld()->GetTimeSeconds() - AttackStartTime;
 		AttackTimeDifference = FMath::Clamp(AttackTimeDifference, 0.0f, SlowAttackTime - 0.01f);
 
@@ -949,7 +958,7 @@ void ASPCharacterPlayer::ServerRPCSlowSkill_Implementation(float AttackStartTime
 	if (bIsActiveSlowSkill)
 	{
 		bIsActiveSlowSkill = false;
-		SlowSkillComponent->ActivetedTimeStamp = GetWorld()->GetTime().GetRealTimeSeconds();
+		SlowSkillComponent->ActivetedTimeStamp = GetWorld()->GetTime().GetWorldTimeSeconds();
 		AttackTimeDifference = GetWorld()->GetTimeSeconds() - AttackStartTime;
 		AttackTimeDifference = FMath::Clamp(AttackTimeDifference, 0.0f, SlowAttackTime - 0.01f);
 

@@ -40,6 +40,7 @@ void USPIceSkill::TickComponent(float DeltaTime, ELevelTick TickType, FActorComp
 	{
 		float ElapsedTime =( CurrentGameTime.GetWorldTimeSeconds() - ActivetedTimeStamp)/CoolDown;
 		float CDTime= FMath::Clamp(1.0f-ElapsedTime, 0.0f, 1.0f);
+		UE_LOG(LogTemp,Log,TEXT("%f"),CDTime);
 		ClientSkillRPC(CDTime);
 	}
 	else
