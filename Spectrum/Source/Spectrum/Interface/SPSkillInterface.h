@@ -24,5 +24,6 @@ class SPECTRUM_API ISPSkillInterface
 public:
 	virtual void HitSlowSkillResult()=0;
 	virtual void HitIceSkillResult()=0;
+	virtual void HitTeleSkillResult()=0;
 public:
 };
