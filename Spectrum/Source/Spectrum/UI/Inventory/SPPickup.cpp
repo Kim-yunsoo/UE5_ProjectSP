@@ -36,7 +36,6 @@ void ASPPickup::InitializePickup(const TSubclassOf<USPItemBase> BaseClass, const
 		const FItemData* ItemData = ItemDataTable->FindRow<FItemData>(DesiredItemID, DesiredItemID.ToString());
 		// 원하는 항목 찾기
 
-
 		ItemReference = NewObject<USPItemBase>(this, BaseClass);
 
 		ItemReference->ID = ItemData->ID;
@@ -101,6 +100,7 @@ void ASPPickup::UpdateInteractableData()
 
 void ASPPickup::TakePickup(ASPCharacterPlayer* Taker)
 {
+
 	if (!IsPendingKillPending()) //IsPendingKillPending() 삭제되는지 확인
 	{
 		if(ItemReference)
@@ -113,7 +113,6 @@ void ASPPickup::TakePickup(ASPCharacterPlayer* Taker)
 				GetWorld()->GetTimerManager().SetTimer(TimerHandle,[this](){
 					                                       this->Destroy();
 				                                       }, 0.1f, false);
-				//SP_LOG(LogSPNetwork, Log, TEXT("%s"),*GetOwner()->GetName());
 				//Destroy(); //이거 문제 업나!?!?!? 바로 지우는거!???
 				// if(HasAuthority() && )
 				// {
