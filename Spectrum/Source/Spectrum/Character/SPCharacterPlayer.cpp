@@ -1490,7 +1490,23 @@ void ASPCharacterPlayer::DragItem(USPItemBase* ItemToDrop, const int32 QuantityT
 		//ItemToDrop->Quantity -= 1;
 		//PlayerInventory->OnInventoryMiniUpdated.Broadcast(PlayerInventory->GetInventorMiniContents());
 		PlayerInventory->RemoveAmountOfItem(ItemToDrop, QuantityToDrop);
-		
+		GetInventory()->AddInventorMakeContents(ItemToDrop);
+		UE_LOG(LogTemp, Warning, TEXT("%d"), GetInventory()->GetInventorMakeContents().Num());
+		if(GetInventory()->GetInventorMakeContents().Num()==3)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Three"));
+			PlayerInventory->MakingPotion();
+		}
+		// TArray<USPItemBase*> InventoryContents = GetInventory()->GetInventorMakeContents();
+		//
+		// for (USPItemBase* Item : InventoryContents)
+		// {
+		// 	if (Item)
+		// 	{
+		// 		UE_LOG(LogTemp, Warning, TEXT("Item Name: %s"), *Item->ItemTextData.Name.ToString());
+		// 	}
+		// }
+		// UE_LOG(LogTemp, Warning, TEXT("============="));
 	}
 }
 
@@ -1500,6 +1516,18 @@ void ASPCharacterPlayer::BackItem(USPItemBase* ItemToDrop, const int32 QuantityT
 		UE_LOG(LogTemp, Warning, TEXT("%s"), *ItemToDrop->ItemTextData.Name.ToString());
 
 		PlayerInventory->HandleAddItem(ItemToDrop);
+		GetInventory()->RemoveInventorMakeContents(ItemToDrop);
+	// TArray<USPItemBase*> InventoryContents = GetInventory()->GetInventorMakeContents();
+	//
+	// for (USPItemBase* Item : InventoryContents)
+	// {
+	// 	if (Item)
+	// 	{
+	// 		UE_LOG(LogTemp, Warning, TEXT("Item Name: %s"), *Item->ItemTextData.Name.ToString());
+	// 	}
+	// }
+	// UE_LOG(LogTemp, Warning, TEXT("============="));
+
 }
 
 

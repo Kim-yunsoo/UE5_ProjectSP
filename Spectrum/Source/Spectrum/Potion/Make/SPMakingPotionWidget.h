@@ -70,5 +70,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = "Inventory Slot")
 	TObjectPtr<USPItemBase> ItemReference;
+
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
+	TArray<USPItemBase*> InventoryMaking;
 	
 };

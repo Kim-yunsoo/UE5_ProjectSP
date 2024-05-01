@@ -12,6 +12,13 @@ USPInventoryComponent::USPInventoryComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
+	static ConstructorHelpers::FObjectFinder<UDataTable> DataTableFinder(TEXT("/Script/Engine.DataTable'/Game/Spectrum/ItemData/Item.Item'"));
+	if (DataTableFinder.Succeeded())
+	{
+		// 데이터 테이블이 유효하면 설정
+		ItemDataTable = DataTableFinder.Object;
+		UE_LOG(LogTemp, Warning, TEXT("DATA TEST"));
+	}
 	// ...
 }
 
@@ -27,6 +34,15 @@ USPItemBase* USPInventoryComponent::FindMatchingItem(USPItemBase* ItemIn) const
 		
 	}
 	return nullptr;
+}
+
+void USPInventoryComponent::RemoveInventorMakeContents(USPItemBase* ItemToRemove) 
+{
+	if(FindMatchingItem(ItemToRemove))
+	{
+		InventoryMakeContents.RemoveSingle(ItemToRemove);
+	}
+	//OnInventoryUpdated.Broadcast(InventoryContents);
 }
 
 USPItemBase* USPInventoryComponent::FindNextItemByID(USPItemBase* ItemIn) const
@@ -76,9 +92,12 @@ USPItemBase* USPInventoryComponent::FindNextPartialStack(USPItemBase* ItemIn) co
 
 void USPInventoryComponent::RemoveSingleinstanceOfItem(USPItemBase* ItemToRemove)
 {
+	
 	InventoryMiniContents.RemoveSingle(ItemToRemove);
-	//OnInventoryUpdated.Broadcast(InventoryContents);
+
 }
+
+
 
 int32 USPInventoryComponent::RemoveAmountOfItem(USPItemBase* ItemIn, int32 DesiredAmountToRemove)
 {
@@ -100,6 +119,54 @@ void USPInventoryComponent::SplitExistingStack(USPItemBase* ItemIn, const int32 
 		RemoveAmountOfItem(ItemIn, AmountToSplit);
 		AddNewItem(ItemIn, AmountToSplit);
 	}
+}
+
+void USPInventoryComponent::MakingPotion()
+{
+	UE_LOG(LogTemp, Warning, TEXT("MakingPotion"));
+	int Blue = 0;
+	int Yellow = 0;
+	int Red = 0;
+	for(USPItemBase* Item : InventoryMakeContents)
+	{
+		FString ItemName = Item->ItemTextData.Name.ToString();
+		if (ItemName == TEXT("BP"))
+		{
+			Blue++;
+		}
+		else if (ItemName == TEXT("YP"))
+		{
+			Yellow++;
+		}
+		else if (ItemName == TEXT("RP"))
+		{
+			Red++;
+		}
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("blue %d Yellow %d Red %d"),Blue, Yellow, Red)
+	FName DesiredItemID = "HAPPY";
+	if(Blue == 2 && Yellow == 1)
+	{
+		DesiredItemID = "G_Potion";
+	}
+	else if(Blue == 1 && Red == 2)
+	{
+		DesiredItemID = "P_Potion";
+	}
+	else if(Red == 1 && Yellow ==2)
+	{
+		DesiredItemID = "O_Potion";
+	}
+	const FItemData* ItemData = ItemDataTable->FindRow<FItemData>(DesiredItemID, DesiredItemID.ToString());
+	// 원하는 항목 찾기
+	USPItemBase* Item = NewObject<USPItemBase>(); 
+	Item->ID = ItemData->ID;
+	Item->ItemType = ItemData->ItemType;
+	Item->ItemTextData = ItemData->ItemTextData;
+	Item->ItemNumericData = ItemData->ItemNumericData;
+	Item->ItemAssetData = ItemData->ItemAssetData;
+	HandleAddItem(Item);
 }
 
 

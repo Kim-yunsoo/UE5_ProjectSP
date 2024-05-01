@@ -6,6 +6,7 @@
 #include "Blueprint/WidgetTree.h"
 #include "UI/Inventory/SPInventoryItemSlot.h"
 #include "Character/SPCharacterPlayer.h"
+#include "Component/SPInventoryComponent.h"
 #include "Components/SizeBox.h"
 #include "Components/WrapBox.h"
 #include "UI/Inventory/SPItemDragDropOperation.h"
@@ -77,10 +78,19 @@ bool USPMakingPotionWidget::NativeOnDrop(const FGeometry& InGeometry, const FDra
 			}
 		}
 		
-		UE_LOG(LogTemp, Warning, TEXT("%s"), *ItemDragDrop->SourceItem->ItemTextData.Name.ToString());
 		//UE_LOG(LogTemp, Warning, TEXT("HERE5"));
 		if (ClosestDropWidget)
 		{
+			// if(ClosestDropWidget->IsChildOf(ClosestDropWidget))
+			// {
+			// 	ClosestDropWidget->ClearChildren();
+			// 	UE_LOG(LogTemp, Warning, TEXT("Child"))
+			// }
+			// else
+			// {
+			// 	UE_LOG(LogTemp, Warning, TEXT("NoChild"))
+			//
+			// }
 			ClosestDropWidget->ClearChildren();
 			USPInventoryItemSlot* ItemSlot = CreateWidget<USPInventoryItemSlot>(this, InventorySlotClass);
 			if(!ItemSlot)
@@ -97,9 +107,6 @@ bool USPMakingPotionWidget::NativeOnDrop(const FGeometry& InGeometry, const FDra
 			return true;
 		}
 	}
-
-	//3가지 다 성공하면 물약 얻기 
-	
 	return false;
 }
 

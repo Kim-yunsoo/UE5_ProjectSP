@@ -86,6 +86,10 @@ public:
 
 	UFUNCTION(Category = "Inventory")	
 	USPItemBase* FindMatchingItem(USPItemBase* ItemIn) const;
+
+	UFUNCTION(Category = "Inventory")	
+	void RemoveInventorMakeContents(USPItemBase* ItemToRemove);
+	
 	UFUNCTION(Category = "Inventory")
 	USPItemBase* FindNextItemByID(USPItemBase* ItemIn) const;
 	UFUNCTION(Category = "Inventory")
@@ -96,7 +100,13 @@ public:
 	int32 RemoveAmountOfItem(USPItemBase* ItemIn, int32 DesiredAmountToRemove); //인벤토리는 있고 부분적으로 삭제
 	UFUNCTION(Category = "Inventory")
 	void SplitExistingStack(USPItemBase* ItemIn, const int32 AmountToSplit);
-
+	
+	UPROPERTY(EditInstanceOnly, Category = "Inventory | Item Initialization")
+	TObjectPtr<UDataTable> ItemDataTable;
+	
+	UFUNCTION(Category = "Inventory")
+	void MakingPotion();
+	
 	UFUNCTION(Category = "Inventory")
 	FORCEINLINE float GetInventoryTotalWeight() const { return InventoryTotalWeight;}; //필요 없을 듯
 	UFUNCTION(Category = "Inventory")
@@ -107,6 +117,12 @@ public:
 	FORCEINLINE TArray<USPItemBase*> GetInventoryContents() const{return InventoryContents;};
 	UFUNCTION(Category = "Inventory")
 	FORCEINLINE TArray<USPItemBase*> GetInventorMiniContents() {return InventoryMiniContents;};
+	UFUNCTION(Category = "Inventory")
+	FORCEINLINE TArray<USPItemBase*> GetInventorMakeContents() {return InventoryMakeContents;};
+
+	UFUNCTION(Category = "Inventory")
+	FORCEINLINE void AddInventorMakeContents(USPItemBase* Item) {InventoryMakeContents.Add(Item);};
+	
 	UFUNCTION(Category = "Inventory")
 	FORCEINLINE void SetSlotsCapacity(const int32 NewSlotsCapacity){InventorySlotsCapacity = NewSlotsCapacity;};
 	UFUNCTION(Category = "Inventory")
@@ -121,12 +137,16 @@ protected:
 	int32 InventorySlotsCapacity;
 	UPROPERTY(VisibleAnywhere, Category = "Inventory")
 	float inventoryWeightCapacity;
+
 	
 	UPROPERTY(VisibleAnywhere, Category = "Inventory")
 	TArray<USPItemBase*> InventoryContents;
 
 	UPROPERTY(VisibleAnywhere, Category = "Inventory")
 	TArray<USPItemBase *> InventoryMiniContents;
+
+	UPROPERTY(VisibleAnywhere, Category = "Inventory")
+	TArray<USPItemBase *> InventoryMakeContents;
 	
 	FItemAddResult HandleNonStackableItems(USPItemBase* ItemIn, int32 RequestedAddAmount);
 	int32 HandleStackableItems(USPItemBase* ItemIn, int32 RequestedAddAmount);
