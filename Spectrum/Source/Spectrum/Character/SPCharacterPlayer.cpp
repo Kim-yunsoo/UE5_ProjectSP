@@ -688,7 +688,10 @@ void ASPCharacterPlayer::HandleMontageAnimNotify(FName NotifyName,
 
 	if (NotifyName == FName("TeleSkillNotify"))
 	{
-		TeleSkillComponent->SkillAction();
+		if (HasAuthority())
+		{
+			TeleSkillComponent->SkillAction();
+		}
 	}
 }
 
@@ -923,7 +926,7 @@ void ASPCharacterPlayer::ServerRPCTeleSkill_Implementation(float AttackStartTime
 	if (bIsActiveTeleSkill)
 	{
 		bIsActiveTeleSkill = false;
-		// IceSkillComponent->ActivetedTimeStamp = GetWorld()->GetTime().GetWorldTimeSeconds();
+		TeleSkillComponent->ActivetedTimeStamp = GetWorld()->GetTime().GetWorldTimeSeconds();
 		AttackTimeDifference = GetWorld()->GetTimeSeconds() - AttackStartTime;
 		AttackTimeDifference = FMath::Clamp(AttackTimeDifference, 0.0f, SlowAttackTime - 0.01f);
 
@@ -1430,6 +1433,7 @@ void ASPCharacterPlayer::SetupHUDWidget(USPHUDWidget* InUserWidget)
 	// }
 	SlowSkillComponent->OnSlowCDChange.AddUObject(InUserWidget, &USPHUDWidget::UpdateSlowCDTime);
 	IceSkillComponent->OnIceCDChange.AddUObject(InUserWidget, &USPHUDWidget::UpdateIceCDTime);
+	TeleSkillComponent->OnTeleCDChange.AddUObject(InUserWidget, &USPHUDWidget::UpdateTeleCDTime);
 }
 
 void ASPCharacterPlayer::PerformInteractionCheck()
@@ -1693,11 +1697,11 @@ void ASPCharacterPlayer::HitIceSkillResult()
 	                                       ), 5, false, -1.0f);
 }
 
-void ASPCharacterPlayer::HitTeleSkillResult()
+void ASPCharacterPlayer::HitTeleSkillResult(const FVector TeleportLocation)
 {
 	// FVector(((2620.000000,-60.000000,5220.000000)));
-	FVector TPPoint = FVector(16270.000000,2720.000000,3560.000000);
-	this->TeleportTo(TPPoint, this->GetActorRotation(), false, true);
+	// FVector TPPoint = FVector(16270.000000,2720.000000,3560.000000);
+	this->TeleportTo(TeleportLocation, this->GetActorRotation(), false, true);
 	// this-(FVector(((2620.000000,-60.000000,5220.000000))));
 	// this->SetActorRelativeLocation(FVector((16000.0,-1160.000000,3960.000000)));
 	// this->GetActorLocation();

@@ -523,7 +523,7 @@ public:
 
 	virtual void HitSlowSkillResult() override;
 	virtual void HitIceSkillResult() override;
-	virtual void HitTeleSkillResult() override;
+	virtual void HitTeleSkillResult(const FVector TeleportLocation) override;
 
 	bool IsMontagePlaying();
 

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Skill/SkillActor/SPSkillActorBase.h"
+#include "Data/SPTeleportData.h"
 #include "SPTeleSkillActor.generated.h"
 
 /**
@@ -18,7 +19,7 @@ class SPECTRUM_API ASPTeleSkillActor : public ASPSkillActorBase
 
 protected:
 	UFUNCTION(NetMulticast, Unreliable)
-	void MultiRPCTeleSkill(const FHitResult& Hit );
+	void MultiRPCTeleSkill(const FHitResult& Hit , const FVector TeleportLocation);
 	virtual void BeginPlay() override;
 
 	UFUNCTION()
@@ -26,4 +27,9 @@ protected:
 						   UPrimitiveComponent* OtherComp, FVector NormalImpulse,
 						   const FHitResult& Hit);
 
+public:
+	UPROPERTY()
+	TObjectPtr<UDataTable> TPData;
+
+	FTeleportRangeRowBase* RangeData;
 };

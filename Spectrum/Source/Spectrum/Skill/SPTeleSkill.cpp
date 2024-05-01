@@ -35,11 +35,6 @@ void USPTeleSkill::TickComponent(float DeltaTime, ELevelTick TickType, FActorCom
 		return;
 	}
 	FGameTime CurrentGameTime = GetWorld()->GetTime();
-	// if(bIsOnce)
-	// {
-	// 	ActivetedTimeStamp =  CurrentGameTime.GetWorldTimeSeconds();
-	// }
-
 	if (CurrentGameTime.GetWorldTimeSeconds() < ActivetedTimeStamp + CoolDown)
 	{
 		// UE_LOG(LogTemp,Log,TEXT("%f"),CurrentGameTime.GetWorldTimeSeconds() - ActivetedTimeStamp);

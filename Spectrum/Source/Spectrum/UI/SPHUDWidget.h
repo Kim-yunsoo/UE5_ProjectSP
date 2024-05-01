@@ -41,6 +41,9 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<class USPSkillWidget> IceSkillWidget;
+
+	UPROPERTY()
+	TObjectPtr<class USPSkillWidget> TeleSkillWidget;
 	
 public:
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
@@ -59,6 +62,7 @@ public:
 
 	void UpdateSlowCDTime(float NewCurrentTime);
 	void UpdateIceCDTime(float NewCurrentTime);
+	void UpdateTeleCDTime(float NewCurrentTime);
 	void ShowInteractionWidget();
 	void HideInteractionWidget();
 	void UpdateInteractionWidget(const FInteractableData* InteractableData);

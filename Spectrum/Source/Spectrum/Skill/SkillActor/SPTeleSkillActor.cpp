@@ -4,6 +4,7 @@
 #include "Skill/SkillActor/SPTeleSkillActor.h"
 
 #include "Components/BoxComponent.h"
+#include "Data/SPTeleportData.h"
 #include "Interface/SPSkillInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystemComponent.h"
@@ -29,6 +30,14 @@ ASPTeleSkillActor::ASPTeleSkillActor()
 	{
 		EmitterHit = HitRef.Object;
 	}
+
+
+	static ConstructorHelpers::FObjectFinder<UDataTable> TPRef(
+		TEXT("/Script/Engine.DataTable'/Game/Spectrum/Data/DT_TeleportData.DT_TeleportData'"));
+	if(TPRef.Object)
+	{
+		TPData= TPRef.Object;
+	}
 }
 
 void ASPTeleSkillActor::BeginPlay()
@@ -36,26 +45,40 @@ void ASPTeleSkillActor::BeginPlay()
 	Super::BeginPlay();
 	BoxCollision->OnComponentHit.AddDynamic(this, &ASPTeleSkillActor::OnBoxCollisionHit);
 
+	RangeData = TPData->FindRow<FTeleportRangeRowBase>(FName(TEXT("TeleportData")),"");
 	if (HasAuthority())
 	{
 		this->SetReplicates(true);
 		this->AActor::SetReplicateMovement(true);
 	}
+	//	FColorData* ColorRow = Table->FindRow<FColorData>(RowName, "");
+
 }
 
 void ASPTeleSkillActor::OnBoxCollisionHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	if (HasAuthority())
+	if (HasAuthority()) //여기서 위치 랜덤 정하고 보내기 
 	{
-		MultiRPCTeleSkill(Hit);
-		this->SetActorHiddenInGame(true);
-		this->SetLifeSpan(0.1f);
+		// float RandomRow = FMath::RandRange()
+
+		if(RangeData)
+		{
+			float TeleportY = FMath::RandRange(RangeData->MinRow,RangeData->MaxRow);
+			float TeleportX = FMath::RandRange(RangeData->MinCol,RangeData->MaxCol);
+			float TeleportZ = RangeData->TeleportZ;
+			
+			MultiRPCTeleSkill(Hit,FVector(TeleportX,TeleportY,TeleportZ));
+			this->SetActorHiddenInGame(true);
+			this->SetLifeSpan(0.1f);
+			
+		}
+		
 	}
 }
 
 
-void ASPTeleSkillActor::MultiRPCTeleSkill_Implementation(const FHitResult& Hit)
+void ASPTeleSkillActor::MultiRPCTeleSkill_Implementation(const FHitResult& Hit ,const FVector TeleportLocation)
 {
 	FVector HitLocation = Hit.ImpactPoint;
 	if(bIsOnce)
@@ -71,7 +94,6 @@ void ASPTeleSkillActor::MultiRPCTeleSkill_Implementation(const FHitResult& Hit)
 	ISPSkillInterface* CheckIceAction = Cast<ISPSkillInterface>(Hit.GetActor());
 	if (CheckIceAction)
 	{
-		CheckIceAction->HitTeleSkillResult();
+		CheckIceAction->HitTeleSkillResult(TeleportLocation);
 	}
-
 }
