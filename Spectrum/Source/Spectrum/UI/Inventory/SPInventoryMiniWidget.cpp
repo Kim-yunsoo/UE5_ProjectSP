@@ -11,17 +11,22 @@
 
 class USPItemDragDropOperation;
 
-void USPInventoryMiniWidget::RefreshMiniInventory(TArray<TObjectPtr<USPItemBase>> Inventory)
+void USPInventoryMiniWidget::RefreshMiniInventory(TArray<USPItemBase*> Inventory)
 {
+	
 	if(InventoryReference && InventorySlotClass)
 	{
 		InventoryPanel->ClearChildren();
 
 		for(USPItemBase* const& InventoryItem : InventoryReference->GetInventorMiniContents())
 		{
-			USPInventoryItemSlot* ItemSlot = CreateWidget<USPInventoryItemSlot>(this, InventorySlotClass);
-			ItemSlot->SetItemReference(InventoryItem);
-			InventoryPanel->AddChildToWrapBox(ItemSlot);
+			// if(InventoryItem->Quantity)
+			// {
+				USPInventoryItemSlot* ItemSlot = CreateWidget<USPInventoryItemSlot>(this, InventorySlotClass);
+				ItemSlot->SetItemReference(InventoryItem);
+				InventoryPanel->AddChildToWrapBox(ItemSlot);
+			// }
+
 		}
 		SetInfoText();
 	}

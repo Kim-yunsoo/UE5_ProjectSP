@@ -19,6 +19,7 @@ USPItemBase* USPInventoryComponent::FindMatchingItem(USPItemBase* ItemIn) const
 {
 	if (ItemIn)
 	{
+		UE_LOG(LogTemp,Warning, TEXT("FindMatchingItem"));
 		if(InventoryContents.Contains(ItemIn) || InventoryMiniContents.Contains(ItemIn))
 		{
 			return ItemIn;
@@ -33,7 +34,7 @@ USPItemBase* USPInventoryComponent::FindNextItemByID(USPItemBase* ItemIn) const
 	if(ItemIn)
 	{
 		//이중포인터
-		if(const TArray<TObjectPtr<USPItemBase>>::ElementType* Result = InventoryContents.FindByKey(ItemIn))
+		if(const TArray<USPItemBase*>::ElementType* Result = InventoryContents.FindByKey(ItemIn))
 		{
 			return *Result;
 		}
@@ -47,7 +48,7 @@ USPItemBase* USPInventoryComponent::FindNextPartialStack(USPItemBase* ItemIn) co
 
 	if(ItemIn->ItemType==EItemType::IngredientPotion)
 	{
-		if(const TArray<TObjectPtr<USPItemBase>>::ElementType* Result =
+		if(const TArray<USPItemBase*>::ElementType* Result =
 		InventoryMiniContents.FindByPredicate([&ItemIn](const USPItemBase* InventoryItem)
 		{
 			return InventoryItem->ID == ItemIn->ID; //&& !InventoryItem->IsFullItemStack();
@@ -59,7 +60,7 @@ USPItemBase* USPInventoryComponent::FindNextPartialStack(USPItemBase* ItemIn) co
 	}
 	else
 	{
-		if(const TArray<TObjectPtr<USPItemBase>>::ElementType* Result =
+		if(const TArray<USPItemBase*>::ElementType* Result =
 		InventoryContents.FindByPredicate([&ItemIn](const USPItemBase* InventoryItem)
 		{
 			return InventoryItem->ID == ItemIn->ID; //&& !InventoryItem->IsFullItemStack();
@@ -75,15 +76,19 @@ USPItemBase* USPInventoryComponent::FindNextPartialStack(USPItemBase* ItemIn) co
 
 void USPInventoryComponent::RemoveSingleinstanceOfItem(USPItemBase* ItemToRemove)
 {
-	InventoryContents.RemoveSingle(ItemToRemove);
-	OnInventoryUpdated.Broadcast(InventoryContents);
+	InventoryMiniContents.RemoveSingle(ItemToRemove);
+	//OnInventoryUpdated.Broadcast(InventoryContents);
 }
 
 int32 USPInventoryComponent::RemoveAmountOfItem(USPItemBase* ItemIn, int32 DesiredAmountToRemove)
 {
 	const int32 ActualAmountToRemove = FMath::Min(DesiredAmountToRemove, ItemIn->Quantity);
 	ItemIn->SetQuantity(ItemIn->Quantity- ActualAmountToRemove);
+	if(ItemIn->Quantity == 0)
+		RemoveSingleinstanceOfItem(ItemIn);
 	OnInventoryUpdated.Broadcast(InventoryContents);
+	OnInventoryMiniUpdated.Broadcast(InventoryMiniContents);
+	UE_LOG(LogTemp, Warning, TEXT("RemoveAmountOfItem"));
 
 	return ActualAmountToRemove;
 }
@@ -193,49 +198,30 @@ int32 USPInventoryComponent::HandleStackableItemsMini(USPItemBase* ItemIn, int32
 	//AddNewItem(ItemIn, 1);
 	int32 AmountToDistribute = RequestedAddAmount;
 	USPItemBase* Existingitem = FindNextPartialStack(ItemIn);
+	//UE_LOG(LogTemp,Warning, TEXT("here1"));
 	//Todo 10개 제한으로 다시 바꾸기 
-	while(Existingitem)
+	if (Existingitem)
 	{
 		const int32 AmountToMakeFullStack = CalculatenumberForFullStack(Existingitem, AmountToDistribute);
 		const int32 WeightLimitAddAmount = CalculateWeightAddAmount(Existingitem, AmountToMakeFullStack);
 		if(WeightLimitAddAmount > 0)
 		{
 			Existingitem->SetQuantity(Existingitem->Quantity + WeightLimitAddAmount);
-
 			AmountToDistribute -= WeightLimitAddAmount;
-			ItemIn->SetQuantity(AmountToDistribute);
-			if(InventoryTotalWeight >= inventoryWeightCapacity)
-			{
-				OnInventoryMiniUpdated.Broadcast(InventoryMiniContents);
-				return RequestedAddAmount - AmountToDistribute;
-			}
+			//UE_LOG(LogTemp,Warning, TEXT("here4"));
 		}
-		else if (WeightLimitAddAmount <= 0)
-		{
-			if(AmountToDistribute != RequestedAddAmount)
-			{
-				OnInventoryMiniUpdated.Broadcast(InventoryMiniContents);
-				return RequestedAddAmount - AmountToDistribute;
-			}
-			return 0;
-		}
-		if(AmountToDistribute <= 0)
-		{
-			OnInventoryMiniUpdated.Broadcast(InventoryMiniContents);
-			return RequestedAddAmount;
-		}
-		Existingitem = FindNextPartialStack(ItemIn);
 	}
-	if(InventoryMiniContents.Num() + 1 <= InventorySlotsCapacity)
+	else if(InventoryMiniContents.Num() + 1 <= InventorySlotsCapacity)
 	{
 		const int32 WeightLimitAddAmount = CalculateWeightAddAmount(ItemIn, AmountToDistribute);
 		if(WeightLimitAddAmount > 0)
 		{
-			UE_LOG(LogTemp,Warning, TEXT("here2"));
+			//UE_LOG(LogTemp,Warning, TEXT("here2"));
 			AddNewItem(ItemIn, AmountToDistribute);
 			return RequestedAddAmount;
 		}
 	}
+	//UE_LOG(LogTemp,Warning, TEXT("here3"));
 
 	OnInventoryMiniUpdated.Broadcast(InventoryMiniContents);
 	return RequestedAddAmount - AmountToDistribute;
@@ -245,15 +231,8 @@ FItemAddResult USPInventoryComponent::HandleAddItem(USPItemBase* InputItem)
 {
 	if(GetOwner())
 	{
-		const int32 InitialRequestedAddmount = InputItem->Quantity;
+		const int32 InitialRequestedAddmount = 1;
 
-		//쌓을 수 없는 것
-		if(!InputItem->ItemNumericData.bIsStackable)
-		{
-			return HandleNonStackableItems(InputItem, InitialRequestedAddmount);
-		}
-
-		//쌓을 수 있는 것
 		int32 StackableAmountAdded = 0;
 		if(InputItem->ItemType == EItemType::IngredientPotion)
 		{
@@ -265,27 +244,27 @@ FItemAddResult USPInventoryComponent::HandleAddItem(USPItemBase* InputItem)
 			StackableAmountAdded = HandleStackableItems(InputItem, InitialRequestedAddmount);
 		}
 	
-		if(StackableAmountAdded == InitialRequestedAddmount) //모두 다 넣기 
-		{
-			//return added all result;
-			return FItemAddResult::AddedAll(InitialRequestedAddmount, FText::Format(
-				FText::FromString("Successfully add {0} {1} to the inventory."), InitialRequestedAddmount, InputItem->ItemTextData.Name));
-		}
-
-		if(StackableAmountAdded < InitialRequestedAddmount && StackableAmountAdded > 0)
-		{
-			//return added partial result; //부분만 넣기
-			return FItemAddResult::AddedPartial(InitialRequestedAddmount, FText::Format(
-			FText::FromString("Partial amount of {0} to the inventory. Number added = {1}"), StackableAmountAdded));
-		}
-
-		if(StackableAmountAdded <= 0)
-		{
-			//return added none result; //다 넣지 않기
-			return FItemAddResult::AddedNone(FText::Format(
-			FText::FromString("Couldn't add {0} to the inventory, no remaining inventory slots, or invalid item"),
-			InputItem->ItemTextData.Name));
-		}
+		// if(StackableAmountAdded == InitialRequestedAddmount) //모두 다 넣기 
+		// {
+		// 	//return added all result;
+		// 	return FItemAddResult::AddedAll(InitialRequestedAddmount, FText::Format(
+		// 		FText::FromString("Successfully add {0} {1} to the inventory."), InitialRequestedAddmount, InputItem->ItemTextData.Name));
+		// }
+		//
+		// if(StackableAmountAdded < InitialRequestedAddmount && StackableAmountAdded > 0)
+		// {
+		// 	//return added partial result; //부분만 넣기
+		// 	return FItemAddResult::AddedPartial(InitialRequestedAddmount, FText::Format(
+		// 	FText::FromString("Partial amount of {0} to the inventory. Number added = {1}"), StackableAmountAdded));
+		// }
+		//
+		// if(StackableAmountAdded <= 0)
+		// {
+		// 	//return added none result; //다 넣지 않기
+		// 	return FItemAddResult::AddedNone(FText::Format(
+		// 	FText::FromString("Couldn't add {0} to the inventory, no remaining inventory slots, or invalid item"),
+		// 	InputItem->ItemTextData.Name));
+		// }
 		
 	}
 	//check(false);

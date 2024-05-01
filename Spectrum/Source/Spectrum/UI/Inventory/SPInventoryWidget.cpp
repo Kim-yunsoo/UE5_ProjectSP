@@ -9,7 +9,7 @@
 #include "Components/WrapBox.h"
 #include "Potion/SPItemBase.h"
 
-void USPInventoryWidget::RefreshInventory(TArray<TObjectPtr<USPItemBase>> Inventory)
+void USPInventoryWidget::RefreshInventory(TArray<USPItemBase*> Inventory)
 {
 	if(InventoryReference && InventorySlotClass)
 	{

@@ -16,6 +16,8 @@ void USPMakingPotionWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 	PlayerCharacter = Cast<ASPCharacterPlayer>(GetOwningPlayerPawn());
+	
+
 	// ASPMakePotion* PotionMaker = Cast<ASPMakePotion>(GetWorld()->SpawnActor(ASPMakePotion::StaticClass()));
 	// if (PotionMaker)
 	// {
@@ -48,15 +50,15 @@ bool USPMakingPotionWidget::NativeOnDrop(const FGeometry& InGeometry, const FDra
 
 		USizeBox* ClosestDropWidget = nullptr;
 		float MinDistanceSquared = TNumericLimits<float>::Max();
-		UE_LOG(LogTemp, Warning, TEXT("HERE"));
+		//UE_LOG(LogTemp, Warning, TEXT("HERE"));
 		// ItemSlot을 넣을 Drop 위젯을 찾음
 		for (USizeBox* DropWidget : DropWidgets)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("HERE1"));
+			//UE_LOG(LogTemp, Warning, TEXT("HERE1"));
 
 			if (DropWidget)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("HERE2"));
+				//UE_LOG(LogTemp, Warning, TEXT("HERE2"));
 
 				// Drop 위젯의 절대 위치를 가져옴
 				FVector2D DropWidgetLocation = DropWidget->GetCachedGeometry().GetAbsolutePosition();
@@ -67,33 +69,54 @@ bool USPMakingPotionWidget::NativeOnDrop(const FGeometry& InGeometry, const FDra
 				// 가장 가까운 Drop 위젯을 찾음
 				if (DistanceSquared < MinDistanceSquared)
 				{
-					UE_LOG(LogTemp, Warning, TEXT("HERE3"));
+					//UE_LOG(LogTemp, Warning, TEXT("HERE3"));
 
 					MinDistanceSquared = DistanceSquared;
 					ClosestDropWidget = DropWidget;
 				}
 			}
 		}
-		UE_LOG(LogTemp, Warning, TEXT("HERE4"));
-		if(ClosestDropWidget)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("HERE5"));
-
-		}
+		
+		UE_LOG(LogTemp, Warning, TEXT("%s"), *ItemDragDrop->SourceItem->ItemTextData.Name.ToString());
+		//UE_LOG(LogTemp, Warning, TEXT("HERE5"));
 		if (ClosestDropWidget)
 		{
-			// 해당 Drop 위젯에 아이템 추가
-			// if (ClosestDropWidget->GetVisibility() == ESlateVisibility::Visible)
-			// {
-				UE_LOG(LogTemp, Warning, TEXT("HERE!?????"));
-				USPInventoryItemSlot* ItemSlot = CreateWidget<USPInventoryItemSlot>(this, InventorySlotClass);
+			ClosestDropWidget->ClearChildren();
+			USPInventoryItemSlot* ItemSlot = CreateWidget<USPInventoryItemSlot>(this, InventorySlotClass);
+			if(!ItemSlot)
+				UE_LOG(LogTemp, Warning, TEXT("No ItemSlot"))
+			else
+			{
 				ItemSlot->SetItemReference(ItemDragDrop->SourceItem);
-				ClosestDropWidget->AddChild(ItemSlot);
-				return true;
-			//}
+				ItemSlot->HideText();
+			}
+		
+			ClosestDropWidget->AddChild(ItemSlot);
+			//인벤토리 숫자 줄게 하기
+			PlayerCharacter->DragItem(ItemDragDrop->SourceItem,1);
+			return true;
 		}
 	}
+
+	//3가지 다 성공하면 물약 얻기 
+	
 	return false;
+}
+
+FReply USPMakingPotionWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
+{
+	FReply Reply = Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
+	// UE_LOG(LogTemp, Warning, TEXT("BACK Inventory1"));
+	// if(InMouseEvent.GetEffectingButton() == EKeys::RightMouseButton)
+	// {
+	// 	ASPCharacterPlayer* Player = Cast<ASPCharacterPlayer>(GetOwningPlayerPawn());
+	// 	Player->BackItem(ItemReference, 1);
+	// 	UE_LOG(LogTemp, Warning, TEXT("BACK Inventory2"));
+	// 	return Reply.Handled();
+	// }
+
+	return Reply.Unhandled();
+
 }
 
 // void USPMakingPotionWidget::UpdatePotionWidget(bool IsVisible)

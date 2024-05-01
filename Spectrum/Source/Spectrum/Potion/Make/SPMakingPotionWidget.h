@@ -9,6 +9,7 @@
 #include "SPMakingPotionWidget.generated.h"
 
 
+class USPInventoryItemSlot1;
 class USPInventoryComponent;
 class ASPCharacterPlayer;
 class USPInventoryComponent;
@@ -64,6 +65,10 @@ protected:
 	
 	virtual bool NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent,
 		UDragDropOperation* InOperation) override;
+	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
 	//void UpdatePotionWidget(bool IsVisible);
+
+	UPROPERTY(VisibleAnywhere, Category = "Inventory Slot")
+	TObjectPtr<USPItemBase> ItemReference;
 	
 };

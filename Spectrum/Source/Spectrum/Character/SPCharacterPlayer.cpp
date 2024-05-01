@@ -402,9 +402,7 @@ void ASPCharacterPlayer::BeginPlay()
 	SetCharacterControl(CurrentCharacterControlType);
 	GetMesh()->GetAnimInstance()->OnPlayMontageNotifyBegin.AddDynamic(
 		this, &ASPCharacterPlayer::HandleMontageAnimNotify);
-
 	//
-
 };
 
 void ASPCharacterPlayer::Tick(float DeltaTime)
@@ -415,7 +413,6 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 	{
 		PhysicsHandleComponent->SetTargetLocation(GravityArrow->K2_GetComponentLocation());
 	}
-
 	//
 	if(GetWorld()->TimeSince(InteractionData.LastInteractionCheckTime) > InteractionCheckFrequency)
 	{
@@ -1483,6 +1480,26 @@ void ASPCharacterPlayer::DropItem(USPItemBase* ItemToDrop, const int32 QuantityT
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Item to drop was somehow null"));
 	}
+}
+
+void ASPCharacterPlayer::DragItem(USPItemBase* ItemToDrop, const int32 QuantityToDrop)
+{
+	if(PlayerInventory->FindMatchingItem(ItemToDrop))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("DragItem"));
+		//ItemToDrop->Quantity -= 1;
+		//PlayerInventory->OnInventoryMiniUpdated.Broadcast(PlayerInventory->GetInventorMiniContents());
+		PlayerInventory->RemoveAmountOfItem(ItemToDrop, QuantityToDrop);
+		
+	}
+}
+
+void ASPCharacterPlayer::BackItem(USPItemBase* ItemToDrop, const int32 QuantityToDrop)
+{
+		UE_LOG(LogTemp, Warning, TEXT("BackItem"));
+		UE_LOG(LogTemp, Warning, TEXT("%s"), *ItemToDrop->ItemTextData.Name.ToString());
+
+		PlayerInventory->HandleAddItem(ItemToDrop);
 }
 
 

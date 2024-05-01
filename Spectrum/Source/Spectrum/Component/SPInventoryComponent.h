@@ -8,8 +8,8 @@
 
 class USPItemBase;
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnInventoryUpdated, const TArray<TObjectPtr<USPItemBase>>);
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnInventoryMiniUpdated, const TArray<TObjectPtr<USPItemBase>>);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnInventoryUpdated, const TArray<USPItemBase*>);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnInventoryMiniUpdated, const TArray<USPItemBase*>);
 
 
 
@@ -106,7 +106,7 @@ public:
 	UFUNCTION(Category = "Inventory")
 	FORCEINLINE TArray<USPItemBase*> GetInventoryContents() const{return InventoryContents;};
 	UFUNCTION(Category = "Inventory")
-	FORCEINLINE TArray<USPItemBase*> GetInventorMiniContents() const{return InventoryMiniContents;};
+	FORCEINLINE TArray<USPItemBase*> GetInventorMiniContents() {return InventoryMiniContents;};
 	UFUNCTION(Category = "Inventory")
 	FORCEINLINE void SetSlotsCapacity(const int32 NewSlotsCapacity){InventorySlotsCapacity = NewSlotsCapacity;};
 	UFUNCTION(Category = "Inventory")
@@ -123,10 +123,10 @@ protected:
 	float inventoryWeightCapacity;
 	
 	UPROPERTY(VisibleAnywhere, Category = "Inventory")
-	TArray<TObjectPtr<USPItemBase>> InventoryContents;
+	TArray<USPItemBase*> InventoryContents;
 
 	UPROPERTY(VisibleAnywhere, Category = "Inventory")
-	TArray<TObjectPtr<USPItemBase>> InventoryMiniContents;
+	TArray<USPItemBase *> InventoryMiniContents;
 	
 	FItemAddResult HandleNonStackableItems(USPItemBase* ItemIn, int32 RequestedAddAmount);
 	int32 HandleStackableItems(USPItemBase* ItemIn, int32 RequestedAddAmount);

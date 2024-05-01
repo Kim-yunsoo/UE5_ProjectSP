@@ -21,7 +21,7 @@ class SPECTRUM_API USPInventoryItemSlot : public USPUserWidget
 public:
 	FORCEINLINE void SetItemReference(USPItemBase* ItemIn) { ItemReference = ItemIn;};
 	FORCEINLINE USPItemBase* GetItemReference() const {return ItemReference;}
-
+	
 protected:
 	virtual void NativeOnInitialized() override;
 	virtual void NativeConstruct() override;
@@ -31,7 +31,8 @@ protected:
 	virtual bool NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent,
 		UDragDropOperation* InOperation) override;
 	virtual void NativeOnMouseLeave(const FPointerEvent& InMouseEvent) override;
-
+public:
+	void HideText();
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Inventory Slot")
 	TSubclassOf<USPDrageItemVisual> DragItemVisualClass;

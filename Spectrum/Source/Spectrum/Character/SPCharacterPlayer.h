@@ -373,6 +373,10 @@ public:
 
 // 아이템 드롭
 	void DropItem(USPItemBase* ItemToDrop, const int32 QuantityToDrop);
+
+	void DragItem(USPItemBase* ItemToDrop, const int32 QuantityToDrop);
+
+	void BackItem(USPItemBase* ItemToDrop, const int32 QuantityToDrop);
 public:
 	FORCEINLINE bool IsInteracting() const { return GetWorldTimerManager().IsTimerActive(TimerHandle_Interaction);};
 // ServerRPC
