@@ -40,13 +40,16 @@ void USpectrumGameInstance::ConnectToGameServer()
 		GameServerSession = MakeShared<PacketSession>(Socket);
 		GameServerSession->Run();		// 이제 멀티스레드로 돌아감
 
-		// 로비에서 캐릭터 선택창 띄우기
-		{ // 로그인	패킷 보내기
-			Protocol::C_LOGIN Pkt;
-			SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(Pkt);
-			SendPacket(SendBuffer);
-			
-		}
+		//// 로비에서 캐릭터 선택창 띄우기
+		//{ // 로그인	패킷 보내기
+		//	Protocol::C_LOGIN Pkt;
+		//	//SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(Pkt);
+
+		//	//SendPacket(SendBuffer);
+		//	Pkt.set_id("test");
+
+			//SEND_PACKET(Pkt);
+		//}
 
 	}
 	else
@@ -99,7 +102,7 @@ void USpectrumGameInstance::SendPacket(SendBufferRef SendBuffer)
 }
 
 
-void USpectrumGameInstance::HandleSpawn(const Protocol::ObjectInfo& ObjectInfo, bool IsMine)
+void USpectrumGameInstance::HandleSpawn(const Protocol::PlayerInfo& ObjectInfo, bool IsMine)
 {
 	if (Socket == nullptr || GameServerSession == nullptr)
 		return;
@@ -113,7 +116,7 @@ void USpectrumGameInstance::HandleSpawn(const Protocol::ObjectInfo& ObjectInfo, 
 	if (Players.Find(ObjectId) != nullptr)
 		return;
 
-	FVector SpawnLocation(ObjectInfo.pos_info().x(), ObjectInfo.pos_info().y(), ObjectInfo.pos_info().z());
+	//FVector SpawnLocation(ObjectInfo.pos_info().x(), ObjectInfo.pos_info().y(), ObjectInfo.pos_info().z());
 
 	if (IsMine)
 	{
@@ -170,31 +173,51 @@ void USpectrumGameInstance::HandleDespawn(const Protocol::S_DESPAWN& DespawnPkt)
 	}
 }
 
-
-
-void USpectrumGameInstance::HandleMove(const Protocol::S_MOVE& MovePkt)
+void USpectrumGameInstance::HandleLobby(const Protocol::S_ENTER_GAME& LobbyPkt)
 {
+	// 받은 정보 저장(자신의 학교, 성별)
 
-	if (Socket == nullptr || GameServerSession == nullptr)
-		return;
+}
 
-	auto* World = GetWorld();
-	if (World == nullptr)
-		return;
-
-	const uint64 ObjectId = MovePkt.info().object_id();
-	ASPCharacterPlayer** FindActor = Players.Find(ObjectId);
-	if (FindActor == nullptr)
-		return;
-
-	//ASPCharacterPlayer* Player = (*FindActor);
-	//if (Player->IsMyPlayer())
-	//	return;
-
-	//const Protocol::PositionInfo& Info = MovePkt.info();
-	////Player->SetPlayerInfo(Info);
+void USpectrumGameInstance::HandleLobby(const Protocol::S_LOGIN& LobbyPkt)
+{
+	// 받은 정보 저장(자신의 학교, 성별)
+	//const Protocol::PositionInfo& Info = LobbyPkt.info();
 	//Player->SetDestInfo(Info);
 
 }
 
+void USpectrumGameInstance::HandleRoom(const Protocol::S_ENTER_ROOM& RoomPkt)
+{
+	// 방 입장
+	// 방 안의 정보 저장(방에 있는 사람들 정보)
+}
+
+
+
+//void USpectrumGameInstance::HandleMove(const Protocol::S_MOVE& MovePkt)
+//{
+//
+//	if (Socket == nullptr || GameServerSession == nullptr)
+//		return;
+//
+//	auto* World = GetWorld();
+//	if (World == nullptr)
+//		return;
+//
+//	const uint64 ObjectId = MovePkt.info().object_id();
+//	ASPCharacterPlayer** FindActor = Players.Find(ObjectId);
+//	if (FindActor == nullptr)
+//		return;
+//
+//	//ASPCharacterPlayer* Player = (*FindActor);
+//	//if (Player->IsMyPlayer())
+//	//	return;
+//
+//	//const Protocol::PositionInfo& Info = MovePkt.info();
+//	////Player->SetPlayerInfo(Info);
+//	//Player->SetDestInfo(Info);
+//
+//}
+//
 

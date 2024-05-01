@@ -14,11 +14,8 @@ public:
 	bool HandleEnterPlayerLocked(PlayerRef player);
 	bool HandleLeavePlayerLocked(PlayerRef player);
 
-	void HandleMoveLocked(Protocol::C_MOVE& pkt);
 
-	void updateTick();
 
-	void createAllObject();
 
 private:
 	bool EnterObject(ObjectRef object);

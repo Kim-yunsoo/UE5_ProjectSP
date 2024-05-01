@@ -17,11 +17,10 @@ ASPObject::ASPObject()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	SetActorEnableCollision(true);
-	PrimaryActorTick.bCanEverTick = true;
+	// PrimaryActorTick.bCanEverTick = true;
 	MyColorType = ColorType::None;
 	//bHasBeenCalled = false; 
 	//MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
-
 	
 	ObjectMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ObjectMesh"));
 	ObjectMesh->SetCollisionProfileName(TEXT("PropCollision"));
@@ -29,8 +28,8 @@ ASPObject::ASPObject()
 	ObjectMesh->SetUseCCD(true);
 	ObjectMesh->SetRenderCustomDepth(true);
 	// ObjectMesh->SetIsReplicated(true);
-	bHasBeenCalled = true;
 	
+	bHasBeenCalled = true;
 
 	static ConstructorHelpers::FObjectFinder<UDataTable>GreenDataRef(TEXT("/Game/Spectrum/ColorData/DT_Green.DT_Green"));
 	if(GreenDataRef.Object)
@@ -99,28 +98,28 @@ void ASPObject::OnExplosionHit()
 }
 
 // Called every frame
-void ASPObject::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-	static float DelayTime = 1.0;
-	DelayTime -= DeltaTime;
-	if (DelayTime > 0.0f)
-	{
-		return;
-	}
-	DelayTime = 1.0;
-	bool Equal = UKismetMathLibrary::EqualEqual_VectorVector(ObjectLocation, GetActorLocation(), 0.0);
-	if (Equal)
-	{
-		ObjectMesh->SetSimulatePhysics(false);
-		ObjectLocation = GetActorLocation();
-	}
-	else
-	{
-		ObjectLocation = GetActorLocation();
-	}
-}
+// void ASPObject::Tick(float DeltaTime)
+// {
+// 	// Super::Tick(DeltaTime);
+// 	//
+// 	// static float DelayTime = 1.0;
+// 	// DelayTime -= DeltaTime;
+// 	// if (DelayTime > 0.0f)
+// 	// {
+// 	// 	return;
+// 	// }
+// 	// DelayTime = 1.0;
+// 	// bool Equal = UKismetMathLibrary::EqualEqual_VectorVector(ObjectLocation, GetActorLocation(), 0.0);
+// 	// if (Equal)
+// 	// {
+// 	// 	ObjectMesh->SetSimulatePhysics(false);
+// 	// 	ObjectLocation = GetActorLocation();
+// 	// }
+// 	// else
+// 	// {
+// 	// 	ObjectLocation = GetActorLocation();
+// 	// }
+// }
 
 
 void ASPObject::MultiRPCExplosionHit_Implementation()

@@ -41,6 +41,10 @@ protected:
 	
 	UPROPERTY()
 	TObjectPtr<class USPSkillWidget> SlowSkillWidget;
+
+
+	UPROPERTY()
+	TObjectPtr<class USPSkillWidget> IceSkillWidget;
 	
 public:
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
@@ -59,6 +63,7 @@ public:
 
 	void UpdateSlowCDTime(float NewCurrentTime);
 	void UpdateMakingPotionWidget(bool bIsVisible);
+	void UpdateIceCDTime(float NewCurrentTime);
 	void ShowInteractionWidget();
 	void HideInteractionWidget();
 	void UpdateInteractionWidget(const FInteractableData* InteractableData);

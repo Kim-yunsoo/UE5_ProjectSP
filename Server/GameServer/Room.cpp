@@ -24,15 +24,7 @@ bool Room::EnterRoom(ObjectRef object, bool randPos)
 
 	bool success = EnterObject(object);
 
-	// 랜덤 위치
-	if(randPos)
-	{
-		object->posInfo->set_x(Utils::GetRandom(-100.f, 100.f));
-		object->posInfo->set_y(0.f);
-		object->posInfo->set_z(Utils::GetRandom(-100.f, 100.f));
-		object->posInfo->set_yaw(Utils::GetRandom(0.f, 100.f));
-	}
-	
+
 
 	// 입장 사실을 신입 플레이어에게 알린다
 	if(auto player = dynamic_pointer_cast<Player>(object))
@@ -40,7 +32,7 @@ bool Room::EnterRoom(ObjectRef object, bool randPos)
 		Protocol::S_ENTER_GAME enterGamePkt;
 		enterGamePkt.set_success(success);
 
-		Protocol::ObjectInfo* playerInfo = new Protocol::ObjectInfo();
+		Protocol::PlayerInfo* playerInfo = new Protocol::PlayerInfo();
 		playerInfo->CopyFrom(*player->objectInfo);
 		enterGamePkt.set_allocated_player(playerInfo);
 		//enterGamePkt.release_player();
@@ -54,7 +46,7 @@ bool Room::EnterRoom(ObjectRef object, bool randPos)
 	{
 		Protocol::S_SPAWN spawnPkt;
 
-		Protocol::ObjectInfo* objectInfo = spawnPkt.add_players();
+		Protocol::PlayerInfo* objectInfo = spawnPkt.add_players();
 		objectInfo->CopyFrom(*object->objectInfo);
 
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(spawnPkt);
@@ -71,7 +63,7 @@ bool Room::EnterRoom(ObjectRef object, bool randPos)
 			if (item.second->IsPlayer() == false)		// 플레이어한테만 전송. 물건들한테는 보낼 필요 없으니까!
 				continue;
 
-			Protocol::ObjectInfo* playerInfo = spawnPkt.add_players();
+			Protocol::PlayerInfo* playerInfo = spawnPkt.add_players();
 			playerInfo->CopyFrom(*item.second->objectInfo);
 		}
 
@@ -124,18 +116,14 @@ bool Room::HandleEnterPlayerLocked(PlayerRef player)
 
 	bool success = EnterObject(player);
 
-	// 플레이어 위치
-	player->posInfo->set_x(Utils::GetRandom(-100.f, -50.f));
-	player->posInfo->set_y(0.f);
-	player->posInfo->set_z(Utils::GetRandom(50.f, 100.f));
-	player->posInfo->set_yaw(Utils::GetRandom(0.f, 100.f));
+
 
 	// 입장 사실을 신입 플레이어에게 알린다
 	{
 		Protocol::S_ENTER_GAME enterGamePkt;
 		enterGamePkt.set_success(success);
 
-		Protocol::ObjectInfo* playerInfo = new Protocol::ObjectInfo();
+		Protocol::PlayerInfo* playerInfo = new Protocol::PlayerInfo();
 		playerInfo->CopyFrom(*player->objectInfo);
 		enterGamePkt.set_allocated_player(playerInfo);
 		//enterGamePkt.release_player();
@@ -149,7 +137,7 @@ bool Room::HandleEnterPlayerLocked(PlayerRef player)
 	{
 		Protocol::S_SPAWN spawnPkt;
 
-		Protocol::ObjectInfo* playerInfo = spawnPkt.add_players();
+		Protocol::PlayerInfo* playerInfo = spawnPkt.add_players();
 		playerInfo->CopyFrom(*player->objectInfo);
 
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(spawnPkt);
@@ -165,7 +153,7 @@ bool Room::HandleEnterPlayerLocked(PlayerRef player)
 			if(item.second->IsPlayer() == false)		// 플레이어 정보만 보내줌. 물건들 정보는 뒤에서 따로
 				continue;
 
-			Protocol::ObjectInfo* playerInfo = spawnPkt.add_players();
+			Protocol::PlayerInfo* playerInfo = spawnPkt.add_players();
 			playerInfo->CopyFrom(*item.second->objectInfo);
 		}
 
@@ -217,53 +205,9 @@ bool Room::HandleLeavePlayerLocked(PlayerRef player)
 	//return LeaveRoom(player);
 }
 
-void Room::HandleMoveLocked(Protocol::C_MOVE& pkt)
-{
-	WRITE_LOCK;
-
-	const uint64 objectId = pkt.info().object_id();
-	if (_player.find(objectId) == _player.end())
-		return;
-
-	// 적용
-	PlayerRef player = dynamic_pointer_cast<Player>(_player[objectId]);
-	player->posInfo->CopyFrom(pkt.info());
-
-	// 이동 
-	{
-		Protocol::S_MOVE movePkt;
-		{
-			Protocol::PositionInfo* info = movePkt.mutable_info();
-			info->CopyFrom(pkt.info());
-		}
-
-		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(movePkt);
-		Broadcast(sendBuffer);
-	}
-}
 
 
-void Room::createAllObject() // 배치될 물건 생성해서 _objects에 저장해둠
-{
-	//ThingRef thing = ObjectUtils::CreateThing();
 
-	//// 물건의 위치, id 설정
-	//Protocol::PositionInfo* posInfo = new Protocol::PositionInfo();
-	//posInfo->set_x(700.f);
-	//posInfo->set_y(-180.f);
-	//posInfo->set_z(120.f);
-	//posInfo->set_yaw(4.f);
-	//posInfo->set_object_id(thing->posInfo->object_id());		//
-
-	////EnterObject(thing);
-	//if (_objects.find(thing->objectInfo->object_id()) != _objects.end())
-	//	cout << " 이미 있는 오브젝트 재생성 " << endl;
-	//else
-	//	_objects.insert(make_pair(thing->posInfo->object_id(), thing));
-
-	//cout << thing->posInfo->object_id() << endl;
-
-}
 
 bool Room::EnterObject(ObjectRef object)
 {

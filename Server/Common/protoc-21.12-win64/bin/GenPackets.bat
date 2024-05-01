@@ -9,21 +9,21 @@ GenPackets.exe --path=./Protocol.proto --output=ServerPacketHandler --recv=C_ --
 
 IF ERRORLEVEL 1 PAUSE
 
-XCOPY /Y Enum.pb.h "../../../GameServer"
-XCOPY /Y Enum.pb.cc "../../../GameServer"
-XCOPY /Y Struct.pb.h "../../../GameServer"
-XCOPY /Y Struct.pb.cc "../../../GameServer"
-XCOPY /Y Protocol.pb.h "../../../GameServer"
-XCOPY /Y Protocol.pb.cc "../../../GameServer"
-XCOPY /Y ServerPacketHandler.h "../../../GameServer"
+XCOPY /Y Enum.pb.h "D:/Unreal/UE5_Spectrum/Server/GameServer"
+XCOPY /Y Enum.pb.cc "D:/Unreal/UE5_Spectrum/Server/GameServer"
+XCOPY /Y Struct.pb.h "D:/Unreal/UE5_Spectrum/Server/GameServer"
+XCOPY /Y Struct.pb.cc "D:/Unreal/UE5_Spectrum/Server/GameServer"
+XCOPY /Y Protocol.pb.h "D:/Unreal/UE5_Spectrum/Server/GameServer"
+XCOPY /Y Protocol.pb.cc "D:/Unreal/UE5_Spectrum/Server/GameServer"
+XCOPY /Y ServerPacketHandler.h "D:/Unreal/UE5_Spectrum/Server/GameServer"
 
-XCOPY /Y Enum.pb.h "../../../../Spectrum/Source/Spectrum/Network"
-XCOPY /Y Enum.pb.cc "../../../../Spectrum/Source/Spectrum/Network"
-XCOPY /Y Struct.pb.h "../../../../Spectrum/Source/Spectrum/Network"
-XCOPY /Y Struct.pb.cc "../../../../Spectrum/Source/Spectrum/Network"
-XCOPY /Y Protocol.pb.h "../../../../Spectrum/Source/Spectrum/Network"
-XCOPY /Y Protocol.pb.cc "../../../../Spectrum/Source/Spectrum/Network"
-XCOPY /Y ClientPacketHandler.h "../../../../Spectrum/Source/Spectrum"
+XCOPY /Y Enum.pb.h "D:/Unreal/UE5_Spectrum/Spectrum/Source/Spectrum/Network"
+XCOPY /Y Enum.pb.cc "D:/Unreal/UE5_Spectrum/Spectrum/Source/Spectrum/Network"
+XCOPY /Y Struct.pb.h "D:/Unreal/UE5_Spectrum/Spectrum/Source/Spectrum/Network"
+XCOPY /Y Struct.pb.cc "D:/Unreal/UE5_Spectrum/Spectrum/Source/Spectrum/Network"
+XCOPY /Y Protocol.pb.h "D:/Unreal/UE5_Spectrum/Spectrum/Source/Spectrum/Network"
+XCOPY /Y Protocol.pb.cc "D:/Unreal/UE5_Spectrum/Spectrum/Source/Spectrum/Network"
+XCOPY /Y ClientPacketHandler.h "D:/Unreal/UE5_Spectrum/Spectrum/Source/Spectrum"
 
 DEL /Q /F *.pb.h
 DEL /Q /F *.pb.cc

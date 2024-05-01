@@ -45,7 +45,7 @@ protected: //ISPDamageInterface
 
 public:	
 	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	// virtual void Tick(float DeltaTime) override;
 public:
 	//UPROPERTY(EditAnywhere);
 	//TObjectPtr<UStaticMeshComponent> MeshComponent;
@@ -74,7 +74,7 @@ protected://DynamicMaterial
 	UPROPERTY()
 	TObjectPtr<class UMaterialInstanceDynamic> ChaosDynamic ;
 	
-	UPROPERTY()
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	ColorType MyColorType;
 
 	//Get Material Index

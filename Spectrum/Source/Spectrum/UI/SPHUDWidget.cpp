@@ -20,6 +20,7 @@ void USPHUDWidget::NativeConstruct()
 	Super::NativeConstruct();
 
 	SlowSkillWidget = Cast<USPSkillWidget>(GetWidgetFromName("WBSkill"));
+	IceSkillWidget = Cast<USPSkillWidget>(GetWidgetFromName("WBSkill"));
 
 	TargetUI = Cast<USPTargetUI>(GetWidgetFromName(TEXT("WBTargetUI")));
 
@@ -105,6 +106,11 @@ void USPHUDWidget::UpdateMakingPotionWidget(bool bIsVisible)
 		UE_LOG(LogTemp, Warning, TEXT("NoMakingPotionWidget"));
 
 	}
+}
+
+void USPHUDWidget::UpdateIceCDTime(float NewCurrentTime)
+{
+	IceSkillWidget->UpdateIceBar(NewCurrentTime);
 }
 
 void USPHUDWidget::ShowInteractionWidget()
