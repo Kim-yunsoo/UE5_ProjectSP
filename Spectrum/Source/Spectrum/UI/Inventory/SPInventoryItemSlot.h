@@ -33,7 +33,11 @@ protected:
 	virtual void NativeOnMouseLeave(const FPointerEvent& InMouseEvent) override;
 public:
 	void HideText();
+
 protected:
+	virtual FReply NativeOnMouseButtonUp(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
+	
+
 	UPROPERTY(EditDefaultsOnly, Category = "Inventory Slot")
 	TSubclassOf<USPDrageItemVisual> DragItemVisualClass;
 	
@@ -49,5 +53,5 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Inventory Slot" , meta=(BindWidget))
 	TObjectPtr<UTextBlock> ItemQuantity;
 
-	
+	FWindowsPlatformTime MouseDownTime;
 };

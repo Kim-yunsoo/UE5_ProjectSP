@@ -1495,7 +1495,8 @@ void ASPCharacterPlayer::DragItem(USPItemBase* ItemToDrop, const int32 QuantityT
 		if(GetInventory()->GetInventorMakeContents().Num()==3)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Three"));
-			PlayerInventory->MakingPotion();
+			USPItemBase* Item = PlayerInventory->MakingPotion();
+			HUDWidget->MakingPotionWieget(Item);
 		}
 		// TArray<USPItemBase*> InventoryContents = GetInventory()->GetInventorMakeContents();
 		//

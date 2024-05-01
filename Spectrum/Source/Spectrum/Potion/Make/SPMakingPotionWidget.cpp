@@ -13,6 +13,30 @@
 
 class ASPMakePotion;
 
+void USPMakingPotionWidget::ClearWidget()
+{
+	TArray<USizeBox*> DropWidgets = {Drop1, Drop2, Drop3};
+	
+	for(USizeBox* Drop : DropWidgets)
+	{
+		Drop->ClearChildren();
+	}
+}
+
+void USPMakingPotionWidget::MakingPotion(USPItemBase* Item)
+{
+	USPInventoryItemSlot* ItemSlot = CreateWidget<USPInventoryItemSlot>(this, InventorySlotClass);
+	if(!ItemSlot)
+		UE_LOG(LogTemp, Warning, TEXT("No ItemSlot"))
+	else
+	{
+		ItemSlot->SetItemReference(Item);
+		ItemSlot->HideText();
+	}
+		
+	Make->AddChild(ItemSlot);
+}
+
 void USPMakingPotionWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
@@ -113,14 +137,7 @@ bool USPMakingPotionWidget::NativeOnDrop(const FGeometry& InGeometry, const FDra
 FReply USPMakingPotionWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
 {
 	FReply Reply = Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
-	// UE_LOG(LogTemp, Warning, TEXT("BACK Inventory1"));
-	// if(InMouseEvent.GetEffectingButton() == EKeys::RightMouseButton)
-	// {
-	// 	ASPCharacterPlayer* Player = Cast<ASPCharacterPlayer>(GetOwningPlayerPawn());
-	// 	Player->BackItem(ItemReference, 1);
-	// 	UE_LOG(LogTemp, Warning, TEXT("BACK Inventory2"));
-	// 	return Reply.Handled();
-	// }
+
 
 	return Reply.Unhandled();
 

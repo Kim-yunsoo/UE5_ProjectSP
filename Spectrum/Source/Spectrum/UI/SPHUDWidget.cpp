@@ -135,6 +135,14 @@ void USPHUDWidget::UpdateInteractionWidget(const FInteractableData* Interactable
 		InteractionWidget->UpdateWidget(InteractableData);
 	}
 }
+
+void USPHUDWidget::ClearMakingWieget()
+{
+	MakingPotionWidget->ClearWidget();
+}
 	
 
-
+void USPHUDWidget::MakingPotionWieget(USPItemBase* Item)
+{
+	MakingPotionWidget->MakingPotion(Item);
+}

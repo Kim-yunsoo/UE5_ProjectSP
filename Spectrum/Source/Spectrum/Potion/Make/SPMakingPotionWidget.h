@@ -23,7 +23,14 @@ UCLASS()
 class SPECTRUM_API USPMakingPotionWidget : public UUserWidget
 {
 	GENERATED_BODY()
+	
+public:
+	UFUNCTION()
+	void ClearWidget();
 
+	UFUNCTION()
+	void MakingPotion(USPItemBase* Item);
+	
 protected:
 	// UPROPERTY(meta = (BindWidget))
 	// TObjectPtr<USizeBox> YellowPotion;
@@ -42,7 +49,12 @@ protected:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<USizeBox> Drop3;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<USizeBox> Make;
 
+
+	
 	UPROPERTY()
 	TObjectPtr<ASPCharacterPlayer> PlayerCharacter;
 

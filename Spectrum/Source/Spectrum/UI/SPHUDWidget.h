@@ -7,6 +7,7 @@
 #include "SPHUDWidget.generated.h"
 
 
+class USPItemBase;
 struct FInteractableData;
 class USPInteractionWidget;
 class USPMainMenu;
@@ -61,5 +62,8 @@ public:
 	void ShowInteractionWidget();
 	void HideInteractionWidget();
 	void UpdateInteractionWidget(const FInteractableData* InteractableData);
+
+	void ClearMakingWieget();
+	void MakingPotionWieget(USPItemBase *Item);
 protected:
 };

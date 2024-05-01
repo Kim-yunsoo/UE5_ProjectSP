@@ -105,7 +105,7 @@ public:
 	TObjectPtr<UDataTable> ItemDataTable;
 	
 	UFUNCTION(Category = "Inventory")
-	void MakingPotion();
+	USPItemBase* MakingPotion();
 	
 	UFUNCTION(Category = "Inventory")
 	FORCEINLINE float GetInventoryTotalWeight() const { return InventoryTotalWeight;}; //필요 없을 듯

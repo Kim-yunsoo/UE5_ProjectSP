@@ -333,7 +333,7 @@ protected:
 	TObjectPtr<class USPWidgetComponent> Target;
 
 	virtual void SetupHUDWidget(USPHUDWidget* InUserWidget) override;
-
+public:
 	UPROPERTY()
 	TObjectPtr<class USPHUDWidget> HUDWidget;
 	

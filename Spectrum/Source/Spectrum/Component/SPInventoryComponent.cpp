@@ -121,7 +121,7 @@ void USPInventoryComponent::SplitExistingStack(USPItemBase* ItemIn, const int32 
 	}
 }
 
-void USPInventoryComponent::MakingPotion()
+USPItemBase* USPInventoryComponent::MakingPotion()
 {
 	UE_LOG(LogTemp, Warning, TEXT("MakingPotion"));
 	int Blue = 0;
@@ -145,28 +145,54 @@ void USPInventoryComponent::MakingPotion()
 	}
 
 	UE_LOG(LogTemp, Warning, TEXT("blue %d Yellow %d Red %d"),Blue, Yellow, Red)
-	FName DesiredItemID = "HAPPY";
+	//FName DesiredItemID = "HAPPY";
 	if(Blue == 2 && Yellow == 1)
 	{
-		DesiredItemID = "G_Potion";
+		FName DesiredItemID = "G_Potion";
+		const FItemData* ItemData = ItemDataTable->FindRow<FItemData>(DesiredItemID, DesiredItemID.ToString());
+		// 원하는 항목 찾기
+		USPItemBase* Item = NewObject<USPItemBase>(); 
+		Item->ID = ItemData->ID;
+		Item->ItemType = ItemData->ItemType;
+		Item->ItemTextData = ItemData->ItemTextData;
+		Item->ItemNumericData = ItemData->ItemNumericData;
+		Item->ItemAssetData = ItemData->ItemAssetData;
+		return Item;
 	}
 	else if(Blue == 1 && Red == 2)
 	{
-		DesiredItemID = "P_Potion";
+		FName DesiredItemID = "P_Potion";
+		const FItemData* ItemData = ItemDataTable->FindRow<FItemData>(DesiredItemID, DesiredItemID.ToString());
+		// 원하는 항목 찾기
+		USPItemBase* Item = NewObject<USPItemBase>(); 
+		Item->ID = ItemData->ID;
+		Item->ItemType = ItemData->ItemType;
+		Item->ItemTextData = ItemData->ItemTextData;
+		Item->ItemNumericData = ItemData->ItemNumericData;
+		Item->ItemAssetData = ItemData->ItemAssetData;
+		return Item;
 	}
-	else if(Red == 1 && Yellow ==2)
+	else if (Red == 1 && Yellow ==2)
 	{
-		DesiredItemID = "O_Potion";
+		FName DesiredItemID = "O_Potion";
+		const FItemData* ItemData = ItemDataTable->FindRow<FItemData>(DesiredItemID, DesiredItemID.ToString());
+		// 원하는 항목 찾기
+		USPItemBase* Item = NewObject<USPItemBase>(); 
+		Item->ID = ItemData->ID;
+		Item->ItemType = ItemData->ItemType;
+		Item->ItemTextData = ItemData->ItemTextData;
+		Item->ItemNumericData = ItemData->ItemNumericData;
+		Item->ItemAssetData = ItemData->ItemAssetData;
+		return Item;
 	}
-	const FItemData* ItemData = ItemDataTable->FindRow<FItemData>(DesiredItemID, DesiredItemID.ToString());
-	// 원하는 항목 찾기
-	USPItemBase* Item = NewObject<USPItemBase>(); 
-	Item->ID = ItemData->ID;
-	Item->ItemType = ItemData->ItemType;
-	Item->ItemTextData = ItemData->ItemTextData;
-	Item->ItemNumericData = ItemData->ItemNumericData;
-	Item->ItemAssetData = ItemData->ItemAssetData;
-	HandleAddItem(Item);
+	else
+	{
+		return nullptr;
+	}
+
+	
+	
+	//HandleAddItem(Item);
 }
 
 
