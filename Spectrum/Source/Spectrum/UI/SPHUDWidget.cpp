@@ -2,9 +2,15 @@
 
 
 #include "UI/SPHUDWidget.h"
+
+#include "SPSkillWidget.h"
+#include "Interface/SPCharacterHUDInterface.h"
+#include "Potion/Make/SPMakingPotionWidget.h"
 #include "UI/SPTargetUI.h"
 #include "UI/SPMainMenu.h"
 #include "UI/Interaction/SPInteractionWidget.h"
+
+class ISPCharacterHUDInterface;
 
 USPHUDWidget::USPHUDWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -13,8 +19,17 @@ void USPHUDWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
+	SlowSkillWidget = Cast<USPSkillWidget>(GetWidgetFromName("WBSkill"));
+
 	TargetUI = Cast<USPTargetUI>(GetWidgetFromName(TEXT("WBTargetUI")));
-	ensure(TargetUI);
+
+	MakingPotionWidget = Cast<USPMakingPotionWidget>(GetWidgetFromName(TEXT("WBPSPMakingPotionWidget")));
+
+	if(!MakingPotionWidget)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("isit?????"));
+	}
+	//ensure(TargetUI);
 
 	//MainMenuWidget = Cast<USPMainMenu>(GetWidgetFromName(TEXT("WBTargetUI")));
 	if(MainMenuClass)
@@ -30,6 +45,7 @@ void USPHUDWidget::NativeConstruct()
 		InteractionWidget->AddToViewport(-1);
 		InteractionWidget->SetVisibility(ESlateVisibility::Collapsed); 
 	}
+
 }
 
 void USPHUDWidget::DisplayMenu()
@@ -37,7 +53,7 @@ void USPHUDWidget::DisplayMenu()
 	if(MainMenuWidget)
 	{
 		bIsMenuVisible = true;
-		MainMenuWidget->SetVisibility(ESlateVisibility::Visible);
+		MainMenuWidget->SetVisibility(ESlateVisibility::Collapsed);
 	}
 
 }
@@ -47,7 +63,7 @@ void USPHUDWidget::HideMenu()
 	if(MainMenuWidget)
 	{
 		bIsMenuVisible = false;
-		MainMenuWidget->SetVisibility(ESlateVisibility::Visible);
+		MainMenuWidget->SetVisibility(ESlateVisibility::Collapsed);
 	}
 }
 
@@ -67,6 +83,27 @@ void USPHUDWidget::ToggleMenu()
 		const FInputModeGameAndUI InputMode;
 		GetOwningPlayer()->SetInputMode(InputMode);
 		GetOwningPlayer()->SetShowMouseCursor(true);
+	}
+}
+
+void USPHUDWidget::UpdateSlowCDTime(float NewCurrentTime )
+{
+	SlowSkillWidget->UpdateSlowBar(NewCurrentTime);
+}
+
+void USPHUDWidget::UpdateMakingPotionWidget(bool bIsVisible)
+{
+	if(bIsVisible)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("MakingPotionWidget"));
+		MakingPotionWidget->SetVisibility(ESlateVisibility::Visible);
+
+	}
+	else
+	{
+		MakingPotionWidget->SetVisibility(ESlateVisibility::Hidden);
+		UE_LOG(LogTemp, Warning, TEXT("NoMakingPotionWidget"));
+
 	}
 }
 
@@ -98,6 +135,14 @@ void USPHUDWidget::UpdateInteractionWidget(const FInteractableData* Interactable
 		InteractionWidget->UpdateWidget(InteractableData);
 	}
 }
+
+void USPHUDWidget::ClearMakingWieget()
+{
+	MakingPotionWidget->ClearWidget();
+}
 	
 
-
+void USPHUDWidget::MakingPotionWieget(USPItemBase* Item)
+{
+	MakingPotionWidget->MakingPotion(Item);
+}

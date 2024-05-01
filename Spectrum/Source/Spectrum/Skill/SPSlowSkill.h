@@ -6,6 +6,7 @@
 #include "Skill/SPSkillBase.h"
 #include "SPSlowSkill.generated.h"
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnSlowCDChangedDelegate, float /*CurrentHp*/);
 
 UCLASS()
 class SPECTRUM_API USPSlowSkill : public USPSkillBase
@@ -15,32 +16,22 @@ class SPECTRUM_API USPSlowSkill : public USPSkillBase
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
-	// virtual void Tick(float DeltaSeconds) override;
-
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	// virtual void Tick(float DeltaSeconds) override;
 public:
+
+	FOnSlowCDChangedDelegate OnSlowCDChange;
+	FORCEINLINE void SlowCoolDown(float CDtime){OnSlowCDChange.Broadcast(CDtime);}
+	
 	virtual void SkillAction(ASPCharacterPlayer* MyOwner) override;
 	
-	
-	UFUNCTION(NetMulticast, Unreliable)
-	void TEXTRPCSkill();
-	// UFUNCTION(Server, Unreliable)
-	// void ServerRPC( const TArray<FHitResult>& OutHits);
 
 	FGameTime GameTime;
 	float ActivetedTimeStamp;
-	UPROPERTY(Replicated)
-	uint8 bIsActiveSlowSkill : 1;
+	
+	// UPROPERTY(Replicated)
+	// uint8 bIsActiveSlowSkill : 1;
 	
 protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-	// UFUNCTION()
-	// void OnBoxCollisionHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
-	// 					   UPrimitiveComponent* OtherComp, FVector NormalImpulse,
-	// 					   const FHitResult& Hit);
-	// UPROPERTY(Replicated)
-	// TObjectPtr<AActor> TargetActor;
-	// void RotateToTarget();
 };

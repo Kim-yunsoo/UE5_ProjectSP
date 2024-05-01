@@ -21,24 +21,14 @@ USPSlowSkill::USPSlowSkill()
 	UActorComponent::SetComponentTickEnabled(true);
 	PrimaryComponentTick.bCanEverTick = true;
 	PrimaryComponentTick.bStartWithTickEnabled	= true;
-	// PrimaryActorTick.bCanEverTick = true;
 	bAutoActivate = true;
 	CoolDown = 10;
-	// this->SetIsReplicated(true); // ..?
-	bIsActiveSlowSkill=true;
+	// bIsActiveSlowSkill=true;
 }
 
 void USPSlowSkill::BeginPlay()
 {
 	Super::BeginPlay();
-	// BoxCollision->OnComponentHit.AddDynamic(this,&ASPSkillBase::OnBoxCollisionHit);
-
-	// if(HasAuthority())
-	// {
-	// 	this->SetReplicates(true);
-	// 	this->AActor::SetReplicateMovement(true);
-	// 	// ExplosionComponent->SetIsReplicated(true);
-	// }
 }
 
 void USPSlowSkill::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -50,9 +40,8 @@ void USPSlowSkill::TickComponent(float DeltaTime, ELevelTick TickType, FActorCom
 		return;
 	}
 	
-	if (bIsActiveSlowSkill) //���̶��? 
+	if (Owner-> bIsActiveSlowSkill) //���̶��? 
 	{
-		UE_LOG(LogTemp, Log, TEXT("return"));
 		return;
 	}
 
@@ -60,43 +49,24 @@ void USPSlowSkill::TickComponent(float DeltaTime, ELevelTick TickType, FActorCom
 	if (CurrentGameTime.GetWorldTimeSeconds() < ActivetedTimeStamp + CoolDown)
 	{
 		float ElapsedTime = CurrentGameTime.GetWorldTimeSeconds() - ActivetedTimeStamp;
-		UE_LOG(LogTemp, Log, TEXT("%f"), ElapsedTime);
+		float CDTime= FMath::Clamp(1.0f-ElapsedTime, 0.0f, 1.0f)/CoolDown;
+		// CDTime = FMath::Clamp(CDTime, 0.0f, 1.0f);
+		SlowCoolDown(CDTime);
+		UE_LOG(LogTemp, Log, TEXT("%f"),ElapsedTime); //��Ÿ�� ���� �� 
+		// Owner->bIsActiveSlowSkill = true;
 	}
 	else
-	{ //���̳������� �˷�����. (���� �ʿ�)
-		bIsActiveSlowSkill = true;
+	{
+		float ElapsedTime = CurrentGameTime.GetWorldTimeSeconds() - ActivetedTimeStamp;
+		float CDTime=  FMath::Clamp(1.0f-ElapsedTime, 0.0f, 1.0f)/CoolDown;
+		// CDTime = FMath::Clamp(1.0f-ElapsedTime, 0.0f, 1.0f);
+		SlowCoolDown(CDTime);
+		UE_LOG(LogTemp, Log, TEXT("TRUE!!"));
+		UE_LOG(LogTemp, Log, TEXT("%f"),ElapsedTime);
+		// ActivetedTimeStamp=0.0f;
+		Owner->bIsActiveSlowSkill = true;
 	}
 }
-
-
-// //
-// void USPSlowSkill::Tick(float DeltaTime)
-// {
-// 	Super::Tick(DeltaTime);
-// 	if(!Owner)
-// 	{
-// 		return;
-// 	}
-// 	
-// 	if(bIsActiveSlowSkill) //���̶��? 
-// 	{
-// 		UE_LOG(LogTemp,Log,TEXT("return"));
-// 		return;
-// 	}
-// 	
-// 	FGameTime CurrentGameTime = GetWorld()->GetTime();
-// 	if(CurrentGameTime.GetWorldTimeSeconds() < ActivetedTimeStamp + CoolDown)
-// 	{
-// 		float ElapsedTime =CurrentGameTime.GetWorldTimeSeconds()-ActivetedTimeStamp;
-// 		UE_LOG(LogTemp,Log,TEXT("%f"),ElapsedTime);
-// 		// bIsActiveSlowSkill=true;
-// 		// Owner->SetIsActiveSlowSkill(true);
-// 	}
-// 	else
-// 	{
-// 		bIsActiveSlowSkill=true;
-// 	}
-// }
 
 void USPSlowSkill::SkillAction(ASPCharacterPlayer* MyOwner)
 {
@@ -104,8 +74,8 @@ void USPSlowSkill::SkillAction(ASPCharacterPlayer* MyOwner)
 	// UE_LOG(LogTemp, Log, TEXT("SkillAction"));
 	
 
-	GameTime = GetWorld()->GetTime();
-	ActivetedTimeStamp = GameTime.GetWorldTimeSeconds();
+	// GameTime = GetWorld()->GetTime();
+	// ActivetedTimeStamp = GameTime.GetWorldTimeSeconds();
 
 	Super::SkillAction(MyOwner);
 	SP_SUBLOG(LogSPNetwork,Log,TEXT("USPSlowSkill!!!!!!!!!!!")); 
@@ -131,23 +101,9 @@ void USPSlowSkill::SkillAction(ASPCharacterPlayer* MyOwner)
 	if(Success) //�迭�� ��Ʈ�� ��ü�� �ִ� ��� 
 	{
 		AActor* HitActor = OutHits[0].GetActor();
-		if(Cast<ASPCharacterPlayer>(HitActor))
-		{
-			UE_LOG(LogTemp,Log,TEXT("Cast Success"));
-			FTransform SpawnLocAndRotation(Owner->SkillLocation->GetComponentRotation(), Owner->SkillLocation->GetComponentLocation());
-			ASPSlowSkillActor* MyActor = GetWorld()->SpawnActorDeferred<ASPSlowSkillActor>(ASPSlowSkillActor::StaticClass(), SpawnLocAndRotation);
-			MyActor->SetOwner(Owner);
-			MyActor->InitTarget(HitActor);
-			MyActor->FinishSpawning(SpawnLocAndRotation);
-		}
-		else
-		{
-			ASPSlowSkillActor* MyActor =GetWorld()->SpawnActor<ASPSlowSkillActor>(ASPSlowSkillActor::StaticClass(),Owner->SkillLocation->GetComponentLocation(),
-													   Owner->SkillLocation->GetComponentRotation(), SpawnParams);
-			MyActor->SetOwner(Owner);
-
-		}
-		
+		ASPSlowSkillActor* MyActor =GetWorld()->SpawnActor<ASPSlowSkillActor>(ASPSlowSkillActor::StaticClass(),Owner->SkillLocation->GetComponentLocation(),
+												   Owner->SkillLocation->GetComponentRotation(), SpawnParams);
+		MyActor->SetOwner(Owner);
 	}
 	else
 	{
@@ -157,81 +113,10 @@ void USPSlowSkill::SkillAction(ASPCharacterPlayer* MyOwner)
 
 		UE_LOG(LogTemp,Log,TEXT("SpawnPoint"));
 	}
-
-	TEXTRPCSkill();
-	
-	//
-	// if(OutHits.Num()>0)
-	// {
-	// 	TargetActor=OutHits[0].GetActor();
-	// 	RotateToTarget();
-	// }
-	// FTimerHandle Handle;
-	// GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([&]
-	// 										   {
-	// 	UE_LOG(LogTemp,Log,TEXT("Ready"));
-	// 			bIsActiveSlowSkill=true;
-	// 										   }
-	// 									   ), 5, false, 0.0f);
-
-
-	// if (Success) //�������� ���� �����ϸ� ������ �迭 ��� ��Ƽ�� �۾�
-	// {
-	// 	SP_SUBLOG(LogSPNetwork, Log, TEXT("USPSlowSkill"));
-	// 	MultiRPCSkill(OutHits);
-	// }
-}
-
-void USPSlowSkill::TEXTRPCSkill_Implementation()
-{
-	SP_SUBLOG(LogSPNetwork,Log,TEXT("TEST!!"));
 }
 
 void USPSlowSkill::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME(USPSlowSkill, bIsActiveSlowSkill);
+	// DOREPLIFETIME(USPSlowSkill, bIsActiveSlowSkill);
 }
-
-// void USPSlowSkill::OnBoxCollisionHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, //���� RPC�� �ɾ��� �ʿ䰡 �־�δ�. 
-//                                      UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
-// {
-// 	
-// 	UE_LOG(LogTemp,Log,TEXT("HIT!!!!"));
-// 	ASPCharacterPlayer* Player = Cast<ASPCharacterPlayer>(Hit.GetActor());
-// 	if(Player)
-// 	{
-// 		MultiRPCSkill(Player);
-// 	}
-// 	//Hit.GetActor()->GetActorLocation()
-// 	FVector HitLocation = Hit.GetActor()->GetActorLocation();
-// 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),EmitterHit,HitLocation,FRotator::ZeroRotator,
-// 		FVector(1.0f),true,EPSCPoolMethod::None, true);
-// 	this->DestroyComponent();
-// }
-
-
-// void USPSlowSkill::ServerRPC_Implementation( const TArray<FHitResult>& OutHits)
-// {
-// 	MultiRPCSkill(OutHits);
-// }
-
-// void USPSlowSkill::MultiRPCSkill_Implementation(const TArray<FHitResult>& OutHits)
-// {
-//
-// 	// for (const FHitResult& HitResult : OutHits)
-// 	// {
-// 	// 	TArray<AActor*> ActorArray;
-// 	// 	AActor* HitPawn = HitResult.GetActor();
-// 	// 	FVector Location = HitPawn->GetActorLocation();
-// 	// 	FRotator Rotation = FRotator(0.0f, 0.0f, 0.0f);
-// 	// 	FVector Scale{1.0f, 1.0f, 1.0f};
-// 	// 	FTransform SpawnTransform{Rotation, Location, Scale};
-// 	// 	ASPCharacterPlayer* HitCharacter = Cast<ASPCharacterPlayer>(HitResult.GetActor());
-// 	// 	if (HitCharacter)
-// 	// 	{
-// 	// 		HitCharacter->SlowAction();
-// 	// 	}
-// 	// }
-// }
-

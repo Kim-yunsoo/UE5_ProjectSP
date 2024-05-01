@@ -275,6 +275,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	FVector UIRotator;
 
+	
+	
+
 protected:
 	UPrimitiveComponent* HitComponent;
 	AActor* HitActor;
@@ -329,8 +332,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget)
 	TObjectPtr<class USPWidgetComponent> Target;
 
-	virtual void SetupTargetWidget(USPUserWidget* InUserWidget) override;
-
+	virtual void SetupHUDWidget(USPHUDWidget* InUserWidget) override;
+public:
 	UPROPERTY()
 	TObjectPtr<class USPHUDWidget> HUDWidget;
 	
@@ -370,6 +373,10 @@ public:
 
 // 아이템 드롭
 	void DropItem(USPItemBase* ItemToDrop, const int32 QuantityToDrop);
+
+	void DragItem(USPItemBase* ItemToDrop, const int32 QuantityToDrop);
+
+	void BackItem(USPItemBase* ItemToDrop, const int32 QuantityToDrop);
 public:
 	FORCEINLINE bool IsInteracting() const { return GetWorldTimerManager().IsTimerActive(TimerHandle_Interaction);};
 // ServerRPC
@@ -451,8 +458,6 @@ protected:
 
 	// skill interface
 	// virtual void MovementSlow();
-
-
 	//Effect
 protected:
 	// UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
@@ -487,5 +492,7 @@ public:
 
 	UFUNCTION(NetMulticast, Unreliable)
 	void NetTESTRPCSlowSkill();
-	
+
+	UPROPERTY()
+	uint8 bIsActiveSlowSkill : 1;
 };

@@ -58,7 +58,7 @@ void AInterfaceTestActor::EndInteract()
 
 }
 
-void AInterfaceTestActor::Interact(ASPCharacterPlayer* PlayerCharacter)
+void AInterfaceTestActor::Interact(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget)
 {
 	UE_LOG(LogTemp, Log, TEXT("Interact"));
 
