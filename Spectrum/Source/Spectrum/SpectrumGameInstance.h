@@ -60,6 +60,4 @@ public:
 	TMap<uint64, ASPCharacterPlayer*> Players;
 	TMap<uint64, ASPObject*> Objects;
 
-public:
-	bool isLogin = false;
 };
