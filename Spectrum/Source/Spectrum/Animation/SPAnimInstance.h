@@ -19,12 +19,12 @@ protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 protected:
-	virtual void NativeInitializeAnimation() override; //¾Ö´Ô±×·¡ÇÁ ½ÃÀÛ½Ã ÀÛµ¿
+	virtual void NativeInitializeAnimation() override; //ì• ë‹˜ê·¸ë˜í”„ ì‹œì‘ì‹œ ì‘ë™
 
-	virtual void NativeUpdateAnimation(float DeltaSeconds) override; //ÇÁ·¹ÀÓ¸¶´Ù °è¼Ó ¾÷µ¥ÀÌÆ® 
+	virtual void NativeUpdateAnimation(float DeltaSeconds) override; //í”„ë ˆì„ë§ˆë‹¤ ê³„ì† ì—…ë°ì´íŠ¸ 
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Character)
-	TObjectPtr<class ASPCharacterPlayer> Owner; //¾Ö´Ô ÀÎ½ºÅÏ½º¸¦ ¼ÒÀ¯ÇÏ°í ÀÖ´Â Á¤º¸¸¦ ´ã´Â º¯¼ö 
+	TObjectPtr<class ASPCharacterPlayer> Owner; //ì• ë‹˜ ì¸ìŠ¤í„´ìŠ¤ë¥¼ ì†Œìœ í•˜ê³  ìˆëŠ” ì •ë³´ë¥¼ ë‹´ëŠ” ë³€ìˆ˜ 
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Character)
 	TObjectPtr<class UCharacterMovementComponent> Movement;
@@ -36,25 +36,25 @@ protected:
 	float GroundSpeed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character)
-	uint8 bIsIdle : 1; // »çÀÌÁî°¡ ¸íÈ®ÇÑ bool Å¸ÀÔ
+	uint8 bIsIdle : 1; // ì‚¬ì´ì¦ˆê°€ ëª…í™•í•œ bool íƒ€ì…
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character)
-	float MovingThreshould; //¿òÁ÷ÀÌ´ÂÁö 
+	float MovingThreshould; //ì›€ì§ì´ëŠ”ì§€ 
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character)
-	uint8 bIsFalling : 1; //¶³¾îÁö°íÀÖ´ÂÁö
+	uint8 bIsFalling : 1; //ë–¨ì–´ì§€ê³ ìˆëŠ”ì§€
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character)
-	uint8 bIsJumping : 1; //Á¡ÇÁÇÏ°íÀÖ´ÂÁö
+	uint8 bIsJumping : 1; //ì í”„í•˜ê³ ìˆëŠ”ì§€
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character)
-	float JumpingThreshould; //Á¡ÇÁÁßÀÎÁö 
+	float JumpingThreshould; //ì í”„ì¤‘ì¸ì§€ 
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character)
-	uint8 bIsAiming : 1; //¿¡ÀÓ¸ğµå
+	uint8 bIsAiming : 1; //ì—ì„ëª¨ë“œ
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character)
-	uint8 bIsHolding : 1; //¹«¾ğ°¡¸¦ µé°íÀÖ´ÂÁö
+	uint8 bIsHolding : 1; //ë¬´ì–¸ê°€ë¥¼ ë“¤ê³ ìˆëŠ”ì§€
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character)
 	float DeltaY;

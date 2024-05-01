@@ -22,6 +22,7 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FOnAimChangedDelegate, bool /*aim*/)
  */
 //DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAimingChangedDelegate, bool, bIsAiming);
 
+
 UENUM()
 enum class ECharacterControlType : uint8
 {
@@ -96,6 +97,7 @@ protected:
 	void OrangePotionSpawn(const FInputActionValue& Value);
 	void PurplePotionSpawn(const FInputActionValue& Value);
 	void SlowSKill(const FInputActionValue& Value);
+	void IceSKill(const FInputActionValue& Value);
 
 	void Interaction(const FInputActionValue& Value);
 	void ToggleMenuAction(const FInputActionValue& Value);
@@ -191,7 +193,10 @@ protected:
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UAnimMontage> SkillMontage;
-	//Camera
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UAnimMontage> SkillIceMontage;
+	
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, Meta = (AllowPrivateAccess = "ture"))
 	TObjectPtr<class USpringArmComponent> SpringArm;
@@ -245,8 +250,15 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> InteractionKey;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> SlowQ;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> IceE;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> TeleR;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> ToggleMenu;
 
@@ -417,6 +429,9 @@ public:
 
 	UFUNCTION(Server, Unreliable)
 	void ServerRPCSlowSkill(float AttackStartTime);
+
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCIceSkill(float AttackStartTime);
 	// UFUNCTION(Server, Unreliable)
 	// void ServerRPCSlowSkillMake();
 
@@ -432,6 +447,9 @@ public:
 
 	UFUNCTION(Client, Unreliable)
 	void ClientRPCSlowAnimation(ASPCharacterPlayer* CharacterToPlay);
+
+	UFUNCTION(Client, Unreliable)
+	void ClientRPCIceAnimation(ASPCharacterPlayer* CharacterToPlay);
 	//AABCharacterPlayer* CharacterToPlay
 	//MultiRPC
 
@@ -471,10 +489,14 @@ public:
 	UPROPERTY()
 	TObjectPtr<class USPSlowSkill> SlowSkillComponent;
 
+	UPROPERTY()
+	TObjectPtr<class USPIceSkill> IceSkillComponent;
+
 	float SlowAttackTime = 2.5;
 	float AttackTimeDifference = 0.0f;
 
 	void PlaySkillAnimation();
+	void PlayIceSkillAnimation();
 
 	// void SlowAction();
 public:
@@ -486,11 +508,19 @@ public:
 	// UPROPERTY(Replicated)
 	// uint8 bIsActiveSlowSkill : 1;
 
-	virtual void HitSlowSkillResult()override;
+	virtual void HitSlowSkillResult() override;
+	virtual void HitIceSkillResult() override;
+	
 
 	UFUNCTION(NetMulticast, Unreliable)
 	void NetTESTRPCSlowSkill();
 
 	UPROPERTY()
 	uint8 bIsActiveSlowSkill : 1;
+
+	UPROPERTY()
+	uint8 bIsActiveIceSkill : 1;
+
+	UPROPERTY()
+	uint8 bIsDamage :1;
 };

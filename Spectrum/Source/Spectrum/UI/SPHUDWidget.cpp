@@ -19,6 +19,7 @@ void USPHUDWidget::NativeConstruct()
 	Super::NativeConstruct();
 
 	SlowSkillWidget = Cast<USPSkillWidget>(GetWidgetFromName("WBSkill"));
+	IceSkillWidget = Cast<USPSkillWidget>(GetWidgetFromName("WBSkill"));
 
 	TargetUI = Cast<USPTargetUI>(GetWidgetFromName(TEXT("WBTargetUI")));
 	ensure(TargetUI);
@@ -86,6 +87,11 @@ void USPHUDWidget::ToggleMenu()
 void USPHUDWidget::UpdateSlowCDTime(float NewCurrentTime)
 {
 	SlowSkillWidget->UpdateSlowBar(NewCurrentTime);
+}
+
+void USPHUDWidget::UpdateIceCDTime(float NewCurrentTime)
+{
+	IceSkillWidget->UpdateIceBar(NewCurrentTime);
 }
 
 void USPHUDWidget::ShowInteractionWidget()

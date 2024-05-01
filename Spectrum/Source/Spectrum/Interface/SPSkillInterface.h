@@ -23,5 +23,6 @@ class SPECTRUM_API ISPSkillInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	virtual void HitSlowSkillResult()=0;
+	virtual void HitIceSkillResult()=0;
 public:
 };
