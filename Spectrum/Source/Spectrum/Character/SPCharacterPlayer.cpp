@@ -401,6 +401,7 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 	bIsActiveSlowSkill = true;
 	bIsActiveIceSkill = true;
 	bIsActiveTeleSkill = true;
+	bIsActiveGraping = true;
 
 	// bIsActiveSlowSkill = true;
 	HitDistance = 1800.f;
@@ -761,7 +762,10 @@ void ASPCharacterPlayer::ServerRPCStopAiming_Implementation()
 
 void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 {
-	ServerRPCGraping();
+	if (bIsActiveGraping)
+	{
+		ServerRPCGraping();
+	}
 }
 
 void ASPCharacterPlayer::StopGraping(const FInputActionValue& Value)
@@ -1638,6 +1642,7 @@ void ASPCharacterPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 	DOREPLIFETIME(ASPCharacterPlayer, bIsTurnReady);
 	DOREPLIFETIME(ASPCharacterPlayer, bIsThrowReady);
 	DOREPLIFETIME(ASPCharacterPlayer, bIsHolding);
+	DOREPLIFETIME(ASPCharacterPlayer, bIsActiveGraping);
 	// DOREPLIFETIME(ASPCharacterPlayer, bIsActiveSlowSkill);
 	//bIsActiveSlowSkill
 	// DOREPLIFETIME(ASPCharacterPlayer, bIsActiveSlowSkill);
@@ -1720,14 +1725,19 @@ void ASPCharacterPlayer::OverlapPortal(const FVector& Location)
 	// this->TeleportTo(Location, this->GetActorRotation(), false, true);
 	// this->SetActorRelativeLocation(Location);
 
-	
+
 	FTimerHandle Handle;
 	GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([&]
 		                                       {
-		this->SetActorRelativeLocation(Location);
-		UE_LOG(LogTemp, Log, TEXT("%s"), *GetActorLocation().ToString());
+			                                       this->SetActorRelativeLocation(Location);
+			                                       UE_LOG(LogTemp, Log, TEXT("%s"), *GetActorLocation().ToString());
 		                                       }
 	                                       ), 1.5f, false);
+}
+
+void ASPCharacterPlayer::ActiveGrapping(const bool Active)
+{
+	bIsActiveGraping=Active;
 }
 
 bool ASPCharacterPlayer::IsMontagePlaying()

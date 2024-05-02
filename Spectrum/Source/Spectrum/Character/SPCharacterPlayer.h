@@ -9,7 +9,7 @@
 #include "Interface/SPSkillInterface.h"
 #include "Interface/SPCharacterHUDInterface.h"
 #include "Interface/SPInteractionInterface.h"
-#include "Interface/SPPortalInterface.h"
+#include "Interface/SPTriggerInterface.h"
 #include "Potion/SPItemBase.h"
 #include "SPCharacterPlayer.generated.h"
 
@@ -50,7 +50,7 @@ struct FInteractionData
 
 UCLASS()
 class SPECTRUM_API ASPCharacterPlayer : public ACharacter, public ISPCharacterHUDInterface ,public ISPSkillInterface
-	,public ISPPortalInterface
+	 ,public ISPTriggerInterface
 {
 	GENERATED_BODY()
 
@@ -526,7 +526,9 @@ public:
 	virtual void HitSlowSkillResult() override;
 	virtual void HitIceSkillResult() override;
 	virtual void HitTeleSkillResult(const FVector TeleportLocation) override;
-	virtual void OverlapPortal(const FVector& Location)override; 
+	virtual void OverlapPortal(const FVector& Location)override;
+	virtual void ActiveGrapping(const bool Active) override;
+
 
 	bool IsMontagePlaying();
 
@@ -544,4 +546,7 @@ public:
 
 	UPROPERTY()
 	uint8 bIsDamage :1;
+
+	UPROPERTY(Replicated)
+	uint8 bIsActiveGraping :1;
 };
