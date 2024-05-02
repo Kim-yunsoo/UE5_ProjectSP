@@ -40,10 +40,10 @@ void USPItemBase::SetQuantity(const int32 NewQuantity)
 
 		if(OwningInventory)
 		{
-			if(Quantity <= 0)
-			{
-				OwningInventory->RemoveSingleinstanceOfItem(this, this->ItemType);
-			}
+			// if(Quantity <= 0)
+			// {
+			// 	OwningInventory->RemoveSingleinstanceOfItem(this, this->ItemType);
+			// }
 		}
 	}
 }

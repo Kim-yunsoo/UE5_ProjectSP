@@ -1730,7 +1730,7 @@ void ASPCharacterPlayer::ServerRPCBlackPotionSpawn_Implementation()
 				Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
 			}
 		}
-		PlayerInventory->RemoveAmountOfItem(PlayerInventory->FindPotionItem("B_Potion"), 1);
+		//PlayerInventory->RemoveAmountOfItem(PlayerInventory->FindPotionItem("B_Potion"), 1);
 	}
 	
 }

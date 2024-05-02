@@ -44,10 +44,7 @@ public:
 	UFUNCTION(Category = "Inventory")	
 	void RemoveInventorMakeContents(USPItemBase* ItemToRemove);
 	
-	// UFUNCTION(Category = "Inventory")
-	// USPItemBase* FindNextItemByID(USPItemBase* ItemIn) const;
-	UFUNCTION(Category = "Inventory")
-	USPItemBase* FindNextPartialStack(USPItemBase* ItemIn) const;
+
 	UFUNCTION(Category = "Inventory")
 	void RemoveSingleinstanceOfItem(USPItemBase* ItemToRemove, EItemType Potion); //인벤토리 배열에서 삭제
 	UFUNCTION(Category = "Inventory")
@@ -70,14 +67,7 @@ public:
 	UFUNCTION(Category = "Inventory")
 	FORCEINLINE void AddInventorMakeContents(USPItemBase* Item) {InventoryMakeContents.Add(Item);};
 	
-	
-	UFUNCTION(Category = "Inventory")
-	USPItemBase* FindPotionItem(FName ID);
-	
 
-	
-	UFUNCTION(Category = "Inventory")
-	USPItemBase* FindMiniItem(FName ID);
 	
 protected:
 	// Called when the game starts
@@ -98,19 +88,19 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Inventory")
 	TArray<USPItemBase*> InventoryMakeContents;
 	
-	void HandleStackableItems(USPItemBase* ItemIn, int32 RequestedAddAmount);
-	void HandleStackableItemsMini(USPItemBase* ItemIn, int32 RequestedAddAmount);
+	int HandleStackableItems(USPItemBase* ItemIn, int32 RequestedAddAmount);
+	int HandleStackableItemsMini(USPItemBase* ItemIn, int32 RequestedAddAmount);
 
-	void AddNewItem(USPItemBase* Item, const int32 AmountToAdd);
-public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+public:
 	int IsPotion(FName  ID);
+	int IsMiniPotion(FName  ID);
 //RPC
 protected:
 	UFUNCTION(Client, Unreliable)
-	void ClientRPCUpdatePotion(const int& num);
+	void ClientRPCUpdatePotion(const int& num, const int&ServerCount);
 
 	UFUNCTION(Client, Unreliable)
-	void ClientRPCRemovePotion(const int& num);
+	void ClientRPCUpdateMiniPotion(const int& num, const int&ServerCount);
+
+
 };
