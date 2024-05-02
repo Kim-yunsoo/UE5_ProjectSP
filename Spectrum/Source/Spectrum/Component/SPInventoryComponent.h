@@ -158,6 +158,12 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	
-		
+	bool IsPotion(FName  ID);
+//RPC
+protected:
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCUpdateMiniPotion(const TArray<USPItemBase *>& Mini);
+
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCUpdatePotion(const TArray<USPItemBase *>& Potion);
 };

@@ -3,6 +3,7 @@
 
 #include "Component/SPInventoryComponent.h"
 #include "IDetailTreeNode.h"
+#include "SpectrumLog.h"
 #include "Potion/SPItemBase.h"
 
 // Sets default values for this component's properties
@@ -386,13 +387,14 @@ void USPInventoryComponent::AddNewItem(USPItemBase* Item, const int32 AmountToAd
 	{
 		InventoryMiniContents.Add(NewItem);
 		OnInventoryMiniUpdated.Broadcast(InventoryMiniContents);
+		ServerRPCUpdateMiniPotion(InventoryMiniContents);
 	}
 	else
 	{
 		InventoryContents.Add(NewItem);
 		OnInventoryUpdated.Broadcast(InventoryContents);
+		ServerRPCUpdatePotion(InventoryContents);
 	}
-	
 }
 
 // Called when the game starts
@@ -411,5 +413,32 @@ void USPInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+}
+
+bool USPInventoryComponent::IsPotion(FName ID)
+{
+	for (const USPItemBase* InventoryItem : InventoryContents)
+	{
+		if (InventoryItem && InventoryItem->ID == ID)
+		{
+			// 아이템이 찾아졌고, ID가 일치하므로 true를 반환합니다.
+			return true;
+		}
+	}
+    
+	// 아이템을 찾지 못했거나 ID가 일치하지 않는 경우 false를 반환합니다.
+	return false;
+}
+
+void USPInventoryComponent::ServerRPCUpdatePotion_Implementation(const TArray<USPItemBase*>& Potion)
+{
+	InventoryContents = Potion;
+	SP_SUBLOG(LogPotion, Log, TEXT("Potion"));
+}
+
+void USPInventoryComponent::ServerRPCUpdateMiniPotion_Implementation(const TArray<USPItemBase*>& Mini)
+{
+	InventoryMiniContents = Mini;
+	SP_SUBLOG(LogPotion, Log, TEXT("Mini"));
 }
 
