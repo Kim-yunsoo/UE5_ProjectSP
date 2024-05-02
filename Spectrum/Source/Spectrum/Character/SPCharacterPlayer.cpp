@@ -405,13 +405,11 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 	InteractionCheckDistance = 225.0f;
 
 	BaseEyeHeight = 74.0f;
-
-
+	
 	//Inventory
 	PlayerInventory = CreateDefaultSubobject<USPInventoryComponent>(TEXT("playerInventory"));
-	this->AddOwnedComponent(PlayerInventory);
-	PlayerInventory->SetSlotsCapacity(10);
-	PlayerInventory->SetWeightCapacity(50.f); //무게 의미 없음!
+	//this->AddOwnedComponent(PlayerInventory);
+	//PlayerInventory->SetIsReplicated(true);
 }
 
 void ASPCharacterPlayer::BeginPlay()
@@ -1543,7 +1541,7 @@ void ASPCharacterPlayer::UpdateInteractionWidget() const
 
 void ASPCharacterPlayer::DropItem(USPItemBase* ItemToDrop, const int32 QuantityToDrop)
 {
-	if (PlayerInventory->FindMatchingItem(ItemToDrop))
+	if (PlayerInventory->FindMatchingItem(ItemToDrop, ItemToDrop->ItemType))
 	{
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Owner = this;
@@ -1568,7 +1566,7 @@ void ASPCharacterPlayer::DropItem(USPItemBase* ItemToDrop, const int32 QuantityT
 
 void ASPCharacterPlayer::DragItem(USPItemBase* ItemToDrop, const int32 QuantityToDrop)
 {
-	if(PlayerInventory->FindMatchingItem(ItemToDrop))
+	if(PlayerInventory->FindMatchingItem(ItemToDrop, ItemToDrop->ItemType))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("DragItem"));
 		//ItemToDrop->Quantity -= 1;
@@ -1697,6 +1695,13 @@ void ASPCharacterPlayer::NetTESTRPCSlowSkill_Implementation()
 
 void ASPCharacterPlayer::ServerRPCBlackPotionSpawn_Implementation()
 {
+	// UE_LOG(LogTemp, Warning, TEXT("================"));
+	// for(USPItemBase* ItemBase : PlayerInventory->GetInventoryContents())
+	// {
+	// 	UE_LOG(LogTemp, Warning, TEXT("%s"), *ItemBase->ItemTextData.Name.ToString());
+	// }
+	// UE_LOG(LogTemp, Warning, TEXT("================"));
+
 	if(PlayerInventory->IsPotion("B_Potion"))
 	{
 		if (false == bIsSpawn)
@@ -1725,7 +1730,9 @@ void ASPCharacterPlayer::ServerRPCBlackPotionSpawn_Implementation()
 				Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
 			}
 		}
+		PlayerInventory->RemoveAmountOfItem(PlayerInventory->FindPotionItem("B_Potion"), 1);
 	}
+	
 }
 
 void ASPCharacterPlayer::ServerRPCGraping_Implementation()

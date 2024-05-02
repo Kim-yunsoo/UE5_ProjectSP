@@ -15,7 +15,7 @@ void USPItemBase::ResetItemFlags()
 	bIsPickup = false;
 }
 
-USPItemBase* USPItemBase::CreatePotionCopy()
+USPItemBase* USPItemBase::CreatePotionCopy() const
 {
 	//인벤토리에 있는건 포인터를 통해서 관리될 예정
 	//추가할 때 복사해야한다.
@@ -42,7 +42,7 @@ void USPItemBase::SetQuantity(const int32 NewQuantity)
 		{
 			if(Quantity <= 0)
 			{
-				OwningInventory->RemoveSingleinstanceOfItem(this);
+				OwningInventory->RemoveSingleinstanceOfItem(this, this->ItemType);
 			}
 		}
 	}

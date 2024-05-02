@@ -108,48 +108,19 @@ void ASPPickup::TakePickup(ASPCharacterPlayer* Taker)
 			//인벤토리 넣고 선택 되면 항목을 조정하거나 파괴
 			if (USPInventoryComponent* PlayerInvetory = Taker->GetInventory())
 			{
-				ClientRPCUpdateWidget(Taker);
 				FTimerHandle TimerHandle;
+				PlayerInvetory->HandleAddItem(ItemReference);
 				GetWorld()->GetTimerManager().SetTimer(TimerHandle,[this](){
 					                                       this->Destroy();
 				                                       }, 0.1f, false);
-				//Destroy(); //이거 문제 업나!?!?!? 바로 지우는거!???
-				// if(HasAuthority() && )
-				// {
-				 	
-				// 	const FItemAddResult AddResult = PlayerInvetory->HandleAddItem(ItemReference);
-				// 	
-				// }
-				// switch(AddResult.OperationResult)
-				// {
-				// case EItemAddResult::IAR_NoItemAdded:
-				// 	break;
-				// case EItemAddResult::IAR_PartialAmountItemAdded:
-				// 	UpdateInteractableData();
-				// 	Taker->UpdateInteractionWidget();
-				// 	break;
-				// case EItemAddResult::IAR_AllItemAdded:
-				// 	//ServerRPCDestroy();
-				// 	
-				// 	SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("client Destroy()"));
-				// 	break;
-				// 	
-				// }
-
-				//UE_LOG(LogTemp, Warning, TEXT("%s"), *AddResult.ResultMessage.ToString());
 			}
 			else
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Inventory is null"));
 
 			}
-
 		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Pickup internal item reference was somehow null!"));
-
-		}
+		
 	}
 }
 
@@ -165,9 +136,7 @@ void ASPPickup::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEve
 void ASPPickup::ClientRPCUpdateWidget_Implementation(ASPCharacterPlayer* Taker)
 {
 	SP_LOG(LogSPNetwork,Log,TEXT("ClientRPC"));
-	USPInventoryComponent* PlayerInvetory = Taker->GetInventory();
-	const FItemAddResult AddResult = PlayerInvetory->HandleAddItem(ItemReference);
-
+	
 	// SP_LOG(LogSPNetwork, Log, TEXT("TEST"));
 	// for(USPItemBase* const& InventoryItem : PlayerInvetory->GetInventoryContents())
 	// {
