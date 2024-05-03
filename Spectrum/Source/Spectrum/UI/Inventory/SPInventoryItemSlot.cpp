@@ -57,7 +57,7 @@ FReply USPInventoryItemSlot::NativeOnMouseButtonDown(const FGeometry& InGeometry
 	}
 	return Reply.Unhandled();
 }
-//ÇÏÀ§ ¸Þ´º ¸¸µé ¶§ »ç¿ë
+//ï¿½ï¿½ï¿½ï¿½ ï¿½Þ´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½
 void USPInventoryItemSlot::NativeOnMouseLeave(const FPointerEvent& InMouseEvent)
 {
 	Super::NativeOnMouseLeave(InMouseEvent);
@@ -70,13 +70,17 @@ void USPInventoryItemSlot::HideText()
 
 FReply USPInventoryItemSlot::NativeOnMouseButtonUp(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
 {
-	FReply Reply = Super::NativeOnMouseButtonUp(InGeometry, InMouseEvent); 
-	ASPCharacterPlayer* Player = Cast<ASPCharacterPlayer>(GetOwningPlayerPawn());
-	int num = Player->GetInventory()->IsPotion(ItemReference->ID);
-	Player->AddItemClick(num);
-	SetVisibility(ESlateVisibility::Hidden);
-	Player->HUDWidget->ClearMakingWieget();
-	return Reply.Handled(); 
+	FReply Reply = Super::NativeOnMouseButtonUp(InGeometry, InMouseEvent);
+	if(ItemReference->Quantity != 0)
+	{
+		ASPCharacterPlayer* Player = Cast<ASPCharacterPlayer>(GetOwningPlayerPawn());
+		int num = Player->GetInventory()->IsPotion(ItemReference->ID);
+		Player->AddItemClick(num);
+		SetVisibility(ESlateVisibility::Hidden);
+		Player->HUDWidget->ClearMakingWieget();
+		return Reply.Handled(); 
+	}
+	return Reply.Unhandled();
 }
 
 void USPInventoryItemSlot::ServerRPCButtonUp_Implementation(int num)

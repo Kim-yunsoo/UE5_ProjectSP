@@ -273,6 +273,8 @@ void USPInventoryComponent::BeginPlay()
 	USPItemBase* B_Mini = InitializeInventory(USPItemBase::StaticClass(), "B_Mini");
 	B_Mini->OwningInventory = this;
 	InventoryMiniContents.Add(B_Mini);
+	OnInventoryUpdated.Broadcast(InventoryContents);
+	OnInventoryMiniUpdated.Broadcast(InventoryMiniContents);
 }
 
 
@@ -322,7 +324,6 @@ void USPInventoryComponent::ClientRPCUpdatePotion_Implementation(const int& num,
 	UE_LOG(LogTemp, Warning, TEXT(" ClientRPC %d"), ServerCount);
 	InventoryContents[num]->SetQuantity(ServerCount);
 	OnInventoryUpdated.Broadcast(InventoryContents);
-
 }
 
 USPItemBase* USPInventoryComponent::FindMiniItem(FName ID)
