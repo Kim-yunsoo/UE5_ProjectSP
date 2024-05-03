@@ -4,6 +4,8 @@
 #include "UI/SPHUDWidget.h"
 
 #include "SpectrumLog.h"
+#include "SPGameTimeWidget.h"
+#include "SPScoreWidget.h"
 #include "SPSkillWidget.h"
 #include "Interface/SPCharacterHUDInterface.h"
 #include "Potion/Make/SPMakingPotionWidget.h"
@@ -22,6 +24,9 @@ void USPHUDWidget::NativeConstruct()
 
 	SlowSkillWidget = Cast<USPSkillWidget>(GetWidgetFromName("WBSkill"));
 	IceSkillWidget = Cast<USPSkillWidget>(GetWidgetFromName("WBSkill"));
+	TeleSkillWidget = Cast<USPSkillWidget>(GetWidgetFromName("WBSkill"));
+
+	ScoreWidget = Cast<USPScoreWidget>(GetWidgetFromName("WBSPScoreWidget"));
 
 	TargetUI = Cast<USPTargetUI>(GetWidgetFromName(TEXT("WBTargetUI")));
 
@@ -32,6 +37,9 @@ void USPHUDWidget::NativeConstruct()
 		UE_LOG(LogTemp, Warning, TEXT("isit?????"));
 	}
 	//ensure(TargetUI);
+	GameTimeWidget= Cast<USPGameTimeWidget>(GetWidgetFromName(TEXT("WBGameTimeWidget")));
+	
+	ensure(TargetUI);
 
 	//MainMenuWidget = Cast<USPMainMenu>(GetWidgetFromName(TEXT("WBTargetUI")));
 	if(MainMenuClass)
@@ -88,7 +96,12 @@ void USPHUDWidget::ToggleMenu()
 	}
 }
 
-void USPHUDWidget::UpdateSlowCDTime(float NewCurrentTime )
+void USPHUDWidget::UpdateTime(float CountdownTime)
+{
+	GameTimeWidget->UpdateTime(CountdownTime);
+}
+
+void USPHUDWidget::UpdateSlowCDTime(float NewCurrentTime)
 {
 	SlowSkillWidget->UpdateSlowBar(NewCurrentTime);
 }
@@ -117,6 +130,16 @@ void USPHUDWidget::UpdateMakingPotionWidget(bool bIsVisible)
 void USPHUDWidget::UpdateIceCDTime(float NewCurrentTime)
 {
 	IceSkillWidget->UpdateIceBar(NewCurrentTime);
+}
+
+void USPHUDWidget::UpdateTeleCDTime(float NewCurrentTime)
+{
+	TeleSkillWidget->UpdateTeleBar(NewCurrentTime);
+}
+
+void USPHUDWidget::UpdateScore(const ColorType& Mycolor, const int32 Score)
+{
+	ScoreWidget->UpdateScore(Mycolor,Score);
 }
 
 void USPHUDWidget::ShowInteractionWidget()

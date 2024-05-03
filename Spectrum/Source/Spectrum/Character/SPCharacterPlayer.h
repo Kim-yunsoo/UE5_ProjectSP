@@ -10,6 +10,7 @@
 #include "Interface/SPCharacterHUDInterface.h"
 #include "Interface/SPInteractionInterface.h"
 #include "Interface/SPWidgetInterface.h"
+#include "Interface/SPTriggerInterface.h"
 #include "Potion/SPItemBase.h"
 #include "SPCharacterPlayer.generated.h"
 
@@ -24,13 +25,22 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FOnAimChangedDelegate, bool /*aim*/)
  */
 //DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAimingChangedDelegate, bool, bIsAiming);
 
-
+//
+// UENUM()
+// enum class ESchoolColor : uint8
+// {
+// 	SchoolGreen=0,
+// 	SchoolOrange=1,
+// 	SchoolPurple=2
+// };
 UENUM()
 enum class ECharacterControlType : uint8
 {
 	Shoulder,
 	Quater
 };
+
+
 
 USTRUCT()
 struct FInteractionData
@@ -50,7 +60,8 @@ struct FInteractionData
 };
 
 UCLASS()
-class SPECTRUM_API ASPCharacterPlayer : public ACharacter, public ISPCharacterHUDInterface ,public ISPSkillInterface, public ISPWidgetInterface
+class SPECTRUM_API ASPCharacterPlayer : public ACharacter, public ISPCharacterHUDInterface ,public ISPSkillInterface
+	 ,public ISPTriggerInterface
 {
 	GENERATED_BODY()
 
@@ -100,6 +111,7 @@ protected:
 	void PurplePotionSpawn(const FInputActionValue& Value);
 	void SlowSKill(const FInputActionValue& Value);
 	void IceSKill(const FInputActionValue& Value);
+	void TeleSKill(const FInputActionValue& Value);
 
 	void Interaction(const FInputActionValue& Value);
 	void ToggleMenuAction(const FInputActionValue& Value);
@@ -189,16 +201,18 @@ protected:
 	// UPROPERTY(Replicated, BlueprintReadWrite, Category = "Character")
 	// uint8 bIsActiveSlowSkill : 1; //Throw Ready?
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat, Meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UAnimMontage> ThrowMontage;
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat, Meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UAnimMontage> SkillMontage;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat, Meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UAnimMontage> SkillIceMontage;
-	
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UAnimMontage> SkillTeleMontage;
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, Meta = (AllowPrivateAccess = "ture"))
 	TObjectPtr<class USpringArmComponent> SpringArm;
@@ -443,6 +457,9 @@ public:
 
 	UFUNCTION(Server, Unreliable)
 	void ServerRPCIceSkill(float AttackStartTime);
+
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCTeleSkill(float AttackStartTime);
 	// UFUNCTION(Server, Unreliable)
 	// void ServerRPCSlowSkillMake();
 	
@@ -473,6 +490,9 @@ public:
 
 	UFUNCTION(Client, Unreliable)
 	void ClientRPCUpdateMakingPotion(int Num);
+
+	UFUNCTION(Client, Unreliable)
+	void ClientRPCTeleAnimation(ASPCharacterPlayer* CharacterToPlay);
 	//AABCharacterPlayer* CharacterToPlay
 	//MultiRPC
 	
@@ -515,11 +535,15 @@ public:
 	UPROPERTY()
 	TObjectPtr<class USPIceSkill> IceSkillComponent;
 
+	UPROPERTY()
+	TObjectPtr<class USPTeleSkill> TeleSkillComponent;
+
 	float SlowAttackTime = 2.5;
 	float AttackTimeDifference = 0.0f;
 
 	void PlaySkillAnimation();
 	void PlayIceSkillAnimation();
+	void PlayTeleSkillAnimation();
 
 	// void SlowAction();
 public:
@@ -533,7 +557,12 @@ public:
 
 	virtual void HitSlowSkillResult() override;
 	virtual void HitIceSkillResult() override;
-	
+	virtual void HitTeleSkillResult(const FVector TeleportLocation) override;
+	virtual void OverlapPortal(const FVector& Location)override;
+	virtual void ActiveGrapping(const bool Active) override;
+
+
+	bool IsMontagePlaying();
 
 	UFUNCTION(NetMulticast, Unreliable)
 	void NetTESTRPCSlowSkill();
@@ -545,5 +574,14 @@ public:
 	uint8 bIsActiveIceSkill : 1;
 
 	UPROPERTY()
+	uint8 bIsActiveTeleSkill : 1;
+
+	UPROPERTY()
 	uint8 bIsDamage :1;
+
+	UPROPERTY(Replicated)
+	uint8 bIsActiveGraping :1;
+
+	// UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	// ESchoolColor SchoolAffiliation;
 };

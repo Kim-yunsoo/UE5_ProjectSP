@@ -42,10 +42,12 @@
 #include "UI/SPTargetUI.h"
 #include "DrawDebugHelpers.h"
 #include "IDetailTreeNode.h"
+#include "SPGameState.h"
 #include "Component/SPInventoryComponent.h"
 #include "Player/SPPlayerController.h"
 #include "Potion/SPItemBase.h"
 #include "Skill/SPIceSkill.h"
+#include "Skill/SPTeleSkill.h"
 #include "UI/SPHUDWidget.h"
 #include "UI/Inventory/SPPickup.h"
 
@@ -99,6 +101,8 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 
 	// //Skill
 	SlowSkillComponent = CreateDefaultSubobject<USPSlowSkill>(TEXT("SkillComponent"));
+	TeleSkillComponent = CreateDefaultSubobject<USPTeleSkill>(TEXT("TeleSkillComponent"));
+	// = CreateDefaultSubobject<USPSlowSkill>(TEXT("SkillComponent"));
 
 	IceSkillComponent = CreateDefaultSubobject<USPIceSkill>(TEXT("IceSkillComponent"));
 	// SlowSkillComponent->SetIsReplicated(true);
@@ -299,12 +303,12 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 
 
 	static ConstructorHelpers::FObjectFinder<UInputAction> TeleRRef(
-	TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_TeleSkill.IA_SP_TeleSkill'"));
+		TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_TeleSkill.IA_SP_TeleSkill'"));
 	if (nullptr != TeleRRef.Object)
 	{
 		TeleR = TeleRRef.Object;
 	}
-	
+
 
 	/*static ConstructorHelpers::FObjectFinder<UAnimMontage> ThrowMontageRef(TEXT("/Script/Engine.AnimMontage'/Game/Spectrum/Animation/AniMeta/Man/AM_SP_Throw.AM_SP_Throw'"));
 	if (ThrowMontageRef.Object)
@@ -398,6 +402,8 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 	InteractionCheck = false;
 	bIsActiveSlowSkill = true;
 	bIsActiveIceSkill = true;
+	bIsActiveTeleSkill = true;
+	bIsActiveGraping = true;
 
 	// bIsActiveSlowSkill = true;
 	HitDistance = 1800.f;
@@ -501,6 +507,8 @@ void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Player
 		                                   &ASPCharacterPlayer::IceSKill);
 		EnhancedInputComponent->BindAction(ToggleMenu, ETriggerEvent::Triggered, this,
 		                                   &ASPCharacterPlayer::ToggleMenuAction);
+		EnhancedInputComponent->BindAction(TeleR, ETriggerEvent::Triggered, this,
+		                                   &ASPCharacterPlayer::TeleSKill);
 	}
 }
 
@@ -677,7 +685,14 @@ void ASPCharacterPlayer::HandleMontageAnimNotify(FName NotifyName,
 			// SlowSkillComponent->SkillAction();
 		}
 	}
-	//TeleSkillNotify
+
+	if (NotifyName == FName("TeleSkillNotify"))
+	{
+		if (HasAuthority())
+		{
+			TeleSkillComponent->SkillAction();
+		}
+	}
 }
 
 
@@ -746,7 +761,10 @@ void ASPCharacterPlayer::ServerRPCStopAiming_Implementation()
 
 void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 {
-	ServerRPCGraping();
+	if (bIsActiveGraping)
+	{
+		ServerRPCGraping();
+	}
 }
 
 void ASPCharacterPlayer::StopGraping(const FInputActionValue& Value)
@@ -756,7 +774,7 @@ void ASPCharacterPlayer::StopGraping(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::AimPotion(const FInputActionValue& Value)
 {
-	if (bIsSpawn)
+	if (bIsSpawn && false == IsMontagePlaying())
 	{
 		if (!HasAuthority())
 		{
@@ -793,28 +811,31 @@ void ASPCharacterPlayer::ServerRPCTurnReady_Implementation()
 
 void ASPCharacterPlayer::ThrowPotion(const FInputActionValue& Value)
 {
-	if (bIsThrowReady)
+	if (GetMesh()->GetAnimInstance()->Montage_IsPlaying(ThrowMontage))
 	{
-		ServerRPCThrowPotion(bIsThrowReady);
-		if (!HasAuthority())
+		if (bIsThrowReady)
 		{
-			PlayThrowAnimation();
-			bIsThrowReady = false;
-			GetCharacterMovement()->bOrientRotationToMovement = true;
-			GetCharacterMovement()->bUseControllerDesiredRotation = false;
+			ServerRPCThrowPotion(bIsThrowReady);
+			if (!HasAuthority())
+			{
+				PlayThrowAnimation();
+				bIsThrowReady = false;
+				GetCharacterMovement()->bOrientRotationToMovement = true;
+				GetCharacterMovement()->bUseControllerDesiredRotation = false;
+				bIsTurnReady = false;
+				bIsSpawn = false;
+				Potion = nullptr;
+			}
 			bIsTurnReady = false;
-			bIsSpawn = false;
-			Potion = nullptr;
 		}
-		bIsTurnReady = false;
-	}
-	else
-	{
-		if (!HasAuthority())
+		else
 		{
-			PlayStopAnimation();
+			if (!HasAuthority())
+			{
+				PlayStopAnimation();
+			}
+			ServerRPCThrowPotion(bIsThrowReady);
 		}
-		ServerRPCThrowPotion(bIsThrowReady);
 	}
 }
 
@@ -885,9 +906,51 @@ void ASPCharacterPlayer::ToggleMenuAction(const FInputActionValue& Value)
 void ASPCharacterPlayer::IceSKill(const FInputActionValue& Value)
 {
 	if ((GetCharacterMovement()->MovementMode == EMovementMode::MOVE_Walking || GetCharacterMovement()->MovementMode ==
-		EMovementMode::MOVE_None) && !GetMesh()->GetAnimInstance()->Montage_IsPlaying(SkillMontage))
+		EMovementMode::MOVE_None) && false == IsMontagePlaying())
 	{
 		ServerRPCIceSkill(GetWorld()->GetGameState()->GetServerWorldTimeSeconds());
+	}
+}
+
+void ASPCharacterPlayer::TeleSKill(const FInputActionValue& Value)
+{
+	UE_LOG(LogTemp, Log, TEXT("TeleskilL!!"));
+	if ((GetCharacterMovement()->MovementMode == EMovementMode::MOVE_Walking || GetCharacterMovement()->MovementMode ==
+		EMovementMode::MOVE_None) && false == IsMontagePlaying())
+	{
+		ServerRPCTeleSkill(GetWorld()->GetGameState()->GetServerWorldTimeSeconds());
+	}
+}
+
+void ASPCharacterPlayer::ServerRPCTeleSkill_Implementation(float AttackStartTime)
+{
+	if (bIsActiveTeleSkill)
+	{
+		bIsActiveTeleSkill = false;
+		TeleSkillComponent->ActivetedTimeStamp = GetWorld()->GetTime().GetWorldTimeSeconds();
+		AttackTimeDifference = GetWorld()->GetTimeSeconds() - AttackStartTime;
+		AttackTimeDifference = FMath::Clamp(AttackTimeDifference, 0.0f, SlowAttackTime - 0.01f);
+
+		FTimerHandle Handle;
+		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+
+		GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([&]
+			                                       {
+				                                       GetCharacterMovement()->SetMovementMode(
+					                                       EMovementMode::MOVE_Walking);
+			                                       }
+		                                       ), SlowAttackTime - AttackTimeDifference, false, -1.0f);
+
+		PlayTeleSkillAnimation();
+
+		for (APlayerController* PlayerController : TActorRange<APlayerController>(GetWorld()))
+		{
+			ASPCharacterPlayer* OtherPlayer = Cast<ASPCharacterPlayer>(PlayerController->GetPawn());
+			if (OtherPlayer)
+			{
+				OtherPlayer->ClientRPCTeleAnimation(this);
+			}
+		}
 	}
 }
 
@@ -926,7 +989,7 @@ void ASPCharacterPlayer::ServerRPCIceSkill_Implementation(float AttackStartTime)
 void ASPCharacterPlayer::SlowSKill(const FInputActionValue& Value)
 {
 	if ((GetCharacterMovement()->MovementMode == EMovementMode::MOVE_Walking || GetCharacterMovement()->MovementMode ==
-		EMovementMode::MOVE_None ) && !GetMesh()->GetAnimInstance()->Montage_IsPlaying(SkillIceMontage))
+		EMovementMode::MOVE_None) && false == IsMontagePlaying())
 	{
 		// bIsActiveSlowSkill = false;
 
@@ -1180,6 +1243,15 @@ void ASPCharacterPlayer::ServerRPCAddItemClick_Implementation(int Num)
 	PlayerInventory->HandleAddItem(ItemBase);
 }
 
+
+void ASPCharacterPlayer::ClientRPCTeleAnimation_Implementation(ASPCharacterPlayer* CharacterToPlay)
+{
+	if (CharacterToPlay)
+	{
+		CharacterToPlay->PlayTeleSkillAnimation();
+	}
+}
+
 void ASPCharacterPlayer::OnRep_PotionSpawn()
 {
 	SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("Potionspawn"));
@@ -1410,15 +1482,21 @@ void ASPCharacterPlayer::ShowProjectilePath()
 
 void ASPCharacterPlayer::SetupHUDWidget(USPHUDWidget* InUserWidget)
 {
-	// USPTargetUI* TargetWidget = Cast<USPTargetUI>(InUserWidget);
-	// if(TargetWidget)
-	// {
-	// 	UE_LOG(LogTemp, Log, TEXT("TEST"));
-	// 	TargetWidget->UpdateTargetUI(bIsAiming);
-	// 	this->OnAimChanged.AddUObject(TargetWidget, &USPTargetUI::UpdateTargetUI);
-	// }
+	
 	SlowSkillComponent->OnSlowCDChange.AddUObject(InUserWidget, &USPHUDWidget::UpdateSlowCDTime);
 	IceSkillComponent->OnIceCDChange.AddUObject(InUserWidget, &USPHUDWidget::UpdateIceCDTime);
+	TeleSkillComponent->OnTeleCDChange.AddUObject(InUserWidget, &USPHUDWidget::UpdateTeleCDTime);
+	//AGameStateBase* State = player->GetController()->GetWorld()->GetGameState();
+	AGameStateBase* State= GetController()->GetWorld()->GetGameState();
+	if(State)
+	{
+		ASPGameState* SPGameState= Cast<ASPGameState>(State);
+		if(SPGameState)
+		{
+			SPGameState->OnScore.AddUObject(InUserWidget,&USPHUDWidget::UpdateScore);
+			SPGameState->OnTime.AddUObject(InUserWidget,&USPHUDWidget::UpdateTime);
+		}
+	}
 }
 
 void ASPCharacterPlayer::PerformInteractionCheck()
@@ -1632,6 +1710,7 @@ void ASPCharacterPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 	DOREPLIFETIME(ASPCharacterPlayer, bIsThrowReady);
 	DOREPLIFETIME(ASPCharacterPlayer, bIsHolding);
 	DOREPLIFETIME(ASPCharacterPlayer, InteractionCheck);
+	DOREPLIFETIME(ASPCharacterPlayer, bIsActiveGraping);
 	// DOREPLIFETIME(ASPCharacterPlayer, bIsActiveSlowSkill);
 	//bIsActiveSlowSkill
 	// DOREPLIFETIME(ASPCharacterPlayer, bIsActiveSlowSkill);
@@ -1648,10 +1727,17 @@ void ASPCharacterPlayer::PlaySkillAnimation()
 
 void ASPCharacterPlayer::PlayIceSkillAnimation()
 {
-	UE_LOG(LogTemp, Log, TEXT("PlayIceSkillAnimation"));
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	AnimInstance->StopAllMontages(0.0f);
 	AnimInstance->Montage_Play(SkillIceMontage);
+}
+
+void ASPCharacterPlayer::PlayTeleSkillAnimation()
+{
+	UE_LOG(LogTemp, Log, TEXT("PlayTeleSkillAnimation"));
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	AnimInstance->StopAllMontages(0.0f);
+	AnimInstance->Montage_Play(SkillTeleMontage);
 }
 
 void ASPCharacterPlayer::HitSlowSkillResult()
@@ -1682,6 +1768,62 @@ void ASPCharacterPlayer::HitIceSkillResult()
 		                                       }
 	                                       ), 5, false, -1.0f);
 }
+
+void ASPCharacterPlayer::HitTeleSkillResult(const FVector TeleportLocation)
+{
+	// FVector(((2620.000000,-60.000000,5220.000000)));
+	// FVector TPPoint = FVector(16270.000000,2720.000000,3560.000000);
+	this->TeleportTo(TeleportLocation, this->GetActorRotation(), false, true);
+	// this-(FVector(((2620.000000,-60.000000,5220.000000))));
+	// this->SetActorRelativeLocation(FVector((16000.0,-1160.000000,3960.000000)));
+	// this->GetActorLocation();
+	// GetCharacterMovement()->MaxWalkSpeed = 0.0f;
+	// GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+	// FTimerHandle Handle;
+	// GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([&]
+	// 										   {
+	// 											   GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+	// 										   }
+	// 									   ), 5, false, -1.0f);
+}
+
+void ASPCharacterPlayer::OverlapPortal(const FVector& Location)
+{
+	// GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+	// this->TeleportTo(Location, this->GetActorRotation(), false, true);
+	// this->SetActorRelativeLocation(Location);
+
+
+	FTimerHandle Handle;
+	GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([&]
+		                                       {
+			                                       this->SetActorRelativeLocation(Location);
+			                                       UE_LOG(LogTemp, Log, TEXT("%s"), *GetActorLocation().ToString());
+		                                       }
+	                                       ), 1.5f, false);
+}
+
+void ASPCharacterPlayer::ActiveGrapping(const bool Active)
+{
+	bIsActiveGraping=Active;
+}
+
+bool ASPCharacterPlayer::IsMontagePlaying()
+{
+	if (GetMesh()->GetAnimInstance()->Montage_IsPlaying(ThrowMontage) ||
+		GetMesh()->GetAnimInstance()->Montage_IsPlaying(SkillMontage) ||
+		GetMesh()->GetAnimInstance()->Montage_IsPlaying(SkillIceMontage) ||
+		GetMesh()->GetAnimInstance()->Montage_IsPlaying(SkillTeleMontage))
+
+	{
+		return true; //어떤 애니메이션 하나라도 플레이 중이면 트루 
+	}
+	else
+	{
+		return false;
+	}
+}
+
 void ASPCharacterPlayer::NetTESTRPCSlowSkill_Implementation()
 {
 	GetCharacterMovement()->MaxWalkSpeed = 100.f;
@@ -1740,7 +1882,7 @@ void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 	GetCharacterMovement()->bUseControllerDesiredRotation = false;
 	if (false == bIsHolding)
 	{
-		SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("ServerRPCGraping_Implementation!!"));
+		// SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("ServerRPCGraping_Implementation!!"));
 
 		//FVector SphereLocationStart = Sphere->K2_GetComponentLocation();
 		FVector SphereLocationStart = FollowCamera->K2_GetComponentLocation();
@@ -1779,6 +1921,8 @@ void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 			if (HitSuccess && outHitResult.Component->Mobility == EComponentMobility::Movable)
 			{
 				outHitResult.Component->SetSimulatePhysics(true);
+				outHitResult.GetActor()->SetOwner(this);
+				// UE_LOG(LogTemp,Log,TEXT("%s"),*(outHitResult.GetActor()->GetOwner())->GetName() );
 				HitComponent = outHitResult.GetComponent();
 
 				FVector SphereTracePoint = HitComponent->K2_GetComponentLocation();

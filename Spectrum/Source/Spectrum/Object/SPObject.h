@@ -7,7 +7,7 @@
 #include "Interface/SPDamageInterface.h"
 //D:\UE_5.3\Engine\Source\Runtime\Experimental\GeometryCollectionEngine\Public\GeometryCollection\GeometryCollectionObject.h
 //#include "GeometryCollection\GeometryCollectionObject.h"GeometryCollectionEngine
-#include "DataTable/SPColorDataTable.h"
+#include "Data/SPColorDataTable.h"
 #include "SPObject.generated.h"
 
 
@@ -66,7 +66,7 @@ protected:
 protected:// chaos distruction
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<class UGeometryCollection> GeometryCollection;
-protected://DynamicMaterial
+public://DynamicMaterial
 	UPROPERTY()
 	TObjectPtr<class UMaterialInstanceDynamic> ObjectDynamic ;
 	UPROPERTY()
@@ -105,5 +105,7 @@ protected://DynamicMaterial
 
 	//DataFunction
 	void DynamicSetColor(const UDataTable* Table);
-	
+
+	UPROPERTY(Replicated)
+	uint8 bIsScoreReflected :1 ;
 };

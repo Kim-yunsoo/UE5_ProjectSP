@@ -36,7 +36,7 @@ ASPIceSkillActor::ASPIceSkillActor()
 void ASPIceSkillActor::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	BoxCollision->OnComponentHit.AddDynamic(this, &ASPIceSkillActor::OnBoxCollisionHit);
 	if (HasAuthority())
 	{
@@ -54,7 +54,6 @@ void ASPIceSkillActor::OnBoxCollisionHit(UPrimitiveComponent* HitComponent, AAct
 		this->SetActorHiddenInGame(true);
 		this->SetLifeSpan(0.1f);
 	}
-	
 }
 
 void ASPIceSkillActor::MultiRPCIceSkill_Implementation(const FHitResult& Hit)
