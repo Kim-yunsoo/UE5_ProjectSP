@@ -12,6 +12,7 @@ ASPGameModeBase::ASPGameModeBase()
 {
 	GameStateClass=ASPGameState::StaticClass();
 	
+	
 	//static ConstructorHelpers::FClassFinder<APawn> ThirdPersonClassRef(TEXT("/Game/ThirdPerson/Blueprints/BP_ThirdPersonCharacter.BP_ThirdPersonCharacter_C"));
 
 	//if (ThirdPersonClassRef.Class)
@@ -52,25 +53,5 @@ void ASPGameModeBase::BeginPlay()
 	
 }
 
-void ASPGameModeBase::PostInitializeComponents()
-{
-	Super::PostInitializeComponents();
-	GetWorldTimerManager().SetTimer(GameTimerHandle, this, &ASPGameModeBase::DefaultGameTimer, GetWorldSettings()->GetEffectiveTimeDilation(), true);
 
-}
 
-void ASPGameModeBase::DefaultGameTimer()
-{
-	ASPGameState* const SPGameState = Cast<ASPGameState>(GameState);
-	if(SPGameState && SPGameState->RemainingTime>0)
-	{
-		SPGameState->RemainingTime--;
-		//어떤 이벤트를 날려야하는데 .
-		ClientRPC();
-	}
-}
-
-void ASPGameModeBase::ClientRPC_Implementation()
-{
-	SP_LOG(LogSPNetwork,Log,TEXT("ModeTImeTest"));
-}

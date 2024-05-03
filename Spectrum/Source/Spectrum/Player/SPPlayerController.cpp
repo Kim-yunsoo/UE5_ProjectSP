@@ -36,3 +36,20 @@ USPHUDWidget* ASPPlayerController::GetSPHUDWidget() const
 {
 	return SPHUDWidget;
 }
+
+void ASPPlayerController::SetHUDMatchCountdown(float CountdownTime)
+{
+	SPHUDWidget* SPHUD = 
+	int32 Minutes = FMath::FloorToInt(CountdownTime/60.f);
+	
+	int32 Seconds = CountdownTime - Minutes *60;
+
+	FString CountdownText = FString::Printf(TEXT("%02d:%02d"),Minutes,Seconds);
+	if(MatchCountDownText)
+	{
+		MatchCountDownText->SetText(FText::FromString(CountdownText));
+	}
+
+	
+	
+}

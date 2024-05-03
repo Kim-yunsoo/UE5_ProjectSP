@@ -41,7 +41,17 @@ public:
 	UPROPERTY(Transient, Replicated) //게임 시간 
 	int32 RemainingTime;
 	
-	int32 MatchPlayTime = 120.f; // 2분
+	int32 MatchPlayTime = 10.f; // 2분
+
+protected: //Timer
+
+	// virtual void PostInitializeComponents() override; //여기서 타이머 가동한다. 
+	// virtual void DefaultGameTimer(); //타이머로 사용할 함수 
+	// FTimerHandle GameTimerHandle;
+	//
+	// UFUNCTION(Client,Unreliable)
+	// void ClientRPC();
+	
 
 // public:
 // 	UFUNCTION()
