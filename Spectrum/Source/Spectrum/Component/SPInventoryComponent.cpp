@@ -208,9 +208,14 @@ USPItemBase* USPInventoryComponent::InitializeInventory(const TSubclassOf<USPIte
 	return nullptr;
 }
 
+USPItemBase* USPInventoryComponent::FindMatchingMiniItem(int Num) 
+{
+	return InventoryMiniContents[Num];
+}
+
 USPItemBase* USPInventoryComponent::FindMatchingItem(int num) 
 {
-	return InventoryMiniContents[num];
+	return InventoryContents[num];
 }
 
 USPItemBase* USPInventoryComponent::FindItem(USPItemBase* ItemIn, EItemType Potion) const

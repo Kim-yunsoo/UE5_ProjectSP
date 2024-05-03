@@ -1048,6 +1048,7 @@ void ASPCharacterPlayer::ServerRPCGreenPotionSpawn_Implementation()
 				Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
 			}
 		}
+		PlayerInventory->RemoveAmountOfItem(PlayerInventory->FindPotionItem("G_Potion"), 1);
 	}
 	
 }
@@ -1081,6 +1082,7 @@ void ASPCharacterPlayer::ServerRPCOrangePotionSpawn_Implementation()
 				Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
 			}
 		}
+		PlayerInventory->RemoveAmountOfItem(PlayerInventory->FindPotionItem("O_Potion"), 1);
 	}
 }
 
@@ -1113,6 +1115,7 @@ void ASPCharacterPlayer::ServerRPCPurplePotionSpawn_Implementation()
 				Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
 			}
 		}
+		PlayerInventory->RemoveAmountOfItem(PlayerInventory->FindPotionItem("P_Potion"), 1);
 	}
 }
 
@@ -1134,14 +1137,13 @@ void ASPCharacterPlayer::ClientRPCIceAnimation_Implementation(ASPCharacterPlayer
 	}
 }
 
-void ASPCharacterPlayer::ServerRPCDragItem_Implementation(int num, const int32 QuantityToDrop)
+void ASPCharacterPlayer::ServerRPCDragItem_Implementation(int Num, const int32 QuantityToDrop)
 {
 	 for(USPItemBase* ItemBase : PlayerInventory->GetInventorMiniContents())
 	 {
 	 	UE_LOG(LogTemp, Warning, TEXT("%s %d"), *ItemBase->ItemTextData.Name.ToString(), ItemBase->Quantity);
-	
 	 }
-	USPItemBase* ItemBase = PlayerInventory->FindMatchingItem(num);
+	USPItemBase* ItemBase = PlayerInventory->FindMatchingMiniItem(Num);
 	PlayerInventory->RemoveAmountOfItem(ItemBase, 1);
 	GetInventory()->AddInventorMakeContents(ItemBase);
 	SP_LOG(LogSPNetwork, Log, TEXT("DragItem %d"), GetInventory()->GetInventorMakeContents().Num());
@@ -1149,25 +1151,33 @@ void ASPCharacterPlayer::ServerRPCDragItem_Implementation(int num, const int32 Q
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Three"));
 		USPItemBase* Item = PlayerInventory->MakingPotion();
-		
-		ClientRPCUpdateMakingPotion(Item);
+		int MakeNum = PlayerInventory->IsPotion(Item->ID);
+		SP_LOG(LogSPNetwork, Log, TEXT("Making %d"), MakeNum);
+		ClientRPCUpdateMakingPotion(MakeNum);
+		PlayerInventory->ClearMakeArray();
 	}
 }
 
-void ASPCharacterPlayer::ClientRPCUpdateMakingPotion_Implementation(USPItemBase* Item)
+void ASPCharacterPlayer::ClientRPCUpdateMakingPotion_Implementation(int Num)
 {
-	if(Item)
-		HUDWidget->MakingPotionWieget(Item);
+	USPItemBase* ItemBase = PlayerInventory->FindMatchingItem(Num);
+	HUDWidget->MakingPotionWieget(ItemBase);
 }
 
 
-void ASPCharacterPlayer::ServerRPCBackItem_Implementation(int num, const int32 QuantityToDrop)
+void ASPCharacterPlayer::ServerRPCBackItem_Implementation(int Num, const int32 QuantityToDrop)
 {
-	USPItemBase* ItemBase = PlayerInventory->FindMatchingItem(num);
+	SP_LOG(LogSPNetwork, Log, TEXT("BackItem"));
+	USPItemBase* ItemBase = PlayerInventory->FindMatchingMiniItem(Num);
 	PlayerInventory->HandleAddItem(ItemBase);
 	GetInventory()->RemoveInventorMakeContents(ItemBase);
-	SP_LOG(LogSPNetwork, Log, TEXT("BackItem"));
 	SP_LOG(LogSPNetwork, Log, TEXT("DragItem %d"), GetInventory()->GetInventorMakeContents().Num());
+}
+
+void ASPCharacterPlayer::ServerRPCAddItemClick_Implementation(int Num)
+{
+	USPItemBase* ItemBase = PlayerInventory->FindMatchingItem(Num);
+	PlayerInventory->HandleAddItem(ItemBase);
 }
 
 void ASPCharacterPlayer::OnRep_PotionSpawn()
@@ -1584,6 +1594,11 @@ void ASPCharacterPlayer::UpdateInteractionWidget() const
 	}
 }
 
+void ASPCharacterPlayer::AddItemClick(int Num)
+{
+	ServerRPCAddItemClick(Num);
+}
+
 void ASPCharacterPlayer::DropItem(USPItemBase* ItemToDrop, const int32 QuantityToDrop)
 {
 	// if (PlayerInventory->FindMatchingItem(ItemToDrop, ItemToDrop->ItemType))
@@ -1618,9 +1633,10 @@ void ASPCharacterPlayer::DragItem(USPItemBase* ItemToDrop, const int32 QuantityT
 
 void ASPCharacterPlayer::BackItem(USPItemBase* ItemToDrop, const int32 QuantityToDrop)
 {
-		int num = PlayerInventory->IsMiniPotion(ItemToDrop->ID);
-		SP_LOG(LogSPNetwork, Log, TEXT("BackItem"));
-		ServerRPCBackItem(num, QuantityToDrop);
+	int num = PlayerInventory->IsMiniPotion(ItemToDrop->ID);
+	SP_LOG(LogSPNetwork, Log, TEXT("%d"), num);
+	SP_LOG(LogSPNetwork, Log, TEXT("BackItem"));
+	ServerRPCBackItem(num, QuantityToDrop);
 		
 	// TArray<USPItemBase*> InventoryContents = GetInventory()->GetInventorMakeContents();
 	//
@@ -1716,13 +1732,6 @@ void ASPCharacterPlayer::NetTESTRPCSlowSkill_Implementation()
 
 void ASPCharacterPlayer::ServerRPCBlackPotionSpawn_Implementation()
 {
-	// UE_LOG(LogTemp, Warning, TEXT("================"));
-	// for(USPItemBase* ItemBase : PlayerInventory->GetInventoryContents())
-	// {
-	// 	UE_LOG(LogTemp, Warning, TEXT("%s"), *ItemBase->ItemTextData.Name.ToString());
-	// }
-	// UE_LOG(LogTemp, Warning, TEXT("================"));
-
 	if(PlayerInventory->CountPotion(PlayerInventory->IsPotion("B_Potion")))
 	{
 		if (false == bIsSpawn)
@@ -1751,7 +1760,6 @@ void ASPCharacterPlayer::ServerRPCBlackPotionSpawn_Implementation()
 				Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
 			}
 		}
-		//PlayerInventory->FindPotionItem("B_Potion");
 		PlayerInventory->RemoveAmountOfItem(PlayerInventory->FindPotionItem("B_Potion"), 1);
 	}
 	

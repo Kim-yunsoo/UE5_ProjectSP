@@ -56,6 +56,9 @@ protected:
 
 	FWindowsPlatformTime MouseDownTime;
 
+	UPROPERTY()
+	TObjectPtr<ASPCharacterPlayer> PlayerCharacter;
+	
 	UFUNCTION(Server, Unreliable)
 	void ServerRPCButtonUp(int num);
 };

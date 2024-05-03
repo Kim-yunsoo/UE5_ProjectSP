@@ -383,7 +383,8 @@ public:
 	FORCEINLINE USPInventoryComponent* GetInventory() const {return PlayerInventory;};
 	
 	void UpdateInteractionWidget() const;
-
+	UFUNCTION()
+	void AddItemClick(int Num);
 // 아이템 드롭
 	void DropItem(USPItemBase* ItemToDrop, const int32 QuantityToDrop);
 
@@ -441,10 +442,13 @@ public:
 	// void ServerRPCSlowSkillMake();
 	
 	UFUNCTION(Server, Unreliable)
-	void ServerRPCDragItem(int num, const int32 QuantityToDrop);
+	void ServerRPCDragItem(int Num, const int32 QuantityToDrop);
 	
-	UFUNCTION(Client, Unreliable)
-	void ServerRPCBackItem(int num, const int32 QuantityToDrop);
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCBackItem(int Num, const int32 QuantityToDrop);
+
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCAddItemClick(int Num);
 	
 	//ClientRPC
 	UFUNCTION(Client, Unreliable)
@@ -463,7 +467,7 @@ public:
 	void ClientRPCIceAnimation(ASPCharacterPlayer* CharacterToPlay);
 
 	UFUNCTION(Client, Unreliable)
-	void ClientRPCUpdateMakingPotion(USPItemBase* Item);
+	void ClientRPCUpdateMakingPotion(int Num);
 	//AABCharacterPlayer* CharacterToPlay
 	//MultiRPC
 	

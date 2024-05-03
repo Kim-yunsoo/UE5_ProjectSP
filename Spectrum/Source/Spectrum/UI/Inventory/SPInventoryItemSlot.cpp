@@ -22,7 +22,9 @@ void USPInventoryItemSlot::NativeOnInitialized()
 void USPInventoryItemSlot::NativeConstruct()
 {
 	Super::NativeConstruct();
-
+	
+	PlayerCharacter = Cast<ASPCharacterPlayer>(GetOwningPlayerPawn());
+	
 	if(ItemReference)
 	{
 		ItemIcon->SetBrushFromTexture(ItemReference->ItemAssetData.Icon);
@@ -48,10 +50,6 @@ FReply USPInventoryItemSlot::NativeOnMouseButtonDown(const FGeometry& InGeometry
 	if(InMouseEvent.GetEffectingButton() == EKeys::RightMouseButton)
 	{
 		ASPCharacterPlayer* Player = Cast<ASPCharacterPlayer>(GetOwningPlayerPawn());
-		int num = Player->GetInventory()->IsMiniPotion(ItemReference->ID);
-		SetOwningActor(Player);
-		UE_LOG(LogTemp, Warning, TEXT("%s"), *GetOwningPlayer()->GetName());
-		//SP_SUBLOG(LogSPNetwork, Log, TEXT("%s"), *GetOwningPlayer()->GetName())
 		Player->BackItem(ItemReference, 1);
 		UE_LOG(LogTemp, Warning, TEXT("BACK Inventory"));
 		SetVisibility(ESlateVisibility::Hidden);
@@ -75,7 +73,7 @@ FReply USPInventoryItemSlot::NativeOnMouseButtonUp(const FGeometry& InGeometry, 
 	FReply Reply = Super::NativeOnMouseButtonUp(InGeometry, InMouseEvent); 
 	ASPCharacterPlayer* Player = Cast<ASPCharacterPlayer>(GetOwningPlayerPawn());
 	int num = Player->GetInventory()->IsPotion(ItemReference->ID);
-	
+	Player->AddItemClick(num);
 	SetVisibility(ESlateVisibility::Hidden);
 	Player->HUDWidget->ClearMakingWieget();
 	return Reply.Handled(); 

@@ -50,7 +50,10 @@ public:
 	UFUNCTION(Category = "Inventory")	
 	void RemoveInventorMakeContents(USPItemBase* ItemToRemove);
 	UFUNCTION(Category = "Inventory")
-	USPItemBase* FindMatchingItem(int num);
+	USPItemBase* FindMatchingItem(int Num);
+
+	UFUNCTION(Category = "Inventory")
+	USPItemBase* FindMatchingMiniItem(int Num);
 	UFUNCTION(Category = "Inventory")
 	USPItemBase* FindItem(USPItemBase* ItemIn, EItemType Potion) const;
 	UFUNCTION(Category = "Inventory")
@@ -74,7 +77,7 @@ public:
 
 	UFUNCTION(Category = "Inventory")
 	FORCEINLINE void AddInventorMakeContents(USPItemBase* Item) {InventoryMakeContents.Add(Item);};
-	
+	FORCEINLINE void ClearMakeArray() {InventoryMakeContents.Empty();};
 
 	
 protected:
@@ -95,6 +98,7 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = "Inventory")
 	TArray<USPItemBase*> InventoryMakeContents;
+
 	
 	int HandleStackableItems(USPItemBase* ItemIn, int32 RequestedAddAmount);
 	int HandleStackableItemsMini(USPItemBase* ItemIn, int32 RequestedAddAmount);

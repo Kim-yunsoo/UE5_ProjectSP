@@ -69,6 +69,6 @@ public:
 	void UpdateInteractionWidget(const FInteractableData* InteractableData);
 
 	void ClearMakingWieget();
-	void MakingPotionWieget(USPItemBase *Item);
+	void MakingPotionWieget(USPItemBase* Item);
 protected:
 };

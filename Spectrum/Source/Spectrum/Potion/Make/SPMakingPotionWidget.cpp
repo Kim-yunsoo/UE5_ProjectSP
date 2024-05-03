@@ -42,31 +42,16 @@ void USPMakingPotionWidget::NativeConstruct()
 	Super::NativeConstruct();
 	PlayerCharacter = Cast<ASPCharacterPlayer>(GetOwningPlayerPawn());
 	
-
-	// ASPMakePotion* PotionMaker = Cast<ASPMakePotion>(GetWorld()->SpawnActor(ASPMakePotion::StaticClass()));
-	// if (PotionMaker)
-	// {
-	// 	// 델리게이트에 위젯의 함수를 바인딩
-	// 	PotionMaker->OnWidgetDelegate.AddDynamic(this, &USPMakingPotionWidget::UpdatePotionWidget);
-	// }
 }
 
 bool USPMakingPotionWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent,
 	UDragDropOperation* InOperation)
 {
-	// const USPItemDragDropOperation* ItemDragDrop = Cast<USPItemDragDropOperation>(InOperation);
-	// USPInventoryItemSlot* ItemSlot = CreateWidget<USPInventoryItemSlot>(this, InventorySlotClass);
-
-	// if(Drop1)
-	// {
-	// 	ItemSlot->SetItemReference(ItemDragDrop->SourceItem);
-	// 	Drop1->AddChild(ItemSlot);
-	// }
 
 	
 	const USPItemDragDropOperation* ItemDragDrop = Cast<USPItemDragDropOperation>(InOperation);
     
-	if (ItemDragDrop && PlayerCharacter && ItemDragDrop->SourceItem)
+	if (ItemDragDrop && PlayerCharacter && ItemDragDrop->SourceItem && ItemDragDrop->SourceItem->Quantity != 0)
 	{
 		FVector2D DropLocation = InDragDropEvent.GetScreenSpacePosition();
 
@@ -127,6 +112,7 @@ bool USPMakingPotionWidget::NativeOnDrop(const FGeometry& InGeometry, const FDra
 			ClosestDropWidget->AddChild(ItemSlot);
 			//인벤토리 숫자 줄게 하기
 			//여기서 서버로 가야함!
+			UE_LOG(LogTemp, Warning, TEXT("%s"), *GetOwningPlayer()->GetName());
 			PlayerCharacter->DragItem(ItemDragDrop->SourceItem,1);
 			return true;
 		}
