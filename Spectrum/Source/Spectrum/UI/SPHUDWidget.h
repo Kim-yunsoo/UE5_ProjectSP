@@ -48,6 +48,9 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<class USPScoreWidget> ScoreWidget;
+
+	UPROPERTY()
+	TObjectPtr<class USPGameTimeWidget> GameTimeWidget;
 	
 public:
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
@@ -64,6 +67,7 @@ public:
 	void HideMenu();
 	void ToggleMenu();
 
+	void UpdateTime(float CountdownTime);
 	void UpdateSlowCDTime(float NewCurrentTime);
 	void UpdateIceCDTime(float NewCurrentTime);
 	void UpdateTeleCDTime(float NewCurrentTime);

@@ -63,4 +63,8 @@ void ASPGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 	DOREPLIFETIME(ASPGameState, GreenScore);
 	DOREPLIFETIME(ASPGameState, OrangeScore);
 	DOREPLIFETIME(ASPGameState, PurpleScore);
+	
+	DOREPLIFETIME(ASPGameState, RemainingTime);
+
+	
 }

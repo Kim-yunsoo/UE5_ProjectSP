@@ -25,4 +25,15 @@ private:
 	TSubclassOf<UUserWidget> SPLobbyWidgetClass;
 	class USPLobbyWidget* LobbyWidget;
 
+protected: //Timer
+
+	virtual void PostInitializeComponents() override; //여기서 타이머 가동한다. 
+	virtual void DefaultGameTimer(); //타이머로 사용할 함수 
+	FTimerHandle GameTimerHandle;
+	
+	UFUNCTION(Client,Unreliable)
+	void ClientRPC();
+	
+
+
 };

@@ -3,6 +3,7 @@
 
 #include "UI/SPHUDWidget.h"
 
+#include "SPGameTimeWidget.h"
 #include "SPScoreWidget.h"
 #include "SPSkillWidget.h"
 #include "Interface/SPCharacterHUDInterface.h"
@@ -26,6 +27,8 @@ void USPHUDWidget::NativeConstruct()
 	ScoreWidget = Cast<USPScoreWidget>(GetWidgetFromName("WBSPScoreWidget"));
 
 	TargetUI = Cast<USPTargetUI>(GetWidgetFromName(TEXT("WBTargetUI")));
+	GameTimeWidget= Cast<USPGameTimeWidget>(GetWidgetFromName(TEXT("WBGameTimeWidget")));
+	
 	ensure(TargetUI);
 
 	//MainMenuWidget = Cast<USPMainMenu>(GetWidgetFromName(TEXT("WBTargetUI")));
@@ -86,6 +89,11 @@ void USPHUDWidget::ToggleMenu()
 		GetOwningPlayer()->SetInputMode(InputMode);
 		GetOwningPlayer()->SetShowMouseCursor(true);
 	}
+}
+
+void USPHUDWidget::UpdateTime(float CountdownTime)
+{
+	GameTimeWidget->UpdateTime(CountdownTime);
 }
 
 void USPHUDWidget::UpdateSlowCDTime(float NewCurrentTime)

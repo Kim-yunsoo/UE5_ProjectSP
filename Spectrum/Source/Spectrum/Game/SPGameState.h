@@ -37,7 +37,11 @@ protected:
 
 	UFUNCTION(NetMulticast,Unreliable)
 	void MultiRPC(const ColorType& Mycolor, const int Score);
+public:
+	UPROPERTY(Transient, Replicated) //게임 시간 
+	int32 RemainingTime;
 	
+	int32 MatchPlayTime = 120.f; // 2분
 
 // public:
 // 	UFUNCTION()

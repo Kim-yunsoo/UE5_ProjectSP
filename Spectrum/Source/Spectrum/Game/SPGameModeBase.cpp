@@ -3,6 +3,7 @@
 
 #include "Game/SPGameModeBase.h"
 
+#include "SpectrumLog.h"
 #include "SPGameState.h"
 #include "UI/SPLobbyWidget.h"
 #include "GameFramework/GameStateBase.h"
@@ -49,4 +50,27 @@ void ASPGameModeBase::BeginPlay()
 	//	}
 	//}
 	
+}
+
+void ASPGameModeBase::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	GetWorldTimerManager().SetTimer(GameTimerHandle, this, &ASPGameModeBase::DefaultGameTimer, GetWorldSettings()->GetEffectiveTimeDilation(), true);
+
+}
+
+void ASPGameModeBase::DefaultGameTimer()
+{
+	ASPGameState* const SPGameState = Cast<ASPGameState>(GameState);
+	if(SPGameState && SPGameState->RemainingTime>0)
+	{
+		SPGameState->RemainingTime--;
+		//어떤 이벤트를 날려야하는데 .
+		ClientRPC();
+	}
+}
+
+void ASPGameModeBase::ClientRPC_Implementation()
+{
+	SP_LOG(LogSPNetwork,Log,TEXT("ModeTImeTest"));
 }
