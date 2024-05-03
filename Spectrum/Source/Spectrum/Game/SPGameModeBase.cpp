@@ -2,11 +2,15 @@
 
 
 #include "Game/SPGameModeBase.h"
+
+#include "SPGameState.h"
 #include "UI/SPLobbyWidget.h"
 #include "GameFramework/GameStateBase.h"
 
 ASPGameModeBase::ASPGameModeBase()
 {
+	GameStateClass=ASPGameState::StaticClass();
+	
 	//static ConstructorHelpers::FClassFinder<APawn> ThirdPersonClassRef(TEXT("/Game/ThirdPerson/Blueprints/BP_ThirdPersonCharacter.BP_ThirdPersonCharacter_C"));
 
 	//if (ThirdPersonClassRef.Class)
@@ -30,7 +34,6 @@ ASPGameModeBase::ASPGameModeBase()
 	//{
 	//	SPLobbyWidgetClass = LobbyWidgetClassRef.Class;
 	//}	
-
 }
 
 void ASPGameModeBase::BeginPlay()
@@ -45,4 +48,5 @@ void ASPGameModeBase::BeginPlay()
 	//		LobbyWidget->AddToViewport();
 	//	}
 	//}
+	
 }

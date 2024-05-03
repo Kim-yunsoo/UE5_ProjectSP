@@ -3,6 +3,7 @@
 
 #include "UI/SPHUDWidget.h"
 
+#include "SPScoreWidget.h"
 #include "SPSkillWidget.h"
 #include "Interface/SPCharacterHUDInterface.h"
 #include "UI/SPTargetUI.h"
@@ -21,6 +22,8 @@ void USPHUDWidget::NativeConstruct()
 	SlowSkillWidget = Cast<USPSkillWidget>(GetWidgetFromName("WBSkill"));
 	IceSkillWidget = Cast<USPSkillWidget>(GetWidgetFromName("WBSkill"));
 	TeleSkillWidget = Cast<USPSkillWidget>(GetWidgetFromName("WBSkill"));
+
+	ScoreWidget = Cast<USPScoreWidget>(GetWidgetFromName("WBSPScoreWidget"));
 
 	TargetUI = Cast<USPTargetUI>(GetWidgetFromName(TEXT("WBTargetUI")));
 	ensure(TargetUI);
@@ -98,6 +101,11 @@ void USPHUDWidget::UpdateIceCDTime(float NewCurrentTime)
 void USPHUDWidget::UpdateTeleCDTime(float NewCurrentTime)
 {
 	TeleSkillWidget->UpdateTeleBar(NewCurrentTime);
+}
+
+void USPHUDWidget::UpdateScore(const ColorType& Mycolor, const int32 Score)
+{
+	ScoreWidget->UpdateScore(Mycolor,Score);
 }
 
 void USPHUDWidget::ShowInteractionWidget()

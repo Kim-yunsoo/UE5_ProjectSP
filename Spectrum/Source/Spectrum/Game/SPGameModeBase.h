@@ -5,13 +5,14 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 #include "Blueprint/UserWidget.h"
+#include "GameFramework/GameMode.h"
 #include "SPGameModeBase.generated.h"
 
 /**
  *
  */
 UCLASS()
-class SPECTRUM_API ASPGameModeBase : public AGameModeBase
+class SPECTRUM_API ASPGameModeBase : public AGameMode
 {
 	GENERATED_BODY()
 

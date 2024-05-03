@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "SPGlobalEnum.h"
 #include "Blueprint/UserWidget.h"
 #include "SPHUDWidget.generated.h"
 
@@ -44,6 +45,9 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<class USPSkillWidget> TeleSkillWidget;
+
+	UPROPERTY()
+	TObjectPtr<class USPScoreWidget> ScoreWidget;
 	
 public:
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
@@ -63,6 +67,7 @@ public:
 	void UpdateSlowCDTime(float NewCurrentTime);
 	void UpdateIceCDTime(float NewCurrentTime);
 	void UpdateTeleCDTime(float NewCurrentTime);
+	void UpdateScore(const ColorType& Mycolor, const int32 Score);
 	void ShowInteractionWidget();
 	void HideInteractionWidget();
 	void UpdateInteractionWidget(const FInteractableData* InteractableData);

@@ -23,13 +23,22 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FOnAimChangedDelegate, bool /*aim*/)
  */
 //DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAimingChangedDelegate, bool, bIsAiming);
 
-
+//
+// UENUM()
+// enum class ESchoolColor : uint8
+// {
+// 	SchoolGreen=0,
+// 	SchoolOrange=1,
+// 	SchoolPurple=2
+// };
 UENUM()
 enum class ECharacterControlType : uint8
 {
 	Shoulder,
 	Quater
 };
+
+
 
 USTRUCT()
 struct FInteractionData
@@ -549,4 +558,7 @@ public:
 
 	UPROPERTY(Replicated)
 	uint8 bIsActiveGraping :1;
+
+	// UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	// ESchoolColor SchoolAffiliation;
 };

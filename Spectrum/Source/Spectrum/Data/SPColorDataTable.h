@@ -6,14 +6,8 @@
 #include "Engine/DataTable.h"
 #include "SPColorDataTable.generated.h"
 
-UENUM(BlueprintType)
-enum class ColorType : uint8
-{
-	Green = 0,
-	Orange = 1,
-	Purple = 2,
-	None
-};
+
+enum class ColorType : uint8;
 
 USTRUCT(BlueprintType)
 struct FColorData : public FTableRowBase

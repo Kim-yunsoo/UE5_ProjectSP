@@ -41,6 +41,7 @@
 #include "UI/SPWidgetComponent.h"
 #include "UI/SPTargetUI.h"
 #include "DrawDebugHelpers.h"
+#include "SPGameState.h"
 #include "Component/SPInventoryComponent.h"
 #include "Player/SPPlayerController.h"
 #include "Potion/SPItemBase.h"
@@ -1427,16 +1428,20 @@ void ASPCharacterPlayer::ShowProjectilePath()
 
 void ASPCharacterPlayer::SetupHUDWidget(USPHUDWidget* InUserWidget)
 {
-	// USPTargetUI* TargetWidget = Cast<USPTargetUI>(InUserWidget);
-	// if(TargetWidget)
-	// {
-	// 	UE_LOG(LogTemp, Log, TEXT("TEST"));
-	// 	TargetWidget->UpdateTargetUI(bIsAiming);
-	// 	this->OnAimChanged.AddUObject(TargetWidget, &USPTargetUI::UpdateTargetUI);
-	// }
+	
 	SlowSkillComponent->OnSlowCDChange.AddUObject(InUserWidget, &USPHUDWidget::UpdateSlowCDTime);
 	IceSkillComponent->OnIceCDChange.AddUObject(InUserWidget, &USPHUDWidget::UpdateIceCDTime);
 	TeleSkillComponent->OnTeleCDChange.AddUObject(InUserWidget, &USPHUDWidget::UpdateTeleCDTime);
+	//AGameStateBase* State = player->GetController()->GetWorld()->GetGameState();
+	AGameStateBase* State= GetController()->GetWorld()->GetGameState();
+	if(State)
+	{
+		ASPGameState* SPGameState= Cast<ASPGameState>(State);
+		if(SPGameState)
+		{
+			SPGameState->OnScore.AddUObject(InUserWidget,&USPHUDWidget::UpdateScore);
+		}
+	}
 }
 
 void ASPCharacterPlayer::PerformInteractionCheck()
@@ -1809,7 +1814,7 @@ void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 	GetCharacterMovement()->bUseControllerDesiredRotation = false;
 	if (false == bIsHolding)
 	{
-		SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("ServerRPCGraping_Implementation!!"));
+		// SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("ServerRPCGraping_Implementation!!"));
 
 		//FVector SphereLocationStart = Sphere->K2_GetComponentLocation();
 		FVector SphereLocationStart = FollowCamera->K2_GetComponentLocation();
@@ -1848,6 +1853,8 @@ void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 			if (HitSuccess && outHitResult.Component->Mobility == EComponentMobility::Movable)
 			{
 				outHitResult.Component->SetSimulatePhysics(true);
+				outHitResult.GetActor()->SetOwner(this);
+				// UE_LOG(LogTemp,Log,TEXT("%s"),*(outHitResult.GetActor()->GetOwner())->GetName() );
 				HitComponent = outHitResult.GetComponent();
 
 				FVector SphereTracePoint = HitComponent->K2_GetComponentLocation();
