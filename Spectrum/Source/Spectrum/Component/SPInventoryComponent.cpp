@@ -47,14 +47,20 @@ int32 USPInventoryComponent::RemoveAmountOfItem(USPItemBase* ItemIn, int32 Desir
 		const int32 ActualAmountToRemove = FMath::Min(DesiredAmountToRemove, ItemIn->Quantity);
 		int ServerCount = ItemIn->Quantity - ActualAmountToRemove;
 		ItemIn->SetQuantity(ServerCount);
-		// if(GetOwner()->HasAuthority())
-		// {
-		// 	OnInventoryUpdated.Broadcast(InventoryContents);
-		// 	OnInventoryMiniUpdated.Broadcast(InventoryMiniContents);
-		// }
-	
-		ClientRPCUpdatePotion(IsMiniPotion(ItemIn->ID), ServerCount);
-		ClientRPCUpdateMiniPotion(IsPotion(ItemIn->ID), ServerCount);
+		UE_LOG(LogTemp, Warning, TEXT("RemoveAmountOfItem num %d"), IsPotion(ItemIn->ID));
+		UE_LOG(LogTemp, Warning, TEXT("RemoveAmountOfItem %d"), ServerCount);
+		if(ItemIn->ItemType == EItemType::IngredientPotion)
+		{
+			
+			ClientRPCUpdateMiniPotion(IsMiniPotion(ItemIn->ID), ServerCount);
+		
+		}
+		else if (ItemIn->ItemType == EItemType::Potion)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("RemoveAmountOfItem Here"));
+
+			ClientRPCUpdatePotion(IsPotion(ItemIn->ID), ServerCount);
+		}
 	}
 	return 0;
 }
@@ -204,21 +210,21 @@ USPItemBase* USPInventoryComponent::InitializeInventory(const TSubclassOf<USPIte
 
 USPItemBase* USPInventoryComponent::FindMatchingItem(USPItemBase* ItemIn, EItemType Potion) const
 {
-	// if (ItemIn && Potion == EItemType::IngredientPotion)
-	// {
-	// 	UE_LOG(LogTemp,Warning, TEXT("FindMatchingItem"));
-	// 	if(InventoryMiniContents.Contains(ItemIn))
-	// 	{
-	// 		return ItemIn;
-	// 	}
-	// }
-	// else
-	// {
-	// 	if(InventoryContents.Contains(ItemIn))
-	// 	{
-	// 		return ItemIn;
-	// 	}
-	// }
+	if (ItemIn && Potion == EItemType::IngredientPotion)
+	{
+		UE_LOG(LogTemp,Warning, TEXT("FindMatchingItem"));
+		if(InventoryMiniContents.Contains(ItemIn))
+		{
+			return ItemIn;
+		}
+	}
+	else
+	{
+		if(InventoryContents.Contains(ItemIn))
+		{
+			return ItemIn;
+		}
+	}
 	return nullptr;
 }
 
@@ -248,7 +254,7 @@ void USPInventoryComponent::BeginPlay()
 	USPItemBase* B_Potion = InitializeInventory(USPItemBase::StaticClass(), "B_Potion");
 	B_Potion->OwningInventory = this;
 	InventoryContents.Add(B_Potion);
-
+	
 	USPItemBase* R_Mini = InitializeInventory(USPItemBase::StaticClass(), "R_Mini");
 	R_Mini->OwningInventory = this;
 	InventoryMiniContents.Add(R_Mini);
@@ -259,8 +265,6 @@ void USPInventoryComponent::BeginPlay()
 	B_Mini->OwningInventory = this;
 	InventoryMiniContents.Add(B_Mini);
 }
-
-
 
 
 int USPInventoryComponent::IsPotion(FName ID)
@@ -274,6 +278,11 @@ int USPInventoryComponent::IsPotion(FName ID)
 		}
 	}
 	return -1;
+}
+
+int USPInventoryComponent::CountPotion(int num)
+{
+	return InventoryContents[num]->Quantity;
 }
 
 int USPInventoryComponent::IsMiniPotion(FName ID)
@@ -307,3 +316,30 @@ void USPInventoryComponent::ClientRPCUpdatePotion_Implementation(const int& num,
 
 }
 
+USPItemBase* USPInventoryComponent::FindMiniItem(FName ID)
+{
+	for(USPItemBase* InventoryItem : InventoryMiniContents)
+	{
+		if (InventoryItem && InventoryItem->ID == ID)
+		{
+			return InventoryItem;
+		}
+	}
+	return nullptr;
+}
+
+USPItemBase* USPInventoryComponent::FindPotionItem(FName ID)
+{
+	UE_LOG(LogTemp, Warning, TEXT("FINDPOTION1"));
+
+	for(USPItemBase* InventoryItem : InventoryContents)
+	{
+		if (InventoryItem && InventoryItem->ID == ID)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("FINDPOTION2"));
+			return InventoryItem;
+		}
+	}
+	UE_LOG(LogTemp, Warning, TEXT("FINDPOTION3"));
+	return nullptr;
+}

@@ -39,12 +39,19 @@ public:
 	USPItemBase* InitializeInventory(const TSubclassOf<USPItemBase> BaseClass, FName DesiredItemID);
 
 	UFUNCTION(Category = "Inventory")	
-	USPItemBase* FindMatchingItem(USPItemBase* ItemIn,EItemType Potion) const;
+	USPItemBase* FindMiniItem(FName ID);
 
 	UFUNCTION(Category = "Inventory")	
-	void RemoveInventorMakeContents(USPItemBase* ItemToRemove);
+	USPItemBase* FindPotionItem(FName ID);
 	
-
+	UFUNCTION(Category = "Inventory")	
+	int CountPotion(int num);
+	
+	UFUNCTION(Category = "Inventory")	
+	void RemoveInventorMakeContents(USPItemBase* ItemToRemove);
+	UFUNCTION(Category = "Inventory")
+	USPItemBase* FindMatchingItem(USPItemBase* ItemIn, EItemType Potion) const;
+	
 	UFUNCTION(Category = "Inventory")
 	void RemoveSingleinstanceOfItem(USPItemBase* ItemToRemove, EItemType Potion); //인벤토리 배열에서 삭제
 	UFUNCTION(Category = "Inventory")

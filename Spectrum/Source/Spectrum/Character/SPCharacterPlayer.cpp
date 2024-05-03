@@ -1017,7 +1017,7 @@ void ASPCharacterPlayer::ClientRPCStopAnimation_Implementation(ASPCharacterPlaye
 
 void ASPCharacterPlayer::ServerRPCGreenPotionSpawn_Implementation()
 {
-	if(PlayerInventory->IsPotion("G_Potion"))
+	if(PlayerInventory->CountPotion(PlayerInventory->IsPotion("G_Potion")))
 	{
 		if (false == bIsSpawn)
 		{
@@ -1053,7 +1053,7 @@ void ASPCharacterPlayer::ServerRPCGreenPotionSpawn_Implementation()
 
 void ASPCharacterPlayer::ServerRPCOrangePotionSpawn_Implementation()
 {
-	if(PlayerInventory->IsPotion("O_Potion"))
+	if(PlayerInventory->CountPotion(PlayerInventory->IsPotion("O_Potion")))
 	{
 		if (false == bIsSpawn)
 		{
@@ -1085,7 +1085,7 @@ void ASPCharacterPlayer::ServerRPCOrangePotionSpawn_Implementation()
 
 void ASPCharacterPlayer::ServerRPCPurplePotionSpawn_Implementation()
 {
-	if (PlayerInventory->IsPotion("P_Potion"))
+	if(PlayerInventory->CountPotion(PlayerInventory->IsPotion("P_Potion")))
 	{
 		if (false == bIsSpawn)
 		{
@@ -1702,7 +1702,7 @@ void ASPCharacterPlayer::ServerRPCBlackPotionSpawn_Implementation()
 	// }
 	// UE_LOG(LogTemp, Warning, TEXT("================"));
 
-	if(PlayerInventory->IsPotion("B_Potion"))
+	if(PlayerInventory->CountPotion(PlayerInventory->IsPotion("B_Potion")))
 	{
 		if (false == bIsSpawn)
 		{
@@ -1730,7 +1730,8 @@ void ASPCharacterPlayer::ServerRPCBlackPotionSpawn_Implementation()
 				Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
 			}
 		}
-		//PlayerInventory->RemoveAmountOfItem(PlayerInventory->FindPotionItem("B_Potion"), 1);
+		//PlayerInventory->FindPotionItem("B_Potion");
+		PlayerInventory->RemoveAmountOfItem(PlayerInventory->FindPotionItem("B_Potion"), 1);
 	}
 	
 }
