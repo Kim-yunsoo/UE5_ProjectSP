@@ -11,7 +11,7 @@
 ASPGameModeBase::ASPGameModeBase()
 {
 	GameStateClass=ASPGameState::StaticClass();
-	
+	bUseSeamlessTravel=true;
 	
 	//static ConstructorHelpers::FClassFinder<APawn> ThirdPersonClassRef(TEXT("/Game/ThirdPerson/Blueprints/BP_ThirdPersonCharacter.BP_ThirdPersonCharacter_C"));
 
@@ -51,6 +51,20 @@ void ASPGameModeBase::BeginPlay()
 	//	}
 	//}
 	
+}
+
+void ASPGameModeBase::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	//GetWorldTimerManager().SetTimer(GameTimerHandle, this, &ASPGameModeBase::DefaultGameTimer, 20.0f,false);
+
+}
+
+void ASPGameModeBase::DefaultGameTimer()
+{
+	UE_LOG(LogTemp,Log,TEXT("Default"));
+	EndMatch();
+	GetWorld()->ServerTravel(TEXT("/Game/Spectrum/Room/Map/Building?listen")); 
 }
 
 

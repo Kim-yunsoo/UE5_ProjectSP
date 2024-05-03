@@ -17,45 +17,45 @@
 void USpectrumGameInstance::ConnectToGameServer()
 {
 	// 소켓 생성
-	Socket = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateSocket(TEXT("Stream"), TEXT("Client Socket"));
-
-	FIPv4Address Ip;
-	FIPv4Address::Parse(IpAddress, Ip);
-
-	TSharedRef<FInternetAddr> InternetAddr = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateInternetAddr();
-	InternetAddr->SetIp(Ip.Value);
-	InternetAddr->SetPort(Port);
-
-	// 서버에 접속(네트워크 커넥션)
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("connect to server")));
-
-	bool bConnected = Socket->Connect(*InternetAddr);
-
-	// 접속 성공 여부
-	if (bConnected)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("connection Success")));
-
-		// Session 만들기(워커 스레드 생성)
-		GameServerSession = MakeShared<PacketSession>(Socket);
-		GameServerSession->Run();		// 이제 멀티스레드로 돌아감
-
-		//// 로비에서 캐릭터 선택창 띄우기
-		//{ // 로그인	패킷 보내기
-		//	Protocol::C_LOGIN Pkt;
-		//	//SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(Pkt);
-
-		//	//SendPacket(SendBuffer);
-		//	Pkt.set_id("test");
-
-			//SEND_PACKET(Pkt);
-		//}
-
-	}
-	else
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("connection failed")));
-	}
+	// Socket = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateSocket(TEXT("Stream"), TEXT("Client Socket"));
+	//
+	// FIPv4Address Ip;
+	// FIPv4Address::Parse(IpAddress, Ip);
+	//
+	// TSharedRef<FInternetAddr> InternetAddr = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateInternetAddr();
+	// InternetAddr->SetIp(Ip.Value);
+	// InternetAddr->SetPort(Port);
+	//
+	// // 서버에 접속(네트워크 커넥션)
+	// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("connect to server")));
+	//
+	// bool bConnected = Socket->Connect(*InternetAddr);
+	//
+	// // 접속 성공 여부
+	// if (bConnected)
+	// {
+	// 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("connection Success")));
+	//
+	// 	// Session 만들기(워커 스레드 생성)
+	// 	GameServerSession = MakeShared<PacketSession>(Socket);
+	// 	GameServerSession->Run();		// 이제 멀티스레드로 돌아감
+	//
+	// 	//// 로비에서 캐릭터 선택창 띄우기
+	// 	//{ // 로그인	패킷 보내기
+	// 	//	Protocol::C_LOGIN Pkt;
+	// 	//	//SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(Pkt);
+	//
+	// 	//	//SendPacket(SendBuffer);
+	// 	//	Pkt.set_id("test");
+	//
+	// 		//SEND_PACKET(Pkt);
+	// 	//}
+	//
+	// }
+	// else
+	// {
+	// 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("connection failed")));
+	// }
 
 
 }
@@ -63,73 +63,73 @@ void USpectrumGameInstance::ConnectToGameServer()
 void USpectrumGameInstance::DisconnectToGameServer()
 {
 
-	// 클라이언트가 종료하면 서버에게 알려줘야함
-	if (Socket == nullptr || GameServerSession == nullptr)
-		return;
-
-	Protocol::C_LEAVE_GAME LeavePkt;
-	SEND_PACKET(LeavePkt);
-
-	/*if(Socket)
-	{
-		ISocketSubsystem* SocketSubsystem = ISocketSubsystem::Get();
-		SocketSubsystem->DestroySocket(Socket);
-		Socket = nullptr;
-	}*/
+	// // 클라이언트가 종료하면 서버에게 알려줘야함
+	// if (Socket == nullptr || GameServerSession == nullptr)
+	// 	return;
+	//
+	// Protocol::C_LEAVE_GAME LeavePkt;
+	// SEND_PACKET(LeavePkt);
+	//
+	// /*if(Socket)
+	// {
+	// 	ISocketSubsystem* SocketSubsystem = ISocketSubsystem::Get();
+	// 	SocketSubsystem->DestroySocket(Socket);
+	// 	Socket = nullptr;
+	// }*/
 }
 
 void USpectrumGameInstance::HandleRecvPackets()
 {
 
-	if (Socket == nullptr || GameServerSession == nullptr)
-	{
-		return;
-	}
-
-	GameServerSession->HandleRecvPackets();	// 워커 스레드가 긁은 큐를 소모하여 처리
+	// if (Socket == nullptr || GameServerSession == nullptr)
+	// {
+	// 	return;
+	// }
+	//
+	// GameServerSession->HandleRecvPackets();	// 워커 스레드가 긁은 큐를 소모하여 처리
 
 }
 
 void USpectrumGameInstance::SendPacket(SendBufferRef SendBuffer)
 {
 
-	if(Socket == nullptr || GameServerSession == nullptr)
-	{
-		return;
-	}
-
-	GameServerSession->SendPacket(SendBuffer);	// 큐를 쌓아주는 역할
+	// if(Socket == nullptr || GameServerSession == nullptr)
+	// {
+	// 	return;
+	// }
+	//
+	// GameServerSession->SendPacket(SendBuffer);	// 큐를 쌓아주는 역할
 }
 
 
 void USpectrumGameInstance::HandleSpawn(const Protocol::PlayerInfo& ObjectInfo, bool IsMine)
 {
-	if (Socket == nullptr || GameServerSession == nullptr)
-		return;
-
-	auto* World = GetWorld();
-	if (World == nullptr)
-		return;
-
-	// 중복 처리 체크
-	const uint64 ObjectId = ObjectInfo.object_id();
-	if (Players.Find(ObjectId) != nullptr)
-		return;
-
-	//FVector SpawnLocation(ObjectInfo.pos_info().x(), ObjectInfo.pos_info().y(), ObjectInfo.pos_info().z());
-
-	if (IsMine)
-	{
-		auto* PC = UGameplayStatics::GetPlayerController(this, 0);
-		ASPCharacterPlayer* Player = Cast<ASPCharacterPlayer>(PC->GetPawn());
-		if (Player == nullptr)
-			return;
-
-		//Player->SetPostionInfo(ObjectInfo.pos_info());
-
-		MyPlayer = Player;
-		Players.Add(ObjectInfo.object_id(), Player);
-	}
+	// if (Socket == nullptr || GameServerSession == nullptr)
+	// 	return;
+	//
+	// auto* World = GetWorld();
+	// if (World == nullptr)
+	// 	return;
+	//
+	// // 중복 처리 체크
+	// const uint64 ObjectId = ObjectInfo.object_id();
+	// if (Players.Find(ObjectId) != nullptr)
+	// 	return;
+	//
+	// //FVector SpawnLocation(ObjectInfo.pos_info().x(), ObjectInfo.pos_info().y(), ObjectInfo.pos_info().z());
+	//
+	// if (IsMine)
+	// {
+	// 	auto* PC = UGameplayStatics::GetPlayerController(this, 0);
+	// 	ASPCharacterPlayer* Player = Cast<ASPCharacterPlayer>(PC->GetPawn());
+	// 	if (Player == nullptr)
+	// 		return;
+	//
+	// 	//Player->SetPostionInfo(ObjectInfo.pos_info());
+	//
+	// 	MyPlayer = Player;
+	// 	Players.Add(ObjectInfo.object_id(), Player);
+	// }
 
 
 }
