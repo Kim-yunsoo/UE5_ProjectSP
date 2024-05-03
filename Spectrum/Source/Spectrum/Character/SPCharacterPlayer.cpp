@@ -395,7 +395,7 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 	bIsTurnLeft = false;
 	bIsTurnReady = false;
 	bIsDamage = false;
-
+	InteractionCheck = false;
 	bIsActiveSlowSkill = true;
 	bIsActiveIceSkill = true;
 
@@ -436,10 +436,10 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 		PhysicsHandleComponent->SetTargetLocation(GravityArrow->K2_GetComponentLocation());
 	}
 	//
-	if (GetWorld()->TimeSince(InteractionData.LastInteractionCheckTime) > InteractionCheckFrequency)
-	{
-		PerformInteractionCheck();
-	}
+	// if (GetWorld()->TimeSince(InteractionData.LastInteractionCheckTime) > InteractionCheckFrequency)
+	// {
+	// 	PerformInteractionCheck();
+	// }
 }
 
 void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -1425,37 +1425,21 @@ void ASPCharacterPlayer::PerformInteractionCheck()
 {
 	InteractionData.LastInteractionCheckTime = GetWorld()->GetTimeSeconds();
 
-	FVector TraceStart{GetPawnViewLocation()};
-	FVector TraceEnd{TraceStart + (GetViewRotation().Vector() * InteractionCheckDistance)};
+	TArray<AActor*> OverlappingActors;
+	GetOverlappingActors(OverlappingActors, ASPPickup::StaticClass()); // 겹친 액터들을 검출합니다.
 
-	float LookDirection = FVector::DotProduct(GetActorForwardVector(), GetViewRotation().Vector());
-
-	if (LookDirection > 0) //양수 음수에 따라 같은 방향인지 아닌지 판단
+	for (AActor* OverlappingActor : OverlappingActors)
 	{
-		DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Red, false, 1.0f, 0, 2.0f);
-		
-		FCollisionQueryParams QueryParams;
-		QueryParams.AddIgnoredActor(this); //나는 쏘는 사람이니까 나를 무시해야 함
-		FHitResult TraceHit;
-
-		if (GetWorld()->LineTraceSingleByChannel(TraceHit, TraceStart, TraceEnd, ECC_Visibility, QueryParams))
+		if (OverlappingActor->Implements<USPInteractionInterface>()) // 상호작용 가능한지 확인합니다.
 		{
-			if (TraceHit.GetActor()->GetClass()->ImplementsInterface(USPInteractionInterface::StaticClass()))
+			if (OverlappingActor != InteractionData.CurrentInteractable)
 			{
-				if (TraceHit.GetActor() != InteractionData.CurrentInteractable)
-				{
-					FoundInteractable(TraceHit.GetActor());
-					return;
-				}
-
-				if (TraceHit.GetActor() == InteractionData.CurrentInteractable)
-				{
-					return;
-				}
+				FoundInteractable(OverlappingActor); // 상호작용할 수 있는 액터를 찾았을 때의 처리를 수행합니다.
+				return;
 			}
 		}
 	}
-	NoInteractableFound();
+	NoInteractableFound(); // 상호작용할 수 있는 액터를 찾지 못했을 때의 처리를 수행합니다.
 }
 
 void ASPCharacterPlayer::FoundInteractable(AActor* NewInteractable)
@@ -1465,7 +1449,6 @@ void ASPCharacterPlayer::FoundInteractable(AActor* NewInteractable)
 	{
 		EndInteract();
 	}
-
 	if (InteractionData.CurrentInteractable) //상호작용 데이터 있으면!
 	{
 		TargetInteractable = InteractionData.CurrentInteractable;
@@ -1481,7 +1464,7 @@ void ASPCharacterPlayer::FoundInteractable(AActor* NewInteractable)
 		HUDWidget->UpdateInteractionWidget(&TargetInteractable->InteractableData);
 	}
 
-	// TargetInteractable->BeginFocus();
+	TargetInteractable->BeginFocus();
 }
 
 void ASPCharacterPlayer::NoInteractableFound()
@@ -1511,15 +1494,15 @@ void ASPCharacterPlayer::NoInteractableFound()
 
 void ASPCharacterPlayer::BeginInteract()
 {
-	PerformInteractionCheck(); //인터렉트 대상이 변하지 않는지 체크
-
+	
+	PerformInteractionCheck();
 	//인터렉트 가능한 대상 있는지
 	if (InteractionData.CurrentInteractable)
 	{
 		if (IsValid(TargetInteractable.GetObject())) //한번 더 확인
 		{
 			TargetInteractable->BeginInteract();
-
+	
 			//시간을 확인한다!
 			if (FMath::IsNearlyZero(TargetInteractable->InteractableData.InteractionDuration, 0.1f)) //상호작용 시간 비교
 			{
@@ -1537,6 +1520,7 @@ void ASPCharacterPlayer::BeginInteract()
 			}
 		}
 	}
+
 }
 
 void ASPCharacterPlayer::EndInteract()
@@ -1558,23 +1542,7 @@ void ASPCharacterPlayer::Interact()
 		TargetInteractable->Interact2(this, HUDWidget);
 	}
 	ServerRPCInteract();
-	// GetWorldTimerManager().ClearTimer(TimerHandle_Interaction);
-	// if (IsValid(TargetInteractable.GetObject()))
-	// {
-	// 	TargetInteractable->Interact(this, HUDWidget);
-	// }
-	// if(IsValid(TargetInteractable.GetObject()))
-	// {
-	// 	TargetInteractable->Interact(this);
-	// }
-	// USPTargetUI* TargetWidget = Cast<USPTargetUI>(InUserWidget);
-	// Target->GetWidget().UpdateTarget;
-	// if(TargetWidget)
-	// {
-	// 	UE_LOG(LogTemp, Log, TEXT("SetupTargetWidget"));
-	// 	TargetWidget->UpdateTargetUI(bIsAiming);
-	// 	//this->OnAimChanged.AddUObject(TargetWidget, &USPTargetUI::UpdateTargetUI);
-	// }
+	
 }
 
 void ASPCharacterPlayer::ServerRPCInteract_Implementation()
@@ -1663,6 +1631,7 @@ void ASPCharacterPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 	DOREPLIFETIME(ASPCharacterPlayer, bIsTurnReady);
 	DOREPLIFETIME(ASPCharacterPlayer, bIsThrowReady);
 	DOREPLIFETIME(ASPCharacterPlayer, bIsHolding);
+	DOREPLIFETIME(ASPCharacterPlayer, InteractionCheck);
 	// DOREPLIFETIME(ASPCharacterPlayer, bIsActiveSlowSkill);
 	//bIsActiveSlowSkill
 	// DOREPLIFETIME(ASPCharacterPlayer, bIsActiveSlowSkill);

@@ -5,6 +5,8 @@
 #include "Component/SPInventoryComponent.h"
 #include "Potion/SPItemBase.h"
 #include "SpectrumLog.h"
+#include "Components/BoxComponent.h"
+#include "Engine/TriggerVolume.h"
 
 // Sets default values
 ASPPickup::ASPPickup()
@@ -13,8 +15,8 @@ ASPPickup::ASPPickup()
 	PrimaryActorTick.bCanEverTick = false;
 
 	PickupMesh = CreateDefaultSubobject<UStaticMeshComponent>("PickupMesh");
-	PickupMesh->SetSimulatePhysics(true); //½Ã¹Ä·¹ÀÌ¼Ç true °í¹ÎÇØº¸±â
-	SetRootComponent(PickupMesh);
+	PickupMesh->SetSimulatePhysics(true);
+	Trigger = CreateDefaultSubobject<UBoxComponent>(TEXT("PickupTriggerComponent"));
 }
 
 // Called when the game starts or when spawned
@@ -27,6 +29,11 @@ void ASPPickup::BeginPlay()
 		this->AActor::SetReplicateMovement(true);
 	}
 	InitializePickup(USPItemBase::StaticClass(), ItemQuantity);
+	FVector ActorLocation = GetActorLocation();
+	Trigger->SetRelativeLocation(ActorLocation);
+	Trigger->SetRelativeScale3D(FVector(1,1,3));
+	Trigger->OnComponentBeginOverlap.AddDynamic(this, &ASPPickup::OnTriggerEnter);
+	Trigger->OnComponentEndOverlap.AddDynamic(this, &ASPPickup::OnTriggerExit);
 }
 
 void ASPPickup::InitializePickup(const TSubclassOf<USPItemBase> BaseClass, const int32 InQuantity)
@@ -34,7 +41,7 @@ void ASPPickup::InitializePickup(const TSubclassOf<USPItemBase> BaseClass, const
 	if (ItemDataTable && !DesiredItemID.IsNone())
 	{
 		const FItemData* ItemData = ItemDataTable->FindRow<FItemData>(DesiredItemID, DesiredItemID.ToString());
-		// ¿øÇÏ´Â Ç×¸ñ Ã£±â
+		// ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½×¸ï¿½ Ã£ï¿½ï¿½
 
 		ItemReference = NewObject<USPItemBase>(this, BaseClass);
 
@@ -44,7 +51,7 @@ void ASPPickup::InitializePickup(const TSubclassOf<USPItemBase> BaseClass, const
 		ItemReference->ItemNumericData = ItemData->ItemNumericData;
 		ItemReference->ItemAssetData = ItemData->ItemAssetData;
 
-		//¾ÆÀÌÅÛ È£ÃâÇÏ±â
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È£ï¿½ï¿½ï¿½Ï±ï¿½
 		InQuantity <= 0 ? ItemReference->SetQuantity(1) : ItemReference->SetQuantity(InQuantity);
 
 		PickupMesh->SetStaticMesh(ItemData->ItemAssetData.Mesh);
@@ -108,11 +115,11 @@ void ASPPickup::UpdateInteractableData()
 void ASPPickup::TakePickup(ASPCharacterPlayer* Taker)
 {
 
-	if (!IsPendingKillPending()) //IsPendingKillPending() »èÁ¦µÇ´ÂÁö È®ÀÎ
+	if (!IsPendingKillPending()) //IsPendingKillPending() ï¿½ï¿½ï¿½ï¿½ï¿½Ç´ï¿½ï¿½ï¿½ È®ï¿½ï¿½
 	{
 		if(ItemReference)
 		{
-			//ÀÎº¥Åä¸® ³Ö°í ¼±ÅÃ µÇ¸é Ç×¸ñÀ» Á¶Á¤ÇÏ°Å³ª ÆÄ±«
+			//ï¿½Îºï¿½ï¿½ä¸® ï¿½Ö°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ç¸ï¿½ ï¿½×¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°Å³ï¿½ ï¿½Ä±ï¿½
 			if (USPInventoryComponent* PlayerInvetory = Taker->GetInventory())
 			{
 				FTimerHandle TimerHandle;
@@ -137,7 +144,26 @@ void ASPPickup::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEve
 	//
 	// const FName ChangedPropertyName = PropertyChangedEvent.Property?PropertyChangedEvent.Property->GetFName() : NAME_None;
 	//
-	//Todo ¿¡µðÅÍ¿¡¼­ ÆíÇÏ°Ô ÇÏ±â À§ÇØ¼­!
+	//Todo ï¿½ï¿½ï¿½ï¿½ï¿½Í¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½Ø¼ï¿½!
+}
+
+void ASPPickup::OnTriggerEnter(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	ASPCharacterPlayer* PlayerCharacter = Cast<ASPCharacterPlayer>(OtherActor);
+	if (PlayerCharacter)
+	{
+		PlayerCharacter->PerformInteractionCheck();
+	}
+}
+
+void ASPPickup::OnTriggerExit(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex)
+{
+	ASPCharacterPlayer* PlayerCharacter = Cast<ASPCharacterPlayer>(OtherActor);
+	if (PlayerCharacter)
+	{
+		PlayerCharacter->NoInteractableFound();
+	}
 }
 
 void ASPPickup::ServerRPCInteract_Implementation(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget)
@@ -151,11 +177,6 @@ void ASPPickup::ClientRPCUpdateWidget_Implementation(ASPCharacterPlayer* Taker)
 {
 	SP_LOG(LogSPNetwork,Log,TEXT("ClientRPC"));
 	
-	// SP_LOG(LogSPNetwork, Log, TEXT("TEST"));
-	// for(USPItemBase* const& InventoryItem : PlayerInvetory->GetInventoryContents())
-	// {
-	// 	SP_LOG(LogSPNetwork, Log, TEXT("%s"), *InventoryItem->ItemTextData.Name.ToString());
-	// }
 	
 }
 

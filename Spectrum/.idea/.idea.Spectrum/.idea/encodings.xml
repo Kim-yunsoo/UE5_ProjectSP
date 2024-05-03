@@ -3,5 +3,6 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/Source/Spectrum/Component/SPInventoryComponent.cpp" charset="x-windows-949" />
     <file url="file://$PROJECT_DIR$/Source/Spectrum/Potion/Make/SPMakingPotionWidget.cpp" charset="x-windows-949" />
+    <file url="file://$PROJECT_DIR$/Source/Spectrum/UI/Inventory/SPPickup.h" charset="x-windows-949" />
   </component>
 </project>

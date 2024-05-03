@@ -13,6 +13,7 @@
 #include "Potion/SPItemBase.h"
 #include "SPCharacterPlayer.generated.h"
 
+class ASPPickup;
 class USPInventoryComponent;
 class USPHUDWidget;
 class USPSkillCastComponent;
@@ -183,8 +184,8 @@ protected:
 	uint8 bIsSpawn : 1; //Spawn check
 
 	UPROPERTY(Replicated, BlueprintReadWrite, Category = "Character")
-	uint8 bIsThrowReady : 1; //Throw Ready? 
-
+	uint8 bIsThrowReady : 1; //Throw Ready?
+	
 	// UPROPERTY(Replicated, BlueprintReadWrite, Category = "Character")
 	// uint8 bIsActiveSlowSkill : 1; //Throw Ready?
 
@@ -287,8 +288,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	FVector UIRotator;
-
-	
+public:
+	UPROPERTY()
+	TObjectPtr<ASPPickup> PickupItem;
 	
 
 protected:
@@ -362,22 +364,25 @@ protected:
 	FTimerHandle TimerHandle_Interaction;
 	
 	FInteractionData InteractionData;
-
+public:
 	void PerformInteractionCheck();
+	
 	void FoundInteractable(AActor* NewInteractable);
 	void NoInteractableFound();
 	void BeginInteract();
 	void EndInteract();
 	void Interact();
-
+protected:
 	UFUNCTION(Server, Unreliable)
 	void ServerRPCInteract();
+
+public:
+	UPROPERTY(Replicated)
+	uint8 InteractionCheck : 1;
 	
 // Inventory
-	
 	UPROPERTY(VisibleAnywhere, Category = "Character | Inventory")
 	TObjectPtr<USPInventoryComponent> PlayerInventory;
-
 public:
 	//인벤토리 가지고 오기
 	FORCEINLINE USPInventoryComponent* GetInventory() const {return PlayerInventory;};

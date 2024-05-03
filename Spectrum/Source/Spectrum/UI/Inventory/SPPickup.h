@@ -8,6 +8,7 @@
 #include "Interface/SPInteractionInterface.h"
 #include "SPPickup.generated.h"
 
+class UBoxComponent;
 class USPItemBase;
 class ASPPotionBase;
 
@@ -30,6 +31,10 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+public:
+	UPROPERTY(VisibleAnywhere, Category = "Pickup | Components")
+	TObjectPtr<UBoxComponent> Trigger;
+	
 	UPROPERTY(VisibleAnywhere, Category = "Pickup | Components")
 	TObjectPtr<UStaticMeshComponent> PickupMesh;
 
@@ -68,4 +73,10 @@ protected:
 
 	UFUNCTION(Server, Unreliable)
 	void ServerRPCInteract(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget);
+
+	UFUNCTION()
+	void OnTriggerEnter(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void OnTriggerExit(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 };
