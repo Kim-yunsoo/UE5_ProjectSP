@@ -1440,6 +1440,7 @@ void ASPCharacterPlayer::SetupHUDWidget(USPHUDWidget* InUserWidget)
 		if(SPGameState)
 		{
 			SPGameState->OnScore.AddUObject(InUserWidget,&USPHUDWidget::UpdateScore);
+			SPGameState->OnTime.AddUObject(InUserWidget,&USPHUDWidget::UpdateTime);
 		}
 	}
 }

@@ -20,11 +20,12 @@ ASPGameState::ASPGameState()
 void ASPGameState::BeginPlay()
 {
 	Super::BeginPlay();
+		GetWorldTimerManager().SetTimer(GameTimerHandle, this, &ASPGameState::DefaultGameTimer,
+		                                GetWorldSettings()->GetEffectiveTimeDilation(), true);
 }
 
 void ASPGameState::AddScore(const ColorType& MyColor)
 {
-	SP_LOG(LogSPNetwork, Log, TEXT("AddScore"));
 	if (MyColor == ColorType::Green)
 	{
 		++GreenScore;
@@ -43,45 +44,34 @@ void ASPGameState::AddScore(const ColorType& MyColor)
 		++PurpleScore;
 		MultiRPC(MyColor, PurpleScore);
 
-		// OnRep_AddSocreEnvet(MyColor, PurpleScore);
 	}
 }
 
-// void ASPGameState::PostInitializeComponents()
-// {
-// 	Super::PostInitializeComponents();
-// 	// GetWorldTimerManager().SetTimer(GameTimerHandle, this, &ASPGameState::DefaultGameTimer,
-// 	//                                 GetWorldSettings()->GetEffectiveTimeDilation(), true);
-// }
+void ASPGameState::DefaultGameTimer()
+{
 
-// void ASPGameState::DefaultGameTimer()
-// {
-// 		// ASPGameState* const SPGameState = Cast<ASPGameState>(GameState);
-// 		// UE_LOG(LogTemp,Log,TEXT("TEST1"));
-// 	
-// 		 if(RemainingTime>0)
-// 		{
-// 			RemainingTime--;
-// 			//어떤 이벤트를 날려야하는데 .
-// 			// UE_LOG(LogTemp,Log,TEXT("TEST2"));
-// 			// ClientRPC();
-// 		}
-// }
+	if(HasAuthority())
+	{
+		if (RemainingTime > 0)
+		{
+			RemainingTime--;
+			OnRapTime();
+		}
+	}
+}
 
-// void ASPGameState::ClientRPC_Implementation()
-// {
-// 	SP_LOG(LogSPNetwork,Log,TEXT("ModeTImeTest"));
-// }
+void ASPGameState::OnRapTime()
+{
+
+	OnTime.Broadcast(RemainingTime);
+}
+
 
 void ASPGameState::MultiRPC_Implementation(const ColorType& Mycolor, const int Score)
 {
 	OnScore.Broadcast(Mycolor, Score);
 }
 
-// void ASPGameState::OnRep_AddSocreEnvet()
-// {
-// 	OnScore.Broadcast(MyColor, Score);
-// }
 
 void ASPGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
@@ -90,6 +80,5 @@ void ASPGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 	DOREPLIFETIME(ASPGameState, GreenScore);
 	DOREPLIFETIME(ASPGameState, OrangeScore);
 	DOREPLIFETIME(ASPGameState, PurpleScore);
-
 	DOREPLIFETIME(ASPGameState, RemainingTime);
 }

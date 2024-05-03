@@ -9,6 +9,7 @@
 #include "SPGameState.generated.h"
 
 DECLARE_MULTICAST_DELEGATE_TwoParams(FOnScore, const ColorType& /*MyColor*/,const int32 /*Score*/)
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnTime,float /*Time*/);
 
 UCLASS()
 class SPECTRUM_API ASPGameState : public AGameState, public ISPScoreInterface
@@ -18,10 +19,12 @@ class SPECTRUM_API ASPGameState : public AGameState, public ISPScoreInterface
 	
 public:
 	FOnScore OnScore;
+	FOnTime OnTime;
 	ASPGameState();
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	virtual void BeginPlay() override;
+	
 protected:
 	
 	UPROPERTY(Replicated)
@@ -37,24 +40,17 @@ protected:
 
 	UFUNCTION(NetMulticast,Unreliable)
 	void MultiRPC(const ColorType& Mycolor, const int Score);
-public:
-	UPROPERTY(Transient, Replicated) //게임 시간 
-	int32 RemainingTime;
 	
-	int32 MatchPlayTime = 10.f; // 2분
-
+public:
+	UPROPERTY(Transient, ReplicatedUsing= OnRapTime) //게임 시간 
+	int32 RemainingTime;
+	int32 MatchPlayTime = 600.f; // 10분
+	
 protected: //Timer
 
-	// virtual void PostInitializeComponents() override; //여기서 타이머 가동한다. 
-	// virtual void DefaultGameTimer(); //타이머로 사용할 함수 
-	// FTimerHandle GameTimerHandle;
-	//
-	// UFUNCTION(Client,Unreliable)
-	// void ClientRPC();
+	virtual void DefaultGameTimer(); //타이머로 사용할 함수 
+	FTimerHandle GameTimerHandle;
 	
-
-// public:
-// 	UFUNCTION()
-// 	void OnRep_AddSocreEnvet();
-	
+	UFUNCTION()
+	void OnRapTime();
 };
