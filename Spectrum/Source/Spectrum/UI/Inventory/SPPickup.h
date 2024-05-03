@@ -55,6 +55,7 @@ protected:
 	virtual void EndFocus() override;
 	
 	virtual void Interact(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget) override;
+	virtual void Interact2(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget) override;
 	void UpdateInteractableData();
 	void TakePickup(ASPCharacterPlayer* Taker);
 #if WITH_EDITOR
@@ -64,4 +65,7 @@ protected:
 protected:
 	UFUNCTION(Client, Unreliable)
 	void ClientRPCUpdateWidget(ASPCharacterPlayer* Taker);
+
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCInteract(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget);
 };

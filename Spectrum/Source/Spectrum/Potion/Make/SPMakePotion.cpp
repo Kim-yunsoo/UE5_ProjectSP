@@ -3,6 +3,7 @@
 
 #include "Potion/Make/SPMakePotion.h"
 
+#include "SpectrumLog.h"
 #include "SPMakingPotionWidget.h"
 #include "UI/SPHUDWidget.h"
 
@@ -30,9 +31,9 @@ void ASPMakePotion::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void ASPMakePotion::Interact(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget)
+void ASPMakePotion::Interact2(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget)
 {
-	//HUDWidgetTest = HUDWidget;
+	HUDWidgetTest = HUDWidget;
 	if(bIsVisible)
 	{
 		bIsVisible = false;
@@ -42,10 +43,13 @@ void ASPMakePotion::Interact(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* 
 	else
 	{
 		bIsVisible = true;
+		UE_LOG(LogTemp, Warning, TEXT("Interact"));
+		SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("Interact"));
 		HUDWidget->UpdateMakingPotionWidget(true);
 		HUDWidget->ToggleMenu();
 	}
 	
+	//ClientRPCInteract(PlayerCharacter, HUDWidget);
 }
 
 void ASPMakePotion::EndInteract()
@@ -55,6 +59,11 @@ void ASPMakePotion::EndInteract()
 	//HUDWidgetTest->UpdateMakingPotionWidget(false);
 
 	//Todo 다 끝나면 위젯 나가야함
+}
+
+void ASPMakePotion::ClientRPCInteract_Implementation(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget)
+{
+	
 }
 
 

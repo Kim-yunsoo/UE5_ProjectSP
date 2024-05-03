@@ -41,6 +41,7 @@
 #include "UI/SPWidgetComponent.h"
 #include "UI/SPTargetUI.h"
 #include "DrawDebugHelpers.h"
+#include "IDetailTreeNode.h"
 #include "Component/SPInventoryComponent.h"
 #include "Player/SPPlayerController.h"
 #include "Potion/SPItemBase.h"
@@ -1133,6 +1134,42 @@ void ASPCharacterPlayer::ClientRPCIceAnimation_Implementation(ASPCharacterPlayer
 	}
 }
 
+void ASPCharacterPlayer::ServerRPCDragItem_Implementation(int num, const int32 QuantityToDrop)
+{
+	 for(USPItemBase* ItemBase : PlayerInventory->GetInventorMiniContents())
+	 {
+	 	UE_LOG(LogTemp, Warning, TEXT("%s %d"), *ItemBase->ItemTextData.Name.ToString(), ItemBase->Quantity);
+	
+	 }
+	USPItemBase* ItemBase = PlayerInventory->FindMatchingItem(num);
+	PlayerInventory->RemoveAmountOfItem(ItemBase, 1);
+	GetInventory()->AddInventorMakeContents(ItemBase);
+	SP_LOG(LogSPNetwork, Log, TEXT("DragItem %d"), GetInventory()->GetInventorMakeContents().Num());
+	if (GetInventory()->GetInventorMakeContents().Num() == 3)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Three"));
+		USPItemBase* Item = PlayerInventory->MakingPotion();
+		
+		ClientRPCUpdateMakingPotion(Item);
+	}
+}
+
+void ASPCharacterPlayer::ClientRPCUpdateMakingPotion_Implementation(USPItemBase* Item)
+{
+	if(Item)
+		HUDWidget->MakingPotionWieget(Item);
+}
+
+
+void ASPCharacterPlayer::ServerRPCBackItem_Implementation(int num, const int32 QuantityToDrop)
+{
+	USPItemBase* ItemBase = PlayerInventory->FindMatchingItem(num);
+	PlayerInventory->HandleAddItem(ItemBase);
+	GetInventory()->RemoveInventorMakeContents(ItemBase);
+	SP_LOG(LogSPNetwork, Log, TEXT("BackItem"));
+	SP_LOG(LogSPNetwork, Log, TEXT("DragItem %d"), GetInventory()->GetInventorMakeContents().Num());
+}
+
 void ASPCharacterPlayer::OnRep_PotionSpawn()
 {
 	SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("Potionspawn"));
@@ -1505,9 +1542,17 @@ void ASPCharacterPlayer::EndInteract()
 void ASPCharacterPlayer::Interact()
 {
 	//타이머 끝났다고 가정하고 지운다.
-
-	ServerRPCInteract();
 	GetWorldTimerManager().ClearTimer(TimerHandle_Interaction);
+	if (IsValid(TargetInteractable.GetObject()))
+	{
+		TargetInteractable->Interact2(this, HUDWidget);
+	}
+	ServerRPCInteract();
+	// GetWorldTimerManager().ClearTimer(TimerHandle_Interaction);
+	// if (IsValid(TargetInteractable.GetObject()))
+	// {
+	// 	TargetInteractable->Interact(this, HUDWidget);
+	// }
 	// if(IsValid(TargetInteractable.GetObject()))
 	// {
 	// 	TargetInteractable->Interact(this);
@@ -1541,66 +1586,42 @@ void ASPCharacterPlayer::UpdateInteractionWidget() const
 
 void ASPCharacterPlayer::DropItem(USPItemBase* ItemToDrop, const int32 QuantityToDrop)
 {
-	if (PlayerInventory->FindMatchingItem(ItemToDrop, ItemToDrop->ItemType))
-	{
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.Owner = this;
-		SpawnParams.bNoFail = true;
-		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-
-		const FVector SpawnLocation{GetActorLocation() + (GetActorForwardVector() * 50.f)};
-
-		const FTransform SpawnTransform(GetActorRotation(), SpawnLocation);
-
-		const int32 RemovedQuantity = PlayerInventory->RemoveAmountOfItem(ItemToDrop, QuantityToDrop);
-
-		ASPPickup* Pickup = GetWorld()->SpawnActor<ASPPickup>(ASPPickup::StaticClass(), SpawnTransform, SpawnParams);
-
-		Pickup->InitializeDrop(ItemToDrop, RemovedQuantity);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Item to drop was somehow null"));
-	}
+	// if (PlayerInventory->FindMatchingItem(ItemToDrop, ItemToDrop->ItemType))
+	// {
+	// 	FActorSpawnParameters SpawnParams;
+	// 	SpawnParams.Owner = this;
+	// 	SpawnParams.bNoFail = true;
+	// 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+	//
+	// 	const FVector SpawnLocation{GetActorLocation() + (GetActorForwardVector() * 50.f)};
+	//
+	// 	const FTransform SpawnTransform(GetActorRotation(), SpawnLocation);
+	//
+	// 	const int32 RemovedQuantity = PlayerInventory->RemoveAmountOfItem(ItemToDrop, QuantityToDrop);
+	//
+	// 	ASPPickup* Pickup = GetWorld()->SpawnActor<ASPPickup>(ASPPickup::StaticClass(), SpawnTransform, SpawnParams);
+	//
+	// 	Pickup->InitializeDrop(ItemToDrop, RemovedQuantity);
+	// }
+	// else
+	// {
+	// 	UE_LOG(LogTemp, Warning, TEXT("Item to drop was somehow null"));
+	// }
 }
 
 void ASPCharacterPlayer::DragItem(USPItemBase* ItemToDrop, const int32 QuantityToDrop)
 {
-	if(PlayerInventory->FindMatchingItem(ItemToDrop, ItemToDrop->ItemType))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("DragItem"));
-		//ItemToDrop->Quantity -= 1;
-		//PlayerInventory->OnInventoryMiniUpdated.Broadcast(PlayerInventory->GetInventorMiniContents());
-		PlayerInventory->RemoveAmountOfItem(ItemToDrop, QuantityToDrop);
-		GetInventory()->AddInventorMakeContents(ItemToDrop);
-		UE_LOG(LogTemp, Warning, TEXT("%d"), GetInventory()->GetInventorMakeContents().Num());
-		if(GetInventory()->GetInventorMakeContents().Num()==3)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Three"));
-			USPItemBase* Item = PlayerInventory->MakingPotion();
-			if(Item)
-				HUDWidget->MakingPotionWieget(Item);
-		}
-		// TArray<USPItemBase*> InventoryContents = GetInventory()->GetInventorMakeContents();
-		//
-		// for (USPItemBase* Item : InventoryContents)
-		// {
-		// 	if (Item)
-		// 	{
-		// 		UE_LOG(LogTemp, Warning, TEXT("Item Name: %s"), *Item->ItemTextData.Name.ToString());
-		// 	}
-		// }
-		// UE_LOG(LogTemp, Warning, TEXT("============="));
-	}
+	SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("DragItem"));
+	int num = PlayerInventory->IsMiniPotion(ItemToDrop->ID);
+	ServerRPCDragItem(num, 1);
 }
 
 void ASPCharacterPlayer::BackItem(USPItemBase* ItemToDrop, const int32 QuantityToDrop)
 {
-		UE_LOG(LogTemp, Warning, TEXT("BackItem"));
-		UE_LOG(LogTemp, Warning, TEXT("%s"), *ItemToDrop->ItemTextData.Name.ToString());
-
-		PlayerInventory->HandleAddItem(ItemToDrop);
-		GetInventory()->RemoveInventorMakeContents(ItemToDrop);
+		int num = PlayerInventory->IsMiniPotion(ItemToDrop->ID);
+		SP_LOG(LogSPNetwork, Log, TEXT("BackItem"));
+		ServerRPCBackItem(num, QuantityToDrop);
+		
 	// TArray<USPItemBase*> InventoryContents = GetInventory()->GetInventorMakeContents();
 	//
 	// for (USPItemBase* Item : InventoryContents)

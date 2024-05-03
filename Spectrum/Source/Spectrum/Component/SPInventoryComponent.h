@@ -50,8 +50,9 @@ public:
 	UFUNCTION(Category = "Inventory")	
 	void RemoveInventorMakeContents(USPItemBase* ItemToRemove);
 	UFUNCTION(Category = "Inventory")
-	USPItemBase* FindMatchingItem(USPItemBase* ItemIn, EItemType Potion) const;
-	
+	USPItemBase* FindMatchingItem(int num);
+	UFUNCTION(Category = "Inventory")
+	USPItemBase* FindItem(USPItemBase* ItemIn, EItemType Potion) const;
 	UFUNCTION(Category = "Inventory")
 	void RemoveSingleinstanceOfItem(USPItemBase* ItemToRemove, EItemType Potion); //인벤토리 배열에서 삭제
 	UFUNCTION(Category = "Inventory")

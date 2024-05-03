@@ -2,6 +2,7 @@
 
 #pragma once
 #include "CoreMinimal.h"
+#include "Interface/SPWidgetInterface.h"
 #include "UI/SPUserWidget.h"
 #include "SPInventoryItemSlot.generated.h"
 
@@ -54,4 +55,7 @@ protected:
 	TObjectPtr<UTextBlock> ItemQuantity;
 
 	FWindowsPlatformTime MouseDownTime;
+
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCButtonUp(int num);
 };

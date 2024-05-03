@@ -124,9 +124,9 @@ bool USPMakingPotionWidget::NativeOnDrop(const FGeometry& InGeometry, const FDra
 				ItemSlot->SetItemReference(ItemDragDrop->SourceItem);
 				ItemSlot->HideText();
 			}
-		
 			ClosestDropWidget->AddChild(ItemSlot);
 			//인벤토리 숫자 줄게 하기
+			//여기서 서버로 가야함!
 			PlayerCharacter->DragItem(ItemDragDrop->SourceItem,1);
 			return true;
 		}
@@ -137,7 +137,6 @@ bool USPMakingPotionWidget::NativeOnDrop(const FGeometry& InGeometry, const FDra
 FReply USPMakingPotionWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
 {
 	FReply Reply = Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
-
 
 	return Reply.Unhandled();
 

@@ -25,3 +25,7 @@ void ISPInteractionInterface::EndInteract()
 void ISPInteractionInterface::Interact(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget)
 {
 }
+
+void ISPInteractionInterface::Interact2(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget)
+{
+}

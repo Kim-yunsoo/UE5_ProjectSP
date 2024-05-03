@@ -3,6 +3,7 @@
 
 #include "UI/Inventory/SPInventoryItemSlot.h"
 
+#include "SpectrumLog.h"
 #include "SPItemDragDropOperation.h"
 #include "Character/SPCharacterPlayer.h"
 #include "Component/SPInventoryComponent.h"
@@ -47,6 +48,10 @@ FReply USPInventoryItemSlot::NativeOnMouseButtonDown(const FGeometry& InGeometry
 	if(InMouseEvent.GetEffectingButton() == EKeys::RightMouseButton)
 	{
 		ASPCharacterPlayer* Player = Cast<ASPCharacterPlayer>(GetOwningPlayerPawn());
+		int num = Player->GetInventory()->IsMiniPotion(ItemReference->ID);
+		SetOwningActor(Player);
+		UE_LOG(LogTemp, Warning, TEXT("%s"), *GetOwningPlayer()->GetName());
+		//SP_SUBLOG(LogSPNetwork, Log, TEXT("%s"), *GetOwningPlayer()->GetName())
 		Player->BackItem(ItemReference, 1);
 		UE_LOG(LogTemp, Warning, TEXT("BACK Inventory"));
 		SetVisibility(ESlateVisibility::Hidden);
@@ -69,10 +74,19 @@ FReply USPInventoryItemSlot::NativeOnMouseButtonUp(const FGeometry& InGeometry, 
 {
 	FReply Reply = Super::NativeOnMouseButtonUp(InGeometry, InMouseEvent); 
 	ASPCharacterPlayer* Player = Cast<ASPCharacterPlayer>(GetOwningPlayerPawn());
-	Player->GetInventory()->HandleAddItem(ItemReference);
+	int num = Player->GetInventory()->IsPotion(ItemReference->ID);
+	
 	SetVisibility(ESlateVisibility::Hidden);
 	Player->HUDWidget->ClearMakingWieget();
 	return Reply.Handled(); 
+}
+
+void USPInventoryItemSlot::ServerRPCButtonUp_Implementation(int num)
+{
+	//Player->GetInventory()->HandleAddItem(ItemReference);
+	ASPCharacterPlayer* Player = Cast<ASPCharacterPlayer>(GetOwningPlayerPawn());
+	USPItemBase* ItemBase = Player->GetInventory()->FindMatchingItem(num);
+	Player->BackItem(ItemReference, 1);
 }
 
 void USPInventoryItemSlot::NativeOnDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent,

@@ -47,7 +47,7 @@ int32 USPInventoryComponent::RemoveAmountOfItem(USPItemBase* ItemIn, int32 Desir
 		const int32 ActualAmountToRemove = FMath::Min(DesiredAmountToRemove, ItemIn->Quantity);
 		int ServerCount = ItemIn->Quantity - ActualAmountToRemove;
 		ItemIn->SetQuantity(ServerCount);
-		UE_LOG(LogTemp, Warning, TEXT("RemoveAmountOfItem num %d"), IsPotion(ItemIn->ID));
+		UE_LOG(LogTemp, Warning, TEXT("RemoveAmountOfItem num %d"), IsMiniPotion(ItemIn->ID));
 		UE_LOG(LogTemp, Warning, TEXT("RemoveAmountOfItem %d"), ServerCount);
 		if(ItemIn->ItemType == EItemType::IngredientPotion)
 		{
@@ -208,11 +208,15 @@ USPItemBase* USPInventoryComponent::InitializeInventory(const TSubclassOf<USPIte
 	return nullptr;
 }
 
-USPItemBase* USPInventoryComponent::FindMatchingItem(USPItemBase* ItemIn, EItemType Potion) const
+USPItemBase* USPInventoryComponent::FindMatchingItem(int num) 
+{
+	return InventoryMiniContents[num];
+}
+
+USPItemBase* USPInventoryComponent::FindItem(USPItemBase* ItemIn, EItemType Potion) const
 {
 	if (ItemIn && Potion == EItemType::IngredientPotion)
 	{
-		UE_LOG(LogTemp,Warning, TEXT("FindMatchingItem"));
 		if(InventoryMiniContents.Contains(ItemIn))
 		{
 			return ItemIn;
@@ -230,7 +234,7 @@ USPItemBase* USPInventoryComponent::FindMatchingItem(USPItemBase* ItemIn, EItemT
 
 void USPInventoryComponent::RemoveInventorMakeContents(USPItemBase* ItemToRemove)
 {
-	if(FindMatchingItem(ItemToRemove, ItemToRemove->ItemType))
+	if(FindItem(ItemToRemove, ItemToRemove->ItemType))
 	{
 		InventoryMakeContents.RemoveSingle(ItemToRemove);
 	}

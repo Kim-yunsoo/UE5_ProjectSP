@@ -3,6 +3,7 @@
 
 #include "UI/SPHUDWidget.h"
 
+#include "SpectrumLog.h"
 #include "SPSkillWidget.h"
 #include "Interface/SPCharacterHUDInterface.h"
 #include "Potion/Make/SPMakingPotionWidget.h"
@@ -96,15 +97,20 @@ void USPHUDWidget::UpdateMakingPotionWidget(bool bIsVisible)
 {
 	if(bIsVisible)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("MakingPotionWidget"));
-		MakingPotionWidget->SetVisibility(ESlateVisibility::Visible);
-
+		UE_LOG(LogTemp, Warning, TEXT("MakingPotionWidget1111"));
+		if(MakingPotionWidget)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("MakingPotionWidget"));
+			MakingPotionWidget->SetVisibility(ESlateVisibility::Visible);
+		}
 	}
 	else
 	{
-		MakingPotionWidget->SetVisibility(ESlateVisibility::Hidden);
-		UE_LOG(LogTemp, Warning, TEXT("NoMakingPotionWidget"));
-
+		if(MakingPotionWidget)
+		{
+			MakingPotionWidget->SetVisibility(ESlateVisibility::Hidden);
+			UE_LOG(LogTemp, Warning, TEXT("NoMakingPotionWidget"));
+		}
 	}
 }
 

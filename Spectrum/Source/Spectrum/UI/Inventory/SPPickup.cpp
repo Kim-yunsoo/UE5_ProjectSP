@@ -81,12 +81,19 @@ void ASPPickup::EndFocus()
 
 void ASPPickup::Interact(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget)
 {
+	//SetOwner(PlayerCharacter);
+	//ServerRPCInteract(PlayerCharacter, HUDWidget);
 	if(PlayerCharacter)
 	{
 		AActor* TEST = Cast<AActor>(PlayerCharacter);
 		this->SetOwner(TEST);
 		TakePickup(PlayerCharacter);
 	}
+}
+
+void ASPPickup::Interact2(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget)
+{
+	ISPInteractionInterface::Interact2(PlayerCharacter, HUDWidget);
 }
 
 void ASPPickup::UpdateInteractableData()
@@ -131,6 +138,13 @@ void ASPPickup::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEve
 	// const FName ChangedPropertyName = PropertyChangedEvent.Property?PropertyChangedEvent.Property->GetFName() : NAME_None;
 	//
 	//Todo 에디터에서 편하게 하기 위해서!
+}
+
+void ASPPickup::ServerRPCInteract_Implementation(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget)
+{
+	SP_LOG(LogSPNetwork,Log,TEXT("ServerRPCInteract_Implementation"));
+
+	
 }
 
 void ASPPickup::ClientRPCUpdateWidget_Implementation(ASPCharacterPlayer* Taker)

@@ -27,8 +27,7 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	
-	virtual void Interact(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget) override;
+	virtual void Interact2(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget) override;
 	virtual void EndInteract() override;
 protected:
 	UPROPERTY(EditInstanceOnly, Category = "Test Actor")
@@ -46,5 +45,6 @@ protected:
 	UPROPERTY()
 	TObjectPtr<USPHUDWidget> HUDWidgetTest;
  
-
+	UFUNCTION(Client, Unreliable)
+	void ClientRPCInteract(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget);
 };

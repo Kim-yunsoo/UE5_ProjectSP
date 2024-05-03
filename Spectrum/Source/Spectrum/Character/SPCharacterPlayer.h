@@ -9,6 +9,7 @@
 #include "Interface/SPSkillInterface.h"
 #include "Interface/SPCharacterHUDInterface.h"
 #include "Interface/SPInteractionInterface.h"
+#include "Interface/SPWidgetInterface.h"
 #include "Potion/SPItemBase.h"
 #include "SPCharacterPlayer.generated.h"
 
@@ -48,7 +49,7 @@ struct FInteractionData
 };
 
 UCLASS()
-class SPECTRUM_API ASPCharacterPlayer : public ACharacter, public ISPCharacterHUDInterface ,public ISPSkillInterface
+class SPECTRUM_API ASPCharacterPlayer : public ACharacter, public ISPCharacterHUDInterface ,public ISPSkillInterface, public ISPWidgetInterface
 {
 	GENERATED_BODY()
 
@@ -388,7 +389,7 @@ public:
 
 	void DragItem(USPItemBase* ItemToDrop, const int32 QuantityToDrop);
 
-	void BackItem(USPItemBase* ItemToDrop, const int32 QuantityToDrop);
+	void BackItem(USPItemBase* ItemToDrop, const int32 QuantityToDrop) override;
 public:
 	FORCEINLINE bool IsInteracting() const { return GetWorldTimerManager().IsTimerActive(TimerHandle_Interaction);};
 // ServerRPC
@@ -438,7 +439,13 @@ public:
 	void ServerRPCIceSkill(float AttackStartTime);
 	// UFUNCTION(Server, Unreliable)
 	// void ServerRPCSlowSkillMake();
-
+	
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCDragItem(int num, const int32 QuantityToDrop);
+	
+	UFUNCTION(Client, Unreliable)
+	void ServerRPCBackItem(int num, const int32 QuantityToDrop);
+	
 	//ClientRPC
 	UFUNCTION(Client, Unreliable)
 	void ClientRPCTurnAnimation(ASPCharacterPlayer* CharacterToPlay);
@@ -454,9 +461,14 @@ public:
 
 	UFUNCTION(Client, Unreliable)
 	void ClientRPCIceAnimation(ASPCharacterPlayer* CharacterToPlay);
+
+	UFUNCTION(Client, Unreliable)
+	void ClientRPCUpdateMakingPotion(USPItemBase* Item);
 	//AABCharacterPlayer* CharacterToPlay
 	//MultiRPC
+	
 
+	
 	//OnRep
 	UFUNCTION()
 	void OnRep_PotionSpawn();
