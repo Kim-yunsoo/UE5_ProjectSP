@@ -11,26 +11,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bc10ea57-83ce-4856-92e9-990ee5b68d2e" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Spectrum.dir/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Spectrum.dir/.idea/indexLayout.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Spectrum.dir/.idea/projectSettingsUpdater.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Spectrum.dir/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Spectrum.dir/.idea/workspace.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/DefaultEngine.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultEngine.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Assets/Potion/mini/Green/1.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Assets/Potion/mini/Green/1.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/ItemData/Item.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/ItemData/Item.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Spectrum/Room/Map/Building.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Room/Map/Building.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/UMG/Interface/WBP_InventoryItemSlot.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/UMG/Interface/WBP_InventoryItemSlot.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/UMG/Interface/WBP_InventoryWidget.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/UMG/Interface/WBP_InventoryWidget.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/UMG/Interface/WBP_InventoryminiWidget.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/UMG/Interface/WBP_InventoryminiWidget.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/UMG/MakingPotion/WBP_SPMakingPotionWidget.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/UMG/MakingPotion/WBP_SPMakingPotionWidget.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/UMG/WBP_SPHUD.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/UMG/WBP_SPHUD.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Component/SPInventoryComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Component/SPInventoryComponent.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/Make/SPMakingPotionWidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/Make/SPMakingPotionWidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/UI/Inventory/SPInventoryItemSlot.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/UI/Inventory/SPInventoryItemSlot.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../UI디자인.pptx" beforeDir="false" afterPath="$PROJECT_DIR$/../UI디자인.pptx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/SpectrumGameInstance.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/SpectrumGameInstance.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -209,7 +192,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1714743817995</updated>
-      <workItem from="1714743820848" duration="2460000" />
+      <workItem from="1714743820848" duration="3288000" />
     </task>
     <servers />
   </component>

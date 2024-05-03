@@ -1,5 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-// °ÔÀÓ ¼­¹ö¿¡ Á¢¼Ó, µð½ºÄ¿³ØÆ® ¿©±â¼­ ÇÔ.
+// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½Ä¿ï¿½ï¿½Æ® ï¿½ï¿½ï¿½â¼­ ï¿½ï¿½.
 
 #include "SpectrumGameInstance.h"
 #include "Sockets.h"
@@ -16,7 +16,7 @@
 
 void USpectrumGameInstance::ConnectToGameServer()
 {
-	// ¼ÒÄÏ »ý¼º
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	Socket = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateSocket(TEXT("Stream"), TEXT("Client Socket"));
 
 	FIPv4Address Ip;
@@ -26,22 +26,22 @@ void USpectrumGameInstance::ConnectToGameServer()
 	InternetAddr->SetIp(Ip.Value);
 	InternetAddr->SetPort(Port);
 
-	// ¼­¹ö¿¡ Á¢¼Ó(³×Æ®¿öÅ© Ä¿³Ø¼Ç)
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("connect to server")));
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½Æ®ï¿½ï¿½Å© Ä¿ï¿½Ø¼ï¿½)
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("connect to server")));
 
 	bool bConnected = Socket->Connect(*InternetAddr);
 
-	// Á¢¼Ó ¼º°ø ¿©ºÎ
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	if (bConnected)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("connection Success")));
 
-		// Session ¸¸µé±â(¿öÄ¿ ½º·¹µå »ý¼º)
+		// Session ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½Ä¿ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
 		GameServerSession = MakeShared<PacketSession>(Socket);
-		GameServerSession->Run();		// ÀÌÁ¦ ¸ÖÆ¼½º·¹µå·Î µ¹¾Æ°¨
+		GameServerSession->Run();		// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Æ°ï¿½
 
-		//// ·Îºñ¿¡¼­ Ä³¸¯ÅÍ ¼±ÅÃÃ¢ ¶ç¿ì±â
-		//{ // ·Î±×ÀÎ	ÆÐÅ¶ º¸³»±â
+		//// ï¿½Îºñ¿¡¼ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ã¢ ï¿½ï¿½ï¿½ï¿½
+		//{ // ï¿½Î±ï¿½ï¿½ï¿½	ï¿½ï¿½Å¶ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		//	Protocol::C_LOGIN Pkt;
 		//	//SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(Pkt);
 
@@ -54,16 +54,14 @@ void USpectrumGameInstance::ConnectToGameServer()
 	}
 	else
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("connection failed")));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("connection failed")));
 	}
-
-
 }
 
 void USpectrumGameInstance::DisconnectToGameServer()
 {
 
-	// Å¬¶óÀÌ¾ðÆ®°¡ Á¾·áÇÏ¸é ¼­¹ö¿¡°Ô ¾Ë·ÁÁà¾ßÇÔ
+	// Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ë·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	if (Socket == nullptr || GameServerSession == nullptr)
 		return;
 
@@ -86,7 +84,7 @@ void USpectrumGameInstance::HandleRecvPackets()
 		return;
 	}
 
-	GameServerSession->HandleRecvPackets();	// ¿öÄ¿ ½º·¹µå°¡ ±ÜÀº Å¥¸¦ ¼Ò¸ðÇÏ¿© Ã³¸®
+	GameServerSession->HandleRecvPackets();	// ï¿½ï¿½Ä¿ ï¿½ï¿½ï¿½ï¿½ï¿½å°¡ ï¿½ï¿½ï¿½ï¿½ Å¥ï¿½ï¿½ ï¿½Ò¸ï¿½ï¿½Ï¿ï¿½ Ã³ï¿½ï¿½
 
 }
 
@@ -98,7 +96,7 @@ void USpectrumGameInstance::SendPacket(SendBufferRef SendBuffer)
 		return;
 	}
 
-	GameServerSession->SendPacket(SendBuffer);	// Å¥¸¦ ½×¾ÆÁÖ´Â ¿ªÇÒ
+	GameServerSession->SendPacket(SendBuffer);	// Å¥ï¿½ï¿½ ï¿½×¾ï¿½ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½
 }
 
 
@@ -111,7 +109,7 @@ void USpectrumGameInstance::HandleSpawn(const Protocol::PlayerInfo& ObjectInfo, 
 	if (World == nullptr)
 		return;
 
-	// Áßº¹ Ã³¸® Ã¼Å©
+	// ï¿½ßºï¿½ Ã³ï¿½ï¿½ Ã¼Å©
 	const uint64 ObjectId = ObjectInfo.object_id();
 	if (Players.Find(ObjectId) != nullptr)
 		return;
@@ -175,13 +173,13 @@ void USpectrumGameInstance::HandleDespawn(const Protocol::S_DESPAWN& DespawnPkt)
 
 void USpectrumGameInstance::HandleLobby(const Protocol::S_ENTER_GAME& LobbyPkt)
 {
-	// ¹ÞÀº Á¤º¸ ÀúÀå(ÀÚ½ÅÀÇ ÇÐ±³, ¼ºº°)
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(ï¿½Ú½ï¿½ï¿½ï¿½ ï¿½Ð±ï¿½, ï¿½ï¿½ï¿½ï¿½)
 
 }
 
 void USpectrumGameInstance::HandleLobby(const Protocol::S_LOGIN& LobbyPkt)
 {
-	// ¹ÞÀº Á¤º¸ ÀúÀå(ÀÚ½ÅÀÇ ÇÐ±³, ¼ºº°)
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(ï¿½Ú½ï¿½ï¿½ï¿½ ï¿½Ð±ï¿½, ï¿½ï¿½ï¿½ï¿½)
 	//const Protocol::PositionInfo& Info = LobbyPkt.info();
 	//Player->SetDestInfo(Info);
 
@@ -189,8 +187,8 @@ void USpectrumGameInstance::HandleLobby(const Protocol::S_LOGIN& LobbyPkt)
 
 void USpectrumGameInstance::HandleRoom(const Protocol::S_ENTER_ROOM& RoomPkt)
 {
-	// ¹æ ÀÔÀå
-	// ¹æ ¾ÈÀÇ Á¤º¸ ÀúÀå(¹æ¿¡ ÀÖ´Â »ç¶÷µé Á¤º¸)
+	// ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	// ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(ï¿½æ¿¡ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
 }
 
 
