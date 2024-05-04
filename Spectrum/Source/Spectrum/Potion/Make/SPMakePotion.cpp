@@ -79,7 +79,6 @@ void ASPMakePotion::OnTriggerEnter(UPrimitiveComponent* OverlappedComp, AActor* 
 	ASPCharacterPlayer* PlayerCharacter = Cast<ASPCharacterPlayer>(OtherActor);
 	if (PlayerCharacter)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("TESTESTET"));
 		PlayerCharacter->PerformInteractionCheck();
 	}
 }
@@ -90,7 +89,6 @@ void ASPMakePotion::OnTriggerExit(UPrimitiveComponent* OverlappedComp, AActor* O
 	ASPCharacterPlayer* PlayerCharacter = Cast<ASPCharacterPlayer>(OtherActor);
 	if (PlayerCharacter)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("outout!!"));
 		PlayerCharacter->NoInteractableFound();
 	}
 }

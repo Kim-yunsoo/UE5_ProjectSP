@@ -46,9 +46,11 @@
 #include "Component/SPInventoryComponent.h"
 #include "Player/SPPlayerController.h"
 #include "Potion/SPItemBase.h"
+#include "Potion/Make/SPMakePotion.h"
 #include "Skill/SPIceSkill.h"
 #include "Skill/SPTeleSkill.h"
 #include "UI/SPHUDWidget.h"
+#include "UI/Interaction/SPCombination.h"
 #include "UI/Inventory/SPPickup.h"
 
 
@@ -1502,19 +1504,21 @@ void ASPCharacterPlayer::SetupHUDWidget(USPHUDWidget* InUserWidget)
 void ASPCharacterPlayer::PerformInteractionCheck()
 {
 	InteractionData.LastInteractionCheckTime = GetWorld()->GetTimeSeconds();
-	UE_LOG(LogTemp, Warning, TEXT("FoundInteractable1"));
 	TArray<AActor*> OverlappingActors;
+	TArray<AActor*> ASPMakePotionActor;
+	TArray<AActor*> ASPCombinationActor;
 	GetOverlappingActors(OverlappingActors, ASPPickup::StaticClass()); // 겹친 액터들을 검출합니다.
-	//GetOverlappingActors(OverlappingActors, ASPPickup::StaticClass());
+	GetOverlappingActors(ASPMakePotionActor, ASPMakePotion::StaticClass());
+	GetOverlappingActors(ASPCombinationActor, ASPCombination::StaticClass());
 	// Todo 배열에 액터 종류 확인해서 넣기
+	OverlappingActors.Append(ASPMakePotionActor);
+	OverlappingActors.Append(ASPCombinationActor);
 	for (AActor* OverlappingActor : OverlappingActors)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("FoundInteractable1-1"));
 		if (OverlappingActor->Implements<USPInteractionInterface>()) // 상호작용 가능한지 확인합니다.
 		{
 			if (OverlappingActor != InteractionData.CurrentInteractable)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("FoundInteractable2"));
 				FoundInteractable(OverlappingActor); // 상호작용할 수 있는 액터를 찾았을 때의 처리를 수행합니다.
 				return;
 			}
@@ -1525,7 +1529,6 @@ void ASPCharacterPlayer::PerformInteractionCheck()
 
 void ASPCharacterPlayer::FoundInteractable(AActor* NewInteractable)
 {
-	UE_LOG(LogTemp, Warning, TEXT("FoundInteractable3"));
 
 	//이전 상호 작용이 있는지 확인
 	if (IsInteracting())
