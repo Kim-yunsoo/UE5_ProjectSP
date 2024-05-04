@@ -9,10 +9,12 @@
 #include "Interface/SPSkillInterface.h"
 #include "Interface/SPCharacterHUDInterface.h"
 #include "Interface/SPInteractionInterface.h"
+#include "Interface/SPWidgetInterface.h"
 #include "Interface/SPTriggerInterface.h"
 #include "Potion/SPItemBase.h"
 #include "SPCharacterPlayer.generated.h"
 
+class ASPPickup;
 class USPInventoryComponent;
 class USPHUDWidget;
 class USPSkillCastComponent;
@@ -194,8 +196,8 @@ protected:
 	uint8 bIsSpawn : 1; //Spawn check
 
 	UPROPERTY(Replicated, BlueprintReadWrite, Category = "Character")
-	uint8 bIsThrowReady : 1; //Throw Ready? 
-
+	uint8 bIsThrowReady : 1; //Throw Ready?
+	
 	// UPROPERTY(Replicated, BlueprintReadWrite, Category = "Character")
 	// uint8 bIsActiveSlowSkill : 1; //Throw Ready?
 
@@ -300,8 +302,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	FVector UIRotator;
-
-	
+public:
+	UPROPERTY()
+	TObjectPtr<ASPPickup> PickupItem;
 	
 
 protected:
@@ -359,7 +362,7 @@ protected:
 	TObjectPtr<class USPWidgetComponent> Target;
 
 	virtual void SetupHUDWidget(USPHUDWidget* InUserWidget) override;
-
+public:
 	UPROPERTY()
 	TObjectPtr<class USPHUDWidget> HUDWidget;
 	
@@ -375,30 +378,38 @@ protected:
 	FTimerHandle TimerHandle_Interaction;
 	
 	FInteractionData InteractionData;
-
+public:
 	void PerformInteractionCheck();
+	
 	void FoundInteractable(AActor* NewInteractable);
 	void NoInteractableFound();
 	void BeginInteract();
 	void EndInteract();
 	void Interact();
-
+protected:
 	UFUNCTION(Server, Unreliable)
 	void ServerRPCInteract();
+
+public:
+	UPROPERTY(Replicated)
+	uint8 InteractionCheck : 1;
 	
 // Inventory
-	
 	UPROPERTY(VisibleAnywhere, Category = "Character | Inventory")
 	TObjectPtr<USPInventoryComponent> PlayerInventory;
-
 public:
 	//인벤토리 가지고 오기
 	FORCEINLINE USPInventoryComponent* GetInventory() const {return PlayerInventory;};
 	
 	void UpdateInteractionWidget() const;
-
+	UFUNCTION()
+	void AddItemClick(int Num);
 // 아이템 드롭
 	void DropItem(USPItemBase* ItemToDrop, const int32 QuantityToDrop);
+
+	void DragItem(USPItemBase* ItemToDrop, const int32 QuantityToDrop);
+
+	void BackItem(USPItemBase* ItemToDrop, const int32 QuantityToDrop);
 public:
 	FORCEINLINE bool IsInteracting() const { return GetWorldTimerManager().IsTimerActive(TimerHandle_Interaction);};
 // ServerRPC
@@ -451,7 +462,16 @@ public:
 	void ServerRPCTeleSkill(float AttackStartTime);
 	// UFUNCTION(Server, Unreliable)
 	// void ServerRPCSlowSkillMake();
+	
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCDragItem(int Num, const int32 QuantityToDrop);
+	
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCBackItem(int Num, const int32 QuantityToDrop);
 
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCAddItemClick(int Num);
+	
 	//ClientRPC
 	UFUNCTION(Client, Unreliable)
 	void ClientRPCTurnAnimation(ASPCharacterPlayer* CharacterToPlay);
@@ -469,10 +489,15 @@ public:
 	void ClientRPCIceAnimation(ASPCharacterPlayer* CharacterToPlay);
 
 	UFUNCTION(Client, Unreliable)
+	void ClientRPCUpdateMakingPotion(int Num);
+
+	UFUNCTION(Client, Unreliable)
 	void ClientRPCTeleAnimation(ASPCharacterPlayer* CharacterToPlay);
 	//AABCharacterPlayer* CharacterToPlay
 	//MultiRPC
+	
 
+	
 	//OnRep
 	UFUNCTION()
 	void OnRep_PotionSpawn();
@@ -492,8 +517,6 @@ protected:
 
 	// skill interface
 	// virtual void MovementSlow();
-
-
 	//Effect
 protected:
 	// UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)

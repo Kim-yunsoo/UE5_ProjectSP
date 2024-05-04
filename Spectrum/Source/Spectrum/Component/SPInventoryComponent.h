@@ -4,72 +4,23 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Data/ItemDataStructs.h"
 #include "SPInventoryComponent.generated.h"
+
+UENUM()
+enum class EPotion :uint8
+{
+	Green = 0,
+	Orange = 1,
+	Purple = 2,
+	Black = 3,
+	Special = 4
+};
 
 class USPItemBase;
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnInventoryUpdated, const TArray<TObjectPtr<USPItemBase>>);
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnInventoryMiniUpdated, const TArray<TObjectPtr<USPItemBase>>);
-
-
-
-
-UENUM(BlueprintType)
-enum class EItemAddResult : uint8
-{
-	IAR_NoItemAdded UMETA(DisplayName = "No item added"), //�߰� ����
-	IAR_PartialAmountItemAdded UMETA(DisplayName = "Partial amount of item added"), //�κ� 
-	IAR_AllItemAdded UMETA(DisplayName = "All of item added") //��ü 
-};
-
-USTRUCT(BlueprintType)
-struct FItemAddResult
-{
-	GENERATED_BODY()
-
-	FItemAddResult() :
-	ActualAmountAdded(0),
-	OperationResult(EItemAddResult::IAR_NoItemAdded),
-	ResultMessage(FText::GetEmpty())
-	{};
-
-	// Actual amount of item that was added to the inventoy ��� �߰��� ǰ���� ���� �ݾ�
-	UPROPERTY(BlueprintReadOnly, Category = "Item Add Result");
-	int32 ActualAmountAdded;
-	//Enum representing the end state of an add item operation �׸� �߰� �۾��� ���� ���¸� ��Ÿ���� ����
-	UPROPERTY(BlueprintReadOnly, Category = "Item Add Result");
-	EItemAddResult OperationResult;
-	//Informational message that can be passed with the result ����� �Բ� ������ �� �ִ� ���� �޽���
-	UPROPERTY(BlueprintReadOnly, Category = "Item Add Result");
-	FText ResultMessage;
-
-	static FItemAddResult AddedNone(const FText& ErrorText)
-	{
-		FItemAddResult AddedNoneResult;
-		AddedNoneResult.ActualAmountAdded = 0;
-		AddedNoneResult.OperationResult = EItemAddResult::IAR_NoItemAdded;
-		AddedNoneResult.ResultMessage = ErrorText;
-		return AddedNoneResult;
-	}
-
-	static FItemAddResult AddedPartial(const int32 PartialAmountAdded, const FText& ErrorText)
-	{
-		FItemAddResult AddedPartialResult;
-		AddedPartialResult.ActualAmountAdded = PartialAmountAdded;
-		AddedPartialResult.OperationResult = EItemAddResult::IAR_PartialAmountItemAdded;
-		AddedPartialResult.ResultMessage = ErrorText;
-		return AddedPartialResult;
-	}
-
-	static FItemAddResult AddedAll(const int32 AmountAdded, const FText& Message)
-	{
-		FItemAddResult AddedAllResult;
-		AddedAllResult.ActualAmountAdded = AmountAdded;
-		AddedAllResult.OperationResult = EItemAddResult::IAR_AllItemAdded;
-		AddedAllResult.ResultMessage = Message;
-		return AddedAllResult;
-	}
-};
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnInventoryUpdated, const TArray<USPItemBase*>);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnInventoryMiniUpdated, const TArray<USPItemBase*>);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SPECTRUM_API USPInventoryComponent : public UActorComponent
@@ -82,36 +33,53 @@ public:
 	// Sets default values for this component's properties
 	USPInventoryComponent();
 	UFUNCTION(Category = "Inventory")
-	FItemAddResult HandleAddItem(USPItemBase* InputItem);
+	void HandleAddItem(USPItemBase* InputItem);
+
+	UFUNCTION()
+	USPItemBase* InitializeInventory(const TSubclassOf<USPItemBase> BaseClass, FName DesiredItemID);
 
 	UFUNCTION(Category = "Inventory")	
-	USPItemBase* FindMatchingItem(USPItemBase* ItemIn) const;
+	USPItemBase* FindMiniItem(FName ID);
+
+	UFUNCTION(Category = "Inventory")	
+	USPItemBase* FindPotionItem(FName ID);
+	
+	UFUNCTION(Category = "Inventory")	
+	int CountPotion(int num);
+	
+	UFUNCTION(Category = "Inventory")	
+	void RemoveInventorMakeContents(USPItemBase* ItemToRemove);
 	UFUNCTION(Category = "Inventory")
-	USPItemBase* FindNextItemByID(USPItemBase* ItemIn) const;
-	UFUNCTION(Category = "Inventory")
-	USPItemBase* FindNextPartialStack(USPItemBase* ItemIn) const;
-	UFUNCTION(Category = "Inventory")
-	void RemoveSingleinstanceOfItem(USPItemBase* ItemToRemove); //인벤토리 배열에서 삭제
-	UFUNCTION(Category = "Inventory")
-	int32 RemoveAmountOfItem(USPItemBase* ItemIn, int32 DesiredAmountToRemove); //인벤토리는 있고 부분적으로 삭제
-	UFUNCTION(Category = "Inventory")
-	void SplitExistingStack(USPItemBase* ItemIn, const int32 AmountToSplit);
+	USPItemBase* FindMatchingItem(int Num);
 
 	UFUNCTION(Category = "Inventory")
-	FORCEINLINE float GetInventoryTotalWeight() const { return InventoryTotalWeight;}; //필요 없을 듯
+	USPItemBase* FindMatchingMiniItem(int Num);
 	UFUNCTION(Category = "Inventory")
-	FORCEINLINE float GetWeightCapactiy() const {return inventoryWeightCapacity;};
+	USPItemBase* FindItem(USPItemBase* ItemIn, EItemType Potion) const;
 	UFUNCTION(Category = "Inventory")
-	FORCEINLINE int32 GetSlotsCapacity() const {return InventorySlotsCapacity;};
+	void RemoveSingleinstanceOfItem(USPItemBase* ItemToRemove, EItemType Potion); //인벤토리 배열에서 삭제
+	UFUNCTION(Category = "Inventory")
+	int32 RemoveAmountOfItem(USPItemBase* ItemIn, int32 DesiredAmountToRemove); //인벤토리는 있고 부분적으로 삭제
+	
+	UPROPERTY(EditInstanceOnly, Category = "Inventory | Item Initialization")
+	TObjectPtr<UDataTable> ItemDataTable;
+	
+	UFUNCTION(Category = "Inventory")
+	USPItemBase* MakingPotion();
+	
+
 	UFUNCTION(Category = "Inventory")
 	FORCEINLINE TArray<USPItemBase*> GetInventoryContents() const{return InventoryContents;};
 	UFUNCTION(Category = "Inventory")
-	FORCEINLINE TArray<USPItemBase*> GetInventorMiniContents() const{return InventoryMiniContents;};
+	FORCEINLINE TArray<USPItemBase*> GetInventorMiniContents() {return InventoryMiniContents;};
 	UFUNCTION(Category = "Inventory")
-	FORCEINLINE void SetSlotsCapacity(const int32 NewSlotsCapacity){InventorySlotsCapacity = NewSlotsCapacity;};
-	UFUNCTION(Category = "Inventory")
-	FORCEINLINE void SetWeightCapacity(const float NewWeightCapacity){inventoryWeightCapacity = NewWeightCapacity;};
+	FORCEINLINE TArray<USPItemBase*> GetInventorMakeContents() {return InventoryMakeContents;};
 
+	UFUNCTION(Category = "Inventory")
+	FORCEINLINE void AddInventorMakeContents(USPItemBase* Item) {InventoryMakeContents.Add(Item);};
+	FORCEINLINE void ClearMakeArray() {InventoryMakeContents.Empty();};
+
+	
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -121,23 +89,30 @@ protected:
 	int32 InventorySlotsCapacity;
 	UPROPERTY(VisibleAnywhere, Category = "Inventory")
 	float inventoryWeightCapacity;
-	
-	UPROPERTY(VisibleAnywhere, Category = "Inventory")
-	TArray<TObjectPtr<USPItemBase>> InventoryContents;
 
 	UPROPERTY(VisibleAnywhere, Category = "Inventory")
-	TArray<TObjectPtr<USPItemBase>> InventoryMiniContents;
+	TArray<USPItemBase*> InventoryContents;
 	
-	FItemAddResult HandleNonStackableItems(USPItemBase* ItemIn, int32 RequestedAddAmount);
-	int32 HandleStackableItems(USPItemBase* ItemIn, int32 RequestedAddAmount);
-	int32 HandleStackableItemsMini(USPItemBase* ItemIn, int32 RequestedAddAmount);
-	int32 CalculateWeightAddAmount(USPItemBase* ItemIn, int32 RequestedAddAmount);
-	int32 CalculatenumberForFullStack(USPItemBase* StackablItem, int32 RequestedAddAmount);
+	UPROPERTY(VisibleAnywhere, Category = "Inventory")
+	TArray<USPItemBase*> InventoryMiniContents;
 
-	void AddNewItem(USPItemBase* Item, const int32 AmountToAdd);
-public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	UPROPERTY(VisibleAnywhere, Category = "Inventory")
+	TArray<USPItemBase*> InventoryMakeContents;
+
 	
-		
+	int HandleStackableItems(USPItemBase* ItemIn, int32 RequestedAddAmount);
+	int HandleStackableItemsMini(USPItemBase* ItemIn, int32 RequestedAddAmount);
+
+public:
+	int IsPotion(FName  ID);
+	int IsMiniPotion(FName  ID);
+//RPC
+protected:
+	UFUNCTION(Client, Unreliable)
+	void ClientRPCUpdatePotion(const int& num, const int&ServerCount);
+
+	UFUNCTION(Client, Unreliable)
+	void ClientRPCUpdateMiniPotion(const int& num, const int&ServerCount);
+
+
 };

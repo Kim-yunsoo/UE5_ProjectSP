@@ -25,13 +25,13 @@ bool USPMainMenu::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent
 
 	//cast operation to item drag drop, ensure player is valid, call drop item on player
 
-
-	const USPItemDragDropOperation* ItemDragDrop = Cast<USPItemDragDropOperation>(InOperation);
-
-	if(PlayerCharacter && ItemDragDrop->SourceItem)
-	{
-		PlayerCharacter->DropItem(ItemDragDrop->SourceItem, ItemDragDrop->SourceItem->Quantity);
-		return true;
-	}
+	//
+	// const USPItemDragDropOperation* ItemDragDrop = Cast<USPItemDragDropOperation>(InOperation);
+	//
+	// if(PlayerCharacter && ItemDragDrop->SourceItem)
+	// {
+	// 	PlayerCharacter->DropItem(ItemDragDrop->SourceItem, ItemDragDrop->SourceItem->Quantity);
+	// 	return true;
+	// }
 	return false;
 }

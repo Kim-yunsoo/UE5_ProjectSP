@@ -8,6 +8,7 @@
 #include "SPHUDWidget.generated.h"
 
 
+class USPItemBase;
 struct FInteractableData;
 class USPInteractionWidget;
 class USPMainMenu;
@@ -36,6 +37,9 @@ protected:
 	UPROPERTY()
 	TObjectPtr<class USPInteractionWidget> InteractionWidget;
 
+	UPROPERTY()
+	TObjectPtr<class USPMakingPotionWidget> MakingPotionWidget;
+	
 	UPROPERTY()
 	TObjectPtr<class USPSkillWidget> SlowSkillWidget;
 
@@ -69,11 +73,15 @@ public:
 
 	void UpdateTime(float CountdownTime);
 	void UpdateSlowCDTime(float NewCurrentTime);
+	void UpdateMakingPotionWidget(bool bIsVisible);
 	void UpdateIceCDTime(float NewCurrentTime);
 	void UpdateTeleCDTime(float NewCurrentTime);
 	void UpdateScore(const ColorType& Mycolor, const int32 Score);
 	void ShowInteractionWidget();
 	void HideInteractionWidget();
 	void UpdateInteractionWidget(const FInteractableData* InteractableData);
+
+	void ClearMakingWieget();
+	void MakingPotionWieget(USPItemBase* Item);
 protected:
 };

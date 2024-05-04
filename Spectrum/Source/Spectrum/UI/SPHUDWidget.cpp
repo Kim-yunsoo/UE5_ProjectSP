@@ -3,10 +3,12 @@
 
 #include "UI/SPHUDWidget.h"
 
+#include "SpectrumLog.h"
 #include "SPGameTimeWidget.h"
 #include "SPScoreWidget.h"
 #include "SPSkillWidget.h"
 #include "Interface/SPCharacterHUDInterface.h"
+#include "Potion/Make/SPMakingPotionWidget.h"
 #include "UI/SPTargetUI.h"
 #include "UI/SPMainMenu.h"
 #include "UI/Interaction/SPInteractionWidget.h"
@@ -27,6 +29,14 @@ void USPHUDWidget::NativeConstruct()
 	ScoreWidget = Cast<USPScoreWidget>(GetWidgetFromName("WBSPScoreWidget"));
 
 	TargetUI = Cast<USPTargetUI>(GetWidgetFromName(TEXT("WBTargetUI")));
+
+	MakingPotionWidget = Cast<USPMakingPotionWidget>(GetWidgetFromName(TEXT("WBPSPMakingPotionWidget")));
+
+	if(!MakingPotionWidget)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("isit?????"));
+	}
+	//ensure(TargetUI);
 	GameTimeWidget= Cast<USPGameTimeWidget>(GetWidgetFromName(TEXT("WBGameTimeWidget")));
 	
 	ensure(TargetUI);
@@ -46,11 +56,6 @@ void USPHUDWidget::NativeConstruct()
 		InteractionWidget->SetVisibility(ESlateVisibility::Collapsed); 
 	}
 
-	ISPCharacterHUDInterface* CharacterWidget = Cast<ISPCharacterHUDInterface>(GetOwningPlayerPawn());
-	if(CharacterWidget)
-	{
-		CharacterWidget->SetupHUDWidget(this);
-	}
 }
 
 void USPHUDWidget::DisplayMenu()
@@ -58,7 +63,7 @@ void USPHUDWidget::DisplayMenu()
 	if(MainMenuWidget)
 	{
 		bIsMenuVisible = true;
-		MainMenuWidget->SetVisibility(ESlateVisibility::Visible);
+		MainMenuWidget->SetVisibility(ESlateVisibility::Collapsed);
 	}
 
 }
@@ -68,7 +73,7 @@ void USPHUDWidget::HideMenu()
 	if(MainMenuWidget)
 	{
 		bIsMenuVisible = false;
-		MainMenuWidget->SetVisibility(ESlateVisibility::Visible);
+		MainMenuWidget->SetVisibility(ESlateVisibility::Collapsed);
 	}
 }
 
@@ -99,6 +104,27 @@ void USPHUDWidget::UpdateTime(float CountdownTime)
 void USPHUDWidget::UpdateSlowCDTime(float NewCurrentTime)
 {
 	SlowSkillWidget->UpdateSlowBar(NewCurrentTime);
+}
+
+void USPHUDWidget::UpdateMakingPotionWidget(bool bIsVisible)
+{
+	if(bIsVisible)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("MakingPotionWidget1111"));
+		if(MakingPotionWidget)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("MakingPotionWidget"));
+			MakingPotionWidget->SetVisibility(ESlateVisibility::Visible);
+		}
+	}
+	else
+	{
+		if(MakingPotionWidget)
+		{
+			MakingPotionWidget->SetVisibility(ESlateVisibility::Hidden);
+			UE_LOG(LogTemp, Warning, TEXT("NoMakingPotionWidget"));
+		}
+	}
 }
 
 void USPHUDWidget::UpdateIceCDTime(float NewCurrentTime)
@@ -144,6 +170,14 @@ void USPHUDWidget::UpdateInteractionWidget(const FInteractableData* Interactable
 		InteractionWidget->UpdateWidget(InteractableData);
 	}
 }
+
+void USPHUDWidget::ClearMakingWieget()
+{
+	MakingPotionWidget->ClearWidget();
+}
 	
 
-
+void USPHUDWidget::MakingPotionWieget(USPItemBase* Item)
+{
+	MakingPotionWidget->MakingPotion(Item);
+}
