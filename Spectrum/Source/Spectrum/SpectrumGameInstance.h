@@ -9,6 +9,7 @@
 
 class ASPObject;
 class ASPCharacterPlayer;
+class USPLobbyWidget;
 /**
  * 
  */
@@ -30,8 +31,15 @@ public:
 
 	void SendPacket(SendBufferRef SendBuffer);
 
+public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player")
+	int32 PlayerType;
+
 
 public:
+	//UFUNCTION(BlueprintCallable)
+	//void AsyncClientPawn(const FString& serverIP, const int32 ServerPort, int32 PawnIndex);			// 플레이어 정보로 스폰	
+
 	void HandleSpawn(const Protocol::PlayerInfo& ObjectInfo, bool IsMine);			// 플레이어 정보로 스폰	
 	void HandleSpawn(const Protocol::S_ENTER_GAME& EnterGamePkt);		// 내가 컨트롤
 	void HandleSpawn(const Protocol::S_SPAWN& SpawnPkt);				// 남이 컨트롤
@@ -53,11 +61,18 @@ public:
 	int16 Port = 7777;
 	TSharedPtr<class PacketSession> GameServerSession;	// 게임 서버 만듬
 
-
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<APawn> ClientPawnClass;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bAlreadyChangePawn;
 
 	ASPCharacterPlayer* MyPlayer;
 	TMap<uint64, ASPCharacterPlayer*> Players;
 	TMap<uint64, ASPObject*> Objects;
+
+	USPLobbyWidget* LobbyWidget;
+
+
 
 };

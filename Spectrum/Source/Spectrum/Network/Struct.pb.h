@@ -444,10 +444,25 @@ class PlayerInfo final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kMembershipTypeFieldNumber = 2,
+    kPlayerIdFieldNumber = 2,
+    kMembershipTypeFieldNumber = 3,
     kObjectIdFieldNumber = 1,
   };
-  // .Protocol.Membership membership_type = 2;
+  // string player_id = 2;
+  void clear_player_id();
+  const std::string& player_id() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_player_id(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_player_id();
+  PROTOBUF_NODISCARD std::string* release_player_id();
+  void set_allocated_player_id(std::string* player_id);
+  private:
+  const std::string& _internal_player_id() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_player_id(const std::string& value);
+  std::string* _internal_mutable_player_id();
+  public:
+
+  // .Protocol.Membership membership_type = 3;
   bool has_membership_type() const;
   private:
   bool _internal_has_membership_type() const;
@@ -482,6 +497,7 @@ class PlayerInfo final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr player_id_;
     ::Protocol::Membership* membership_type_;
     uint64_t object_id_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
@@ -903,7 +919,57 @@ inline void PlayerInfo::set_object_id(uint64_t value) {
   // @@protoc_insertion_point(field_set:Protocol.PlayerInfo.object_id)
 }
 
-// .Protocol.Membership membership_type = 2;
+// string player_id = 2;
+inline void PlayerInfo::clear_player_id() {
+  _impl_.player_id_.ClearToEmpty();
+}
+inline const std::string& PlayerInfo::player_id() const {
+  // @@protoc_insertion_point(field_get:Protocol.PlayerInfo.player_id)
+  return _internal_player_id();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void PlayerInfo::set_player_id(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.player_id_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:Protocol.PlayerInfo.player_id)
+}
+inline std::string* PlayerInfo::mutable_player_id() {
+  std::string* _s = _internal_mutable_player_id();
+  // @@protoc_insertion_point(field_mutable:Protocol.PlayerInfo.player_id)
+  return _s;
+}
+inline const std::string& PlayerInfo::_internal_player_id() const {
+  return _impl_.player_id_.Get();
+}
+inline void PlayerInfo::_internal_set_player_id(const std::string& value) {
+  
+  _impl_.player_id_.Set(value, GetArenaForAllocation());
+}
+inline std::string* PlayerInfo::_internal_mutable_player_id() {
+  
+  return _impl_.player_id_.Mutable(GetArenaForAllocation());
+}
+inline std::string* PlayerInfo::release_player_id() {
+  // @@protoc_insertion_point(field_release:Protocol.PlayerInfo.player_id)
+  return _impl_.player_id_.Release();
+}
+inline void PlayerInfo::set_allocated_player_id(std::string* player_id) {
+  if (player_id != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.player_id_.SetAllocated(player_id, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.player_id_.IsDefault()) {
+    _impl_.player_id_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:Protocol.PlayerInfo.player_id)
+}
+
+// .Protocol.Membership membership_type = 3;
 inline bool PlayerInfo::_internal_has_membership_type() const {
   return this != internal_default_instance() && _impl_.membership_type_ != nullptr;
 }

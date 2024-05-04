@@ -6,9 +6,18 @@
 #include "PacketSession.h"
 #include "UI/SPLobbyWidget.h"
 #include "Protocol.pb.h"
+//#include <array>
+//#include <string>
 
 PacketHandlerFunc GPacketHandler[UINT16_MAX];
-bool issuccess;
+
+
+
+extern PlayerInfomation MyPlayerInfo;	// 자신의 정보 저장하는 구조체
+extern LobbyInfomation MyLobbyInfo;	// 로비 정보 저장하는 구조체
+Protocol::PlayerType school_num_type;
+bool okok= false;
+int32 NumPlayers;
 
 bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len)
 {
@@ -26,44 +35,69 @@ bool Handle_S_LOGIN(PacketSessionRef& session, Protocol::S_LOGIN& pkt)
 	//	const Protocol::PlayerInfo& Player = pkt.players(i);
 	//}
 
-	issuccess = pkt.success();
-	
+	MyPlayerInfo.issuccess = pkt.success();
+	okok= pkt.success();
 
 	//Protocol::C_ENTER_GAME EnterGamePkt;
 	//EnterGamePkt.set_playerindex(0);
 	//SEND_PACKET(EnterGamePkt);
 	
-	if (issuccess) {
+	if (MyPlayerInfo.issuccess) {
 		auto myid = pkt.membership_id();
 		auto mytype = pkt.membership_type();
+		school_num_type = pkt.membership_type();
 		FString Fmyid = FString(UTF8_TO_TCHAR(myid.c_str()));
 		FString Fmytype;
+		MyPlayerInfo.my_membership_id = myid;
+
+		//switch (rand()%3)
+		//{
+		//case 0:
+		//	school_num_type = Protocol::PLAYER_TYPE_GREEN_WOMAN;
+		//	break;
+		//case 1:
+		//	school_num_type = Protocol::PLAYER_TYPE_GREEN_WOMAN;
+		//	break;
+		//case 2:
+		//	school_num_type = Protocol::PLAYER_TYPE_ORANGE_WOMAN;
+		//	break;
+
+		//}
+
 
 		switch (mytype)
 		{
 		case Protocol::PLAYER_TYPE_GREEN_MAN:
 			Fmytype = "PLAYER_TYPE_GREEN_MAN";
+			MyPlayerInfo.school_type = 0;
 			break;
 		case Protocol::PLAYER_TYPE_GREEN_WOMAN:
 			Fmytype = "PLAYER_TYPE_GREEN_WOMAN";
+			MyPlayerInfo.school_type = 0;
 			break;
 		case Protocol::PLAYER_TYPE_PURPLE_MAN:
 			Fmytype = "PLAYER_TYPE_PURPLE_MAN";
+			MyPlayerInfo.school_type = 1;
 			break;
 		case Protocol::PLAYER_TYPE_PURPLE_WOMAN:
 			Fmytype = "PLAYER_TYPE_PURPLE_WOMAN";
+			MyPlayerInfo.school_type = 1;
 			break;
 		case Protocol::PLAYER_TYPE_ORANGE_MAN:
 			Fmytype = "PLAYER_TYPE_ORANGE_MAN";
+			MyPlayerInfo.school_type = 2;
 			break;
 		case Protocol::PLAYER_TYPE_ORANGE_WOMAN:
 			Fmytype = "PLAYER_TYPE_ORANGE_WOMAN";
+			MyPlayerInfo.school_type = 2;
 			break;
 		}
 
-		// myi,  mytype 출력
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("ID:%s, type:%s"), *Fmyid, *Fmytype));
+		NumPlayers = UGameplayStatics::GetPlayerControllerID(GWorld->GetFirstPlayerController());
 
+		// myid,  mytype 출력
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("ID:%s, type:%s"), *Fmyid, *Fmytype));
+		MyPlayerInfo.player_type = mytype;
 	}
 	else
 	{
@@ -162,6 +196,62 @@ bool Handle_S_CHAT(PacketSessionRef& session, Protocol::S_CHAT& pkt)
 	auto Msg = pkt.msg();
 	
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Msg")));
+
+	return true;
+}
+
+bool Handle_S_PUBLIC_CHAT(PacketSessionRef& session, Protocol::S_PUBLIC_CHAT& pkt)
+{
+	//chat_membership_id = pkt.membership_id();
+	//chat_msg = pkt.msg();
+
+
+	//FString id = FString(UTF8_TO_TCHAR(pkt.membership_id().c_str()));
+	//FString chat = FString(UTF8_TO_TCHAR(pkt.msg().c_str()));
+
+	//MyPlayerInfo.mag_id = pkt.membership_id();
+	//MyPlayerInfo.mag = pkt.msg();
+	//MyPlayerInfo.msg_num = pkt.msg_num();
+	// USPLobbyWidget.h의 PublicChatUpdate 함수 호출
+	//if (auto* GameInstance = Cast<USpectrumGameInstance>(GWorld->GetGameInstance()))
+	//{
+	//	if (GameInstance->LobbyWidget != nullptr)
+	//	{
+	//		GameInstance->LobbyWidget->PublicChatUpdate(id, chat);
+	//	}
+	//}
+
+	MyLobbyInfo.publicBoard[stoi(pkt.msg_num())].msg_id = pkt.membership_id();
+	MyLobbyInfo.publicBoard[stoi(pkt.msg_num())].msg = pkt.msg();
+	MyLobbyInfo.publicBoard[stoi(pkt.msg_num())].msg_num = pkt.msg_num();
+
+	return true;
+}
+
+bool Handle_S_PRIVATE_CHAT(PacketSessionRef& session, Protocol::S_PRIVATE_CHAT& pkt)
+{
+	//MyPlayerInfo.pri_mag_id = pkt.membership_id();
+	//MyPlayerInfo.pri_mag = pkt.msg();
+	//MyPlayerInfo.pri_membership_type = pkt.membership_type();
+
+	int school_num = -1;
+	switch (pkt.membership_type()) {
+	case Protocol::SCHOOL_TYPE_GREEN:
+		school_num = 0;
+		break;
+
+	case Protocol::SCHOOL_TYPE_PURPLE:
+		school_num = 1;
+		break;
+
+	case Protocol::SCHOOL_TYPE_ORANGE:
+		school_num = 2;
+		break;
+	}
+
+	MyLobbyInfo.privateBoard[school_num].msg_id = pkt.membership_id();
+	MyLobbyInfo.privateBoard[school_num].msg = pkt.msg();
+	MyLobbyInfo.privateBoard[school_num].membership_type = pkt.membership_type();
 
 	return true;
 }

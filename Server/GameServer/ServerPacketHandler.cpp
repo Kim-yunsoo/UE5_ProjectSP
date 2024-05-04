@@ -9,6 +9,9 @@
 #include "Thing.h"
 #include <fstream>
 #include <sstream>
+#include "GameSessionManager.h"
+
+extern LobbyInfomation G_LobbyInfo;
 
 PacketHandlerFunc GPacketHandler[UINT16_MAX];
 
@@ -79,6 +82,15 @@ bool Handle_C_LOGIN(PacketSessionRef& session, Protocol::C_LOGIN& pkt)
 				loginPkt.set_membership_id(pkt.membership_id());
 			}
 			isThere = true;
+			// 플레이어 생성
+			PlayerRef player = ObjectUtils::CreatePlayer(static_pointer_cast<GameSession>(session));
+			//player->objectInfo->set_player_id(loginPkt.membership_id());
+			//player->objectInfo->set_membership_type(loginPkt.membership_type());
+			player->player_id = pkt.membership_id();
+			player->membership_type = loginPkt.membership_type();
+
+			// 방에 입장
+			GRoom->HandleEnterPlayerLocked(player);
 		}
 	}
 	file.close(); // 파일을 닫습니다.
@@ -87,6 +99,24 @@ bool Handle_C_LOGIN(PacketSessionRef& session, Protocol::C_LOGIN& pkt)
 
 	// 로비에 접속한 클라이언트를 추가
 	//Lobby->HandleEnterPlayerLocked(static_pointer_cast<GameSession>(session));
+
+	//// 전체 게시판 정보 전송
+	//Protocol::S_PUBLIC_CHAT publicChatPkt;
+	//for (int i = 0; i < 8; i++) {
+	//	publicChatPkt.set_membership_id(G_LobbyInfo.publicBoard[i].membership_id);
+	//	publicChatPkt.set_msg(G_LobbyInfo.publicBoard[i].msg);
+	//	publicChatPkt.set_msg_num(G_LobbyInfo.publicBoard[i].msg_num);
+	//	SEND_PACKET(publicChatPkt);
+	//}
+
+	//// 학교 게시판 정보 전송
+	//Protocol::S_PRIVATE_CHAT privateChatPkt;
+	//for (int i = 0; i < 3; i++) {
+	//	privateChatPkt.set_membership_id(G_LobbyInfo.privateBoard[i].membership_id);
+	//	privateChatPkt.set_msg(G_LobbyInfo.privateBoard[i].msg);
+	//	privateChatPkt.set_membership_type(G_LobbyInfo.privateBoard[i].membership_type);
+	//	SEND_PACKET(privateChatPkt);
+	//}
 
 
 
@@ -133,13 +163,40 @@ bool Handle_C_MEMBERSHIP(PacketSessionRef& session, Protocol::C_MEMBERSHIP& pkt)
 		outFile.close(); // 쓰기 작업을 마친 후 파일을 닫습니다.
 	}
 
-
+	// 클라이언트에게 회원가입 성공 패킷 전송
 	Protocol::S_LOGIN membershipPkt;
 	membershipPkt.set_success(true);
 	membershipPkt.set_membership_id(pkt.membership_id());
 	membershipPkt.set_membership_type(pkt.membership_type());
 	SEND_PACKET(membershipPkt);
 
+	// 플레이어 생성
+	PlayerRef player = ObjectUtils::CreatePlayer(static_pointer_cast<GameSession>(session));
+	//player->objectInfo->set_player_id(loginPkt.membership_id());
+	//player->objectInfo->set_membership_type(loginPkt.membership_type());
+	player->player_id = pkt.membership_id();
+	player->membership_type = membershipPkt.membership_type();
+
+	// 방에 입장
+	GRoom->HandleEnterPlayerLocked(player);
+
+	//// 전체 게시판 정보 전송
+	//Protocol::S_PUBLIC_CHAT publicChatPkt;
+	//for (int i = 0; i < 8; i++) {
+	//	publicChatPkt.set_membership_id(G_LobbyInfo.publicBoard[i].membership_id);
+	//	publicChatPkt.set_msg(G_LobbyInfo.publicBoard[i].msg);
+	//	publicChatPkt.set_msg_num(G_LobbyInfo.publicBoard[i].msg_num);
+	//	SEND_PACKET(publicChatPkt);
+	//}
+
+	//// 학교 게시판 정보 전송
+	//Protocol::S_PRIVATE_CHAT privateChatPkt;
+	//for (int i = 0; i < 3; i++) {
+	//	privateChatPkt.set_membership_id(G_LobbyInfo.privateBoard[i].membership_id);
+	//	privateChatPkt.set_msg(G_LobbyInfo.privateBoard[i].msg);
+	//	privateChatPkt.set_membership_type(G_LobbyInfo.privateBoard[i].membership_type);
+	//	SEND_PACKET(privateChatPkt);
+	//}
 
 
 	return true;
@@ -149,13 +206,13 @@ bool Handle_C_ENTER_GAME(PacketSessionRef& session, Protocol::C_ENTER_GAME& pkt)
 {
 	// 플레이어 생성
 	PlayerRef player = ObjectUtils::CreatePlayer(static_pointer_cast<GameSession>(session));
-
+	//player->objectInfo->set_membership_id(pkt.membership_id());
+	//player->objectInfo->set_membership_type(pkt.membership_type());
+	
 	// 방에 입장
 	GRoom->HandleEnterPlayerLocked(player);
 
 	cout<< "Player Enter" << endl;
-	
-
 
 	return true;
 }
@@ -189,5 +246,74 @@ bool Handle_C_LEAVE_GAME(PacketSessionRef& session, Protocol::C_LEAVE_GAME& pkt)
 
 bool Handle_C_CHAT(PacketSessionRef& session, Protocol::C_CHAT& pkt)
 {
+	return true;
+}
+
+bool Handle_C_PUBLIC_CHAT(PacketSessionRef& session, Protocol::C_PUBLIC_CHAT& pkt)
+{
+	Protocol::S_PUBLIC_CHAT publicChatPkt;
+
+	cout << "Public Chat : " << pkt.membership_id() << " : " << pkt.msg() << endl;
+
+	publicChatPkt.set_membership_id(pkt.membership_id());
+	publicChatPkt.set_msg(pkt.msg());
+	publicChatPkt.set_msg_num(pkt.msg_num());
+
+	SEND_PACKET(publicChatPkt);
+
+	auto send_Buffer = ServerPacketHandler::MakeSendBuffer(publicChatPkt);
+	GSessionManager.Broadcast(send_Buffer);
+
+	/*	string membership_id;
+	string msg;
+	string msg_num;*/
+
+	G_LobbyInfo.publicBoard[stoi(pkt.msg_num())].membership_id = pkt.membership_id();
+	G_LobbyInfo.publicBoard[stoi(pkt.msg_num())].msg = pkt.msg();
+	G_LobbyInfo.publicBoard[stoi(pkt.msg_num())].msg_num = pkt.msg_num();
+
+	return true;
+}
+
+bool Handle_C_PRIVATE_CHAT(PacketSessionRef& session, Protocol::C_PRIVATE_CHAT& pkt)
+{
+	// 아이디로 학교 검색 후 학교가 같을 경우에만 전송
+	Protocol::S_PRIVATE_CHAT privateChatPkt;
+
+	cout << "Provate Chat : " << pkt.membership_id() << " : " << pkt.msg() << endl;
+
+	privateChatPkt.set_membership_id(pkt.membership_id());
+	privateChatPkt.set_msg(pkt.msg());
+	privateChatPkt.set_membership_type(pkt.membership_type());
+
+	SEND_PACKET(privateChatPkt);
+
+	auto send_Buffer = ServerPacketHandler::MakeSendBuffer(privateChatPkt);
+	GSessionManager.Broadcast(send_Buffer);
+
+	/*	string membership_id;
+	string msg;
+	Protocol::SchoolType membership_type;*/
+	int school_num = -1;
+	switch (pkt.membership_type()) {
+	case Protocol::SCHOOL_TYPE_GREEN:
+		school_num = 0;
+		break;
+
+	case Protocol::SCHOOL_TYPE_PURPLE:
+		school_num = 1;
+		break;
+
+	case Protocol::SCHOOL_TYPE_ORANGE:
+		school_num = 2;
+		break;
+	}
+	if (school_num != -1) {
+		G_LobbyInfo.privateBoard[school_num].membership_id = pkt.membership_id();
+		G_LobbyInfo.privateBoard[school_num].msg = pkt.msg();
+		G_LobbyInfo.privateBoard[school_num].membership_type = pkt.membership_type();
+	}
+
+
 	return true;
 }
