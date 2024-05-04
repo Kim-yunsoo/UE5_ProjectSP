@@ -49,7 +49,7 @@
 #include "Skill/SPIceSkill.h"
 #include "Skill/SPTeleSkill.h"
 #include "UI/SPHUDWidget.h"
-#include "UI/Inventory/SPPickup.h"
+#include "Potion/SPPickup.h"
 
 
 ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializer)

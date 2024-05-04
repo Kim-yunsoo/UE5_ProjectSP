@@ -38,10 +38,10 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "Pickup | Components")
 	TObjectPtr<UStaticMeshComponent> PickupMesh;
 
-	UPROPERTY(EditInstanceOnly, Category = "Pickup | Item Initialization")
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Pickup | Item Initialization")
 	TObjectPtr<UDataTable> ItemDataTable;
 
-	UPROPERTY(EditInstanceOnly, Category = "Pickup | Item Initialization")
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Pickup | Item Initialization")
 	FName DesiredItemID;
 
 	UPROPERTY(VisibleAnywhere, Category = "Pickup | Item Reference")
@@ -52,6 +52,9 @@ public:
 
 	UPROPERTY(VisibleInstanceOnly, Category = "Pickup | Interaction")
 	FInteractableData InstanceInteractableData;
+
+	UPROPERTY()
+	TObjectPtr<AActor> MyPlayerOwner;
 	
 protected:	
 	// Called every frame
@@ -79,4 +82,7 @@ protected:
 
 	UFUNCTION()
 	void OnTriggerExit(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	
+	
 };
