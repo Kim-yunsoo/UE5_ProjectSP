@@ -21,7 +21,8 @@ message PositionInfo
 message PlayerInfo
 {
 	uint64 object_id = 1;
-	Membership membership_type = 2;
+	string player_id = 2;
+	Membership membership_type = 3;
 }
 
 message Membership

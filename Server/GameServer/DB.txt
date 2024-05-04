@@ -1,5 +1,4 @@
-test,00
-as,01
-ad,10
-sd,11
-dd,21
+qw,00
+as,11
+zx,20
+sd,11zx,0
