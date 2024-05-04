@@ -44,7 +44,7 @@ void USPSlowSkill::TickComponent(float DeltaTime, ELevelTick TickType, FActorCom
 
 	if (CurrentGameTime.GetWorldTimeSeconds() < ActivetedTimeStamp + CoolDown)
 	{
-		// UE_LOG(LogTemp,Log,TEXT("%f"),CurrentGameTime.GetWorldTimeSeconds() - ActivetedTimeStamp);
+		//UE_LOG(LogTemp,Log,TEXT("%f"),CurrentGameTime.GetWorldTimeSeconds() - ActivetedTimeStamp);
 
 		float ElapsedTime =( CurrentGameTime.GetWorldTimeSeconds() - ActivetedTimeStamp)/CoolDown;
 		float CDTime= FMath::Clamp(1.0f-ElapsedTime, 0.0f, 1.0f);
@@ -139,3 +139,4 @@ void USPSlowSkill::ClientSkillRPC_Implementation(float Time)
 {
 	SlowCoolDown(Time);
 }
+

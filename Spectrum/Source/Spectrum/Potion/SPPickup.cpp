@@ -176,7 +176,7 @@ void ASPPickup::TakePickup(ASPCharacterPlayer* Taker) //서버
 			}
 			else
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Inventory is null"));
+				 //UE_LOG(LogTemp, Warning, TEXT("Inventory is null"));
 			}
 		}
 	}
@@ -188,7 +188,6 @@ void ASPPickup::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEve
 	//
 	// const FName ChangedPropertyName = PropertyChangedEvent.Property?PropertyChangedEvent.Property->GetFName() : NAME_None;
 	//
-	//Todo �����Ϳ��� ���ϰ� �ϱ� ���ؼ�!
 }
 
 void ASPPickup::OnTriggerEnter(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
@@ -223,10 +222,10 @@ void ASPPickup::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetim
 
 void ASPPickup::ServerRPCInteract_Implementation(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget)
 {
-	SP_LOG(LogSPNetwork, Log, TEXT("ServerRPCInteract_Implementation"));
+	//SP_LOG(LogSPNetwork, Log, TEXT("ServerRPCInteract_Implementation"));
 }
 
 void ASPPickup::ClientRPCUpdateWidget_Implementation(ASPCharacterPlayer* Taker)
 {
-	SP_LOG(LogSPNetwork, Log, TEXT("ClientRPC"));
+	//SP_LOG(LogSPNetwork, Log, TEXT("ClientRPC"));
 }

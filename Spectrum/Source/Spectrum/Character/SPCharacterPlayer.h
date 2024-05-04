@@ -60,7 +60,7 @@ struct FInteractionData
 };
 
 UCLASS()
-class SPECTRUM_API ASPCharacterPlayer : public ACharacter, public ISPCharacterHUDInterface ,public ISPSkillInterface
+class SPECTRUM_API ASPCharacterPlayer : public ACharacter, public ISPCharacterHUDInterface ,public ISPSkillInterface //ISPCharacterHUDInterface
 	 ,public ISPTriggerInterface
 {
 	GENERATED_BODY()
@@ -139,6 +139,7 @@ protected:
 
 	FVector2D LastDesiredInput;
 
+	int32 SphereRange;
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	TObjectPtr<class USkeletalMeshComponent> Face;
@@ -308,8 +309,10 @@ public:
 	
 
 protected:
+	UPROPERTY()
 	UPrimitiveComponent* HitComponent;
-	AActor* HitActor;
+	UPROPERTY()
+	AActor* HitMyActor;
 	FHitResult outHitResult;
 
 	float HitDistance;
@@ -584,4 +587,8 @@ public:
 
 	// UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	// ESchoolColor SchoolAffiliation;
+
+	UFUNCTION(NetMulticast,Unreliable)
+	void MultiChangeCollision(const FName& CollisionName);
+	
 };

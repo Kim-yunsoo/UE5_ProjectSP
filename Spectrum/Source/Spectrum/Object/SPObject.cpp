@@ -141,6 +141,11 @@ void ASPObject::DynamicSetColor(const UDataTable* Table)
 	ChaosDynamic->SetVectorParameterValue(DynamicParam,ColorRow->ColorData);
 }
 
+void ASPObject::SetObjectCollisionType(const FName& CollisionType)
+{
+	ObjectMesh->SetCollisionProfileName(CollisionType);
+}
+
 // Called every frame
 
 void ASPObject::OnChangeColorGreen()

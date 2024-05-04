@@ -404,6 +404,8 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 	bIsActiveIceSkill = true;
 	bIsActiveTeleSkill = true;
 	bIsActiveGraping = true;
+	HitMyActor=nullptr;
+	SphereRange=10000000;
 
 	// bIsActiveSlowSkill = true;
 	HitDistance = 1800.f;
@@ -761,10 +763,10 @@ void ASPCharacterPlayer::ServerRPCStopAiming_Implementation()
 
 void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 {
-	if (bIsActiveGraping)
-	{
+	// if (bIsActiveGraping)
+	// {
 		ServerRPCGraping();
-	}
+	// }
 }
 
 void ASPCharacterPlayer::StopGraping(const FInputActionValue& Value)
@@ -1493,8 +1495,8 @@ void ASPCharacterPlayer::SetupHUDWidget(USPHUDWidget* InUserWidget)
 		ASPGameState* SPGameState= Cast<ASPGameState>(State);
 		if(SPGameState)
 		{
-			SPGameState->OnScore.AddUObject(InUserWidget,&USPHUDWidget::UpdateScore);
-			SPGameState->OnTime.AddUObject(InUserWidget,&USPHUDWidget::UpdateTime);
+			//SPGameState->OnScore.AddUObject(InUserWidget,&USPHUDWidget::UpdateScore);
+			//SPGameState->OnTime.AddUObject(InUserWidget,&USPHUDWidget::UpdateTime);
 		}
 	}
 }
@@ -1829,6 +1831,8 @@ bool ASPCharacterPlayer::IsMontagePlaying()
 	}
 }
 
+
+
 void ASPCharacterPlayer::NetTESTRPCSlowSkill_Implementation()
 {
 	GetCharacterMovement()->MaxWalkSpeed = 100.f;
@@ -1880,7 +1884,14 @@ void ASPCharacterPlayer::ServerRPCBlackPotionSpawn_Implementation()
 	}
 	
 }
-
+void ASPCharacterPlayer::MultiChangeCollision_Implementation(const FName& CollisionName)
+{
+	if(HitMyActor) //내가 들고 있는 액터가 있는 것이면 ? 
+	{
+		ASPObject* MyObject = Cast<ASPObject>(HitMyActor);
+		MyObject->SetObjectCollisionType(CollisionName);
+	}
+}
 void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 {
 	GetCharacterMovement()->bOrientRotationToMovement = true;
@@ -1895,6 +1906,10 @@ void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 		APlayerController* PlayerController = GetController<APlayerController>();
 		if (PlayerController != nullptr)
 		{
+			// if(bIsActiveGraping)
+			// {
+				
+			
 			FRotator ControlRotation = PlayerController->GetControlRotation();
 			FVector ReseltFoward = UKismetMathLibrary::GetForwardVector(ControlRotation);
 
@@ -1903,7 +1918,7 @@ void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 			bool TransSuccess = PlayerController->DeprojectScreenPositionToWorld(
 				0.5, 0.5, WorldLocation, WorldDirection);
 
-			FVector SphereLocationEnd = ReseltFoward * 10000000 + SphereLocationStart;
+			FVector SphereLocationEnd = ReseltFoward * SphereRange + SphereLocationStart;
 
 			TArray<TEnumAsByte<EObjectTypeQuery>> EmptyObjectTypes;
 			EDrawDebugTrace::Type drawDebugType = EDrawDebugTrace::ForDuration;
@@ -1925,46 +1940,51 @@ void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 			                                                       ECC_GameTraceChannel1, Params);
 			if (HitSuccess && outHitResult.Component->Mobility == EComponentMobility::Movable)
 			{
-				outHitResult.Component->SetSimulatePhysics(true);
-				outHitResult.GetActor()->SetOwner(this);
-				// UE_LOG(LogTemp,Log,TEXT("%s"),*(outHitResult.GetActor()->GetOwner())->GetName() );
-				HitComponent = outHitResult.GetComponent();
-
-				FVector SphereTracePoint = HitComponent->K2_GetComponentLocation();
-				float Radius = 150.f;
-				TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
-				ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldDynamic));
-				TArray<AActor*> ActorsToIgnore;
-				ActorsToIgnore.Add(this);
-				TArray<FHitResult> OutHits;
-				FLinearColor GreenColor1(0.0f, 1.0f, 0.0f);
-				FLinearColor RedColor1(1.0f, 0.0f, 0.0f);
-				float DrawTime1 = 5.0f;
-
-				bool Success = UKismetSystemLibrary::SphereTraceMultiForObjects(
-					GetWorld(), SphereTracePoint, SphereTracePoint, Radius, ObjectTypes, false, ActorsToIgnore,
-					EDrawDebugTrace::ForDuration, OutHits, true, GreenColor1, RedColor1, DrawTime1);
-
-				ActorPrimitiveArray.Empty();
-
-				if (Success)
+				if(bIsActiveGraping)
 				{
-					for (const FHitResult& HitResult : OutHits)
+					outHitResult.Component->SetSimulatePhysics(true);
+					outHitResult.GetActor()->SetOwner(this);
+					// UE_LOG(LogTemp,Log,TEXT("%s"),*(outHitResult.GetActor()->GetOwner())->GetName() );
+					HitComponent = outHitResult.GetComponent();
+					HitMyActor=outHitResult.GetActor();
+					MultiChangeCollision(TEXT("BlackItemCollision"));
+
+					FVector SphereTracePoint = HitComponent->K2_GetComponentLocation();
+					float Radius = 150.f;
+					TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
+					ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldDynamic));
+					TArray<AActor*> ActorsToIgnore;
+					ActorsToIgnore.Add(this);
+					TArray<FHitResult> OutHits;
+					FLinearColor GreenColor1(0.0f, 1.0f, 0.0f);
+					FLinearColor RedColor1(1.0f, 0.0f, 0.0f);
+					float DrawTime1 = 5.0f;
+
+					bool Success = UKismetSystemLibrary::SphereTraceMultiForObjects(
+						GetWorld(), SphereTracePoint, SphereTracePoint, Radius, ObjectTypes, false, ActorsToIgnore,
+						EDrawDebugTrace::ForDuration, OutHits, true, GreenColor1, RedColor1, DrawTime1);
+
+					ActorPrimitiveArray.Empty();
+
+					if (Success)
 					{
-						AActor* Hit = HitResult.GetActor();
-						UPrimitiveComponent* PrimitiveHit = Cast<UPrimitiveComponent>(Hit->GetRootComponent());
-						if (PrimitiveHit)
+						for (const FHitResult& HitResult : OutHits)
 						{
-							ActorPrimitiveArray.AddUnique(PrimitiveHit);
-						}
-					}
-					if (ActorPrimitiveArray.Num() > 0)
-					{
-						for (UPrimitiveComponent*& HitPrimitive : ActorPrimitiveArray)
-						{
-							if (HitPrimitive->Mobility == EComponentMobility::Movable)
+							AActor* Hit = HitResult.GetActor();
+							UPrimitiveComponent* PrimitiveHit = Cast<UPrimitiveComponent>(Hit->GetRootComponent());
+							if (PrimitiveHit)
 							{
-								HitPrimitive->SetSimulatePhysics(true);
+								ActorPrimitiveArray.AddUnique(PrimitiveHit);
+							}
+						}
+						if (ActorPrimitiveArray.Num() > 0)
+						{
+							for (UPrimitiveComponent*& HitPrimitive : ActorPrimitiveArray)
+							{
+								if (HitPrimitive->Mobility == EComponentMobility::Movable)
+								{
+									HitPrimitive->SetSimulatePhysics(true);
+								}
 							}
 						}
 					}
@@ -1976,13 +1996,16 @@ void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 						NAME_None,
 						HitComponent->K2_GetComponentLocation()
 					);
+					if(bIsActiveGraping)
+					{
+						bIsHolding = true;
 
-					bIsHolding = true;
-
-					FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld,
-					                                          EAttachmentRule::KeepWorld, true);
-					FollowCamera->AttachToComponent(CameraBoom, AttachmentRules, NAME_None);
-					CameraMove();
+						FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld,
+																  EAttachmentRule::KeepWorld, true);
+						FollowCamera->AttachToComponent(CameraBoom, AttachmentRules, NAME_None);
+						CameraMove();
+					}
+				
 				}
 			}
 
@@ -2009,6 +2032,7 @@ void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 					5.0f
 				);
 			}
+				
 		}
 	}
 	else
@@ -2018,6 +2042,7 @@ void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 		{
 			PhysicsHandleComponent->ReleaseComponent();
 			HitComponent->AddImpulse(FollowCamera->GetForwardVector() * HitDistance, NAME_None, true);
+			MultiChangeCollision(TEXT("PropCollision"));
 			HitComponent = nullptr;
 		}
 	}
@@ -2030,6 +2055,7 @@ void ASPCharacterPlayer::ServerRPCStopGraping_Implementation()
 		bIsHolding = false;
 		PhysicsHandleComponent->ReleaseComponent();
 		HitComponent->AddImpulse(FollowCamera->GetForwardVector() * HitDistance, NAME_None, true);
+		MultiChangeCollision(TEXT("PropCollision"));
 		HitComponent = nullptr;
 	}
 }

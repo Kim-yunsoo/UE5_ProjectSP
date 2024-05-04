@@ -108,4 +108,7 @@ public://DynamicMaterial
 
 	UPROPERTY(Replicated)
 	uint8 bIsScoreReflected :1 ;
+
+public:
+	void SetObjectCollisionType(const FName& CollisionType);
 };

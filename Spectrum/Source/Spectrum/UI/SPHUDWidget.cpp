@@ -25,36 +25,39 @@ void USPHUDWidget::NativeConstruct()
 	SlowSkillWidget = Cast<USPSkillWidget>(GetWidgetFromName("WBSkill"));
 	IceSkillWidget = Cast<USPSkillWidget>(GetWidgetFromName("WBSkill"));
 	TeleSkillWidget = Cast<USPSkillWidget>(GetWidgetFromName("WBSkill"));
-
 	ScoreWidget = Cast<USPScoreWidget>(GetWidgetFromName("WBSPScoreWidget"));
-
 	TargetUI = Cast<USPTargetUI>(GetWidgetFromName(TEXT("WBTargetUI")));
-
 	MakingPotionWidget = Cast<USPMakingPotionWidget>(GetWidgetFromName(TEXT("WBPSPMakingPotionWidget")));
 
 	if(!MakingPotionWidget)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("isit?????"));
+		//UE_LOG(LogTemp, Warning, TEXT("isit?????"));
 	}
 	//ensure(TargetUI);
 	GameTimeWidget= Cast<USPGameTimeWidget>(GetWidgetFromName(TEXT("WBGameTimeWidget")));
 	
-	ensure(TargetUI);
+	//ensure(TargetUI);
 
 	//MainMenuWidget = Cast<USPMainMenu>(GetWidgetFromName(TEXT("WBTargetUI")));
-	if(MainMenuClass)
+	// if(MainMenuClass)
+	// {
+	// 	MainMenuWidget = CreateWidget<USPMainMenu>(GetWorld(), MainMenuClass);
+	// 	MainMenuWidget->AddToViewport(5);
+	// 	MainMenuWidget->SetVisibility(ESlateVisibility::Collapsed); 
+	// }
+	//
+	// if(InteractionWidgetClass)
+	// {
+	// 	InteractionWidget = CreateWidget<USPInteractionWidget>(GetWorld(), InteractionWidgetClass);
+	// 	InteractionWidget->AddToViewport(-1);
+	// 	InteractionWidget->SetVisibility(ESlateVisibility::Collapsed); 
+	// }
+	ISPCharacterHUDInterface* CharacterWidget = Cast<ISPCharacterHUDInterface>(GetOwningPlayerPawn());
+	if(CharacterWidget)
 	{
-		MainMenuWidget = CreateWidget<USPMainMenu>(GetWorld(), MainMenuClass);
-		MainMenuWidget->AddToViewport(5);
-		MainMenuWidget->SetVisibility(ESlateVisibility::Collapsed); 
+		CharacterWidget->SetupHUDWidget(this);
 	}
-	
-	if(InteractionWidgetClass)
-	{
-		InteractionWidget = CreateWidget<USPInteractionWidget>(GetWorld(), InteractionWidgetClass);
-		InteractionWidget->AddToViewport(-1);
-		InteractionWidget->SetVisibility(ESlateVisibility::Collapsed); 
-	}
+
 
 }
 

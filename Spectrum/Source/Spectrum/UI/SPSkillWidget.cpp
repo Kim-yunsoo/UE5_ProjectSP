@@ -17,23 +17,23 @@ void USPSkillWidget::NativeConstruct()
 	ensure(SkillUI);
 
 	SlowBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("PBSlow")));
-	IceBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("PBIce")));
-	TeleBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("PBTeleport")));
 	ensure(SlowBar);
+	IceBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("PBIce")));
 	ensure(IceBar);
+	TeleBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("PBTeleport")));
 	ensure(TeleBar);
 
-	if(SlowBar)
+	if (SlowBar)
 	{
 		SlowBar->SetPercent(0.0f);
 	}
 
-	if(IceBar)
+	if (IceBar)
 	{
 		IceBar->SetPercent(0.0f);
 	}
-	
-	if(TeleBar)
+
+	if (TeleBar)
 	{
 		TeleBar->SetPercent(0.0f);
 	}
@@ -41,8 +41,10 @@ void USPSkillWidget::NativeConstruct()
 
 void USPSkillWidget::UpdateSlowBar(float NewCurrentPercent) //델리게이트로 받기
 {
+
 	SlowBar->SetPercent(NewCurrentPercent);
 }
+
 void USPSkillWidget::UpdateIceBar(float NewCurrentPercent) //델리게이트로 받기
 {
 	IceBar->SetPercent(NewCurrentPercent);
