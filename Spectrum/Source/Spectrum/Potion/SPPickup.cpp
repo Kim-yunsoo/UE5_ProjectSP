@@ -24,6 +24,7 @@ ASPPickup::ASPPickup()
 	{
 		ItemDataTable = DataTableFinder.Object;
 	}
+	PotionRange=4;
 	PickupMesh->SetSimulatePhysics(false);
 	Trigger->SetSimulatePhysics(false);
 }
@@ -61,16 +62,28 @@ void ASPPickup::InitializePickup(const TSubclassOf<USPItemBase> BaseClass, const
 		if (RowNames.Num() > 0)
 		{
 			int32 RandomIndex = FMath::RandRange(0, RowNames.Num() - 1);
-			// UE_LOG(LogTemp,Log,TEXT(" %d"),RandomIndex );
-			SP_LOG(LogSPNetwork, Log, TEXT("RowNames %d "), RandomIndex);
+			if(RandomIndex>=0 && RandomIndex<=2) //0~3의 범위
+			{
+				int32 Adjustment=  FMath::RandRange(0, 1);
+				if(Adjustment) //1이 나오면 확률 조정
+				{
+					//PotionRange
+					RandomIndex+=PotionRange;
+					RandomIndex=FMath::Clamp(RandomIndex,0,RowNames.Num()-1);
+					
+				}
+				// else if(Adjustment &&RandomIndex==3)
+				// {
+				// 	RandomIndex+=FMath::RandRange(1, PotionRange-1); //0~3
+				// 	RandomIndex=FMath::Clamp(RandomIndex,0,RowNames.Num()-1);
+				// }
+			}
 			DesiredItemID = RowNames[RandomIndex];
 		}
-		
 	}
 	if (ItemDataTable && !DesiredItemID.IsNone())
 	{
 		const FItemData* ItemData = ItemDataTable->FindRow<FItemData>(DesiredItemID, DesiredItemID.ToString());
-		// ���ϴ� �׸� ã��
 
 		ItemReference = NewObject<USPItemBase>(this, BaseClass);
 

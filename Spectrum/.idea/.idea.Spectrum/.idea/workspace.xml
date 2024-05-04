@@ -12,11 +12,6 @@
   <component name="ChangeListManager">
     <list default="true" id="930c52c5-2823-422b-ab9a-d68c3757d86e" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/ItemData/Item.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/ItemData/Item.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Potion/B_Potion/B_Potion.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Potion/B_Potion/B_Potion.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Potion/G_Potion/G_Potion1.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Potion/G_Potion/G_Potion1.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Potion/O_Potion/O_Potion.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Potion/O_Potion/O_Potion.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Potion/P_Potion/P_Potion1.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Potion/P_Potion/P_Potion1.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Spectrum/Yunsoo/YunsooMap.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Yunsoo/YunsooMap.umap" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPPickup.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPPickup.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPPickup.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPPickup.h" afterDir="false" />
@@ -207,7 +202,7 @@
       <workItem from="1714795667154" duration="2456000" />
       <workItem from="1714798602775" duration="4097000" />
       <workItem from="1714806515797" duration="3096000" />
-      <workItem from="1714809650466" duration="10209000" />
+      <workItem from="1714809650466" duration="13651000" />
     </task>
     <servers />
   </component>

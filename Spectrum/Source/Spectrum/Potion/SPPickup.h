@@ -58,6 +58,8 @@ public:
 
 	UPROPERTY()
 	TArray<FName> RowNames ;
+
+	int32 PotionRange;
 	
 protected:	
 	// Called every frame
@@ -88,5 +90,6 @@ protected:
 
 	
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const;
+	
 
 };
