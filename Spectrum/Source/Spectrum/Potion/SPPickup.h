@@ -41,7 +41,7 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Pickup | Item Initialization")
 	TObjectPtr<UDataTable> ItemDataTable;
 
-	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Pickup | Item Initialization")
+	UPROPERTY(Replicated,BlueprintReadWrite, Category = "Pickup | Item Initialization")
 	FName DesiredItemID;
 
 	UPROPERTY(VisibleAnywhere, Category = "Pickup | Item Reference")
@@ -87,5 +87,6 @@ protected:
 	void OnTriggerExit(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	
-	
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const;
+
 };

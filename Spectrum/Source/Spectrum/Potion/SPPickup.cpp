@@ -7,6 +7,7 @@
 #include "SpectrumLog.h"
 #include "SPPotionSpawner.h"
 #include "Components/BoxComponent.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 ASPPickup::ASPPickup()
@@ -54,12 +55,17 @@ void ASPPickup::BeginPlay()
 
 void ASPPickup::InitializePickup(const TSubclassOf<USPItemBase> BaseClass, const int32 InQuantity)
 {
-	if(RowNames.Num()>0)
-	{
-	 int32 RandomIndex = FMath::RandRange(0,RowNames.Num()-1);
-	 UE_LOG(LogTemp,Log,TEXT(" %d"),RandomIndex );
 
-	 DesiredItemID = RowNames[RandomIndex];
+	if(HasAuthority())
+	{
+		if (RowNames.Num() > 0)
+		{
+			int32 RandomIndex = FMath::RandRange(0, RowNames.Num() - 1);
+			// UE_LOG(LogTemp,Log,TEXT(" %d"),RandomIndex );
+			SP_LOG(LogSPNetwork, Log, TEXT("RowNames %d "), RandomIndex);
+			DesiredItemID = RowNames[RandomIndex];
+		}
+		
 	}
 	if (ItemDataTable && !DesiredItemID.IsNone())
 	{
@@ -191,6 +197,16 @@ void ASPPickup::OnTriggerExit(UPrimitiveComponent* OverlappedComp, AActor* Other
 		PlayerCharacter->NoInteractableFound();
 	}
 }
+
+void ASPPickup::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(ASPPickup, DesiredItemID);
+}
+
+// void ASPPickup::OnRepItemID()
+// {
+// }
 
 void ASPPickup::ServerRPCInteract_Implementation(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget)
 {
