@@ -36,6 +36,7 @@ void ASPPickup::BeginPlay()
 		this->SetReplicates(true);
 		this->AActor::SetReplicateMovement(true);
 	}
+	RowNames = ItemDataTable->GetRowNames(); //모든 데이터 이름 넣었음
 	InitializePickup(USPItemBase::StaticClass(), ItemQuantity);
 
 	FVector ActorLocation = GetActorLocation();
@@ -44,11 +45,22 @@ void ASPPickup::BeginPlay()
 
 	Trigger->OnComponentBeginOverlap.AddDynamic(this, &ASPPickup::OnTriggerEnter);
 	Trigger->OnComponentEndOverlap.AddDynamic(this, &ASPPickup::OnTriggerExit);
+
+	//여기서 데이터 테이블 ID 배열 데이터를 넣자
+	// for(int i=0; i<ItemDataTable.Row)
+
+	
 }
 
 void ASPPickup::InitializePickup(const TSubclassOf<USPItemBase> BaseClass, const int32 InQuantity)
 {
-	DesiredItemID = FName(TEXT("R_Mini"));
+	if(RowNames.Num()>0)
+	{
+	 int32 RandomIndex = FMath::RandRange(0,RowNames.Num()-1);
+	 UE_LOG(LogTemp,Log,TEXT(" %d"),RandomIndex );
+
+	 DesiredItemID = RowNames[RandomIndex];
+	}
 	if (ItemDataTable && !DesiredItemID.IsNone())
 	{
 		const FItemData* ItemData = ItemDataTable->FindRow<FItemData>(DesiredItemID, DesiredItemID.ToString());

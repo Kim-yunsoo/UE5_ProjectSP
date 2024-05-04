@@ -12,10 +12,12 @@
   <component name="ChangeListManager">
     <list default="true" id="930c52c5-2823-422b-ab9a-d68c3757d86e" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/DefaultEngine.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultEngine.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/UI/Inventory/SPPickup.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/UI/Inventory/SPPickup.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Spectrum/BluePrint/BP_SPCharacterMan.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/BluePrint/BP_SPCharacterMan.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Spectrum/BluePrint/BP_SPTEST.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/BluePrint/BP_SPTEST.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Spectrum/ItemData/Item.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/ItemData/Item.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPPickup.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPPickup.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPPickup.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPPickup.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UI디자인.pptx" beforeDir="false" afterPath="$PROJECT_DIR$/../UI디자인.pptx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -203,7 +205,7 @@
       <workItem from="1714795667154" duration="2456000" />
       <workItem from="1714798602775" duration="4097000" />
       <workItem from="1714806515797" duration="3096000" />
-      <workItem from="1714809650466" duration="4958000" />
+      <workItem from="1714809650466" duration="8411000" />
     </task>
     <servers />
   </component>

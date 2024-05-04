@@ -55,6 +55,9 @@ public:
 
 	UPROPERTY()
 	TObjectPtr<AActor> MyPlayerOwner;
+
+	UPROPERTY()
+	TArray<FName> RowNames ;
 	
 protected:	
 	// Called every frame
