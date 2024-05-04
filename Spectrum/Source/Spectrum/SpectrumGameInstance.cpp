@@ -11,7 +11,7 @@
 #include "ClientPacketHandler.h"
 #include "Object/SPObject.h"
 #include "Character/SPCharacterPlayer.h"
-
+#include "UI/SPLobbyWidget.h"
 
 
 void USpectrumGameInstance::ConnectToGameServer()
@@ -57,6 +57,8 @@ void USpectrumGameInstance::ConnectToGameServer()
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("connection failed")));
 	}
 
+	//LobbyWidget = CreateWidget<USPLobbyWidget>(this, LobbyWidgetClass);
+	//PlayerType = 0;
 
 }
 
@@ -101,6 +103,17 @@ void USpectrumGameInstance::SendPacket(SendBufferRef SendBuffer)
 	GameServerSession->SendPacket(SendBuffer);	// 큐를 쌓아주는 역할
 }
 
+//void USpectrumGameInstance::AsyncClientPawn(const FString& serverIP, const int32 ServerPort, int32 PawnIndex)
+//{
+//	if (Socket == nullptr || GameServerSession == nullptr)
+//		return;
+//
+//	TArray<uint8> DataArray;
+//	DataArray.Append(reinterpret_cast<const uint8*>(&PawnIndex), sizeof(int32));
+//
+//	int32 BytesSent = 0;
+//	Socket->Send(DataArray.GetData(), DataArray.Num(), BytesSent);
+//}
 
 void USpectrumGameInstance::HandleSpawn(const Protocol::PlayerInfo& ObjectInfo, bool IsMine)
 {

@@ -80,12 +80,13 @@ enum PlayerType : int {
   PLAYER_TYPE_PURPLE_WOMAN = 3,
   PLAYER_TYPE_ORANGE_MAN = 4,
   PLAYER_TYPE_ORANGE_WOMAN = 5,
+  PLAYER_TYPE_NONE = 6,
   PlayerType_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
   PlayerType_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
 };
 bool PlayerType_IsValid(int value);
 constexpr PlayerType PlayerType_MIN = PLAYER_TYPE_GREEN_MAN;
-constexpr PlayerType PlayerType_MAX = PLAYER_TYPE_ORANGE_WOMAN;
+constexpr PlayerType PlayerType_MAX = PLAYER_TYPE_NONE;
 constexpr int PlayerType_ARRAYSIZE = PlayerType_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* PlayerType_descriptor();
@@ -101,6 +102,32 @@ inline bool PlayerType_Parse(
     ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, PlayerType* value) {
   return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<PlayerType>(
     PlayerType_descriptor(), name, value);
+}
+enum SchoolType : int {
+  SCHOOL_TYPE_GREEN = 0,
+  SCHOOL_TYPE_PURPLE = 1,
+  SCHOOL_TYPE_ORANGE = 2,
+  SchoolType_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
+  SchoolType_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
+};
+bool SchoolType_IsValid(int value);
+constexpr SchoolType SchoolType_MIN = SCHOOL_TYPE_GREEN;
+constexpr SchoolType SchoolType_MAX = SCHOOL_TYPE_ORANGE;
+constexpr int SchoolType_ARRAYSIZE = SchoolType_MAX + 1;
+
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* SchoolType_descriptor();
+template<typename T>
+inline const std::string& SchoolType_Name(T enum_t_value) {
+  static_assert(::std::is_same<T, SchoolType>::value ||
+    ::std::is_integral<T>::value,
+    "Incorrect type passed to function SchoolType_Name.");
+  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
+    SchoolType_descriptor(), enum_t_value);
+}
+inline bool SchoolType_Parse(
+    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, SchoolType* value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<SchoolType>(
+    SchoolType_descriptor(), name, value);
 }
 enum MoveState : int {
   MOVE_STATE_NONE = 0,
@@ -160,6 +187,11 @@ template <> struct is_proto_enum< ::Protocol::PlayerType> : ::std::true_type {};
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::Protocol::PlayerType>() {
   return ::Protocol::PlayerType_descriptor();
+}
+template <> struct is_proto_enum< ::Protocol::SchoolType> : ::std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::Protocol::SchoolType>() {
+  return ::Protocol::SchoolType_descriptor();
 }
 template <> struct is_proto_enum< ::Protocol::MoveState> : ::std::true_type {};
 template <>

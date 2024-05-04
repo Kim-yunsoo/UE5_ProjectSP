@@ -84,3 +84,30 @@ message S_CHAT
 	string msg = 2;
 }
 
+message C_PUBLIC_CHAT
+{
+	string membership_id = 1;
+	string msg = 2;
+	string msg_num = 3;
+}
+
+message S_PUBLIC_CHAT
+{
+	string membership_id = 1;
+	string msg = 2;
+	string msg_num = 3;
+}
+
+message C_PRIVATE_CHAT
+{
+	string membership_id = 1;
+	string msg = 2;
+	SchoolType membership_type = 3;
+}
+
+message S_PRIVATE_CHAT
+{
+	string membership_id = 1;
+	string msg = 2;
+	SchoolType membership_type = 3;
+}

@@ -5,11 +5,26 @@
 #include "ObjectUtils.h"
 #include "Thing.h"
 
+LobbyInfomation G_LobbyInfo;
 RoomRef GRoom = make_shared<Room>();
 
 Room::Room()
 {
 	//createAllObject();
+	for (int i = 0; i < 8; i++) {
+		G_LobbyInfo.publicBoard[i].membership_id="";
+		G_LobbyInfo.publicBoard[i].msg = "";
+		G_LobbyInfo.publicBoard[i].msg_num = "";
+	}
+
+	// 학교 게시판 정보 초기화
+	for (int i = 0; i < 3; i++) {
+		G_LobbyInfo.privateBoard[i].membership_id = "";
+		G_LobbyInfo.privateBoard[i].msg = "";
+	}
+		G_LobbyInfo.privateBoard[0].membership_type = Protocol::SchoolType::SCHOOL_TYPE_GREEN;
+		G_LobbyInfo.privateBoard[1].membership_type = Protocol::SchoolType::SCHOOL_TYPE_PURPLE;
+		G_LobbyInfo.privateBoard[2].membership_type = Protocol::SchoolType::SCHOOL_TYPE_ORANGE;
 
 }
 

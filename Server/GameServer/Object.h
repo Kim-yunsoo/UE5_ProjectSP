@@ -10,6 +10,9 @@ public:
 
 public:
 	Protocol::PlayerInfo* objectInfo;
+	string player_id;
+	Protocol::PlayerType membership_type;
+
 
 
 public:
@@ -18,4 +21,5 @@ public:
 protected:
 	bool isPlayer = false;
 };
+
 

@@ -46,7 +46,8 @@ struct PositionInfoDefaultTypeInternal {
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 PositionInfoDefaultTypeInternal _PositionInfo_default_instance_;
 PROTOBUF_CONSTEXPR PlayerInfo::PlayerInfo(
     ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_.membership_type_)*/nullptr
+    /*decltype(_impl_.player_id_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.membership_type_)*/nullptr
   , /*decltype(_impl_.object_id_)*/uint64_t{0u}
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct PlayerInfoDefaultTypeInternal {
@@ -102,6 +103,7 @@ const uint32_t TableStruct_Struct_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(p
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::Protocol::PlayerInfo, _impl_.object_id_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::PlayerInfo, _impl_.player_id_),
   PROTOBUF_FIELD_OFFSET(::Protocol::PlayerInfo, _impl_.membership_type_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Protocol::Membership, _internal_metadata_),
@@ -115,7 +117,7 @@ const uint32_t TableStruct_Struct_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(p
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::Protocol::PositionInfo)},
   { 17, -1, -1, sizeof(::Protocol::PlayerInfo)},
-  { 25, -1, -1, sizeof(::Protocol::Membership)},
+  { 26, -1, -1, sizeof(::Protocol::Membership)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -131,18 +133,19 @@ const char descriptor_table_protodef_Struct_2eproto[] PROTOBUF_SECTION_VARIABLE(
   "\n\005state\030\006 \001(\0162\023.Protocol.MoveState\022\021\n\tis"
   "_aiming\030\007 \001(\010\022\022\n\nis_holding\030\010 \001(\010\022\022\n\nis_"
   "jumping\030\t \001(\010\022\026\n\016is_throwpotion\030\n \001(\010\022\026\n"
-  "\016is_spawnpotion\030\013 \001(\010\"N\n\nPlayerInfo\022\021\n\to"
-  "bject_id\030\001 \001(\004\022-\n\017membership_type\030\002 \001(\0132"
-  "\024.Protocol.Membership\"J\n\nMembership\022\021\n\to"
-  "bject_id\030\001 \001(\004\022)\n\013player_type\030\002 \001(\0162\024.Pr"
-  "otocol.PlayerTypeb\006proto3"
+  "\016is_spawnpotion\030\013 \001(\010\"a\n\nPlayerInfo\022\021\n\to"
+  "bject_id\030\001 \001(\004\022\021\n\tplayer_id\030\002 \001(\t\022-\n\017mem"
+  "bership_type\030\003 \001(\0132\024.Protocol.Membership"
+  "\"J\n\nMembership\022\021\n\tobject_id\030\001 \001(\004\022)\n\013pla"
+  "yer_type\030\002 \001(\0162\024.Protocol.PlayerTypeb\006pr"
+  "oto3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Struct_2eproto_deps[1] = {
   &::descriptor_table_Enum_2eproto,
 };
 static ::_pbi::once_flag descriptor_table_Struct_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Struct_2eproto = {
-    false, false, 425, descriptor_table_protodef_Struct_2eproto,
+    false, false, 444, descriptor_table_protodef_Struct_2eproto,
     "Struct.proto",
     &descriptor_table_Struct_2eproto_once, descriptor_table_Struct_2eproto_deps, 1, 3,
     schemas, file_default_instances, TableStruct_Struct_2eproto::offsets,
@@ -656,11 +659,20 @@ PlayerInfo::PlayerInfo(const PlayerInfo& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   PlayerInfo* const _this = this; (void)_this;
   new (&_impl_) Impl_{
-      decltype(_impl_.membership_type_){nullptr}
+      decltype(_impl_.player_id_){}
+    , decltype(_impl_.membership_type_){nullptr}
     , decltype(_impl_.object_id_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _impl_.player_id_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.player_id_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_player_id().empty()) {
+    _this->_impl_.player_id_.Set(from._internal_player_id(), 
+      _this->GetArenaForAllocation());
+  }
   if (from._internal_has_membership_type()) {
     _this->_impl_.membership_type_ = new ::Protocol::Membership(*from._impl_.membership_type_);
   }
@@ -673,10 +685,15 @@ inline void PlayerInfo::SharedCtor(
   (void)arena;
   (void)is_message_owned;
   new (&_impl_) Impl_{
-      decltype(_impl_.membership_type_){nullptr}
+      decltype(_impl_.player_id_){}
+    , decltype(_impl_.membership_type_){nullptr}
     , decltype(_impl_.object_id_){uint64_t{0u}}
     , /*decltype(_impl_._cached_size_)*/{}
   };
+  _impl_.player_id_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.player_id_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
 }
 
 PlayerInfo::~PlayerInfo() {
@@ -690,6 +707,7 @@ PlayerInfo::~PlayerInfo() {
 
 inline void PlayerInfo::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.player_id_.Destroy();
   if (this != internal_default_instance()) delete _impl_.membership_type_;
 }
 
@@ -703,6 +721,7 @@ void PlayerInfo::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
+  _impl_.player_id_.ClearToEmpty();
   if (GetArenaForAllocation() == nullptr && _impl_.membership_type_ != nullptr) {
     delete _impl_.membership_type_;
   }
@@ -725,9 +744,19 @@ const char* PlayerInfo::_InternalParse(const char* ptr, ::_pbi::ParseContext* ct
         } else
           goto handle_unusual;
         continue;
-      // .Protocol.Membership membership_type = 2;
+      // string player_id = 2;
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
+          auto str = _internal_mutable_player_id();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          CHK_(::_pbi::VerifyUTF8(str, "Protocol.PlayerInfo.player_id"));
+        } else
+          goto handle_unusual;
+        continue;
+      // .Protocol.Membership membership_type = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
           ptr = ctx->ParseMessage(_internal_mutable_membership_type(), ptr);
           CHK_(ptr);
         } else
@@ -768,10 +797,20 @@ uint8_t* PlayerInfo::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteUInt64ToArray(1, this->_internal_object_id(), target);
   }
 
-  // .Protocol.Membership membership_type = 2;
+  // string player_id = 2;
+  if (!this->_internal_player_id().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_player_id().data(), static_cast<int>(this->_internal_player_id().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "Protocol.PlayerInfo.player_id");
+    target = stream->WriteStringMaybeAliased(
+        2, this->_internal_player_id(), target);
+  }
+
+  // .Protocol.Membership membership_type = 3;
   if (this->_internal_has_membership_type()) {
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessage(2, _Internal::membership_type(this),
+      InternalWriteMessage(3, _Internal::membership_type(this),
         _Internal::membership_type(this).GetCachedSize(), target, stream);
   }
 
@@ -791,7 +830,14 @@ size_t PlayerInfo::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // .Protocol.Membership membership_type = 2;
+  // string player_id = 2;
+  if (!this->_internal_player_id().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_player_id());
+  }
+
+  // .Protocol.Membership membership_type = 3;
   if (this->_internal_has_membership_type()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
@@ -821,6 +867,9 @@ void PlayerInfo::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PRO
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
+  if (!from._internal_player_id().empty()) {
+    _this->_internal_set_player_id(from._internal_player_id());
+  }
   if (from._internal_has_membership_type()) {
     _this->_internal_mutable_membership_type()->::Protocol::Membership::MergeFrom(
         from._internal_membership_type());
@@ -844,7 +893,13 @@ bool PlayerInfo::IsInitialized() const {
 
 void PlayerInfo::InternalSwap(PlayerInfo* other) {
   using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.player_id_, lhs_arena,
+      &other->_impl_.player_id_, rhs_arena
+  );
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
       PROTOBUF_FIELD_OFFSET(PlayerInfo, _impl_.object_id_)
       + sizeof(PlayerInfo::_impl_.object_id_)
