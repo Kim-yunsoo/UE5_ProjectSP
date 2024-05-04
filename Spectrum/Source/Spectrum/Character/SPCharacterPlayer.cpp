@@ -50,7 +50,7 @@
 #include "Skill/SPIceSkill.h"
 #include "Skill/SPTeleSkill.h"
 #include "UI/SPHUDWidget.h"
-#include "UI/Interaction/SPCombination.h"
+#include "UI/Interaction/SPManual.h"
 #include "UI/Inventory/SPPickup.h"
 
 
@@ -588,6 +588,7 @@ void ASPCharacterPlayer::SetCharacterControl(ECharacterControlType NewCharacterC
 	}
 	HUDWidget->bIsMenuVisible = true;
 	HUDWidget->UpdateMakingPotionWidget(false);
+	HUDWidget->UpdateManualWidget(false);
 	HUDWidget->ToggleMenu();
 }
 
@@ -1509,7 +1510,7 @@ void ASPCharacterPlayer::PerformInteractionCheck()
 	TArray<AActor*> ASPCombinationActor;
 	GetOverlappingActors(OverlappingActors, ASPPickup::StaticClass()); // 겹친 액터들을 검출합니다.
 	GetOverlappingActors(ASPMakePotionActor, ASPMakePotion::StaticClass());
-	GetOverlappingActors(ASPCombinationActor, ASPCombination::StaticClass());
+	GetOverlappingActors(ASPCombinationActor, ASPManual::StaticClass());
 	// Todo 배열에 액터 종류 확인해서 넣기
 	OverlappingActors.Append(ASPMakePotionActor);
 	OverlappingActors.Append(ASPCombinationActor);

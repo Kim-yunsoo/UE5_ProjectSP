@@ -5,6 +5,7 @@
 
 #include "SpectrumLog.h"
 #include "SPGameTimeWidget.h"
+#include "SPManualWidget.h"
 #include "SPScoreWidget.h"
 #include "SPSkillWidget.h"
 #include "Interface/SPCharacterHUDInterface.h"
@@ -32,6 +33,9 @@ void USPHUDWidget::NativeConstruct()
 
 	MakingPotionWidget = Cast<USPMakingPotionWidget>(GetWidgetFromName(TEXT("WBPSPMakingPotionWidget")));
 
+	ManualWidget = Cast<USPManualWidget>(GetWidgetFromName(TEXT("WBPManual")));
+
+	
 	if(!MakingPotionWidget)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("isit?????"));
@@ -39,7 +43,7 @@ void USPHUDWidget::NativeConstruct()
 	//ensure(TargetUI);
 	GameTimeWidget= Cast<USPGameTimeWidget>(GetWidgetFromName(TEXT("WBGameTimeWidget")));
 	
-	ensure(TargetUI);
+	//ensure(TargetUI);
 
 	//MainMenuWidget = Cast<USPMainMenu>(GetWidgetFromName(TEXT("WBTargetUI")));
 	if(MainMenuClass)
@@ -110,10 +114,8 @@ void USPHUDWidget::UpdateMakingPotionWidget(bool bIsVisible)
 {
 	if(bIsVisible)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("MakingPotionWidget1111"));
 		if(MakingPotionWidget)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("MakingPotionWidget"));
 			MakingPotionWidget->SetVisibility(ESlateVisibility::Visible);
 		}
 	}
@@ -122,7 +124,26 @@ void USPHUDWidget::UpdateMakingPotionWidget(bool bIsVisible)
 		if(MakingPotionWidget)
 		{
 			MakingPotionWidget->SetVisibility(ESlateVisibility::Hidden);
-			UE_LOG(LogTemp, Warning, TEXT("NoMakingPotionWidget"));
+		}
+	}
+}
+
+void USPHUDWidget::UpdateManualWidget(bool bIsVisible)
+{
+	if(bIsVisible)
+	{
+		if(ManualWidget)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("aaHAPPY"));
+			ManualWidget->SetVisibility(ESlateVisibility::Visible);
+		}
+	}
+	else
+	{
+		if(ManualWidget)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("HAPPY"));
+			ManualWidget->SetVisibility(ESlateVisibility::Hidden);
 		}
 	}
 }

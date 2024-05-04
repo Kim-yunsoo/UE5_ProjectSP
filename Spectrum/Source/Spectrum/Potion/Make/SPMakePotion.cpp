@@ -51,8 +51,6 @@ void ASPMakePotion::Interact2(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget*
 	else
 	{
 		bIsVisible = true;
-		UE_LOG(LogTemp, Warning, TEXT("Interact"));
-		SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("Interact"));
 		HUDWidget->UpdateMakingPotionWidget(true);
 		HUDWidget->ToggleMenu();
 	}
