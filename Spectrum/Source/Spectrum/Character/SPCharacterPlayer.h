@@ -9,9 +9,12 @@
 #include "Interface/SPSkillInterface.h"
 #include "Interface/SPCharacterHUDInterface.h"
 #include "Interface/SPInteractionInterface.h"
+#include "Interface/SPWidgetInterface.h"
+#include "Interface/SPTriggerInterface.h"
 #include "Potion/SPItemBase.h"
 #include "SPCharacterPlayer.generated.h"
 
+class ASPPickup;
 class USPInventoryComponent;
 class USPHUDWidget;
 class USPSkillCastComponent;
@@ -22,13 +25,22 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FOnAimChangedDelegate, bool /*aim*/)
  */
 //DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAimingChangedDelegate, bool, bIsAiming);
 
-
+//
+// UENUM()
+// enum class ESchoolColor : uint8
+// {
+// 	SchoolGreen=0,
+// 	SchoolOrange=1,
+// 	SchoolPurple=2
+// };
 UENUM()
 enum class ECharacterControlType : uint8
 {
 	Shoulder,
 	Quater
 };
+
+
 
 USTRUCT()
 struct FInteractionData
@@ -49,6 +61,7 @@ struct FInteractionData
 
 UCLASS()
 class SPECTRUM_API ASPCharacterPlayer : public ACharacter, public ISPCharacterHUDInterface ,public ISPSkillInterface
+	 ,public ISPTriggerInterface
 {
 	GENERATED_BODY()
 
@@ -98,6 +111,7 @@ protected:
 	void PurplePotionSpawn(const FInputActionValue& Value);
 	void SlowSKill(const FInputActionValue& Value);
 	void IceSKill(const FInputActionValue& Value);
+	void TeleSKill(const FInputActionValue& Value);
 
 	void Interaction(const FInputActionValue& Value);
 	void ToggleMenuAction(const FInputActionValue& Value);
@@ -182,21 +196,23 @@ protected:
 	uint8 bIsSpawn : 1; //Spawn check
 
 	UPROPERTY(Replicated, BlueprintReadWrite, Category = "Character")
-	uint8 bIsThrowReady : 1; //Throw Ready? 
-
+	uint8 bIsThrowReady : 1; //Throw Ready?
+	
 	// UPROPERTY(Replicated, BlueprintReadWrite, Category = "Character")
 	// uint8 bIsActiveSlowSkill : 1; //Throw Ready?
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat, Meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UAnimMontage> ThrowMontage;
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat, Meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UAnimMontage> SkillMontage;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat, Meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UAnimMontage> SkillIceMontage;
-	
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UAnimMontage> SkillTeleMontage;
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, Meta = (AllowPrivateAccess = "ture"))
 	TObjectPtr<class USpringArmComponent> SpringArm;
@@ -286,8 +302,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	FVector UIRotator;
-
-	
+public:
+	UPROPERTY()
+	TObjectPtr<ASPPickup> PickupItem;
 	
 
 protected:
@@ -345,7 +362,7 @@ protected:
 	TObjectPtr<class USPWidgetComponent> Target;
 
 	virtual void SetupHUDWidget(USPHUDWidget* InUserWidget) override;
-
+public:
 	UPROPERTY()
 	TObjectPtr<class USPHUDWidget> HUDWidget;
 	
@@ -361,30 +378,38 @@ protected:
 	FTimerHandle TimerHandle_Interaction;
 	
 	FInteractionData InteractionData;
-
+public:
 	void PerformInteractionCheck();
+	
 	void FoundInteractable(AActor* NewInteractable);
 	void NoInteractableFound();
 	void BeginInteract();
 	void EndInteract();
 	void Interact();
-
+protected:
 	UFUNCTION(Server, Unreliable)
 	void ServerRPCInteract();
+
+public:
+	UPROPERTY(Replicated)
+	uint8 InteractionCheck : 1;
 	
 // Inventory
-	
 	UPROPERTY(VisibleAnywhere, Category = "Character | Inventory")
 	TObjectPtr<USPInventoryComponent> PlayerInventory;
-
 public:
 	//인벤토리 가지고 오기
 	FORCEINLINE USPInventoryComponent* GetInventory() const {return PlayerInventory;};
 	
 	void UpdateInteractionWidget() const;
-
+	UFUNCTION()
+	void AddItemClick(int Num);
 // 아이템 드롭
 	void DropItem(USPItemBase* ItemToDrop, const int32 QuantityToDrop);
+
+	void DragItem(USPItemBase* ItemToDrop, const int32 QuantityToDrop);
+
+	void BackItem(USPItemBase* ItemToDrop, const int32 QuantityToDrop);
 public:
 	FORCEINLINE bool IsInteracting() const { return GetWorldTimerManager().IsTimerActive(TimerHandle_Interaction);};
 // ServerRPC
@@ -432,9 +457,21 @@ public:
 
 	UFUNCTION(Server, Unreliable)
 	void ServerRPCIceSkill(float AttackStartTime);
+
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCTeleSkill(float AttackStartTime);
 	// UFUNCTION(Server, Unreliable)
 	// void ServerRPCSlowSkillMake();
+	
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCDragItem(int Num, const int32 QuantityToDrop);
+	
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCBackItem(int Num, const int32 QuantityToDrop);
 
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCAddItemClick(int Num);
+	
 	//ClientRPC
 	UFUNCTION(Client, Unreliable)
 	void ClientRPCTurnAnimation(ASPCharacterPlayer* CharacterToPlay);
@@ -450,9 +487,17 @@ public:
 
 	UFUNCTION(Client, Unreliable)
 	void ClientRPCIceAnimation(ASPCharacterPlayer* CharacterToPlay);
+
+	UFUNCTION(Client, Unreliable)
+	void ClientRPCUpdateMakingPotion(int Num);
+
+	UFUNCTION(Client, Unreliable)
+	void ClientRPCTeleAnimation(ASPCharacterPlayer* CharacterToPlay);
 	//AABCharacterPlayer* CharacterToPlay
 	//MultiRPC
+	
 
+	
 	//OnRep
 	UFUNCTION()
 	void OnRep_PotionSpawn();
@@ -472,8 +517,6 @@ protected:
 
 	// skill interface
 	// virtual void MovementSlow();
-
-
 	//Effect
 protected:
 	// UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
@@ -492,11 +535,15 @@ public:
 	UPROPERTY()
 	TObjectPtr<class USPIceSkill> IceSkillComponent;
 
+	UPROPERTY()
+	TObjectPtr<class USPTeleSkill> TeleSkillComponent;
+
 	float SlowAttackTime = 2.5;
 	float AttackTimeDifference = 0.0f;
 
 	void PlaySkillAnimation();
 	void PlayIceSkillAnimation();
+	void PlayTeleSkillAnimation();
 
 	// void SlowAction();
 public:
@@ -510,7 +557,12 @@ public:
 
 	virtual void HitSlowSkillResult() override;
 	virtual void HitIceSkillResult() override;
-	
+	virtual void HitTeleSkillResult(const FVector TeleportLocation) override;
+	virtual void OverlapPortal(const FVector& Location)override;
+	virtual void ActiveGrapping(const bool Active) override;
+
+
+	bool IsMontagePlaying();
 
 	UFUNCTION(NetMulticast, Unreliable)
 	void NetTESTRPCSlowSkill();
@@ -522,5 +574,14 @@ public:
 	uint8 bIsActiveIceSkill : 1;
 
 	UPROPERTY()
+	uint8 bIsActiveTeleSkill : 1;
+
+	UPROPERTY()
 	uint8 bIsDamage :1;
+
+	UPROPERTY(Replicated)
+	uint8 bIsActiveGraping :1;
+
+	// UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	// ESchoolColor SchoolAffiliation;
 };

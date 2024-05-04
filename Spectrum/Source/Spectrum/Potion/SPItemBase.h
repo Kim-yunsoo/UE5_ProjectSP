@@ -20,7 +20,6 @@ class SPECTRUM_API USPItemBase : public UObject
 public:
 
 	USPItemBase();
-
 	bool bIsCopy;
 	bool bIsPickup;
 
@@ -48,7 +47,7 @@ public:
 	FItemAssetData ItemAssetData;
 
 	UFUNCTION(Category = "Item")
-	USPItemBase* CreatePotionCopy();
+	USPItemBase* CreatePotionCopy() const;
 
 	UFUNCTION(Category = "Item")
 	void SetQuantity(const int32 NewQuantity);

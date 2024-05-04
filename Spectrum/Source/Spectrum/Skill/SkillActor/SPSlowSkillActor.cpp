@@ -2,10 +2,6 @@
 
 
 #include "Skill/SkillActor/SPSlowSkillActor.h"
-
-#include "SpectrumLog.h"
-#include "Character/SPCharacterMovementComponent.h"
-#include "Character/SPCharacterPlayer.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Interface/SPSkillInterface.h"
@@ -71,7 +67,6 @@ void ASPSlowSkillActor::BeginPlay()
 		this->AActor::SetReplicateMovement(true);
 	}
 }
-
 void ASPSlowSkillActor::OnBoxCollisionHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
                                           UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {

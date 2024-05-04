@@ -41,10 +41,13 @@
 #include "UI/SPWidgetComponent.h"
 #include "UI/SPTargetUI.h"
 #include "DrawDebugHelpers.h"
+#include "IDetailTreeNode.h"
+#include "SPGameState.h"
 #include "Component/SPInventoryComponent.h"
 #include "Player/SPPlayerController.h"
 #include "Potion/SPItemBase.h"
 #include "Skill/SPIceSkill.h"
+#include "Skill/SPTeleSkill.h"
 #include "UI/SPHUDWidget.h"
 #include "UI/Inventory/SPPickup.h"
 
@@ -98,6 +101,8 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 
 	// //Skill
 	SlowSkillComponent = CreateDefaultSubobject<USPSlowSkill>(TEXT("SkillComponent"));
+	TeleSkillComponent = CreateDefaultSubobject<USPTeleSkill>(TEXT("TeleSkillComponent"));
+	// = CreateDefaultSubobject<USPSlowSkill>(TEXT("SkillComponent"));
 
 	IceSkillComponent = CreateDefaultSubobject<USPIceSkill>(TEXT("IceSkillComponent"));
 	// SlowSkillComponent->SetIsReplicated(true);
@@ -298,12 +303,12 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 
 
 	static ConstructorHelpers::FObjectFinder<UInputAction> TeleRRef(
-	TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_TeleSkill.IA_SP_TeleSkill'"));
+		TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_TeleSkill.IA_SP_TeleSkill'"));
 	if (nullptr != TeleRRef.Object)
 	{
 		TeleR = TeleRRef.Object;
 	}
-	
+
 
 	/*static ConstructorHelpers::FObjectFinder<UAnimMontage> ThrowMontageRef(TEXT("/Script/Engine.AnimMontage'/Game/Spectrum/Animation/AniMeta/Man/AM_SP_Throw.AM_SP_Throw'"));
 	if (ThrowMontageRef.Object)
@@ -394,9 +399,11 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 	bIsTurnLeft = false;
 	bIsTurnReady = false;
 	bIsDamage = false;
-
+	InteractionCheck = false;
 	bIsActiveSlowSkill = true;
 	bIsActiveIceSkill = true;
+	bIsActiveTeleSkill = true;
+	bIsActiveGraping = true;
 
 	// bIsActiveSlowSkill = true;
 	HitDistance = 1800.f;
@@ -405,13 +412,11 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 	InteractionCheckDistance = 225.0f;
 
 	BaseEyeHeight = 74.0f;
-
-
+	
 	//Inventory
 	PlayerInventory = CreateDefaultSubobject<USPInventoryComponent>(TEXT("playerInventory"));
-	this->AddOwnedComponent(PlayerInventory);
-	PlayerInventory->SetSlotsCapacity(10);
-	PlayerInventory->SetWeightCapacity(50.f); //무게 의미 없음!
+	//this->AddOwnedComponent(PlayerInventory);
+	//PlayerInventory->SetIsReplicated(true);
 }
 
 void ASPCharacterPlayer::BeginPlay()
@@ -425,7 +430,6 @@ void ASPCharacterPlayer::BeginPlay()
 	SetCharacterControl(CurrentCharacterControlType);
 	GetMesh()->GetAnimInstance()->OnPlayMontageNotifyBegin.AddDynamic(
 		this, &ASPCharacterPlayer::HandleMontageAnimNotify);
-
 	//
 };
 
@@ -437,12 +441,11 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 	{
 		PhysicsHandleComponent->SetTargetLocation(GravityArrow->K2_GetComponentLocation());
 	}
-
 	//
-	if (GetWorld()->TimeSince(InteractionData.LastInteractionCheckTime) > InteractionCheckFrequency)
-	{
-		PerformInteractionCheck();
-	}
+	// if (GetWorld()->TimeSince(InteractionData.LastInteractionCheckTime) > InteractionCheckFrequency)
+	// {
+	// 	PerformInteractionCheck();
+	// }
 }
 
 void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -504,6 +507,8 @@ void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Player
 		                                   &ASPCharacterPlayer::IceSKill);
 		EnhancedInputComponent->BindAction(ToggleMenu, ETriggerEvent::Triggered, this,
 		                                   &ASPCharacterPlayer::ToggleMenuAction);
+		EnhancedInputComponent->BindAction(TeleR, ETriggerEvent::Triggered, this,
+		                                   &ASPCharacterPlayer::TeleSKill);
 	}
 }
 
@@ -580,6 +585,7 @@ void ASPCharacterPlayer::SetCharacterControl(ECharacterControlType NewCharacterC
 		HUDWidget = SPController->GetSPHUDWidget();
 	}
 	HUDWidget->bIsMenuVisible = true;
+	HUDWidget->UpdateMakingPotionWidget(false);
 	HUDWidget->ToggleMenu();
 }
 
@@ -679,7 +685,14 @@ void ASPCharacterPlayer::HandleMontageAnimNotify(FName NotifyName,
 			// SlowSkillComponent->SkillAction();
 		}
 	}
-	//TeleSkillNotify
+
+	if (NotifyName == FName("TeleSkillNotify"))
+	{
+		if (HasAuthority())
+		{
+			TeleSkillComponent->SkillAction();
+		}
+	}
 }
 
 
@@ -748,7 +761,10 @@ void ASPCharacterPlayer::ServerRPCStopAiming_Implementation()
 
 void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 {
-	ServerRPCGraping();
+	if (bIsActiveGraping)
+	{
+		ServerRPCGraping();
+	}
 }
 
 void ASPCharacterPlayer::StopGraping(const FInputActionValue& Value)
@@ -758,7 +774,7 @@ void ASPCharacterPlayer::StopGraping(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::AimPotion(const FInputActionValue& Value)
 {
-	if (bIsSpawn)
+	if (bIsSpawn && false == IsMontagePlaying())
 	{
 		if (!HasAuthority())
 		{
@@ -795,28 +811,31 @@ void ASPCharacterPlayer::ServerRPCTurnReady_Implementation()
 
 void ASPCharacterPlayer::ThrowPotion(const FInputActionValue& Value)
 {
-	if (bIsThrowReady)
+	if (GetMesh()->GetAnimInstance()->Montage_IsPlaying(ThrowMontage))
 	{
-		ServerRPCThrowPotion(bIsThrowReady);
-		if (!HasAuthority())
+		if (bIsThrowReady)
 		{
-			PlayThrowAnimation();
-			bIsThrowReady = false;
-			GetCharacterMovement()->bOrientRotationToMovement = true;
-			GetCharacterMovement()->bUseControllerDesiredRotation = false;
+			ServerRPCThrowPotion(bIsThrowReady);
+			if (!HasAuthority())
+			{
+				PlayThrowAnimation();
+				bIsThrowReady = false;
+				GetCharacterMovement()->bOrientRotationToMovement = true;
+				GetCharacterMovement()->bUseControllerDesiredRotation = false;
+				bIsTurnReady = false;
+				bIsSpawn = false;
+				Potion = nullptr;
+			}
 			bIsTurnReady = false;
-			bIsSpawn = false;
-			Potion = nullptr;
 		}
-		bIsTurnReady = false;
-	}
-	else
-	{
-		if (!HasAuthority())
+		else
 		{
-			PlayStopAnimation();
+			if (!HasAuthority())
+			{
+				PlayStopAnimation();
+			}
+			ServerRPCThrowPotion(bIsThrowReady);
 		}
-		ServerRPCThrowPotion(bIsThrowReady);
 	}
 }
 
@@ -887,9 +906,51 @@ void ASPCharacterPlayer::ToggleMenuAction(const FInputActionValue& Value)
 void ASPCharacterPlayer::IceSKill(const FInputActionValue& Value)
 {
 	if ((GetCharacterMovement()->MovementMode == EMovementMode::MOVE_Walking || GetCharacterMovement()->MovementMode ==
-		EMovementMode::MOVE_None) && !GetMesh()->GetAnimInstance()->Montage_IsPlaying(SkillMontage))
+		EMovementMode::MOVE_None) && false == IsMontagePlaying())
 	{
 		ServerRPCIceSkill(GetWorld()->GetGameState()->GetServerWorldTimeSeconds());
+	}
+}
+
+void ASPCharacterPlayer::TeleSKill(const FInputActionValue& Value)
+{
+	UE_LOG(LogTemp, Log, TEXT("TeleskilL!!"));
+	if ((GetCharacterMovement()->MovementMode == EMovementMode::MOVE_Walking || GetCharacterMovement()->MovementMode ==
+		EMovementMode::MOVE_None) && false == IsMontagePlaying())
+	{
+		ServerRPCTeleSkill(GetWorld()->GetGameState()->GetServerWorldTimeSeconds());
+	}
+}
+
+void ASPCharacterPlayer::ServerRPCTeleSkill_Implementation(float AttackStartTime)
+{
+	if (bIsActiveTeleSkill)
+	{
+		bIsActiveTeleSkill = false;
+		TeleSkillComponent->ActivetedTimeStamp = GetWorld()->GetTime().GetWorldTimeSeconds();
+		AttackTimeDifference = GetWorld()->GetTimeSeconds() - AttackStartTime;
+		AttackTimeDifference = FMath::Clamp(AttackTimeDifference, 0.0f, SlowAttackTime - 0.01f);
+
+		FTimerHandle Handle;
+		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+
+		GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([&]
+			                                       {
+				                                       GetCharacterMovement()->SetMovementMode(
+					                                       EMovementMode::MOVE_Walking);
+			                                       }
+		                                       ), SlowAttackTime - AttackTimeDifference, false, -1.0f);
+
+		PlayTeleSkillAnimation();
+
+		for (APlayerController* PlayerController : TActorRange<APlayerController>(GetWorld()))
+		{
+			ASPCharacterPlayer* OtherPlayer = Cast<ASPCharacterPlayer>(PlayerController->GetPawn());
+			if (OtherPlayer)
+			{
+				OtherPlayer->ClientRPCTeleAnimation(this);
+			}
+		}
 	}
 }
 
@@ -928,7 +989,7 @@ void ASPCharacterPlayer::ServerRPCIceSkill_Implementation(float AttackStartTime)
 void ASPCharacterPlayer::SlowSKill(const FInputActionValue& Value)
 {
 	if ((GetCharacterMovement()->MovementMode == EMovementMode::MOVE_Walking || GetCharacterMovement()->MovementMode ==
-		EMovementMode::MOVE_None ) && !GetMesh()->GetAnimInstance()->Montage_IsPlaying(SkillIceMontage))
+		EMovementMode::MOVE_None) && false == IsMontagePlaying())
 	{
 		// bIsActiveSlowSkill = false;
 
@@ -1020,91 +1081,104 @@ void ASPCharacterPlayer::ClientRPCStopAnimation_Implementation(ASPCharacterPlaye
 
 void ASPCharacterPlayer::ServerRPCGreenPotionSpawn_Implementation()
 {
-	if (false == bIsSpawn)
+	if(PlayerInventory->CountPotion(PlayerInventory->IsPotion("G_Potion")))
 	{
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-		SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
-		Potion = GetWorld()->SpawnActor<ASPGreenPotion>(ASPGreenPotion::StaticClass(),
-		                                                GetMesh()->GetSocketLocation("Item_Socket"),
-		                                                FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
-		//Potion->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
-		//Potion->SetupAttachment(RootComponent);
-		//Potion->RegisterComponent();
-		bIsSpawn = true;
-		if (Potion)
+		if (false == bIsSpawn)
 		{
-			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
-			                                          EAttachmentRule::SnapToTarget, true);
-			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+			SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
+			Potion = GetWorld()->SpawnActor<ASPGreenPotion>(ASPGreenPotion::StaticClass(),
+															GetMesh()->GetSocketLocation("Item_Socket"),
+															FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
+			//Potion->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+			//Potion->SetupAttachment(RootComponent);
+			//Potion->RegisterComponent();
+			bIsSpawn = true;
+			if (Potion)
+			{
+				FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+														  EAttachmentRule::SnapToTarget, true);
+				Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
+			}
 		}
-	}
-	else
-	{
-		if (Potion)
+		else
 		{
-			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
-			                                          EAttachmentRule::SnapToTarget, true);
-			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
+			if (Potion)
+			{
+				FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+														  EAttachmentRule::SnapToTarget, true);
+				Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
+			}
 		}
+		PlayerInventory->RemoveAmountOfItem(PlayerInventory->FindPotionItem("G_Potion"), 1);
 	}
+	
 }
 
 void ASPCharacterPlayer::ServerRPCOrangePotionSpawn_Implementation()
 {
-	if (false == bIsSpawn)
+	if(PlayerInventory->CountPotion(PlayerInventory->IsPotion("O_Potion")))
 	{
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-		SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
-		Potion = GetWorld()->SpawnActor<ASPOrangePotion>(ASPOrangePotion::StaticClass(),
-		                                                 GetMesh()->GetSocketLocation("Item_Socket"),
-		                                                 FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
-		bIsSpawn = true;
-		if (Potion)
+		if (false == bIsSpawn)
 		{
-			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
-			                                          EAttachmentRule::SnapToTarget, true);
-			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+			SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
+			Potion = GetWorld()->SpawnActor<ASPOrangePotion>(ASPOrangePotion::StaticClass(),
+															 GetMesh()->GetSocketLocation("Item_Socket"),
+															 FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
+			bIsSpawn = true;
+			if (Potion)
+			{
+				FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+														  EAttachmentRule::SnapToTarget, true);
+				Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
+			}
 		}
-	}
-	else
-	{
-		if (Potion)
+		else
 		{
-			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
-			                                          EAttachmentRule::SnapToTarget, true);
-			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
+			if (Potion)
+			{
+				FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+														  EAttachmentRule::SnapToTarget, true);
+				Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
+			}
 		}
+		PlayerInventory->RemoveAmountOfItem(PlayerInventory->FindPotionItem("O_Potion"), 1);
 	}
 }
 
 void ASPCharacterPlayer::ServerRPCPurplePotionSpawn_Implementation()
 {
-	if (false == bIsSpawn)
+	if(PlayerInventory->CountPotion(PlayerInventory->IsPotion("P_Potion")))
 	{
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-		SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
-		Potion = GetWorld()->SpawnActor<ASPPurplePotion>(ASPPurplePotion::StaticClass(),
-		                                                 GetMesh()->GetSocketLocation("Item_Socket"),
-		                                                 FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
-		bIsSpawn = true;
-		if (Potion)
+		if (false == bIsSpawn)
 		{
-			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
-			                                          EAttachmentRule::SnapToTarget, true);
-			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+			SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
+			Potion = GetWorld()->SpawnActor<ASPPurplePotion>(ASPPurplePotion::StaticClass(),
+			                                                 GetMesh()->GetSocketLocation("Item_Socket"),
+			                                                 FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
+			bIsSpawn = true;
+			if (Potion)
+			{
+				FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+				                                          EAttachmentRule::SnapToTarget, true);
+				Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
+			}
 		}
-	}
-	else
-	{
-		if (Potion)
+		else
 		{
-			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
-			                                          EAttachmentRule::SnapToTarget, true);
-			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
+			if (Potion)
+			{
+				FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+				                                          EAttachmentRule::SnapToTarget, true);
+				Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
+			}
 		}
+		PlayerInventory->RemoveAmountOfItem(PlayerInventory->FindPotionItem("P_Potion"), 1);
 	}
 }
 
@@ -1123,6 +1197,58 @@ void ASPCharacterPlayer::ClientRPCIceAnimation_Implementation(ASPCharacterPlayer
 	if (CharacterToPlay)
 	{
 		CharacterToPlay->PlayIceSkillAnimation();
+	}
+}
+
+void ASPCharacterPlayer::ServerRPCDragItem_Implementation(int Num, const int32 QuantityToDrop)
+{
+	 for(USPItemBase* ItemBase : PlayerInventory->GetInventorMiniContents())
+	 {
+	 	UE_LOG(LogTemp, Warning, TEXT("%s %d"), *ItemBase->ItemTextData.Name.ToString(), ItemBase->Quantity);
+	 }
+	USPItemBase* ItemBase = PlayerInventory->FindMatchingMiniItem(Num);
+	PlayerInventory->RemoveAmountOfItem(ItemBase, 1);
+	GetInventory()->AddInventorMakeContents(ItemBase);
+	SP_LOG(LogSPNetwork, Log, TEXT("DragItem %d"), GetInventory()->GetInventorMakeContents().Num());
+	if (GetInventory()->GetInventorMakeContents().Num() == 3)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Three"));
+		USPItemBase* Item = PlayerInventory->MakingPotion();
+		int MakeNum = PlayerInventory->IsPotion(Item->ID);
+		SP_LOG(LogSPNetwork, Log, TEXT("Making %d"), MakeNum);
+		ClientRPCUpdateMakingPotion(MakeNum);
+		PlayerInventory->ClearMakeArray();
+	}
+}
+
+void ASPCharacterPlayer::ClientRPCUpdateMakingPotion_Implementation(int Num)
+{
+	USPItemBase* ItemBase = PlayerInventory->FindMatchingItem(Num);
+	HUDWidget->MakingPotionWieget(ItemBase);
+}
+
+
+void ASPCharacterPlayer::ServerRPCBackItem_Implementation(int Num, const int32 QuantityToDrop)
+{
+	SP_LOG(LogSPNetwork, Log, TEXT("BackItem"));
+	USPItemBase* ItemBase = PlayerInventory->FindMatchingMiniItem(Num);
+	PlayerInventory->HandleAddItem(ItemBase);
+	GetInventory()->RemoveInventorMakeContents(ItemBase);
+	SP_LOG(LogSPNetwork, Log, TEXT("DragItem %d"), GetInventory()->GetInventorMakeContents().Num());
+}
+
+void ASPCharacterPlayer::ServerRPCAddItemClick_Implementation(int Num)
+{
+	USPItemBase* ItemBase = PlayerInventory->FindMatchingItem(Num);
+	PlayerInventory->HandleAddItem(ItemBase);
+}
+
+
+void ASPCharacterPlayer::ClientRPCTeleAnimation_Implementation(ASPCharacterPlayer* CharacterToPlay)
+{
+	if (CharacterToPlay)
+	{
+		CharacterToPlay->PlayTeleSkillAnimation();
 	}
 }
 
@@ -1356,63 +1482,56 @@ void ASPCharacterPlayer::ShowProjectilePath()
 
 void ASPCharacterPlayer::SetupHUDWidget(USPHUDWidget* InUserWidget)
 {
-	// USPTargetUI* TargetWidget = Cast<USPTargetUI>(InUserWidget);
-	// if(TargetWidget)
-	// {
-	// 	UE_LOG(LogTemp, Log, TEXT("TEST"));
-	// 	TargetWidget->UpdateTargetUI(bIsAiming);
-	// 	this->OnAimChanged.AddUObject(TargetWidget, &USPTargetUI::UpdateTargetUI);
-	// }
+	
 	SlowSkillComponent->OnSlowCDChange.AddUObject(InUserWidget, &USPHUDWidget::UpdateSlowCDTime);
 	IceSkillComponent->OnIceCDChange.AddUObject(InUserWidget, &USPHUDWidget::UpdateIceCDTime);
+	TeleSkillComponent->OnTeleCDChange.AddUObject(InUserWidget, &USPHUDWidget::UpdateTeleCDTime);
+	//AGameStateBase* State = player->GetController()->GetWorld()->GetGameState();
+	AGameStateBase* State= GetController()->GetWorld()->GetGameState();
+	if(State)
+	{
+		ASPGameState* SPGameState= Cast<ASPGameState>(State);
+		if(SPGameState)
+		{
+			SPGameState->OnScore.AddUObject(InUserWidget,&USPHUDWidget::UpdateScore);
+			SPGameState->OnTime.AddUObject(InUserWidget,&USPHUDWidget::UpdateTime);
+		}
+	}
 }
 
 void ASPCharacterPlayer::PerformInteractionCheck()
 {
 	InteractionData.LastInteractionCheckTime = GetWorld()->GetTimeSeconds();
-
-	FVector TraceStart{GetPawnViewLocation()};
-	FVector TraceEnd{TraceStart + (GetViewRotation().Vector() * InteractionCheckDistance)};
-
-	float LookDirection = FVector::DotProduct(GetActorForwardVector(), GetViewRotation().Vector());
-
-	if (LookDirection > 0) //양수 음수에 따라 같은 방향인지 아닌지 판단
+	UE_LOG(LogTemp, Warning, TEXT("FoundInteractable1"));
+	TArray<AActor*> OverlappingActors;
+	GetOverlappingActors(OverlappingActors, ASPPickup::StaticClass()); // 겹친 액터들을 검출합니다.
+	//GetOverlappingActors(OverlappingActors, ASPPickup::StaticClass());
+	// Todo 배열에 액터 종류 확인해서 넣기
+	for (AActor* OverlappingActor : OverlappingActors)
 	{
-		DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Red, false, 1.0f, 0, 2.0f);
-
-
-		FCollisionQueryParams QueryParams;
-		QueryParams.AddIgnoredActor(this); //나는 쏘는 사람이니까 나를 무시해야 함
-		FHitResult TraceHit;
-
-		if (GetWorld()->LineTraceSingleByChannel(TraceHit, TraceStart, TraceEnd, ECC_Visibility, QueryParams))
+		UE_LOG(LogTemp, Warning, TEXT("FoundInteractable1-1"));
+		if (OverlappingActor->Implements<USPInteractionInterface>()) // 상호작용 가능한지 확인합니다.
 		{
-			if (TraceHit.GetActor()->GetClass()->ImplementsInterface(USPInteractionInterface::StaticClass()))
+			if (OverlappingActor != InteractionData.CurrentInteractable)
 			{
-				if (TraceHit.GetActor() != InteractionData.CurrentInteractable)
-				{
-					FoundInteractable(TraceHit.GetActor());
-					return;
-				}
-
-				if (TraceHit.GetActor() == InteractionData.CurrentInteractable)
-				{
-					return;
-				}
+				UE_LOG(LogTemp, Warning, TEXT("FoundInteractable2"));
+				FoundInteractable(OverlappingActor); // 상호작용할 수 있는 액터를 찾았을 때의 처리를 수행합니다.
+				return;
 			}
 		}
 	}
-	NoInteractableFound();
+	NoInteractableFound(); // 상호작용할 수 있는 액터를 찾지 못했을 때의 처리를 수행합니다.
 }
 
 void ASPCharacterPlayer::FoundInteractable(AActor* NewInteractable)
 {
+	UE_LOG(LogTemp, Warning, TEXT("FoundInteractable3"));
+
 	//이전 상호 작용이 있는지 확인
 	if (IsInteracting())
 	{
 		EndInteract();
 	}
-
 	if (InteractionData.CurrentInteractable) //상호작용 데이터 있으면!
 	{
 		TargetInteractable = InteractionData.CurrentInteractable;
@@ -1428,7 +1547,7 @@ void ASPCharacterPlayer::FoundInteractable(AActor* NewInteractable)
 		HUDWidget->UpdateInteractionWidget(&TargetInteractable->InteractableData);
 	}
 
-	// TargetInteractable->BeginFocus();
+	TargetInteractable->BeginFocus();
 }
 
 void ASPCharacterPlayer::NoInteractableFound()
@@ -1458,15 +1577,15 @@ void ASPCharacterPlayer::NoInteractableFound()
 
 void ASPCharacterPlayer::BeginInteract()
 {
-	PerformInteractionCheck(); //인터렉트 대상이 변하지 않는지 체크
-
+	
+	PerformInteractionCheck();
 	//인터렉트 가능한 대상 있는지
 	if (InteractionData.CurrentInteractable)
 	{
 		if (IsValid(TargetInteractable.GetObject())) //한번 더 확인
 		{
 			TargetInteractable->BeginInteract();
-
+	
 			//시간을 확인한다!
 			if (FMath::IsNearlyZero(TargetInteractable->InteractableData.InteractionDuration, 0.1f)) //상호작용 시간 비교
 			{
@@ -1484,6 +1603,7 @@ void ASPCharacterPlayer::BeginInteract()
 			}
 		}
 	}
+
 }
 
 void ASPCharacterPlayer::EndInteract()
@@ -1499,21 +1619,13 @@ void ASPCharacterPlayer::EndInteract()
 void ASPCharacterPlayer::Interact()
 {
 	//타이머 끝났다고 가정하고 지운다.
-
-	ServerRPCInteract();
 	GetWorldTimerManager().ClearTimer(TimerHandle_Interaction);
-	// if(IsValid(TargetInteractable.GetObject()))
-	// {
-	// 	TargetInteractable->Interact(this);
-	// }
-	// USPTargetUI* TargetWidget = Cast<USPTargetUI>(InUserWidget);
-	// Target->GetWidget().UpdateTarget;
-	// if(TargetWidget)
-	// {
-	// 	UE_LOG(LogTemp, Log, TEXT("SetupTargetWidget"));
-	// 	TargetWidget->UpdateTargetUI(bIsAiming);
-	// 	//this->OnAimChanged.AddUObject(TargetWidget, &USPTargetUI::UpdateTargetUI);
-	// }
+	if (IsValid(TargetInteractable.GetObject()))
+	{
+		TargetInteractable->Interact2(this, HUDWidget);
+	}
+	ServerRPCInteract();
+	
 }
 
 void ASPCharacterPlayer::ServerRPCInteract_Implementation()
@@ -1521,7 +1633,7 @@ void ASPCharacterPlayer::ServerRPCInteract_Implementation()
 	GetWorldTimerManager().ClearTimer(TimerHandle_Interaction);
 	if (IsValid(TargetInteractable.GetObject()))
 	{
-		TargetInteractable->Interact(this);
+		TargetInteractable->Interact(this, HUDWidget);
 	}
 }
 
@@ -1533,29 +1645,61 @@ void ASPCharacterPlayer::UpdateInteractionWidget() const
 	}
 }
 
+void ASPCharacterPlayer::AddItemClick(int Num)
+{
+	ServerRPCAddItemClick(Num);
+}
+
 void ASPCharacterPlayer::DropItem(USPItemBase* ItemToDrop, const int32 QuantityToDrop)
 {
-	if (PlayerInventory->FindMatchingItem(ItemToDrop))
-	{
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.Owner = this;
-		SpawnParams.bNoFail = true;
-		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+	// if (PlayerInventory->FindMatchingItem(ItemToDrop, ItemToDrop->ItemType))
+	// {
+	// 	FActorSpawnParameters SpawnParams;
+	// 	SpawnParams.Owner = this;
+	// 	SpawnParams.bNoFail = true;
+	// 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+	//
+	// 	const FVector SpawnLocation{GetActorLocation() + (GetActorForwardVector() * 50.f)};
+	//
+	// 	const FTransform SpawnTransform(GetActorRotation(), SpawnLocation);
+	//
+	// 	const int32 RemovedQuantity = PlayerInventory->RemoveAmountOfItem(ItemToDrop, QuantityToDrop);
+	//
+	// 	ASPPickup* Pickup = GetWorld()->SpawnActor<ASPPickup>(ASPPickup::StaticClass(), SpawnTransform, SpawnParams);
+	//
+	// 	Pickup->InitializeDrop(ItemToDrop, RemovedQuantity);
+	// }
+	// else
+	// {
+	// 	UE_LOG(LogTemp, Warning, TEXT("Item to drop was somehow null"));
+	// }
+}
 
-		const FVector SpawnLocation{GetActorLocation() + (GetActorForwardVector() * 50.f)};
+void ASPCharacterPlayer::DragItem(USPItemBase* ItemToDrop, const int32 QuantityToDrop)
+{
+	SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("DragItem"));
+	int num = PlayerInventory->IsMiniPotion(ItemToDrop->ID);
+	ServerRPCDragItem(num, 1);
+}
 
-		const FTransform SpawnTransform(GetActorRotation(), SpawnLocation);
+void ASPCharacterPlayer::BackItem(USPItemBase* ItemToDrop, const int32 QuantityToDrop)
+{
+	int num = PlayerInventory->IsMiniPotion(ItemToDrop->ID);
+	SP_LOG(LogSPNetwork, Log, TEXT("%d"), num);
+	SP_LOG(LogSPNetwork, Log, TEXT("BackItem"));
+	ServerRPCBackItem(num, QuantityToDrop);
+		
+	// TArray<USPItemBase*> InventoryContents = GetInventory()->GetInventorMakeContents();
+	//
+	// for (USPItemBase* Item : InventoryContents)
+	// {
+	// 	if (Item)
+	// 	{
+	// 		UE_LOG(LogTemp, Warning, TEXT("Item Name: %s"), *Item->ItemTextData.Name.ToString());
+	// 	}
+	// }
+	// UE_LOG(LogTemp, Warning, TEXT("============="));
 
-		const int32 RemovedQuantity = PlayerInventory->RemoveAmountOfItem(ItemToDrop, QuantityToDrop);
-
-		ASPPickup* Pickup = GetWorld()->SpawnActor<ASPPickup>(ASPPickup::StaticClass(), SpawnTransform, SpawnParams);
-
-		Pickup->InitializeDrop(ItemToDrop, RemovedQuantity);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Item to drop was somehow null"));
-	}
 }
 
 
@@ -1570,6 +1714,8 @@ void ASPCharacterPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 	DOREPLIFETIME(ASPCharacterPlayer, bIsTurnReady);
 	DOREPLIFETIME(ASPCharacterPlayer, bIsThrowReady);
 	DOREPLIFETIME(ASPCharacterPlayer, bIsHolding);
+	DOREPLIFETIME(ASPCharacterPlayer, InteractionCheck);
+	DOREPLIFETIME(ASPCharacterPlayer, bIsActiveGraping);
 	// DOREPLIFETIME(ASPCharacterPlayer, bIsActiveSlowSkill);
 	//bIsActiveSlowSkill
 	// DOREPLIFETIME(ASPCharacterPlayer, bIsActiveSlowSkill);
@@ -1586,10 +1732,17 @@ void ASPCharacterPlayer::PlaySkillAnimation()
 
 void ASPCharacterPlayer::PlayIceSkillAnimation()
 {
-	UE_LOG(LogTemp, Log, TEXT("PlayIceSkillAnimation"));
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	AnimInstance->StopAllMontages(0.0f);
 	AnimInstance->Montage_Play(SkillIceMontage);
+}
+
+void ASPCharacterPlayer::PlayTeleSkillAnimation()
+{
+	UE_LOG(LogTemp, Log, TEXT("PlayTeleSkillAnimation"));
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	AnimInstance->StopAllMontages(0.0f);
+	AnimInstance->Montage_Play(SkillTeleMontage);
 }
 
 void ASPCharacterPlayer::HitSlowSkillResult()
@@ -1620,6 +1773,62 @@ void ASPCharacterPlayer::HitIceSkillResult()
 		                                       }
 	                                       ), 5, false, -1.0f);
 }
+
+void ASPCharacterPlayer::HitTeleSkillResult(const FVector TeleportLocation)
+{
+	// FVector(((2620.000000,-60.000000,5220.000000)));
+	// FVector TPPoint = FVector(16270.000000,2720.000000,3560.000000);
+	this->TeleportTo(TeleportLocation, this->GetActorRotation(), false, true);
+	// this-(FVector(((2620.000000,-60.000000,5220.000000))));
+	// this->SetActorRelativeLocation(FVector((16000.0,-1160.000000,3960.000000)));
+	// this->GetActorLocation();
+	// GetCharacterMovement()->MaxWalkSpeed = 0.0f;
+	// GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+	// FTimerHandle Handle;
+	// GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([&]
+	// 										   {
+	// 											   GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+	// 										   }
+	// 									   ), 5, false, -1.0f);
+}
+
+void ASPCharacterPlayer::OverlapPortal(const FVector& Location)
+{
+	// GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+	// this->TeleportTo(Location, this->GetActorRotation(), false, true);
+	// this->SetActorRelativeLocation(Location);
+
+
+	FTimerHandle Handle;
+	GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([&]
+		                                       {
+			                                       this->SetActorRelativeLocation(Location);
+			                                       UE_LOG(LogTemp, Log, TEXT("%s"), *GetActorLocation().ToString());
+		                                       }
+	                                       ), 1.5f, false);
+}
+
+void ASPCharacterPlayer::ActiveGrapping(const bool Active)
+{
+	bIsActiveGraping=Active;
+}
+
+bool ASPCharacterPlayer::IsMontagePlaying()
+{
+	if (GetMesh()->GetAnimInstance()->Montage_IsPlaying(ThrowMontage) ||
+		GetMesh()->GetAnimInstance()->Montage_IsPlaying(SkillMontage) ||
+		GetMesh()->GetAnimInstance()->Montage_IsPlaying(SkillIceMontage) ||
+		GetMesh()->GetAnimInstance()->Montage_IsPlaying(SkillTeleMontage))
+
+	{
+		return true; //어떤 애니메이션 하나라도 플레이 중이면 트루 
+	}
+	else
+	{
+		return false;
+	}
+}
+
 void ASPCharacterPlayer::NetTESTRPCSlowSkill_Implementation()
 {
 	GetCharacterMovement()->MaxWalkSpeed = 100.f;
@@ -1639,32 +1848,37 @@ void ASPCharacterPlayer::NetTESTRPCSlowSkill_Implementation()
 
 void ASPCharacterPlayer::ServerRPCBlackPotionSpawn_Implementation()
 {
-	if (false == bIsSpawn)
+	if(PlayerInventory->CountPotion(PlayerInventory->IsPotion("B_Potion")))
 	{
-		FVector ItemLocation = GetMesh()->GetSocketLocation("Item_Socket");
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-		SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
-		Potion = GetWorld()->SpawnActor<ASPBlackPotion>(ASPBlackPotion::StaticClass(),
-		                                                GetMesh()->GetSocketLocation("Item_Socket"),
-		                                                FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
-		bIsSpawn = true;
-		if (Potion)
+		if (false == bIsSpawn)
 		{
-			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
-			                                          EAttachmentRule::SnapToTarget, true);
-			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
+			FVector ItemLocation = GetMesh()->GetSocketLocation("Item_Socket");
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+			SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
+			Potion = GetWorld()->SpawnActor<ASPBlackPotion>(ASPBlackPotion::StaticClass(),
+															GetMesh()->GetSocketLocation("Item_Socket"),
+															FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
+			bIsSpawn = true;
+			if (Potion)
+			{
+				FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+														  EAttachmentRule::SnapToTarget, true);
+				Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
+			}
 		}
-	}
-	else
-	{
-		if (Potion)
+		else
 		{
-			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
-			                                          EAttachmentRule::SnapToTarget, true);
-			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
+			if (Potion)
+			{
+				FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+														  EAttachmentRule::SnapToTarget, true);
+				Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
+			}
 		}
+		PlayerInventory->RemoveAmountOfItem(PlayerInventory->FindPotionItem("B_Potion"), 1);
 	}
+	
 }
 
 void ASPCharacterPlayer::ServerRPCGraping_Implementation()
@@ -1673,7 +1887,7 @@ void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 	GetCharacterMovement()->bUseControllerDesiredRotation = false;
 	if (false == bIsHolding)
 	{
-		SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("ServerRPCGraping_Implementation!!"));
+		// SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("ServerRPCGraping_Implementation!!"));
 
 		//FVector SphereLocationStart = Sphere->K2_GetComponentLocation();
 		FVector SphereLocationStart = FollowCamera->K2_GetComponentLocation();
@@ -1712,6 +1926,8 @@ void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 			if (HitSuccess && outHitResult.Component->Mobility == EComponentMobility::Movable)
 			{
 				outHitResult.Component->SetSimulatePhysics(true);
+				outHitResult.GetActor()->SetOwner(this);
+				// UE_LOG(LogTemp,Log,TEXT("%s"),*(outHitResult.GetActor()->GetOwner())->GetName() );
 				HitComponent = outHitResult.GetComponent();
 
 				FVector SphereTracePoint = HitComponent->K2_GetComponentLocation();

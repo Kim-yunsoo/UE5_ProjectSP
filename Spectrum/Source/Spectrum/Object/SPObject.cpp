@@ -6,9 +6,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 //#include "GeometryCollection/GeometryCollection.h"
 //D:\UE_5.3\Engine\Source\Runtime\Experimental\GeometryCollectionEngine\Public\GeometryCollection\GeometryCollectionComponent.h
-#include "SpectrumLog.h"
-#include "GeometryCollection/GeometryCollectionObject.h"
-#include "Kismet/KismetMathLibrary.h"
+#include "SPGlobalEnum.h"
 #include "GeometryCollection\GeometryCollectionComponent.h"
 #include "Net/UnrealNetwork.h"
 
@@ -30,6 +28,7 @@ ASPObject::ASPObject()
 	// ObjectMesh->SetIsReplicated(true);
 	
 	bHasBeenCalled = true;
+	bIsScoreReflected = false;
 
 	static ConstructorHelpers::FObjectFinder<UDataTable>GreenDataRef(TEXT("/Game/Spectrum/ColorData/DT_Green.DT_Green"));
 	if(GreenDataRef.Object)
@@ -129,6 +128,7 @@ void ASPObject::MultiRPCExplosionHit_Implementation()
 void ASPObject::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(ASPObject, bIsScoreReflected);
 }
 
 void ASPObject::DynamicSetColor(const UDataTable* Table)

@@ -19,7 +19,7 @@ class SPECTRUM_API USPInventoryMiniWidget : public USPUserWidget
 {
 	GENERATED_BODY()
 public:
-	void RefreshMiniInventory(TArray<TObjectPtr<USPItemBase>> Inventory);
+	void RefreshMiniInventory(TArray<USPItemBase*> Inventory);
 
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UWrapBox> InventoryPanel;

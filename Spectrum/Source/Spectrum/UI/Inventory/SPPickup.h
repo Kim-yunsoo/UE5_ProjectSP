@@ -8,6 +8,7 @@
 #include "Interface/SPInteractionInterface.h"
 #include "SPPickup.generated.h"
 
+class UBoxComponent;
 class USPItemBase;
 class ASPPotionBase;
 
@@ -30,6 +31,10 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+public:
+	UPROPERTY(VisibleAnywhere, Category = "Pickup | Components")
+	TObjectPtr<UBoxComponent> Trigger;
+	
 	UPROPERTY(VisibleAnywhere, Category = "Pickup | Components")
 	TObjectPtr<UStaticMeshComponent> PickupMesh;
 
@@ -54,7 +59,8 @@ protected:
 	virtual void BeginFocus() override;
 	virtual void EndFocus() override;
 	
-	virtual void Interact(ASPCharacterPlayer* PlayerCharacter) override;
+	virtual void Interact(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget) override;
+	virtual void Interact2(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget) override;
 	void UpdateInteractableData();
 	void TakePickup(ASPCharacterPlayer* Taker);
 #if WITH_EDITOR
@@ -65,5 +71,12 @@ protected:
 	UFUNCTION(Client, Unreliable)
 	void ClientRPCUpdateWidget(ASPCharacterPlayer* Taker);
 
-	
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCInteract(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget);
+
+	UFUNCTION()
+	void OnTriggerEnter(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void OnTriggerExit(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 };

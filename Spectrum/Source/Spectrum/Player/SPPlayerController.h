@@ -37,4 +37,7 @@ protected:
 
 public:
 	USPHUDWidget* GetSPHUDWidget() const;
+
+	void SetHUDMatchCountdown(float CountdownTime);
+
 };

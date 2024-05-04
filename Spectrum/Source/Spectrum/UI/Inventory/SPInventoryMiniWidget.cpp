@@ -3,23 +3,30 @@
 #include "UI/Inventory/SPInventoryMiniWidget.h"
 
 #include "SPInventoryItemSlot.h"
+#include "SPItemDragDropOperation.h"
 #include "Character/SPCharacterPlayer.h"
 #include "Component/SPInventoryComponent.h"
 #include "Components/WrapBox.h"
 #include "Potion/SPItemBase.h"
 
-void USPInventoryMiniWidget::RefreshMiniInventory(TArray<TObjectPtr<USPItemBase>> Inventory)
+class USPItemDragDropOperation;
+
+void USPInventoryMiniWidget::RefreshMiniInventory(TArray<USPItemBase*> Inventory)
 {
+	
 	if(InventoryReference && InventorySlotClass)
 	{
 		InventoryPanel->ClearChildren();
 
 		for(USPItemBase* const& InventoryItem : InventoryReference->GetInventorMiniContents())
 		{
-			USPInventoryItemSlot* ItemSlot = CreateWidget<USPInventoryItemSlot>(this, InventorySlotClass);
-			ItemSlot->SetItemReference(InventoryItem);
+			// if(InventoryItem->Quantity)
+			// {
+				USPInventoryItemSlot* ItemSlot = CreateWidget<USPInventoryItemSlot>(this, InventorySlotClass);
+				ItemSlot->SetItemReference(InventoryItem);
+				InventoryPanel->AddChildToWrapBox(ItemSlot);
+			// }
 
-			InventoryPanel->AddChildToWrapBox(ItemSlot);
 		}
 		SetInfoText();
 	}
@@ -47,5 +54,14 @@ void USPInventoryMiniWidget::NativeOnInitialized()
 bool USPInventoryMiniWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent,
 	UDragDropOperation* InOperation)
 {
-	return Super::NativeOnDrop(InGeometry, InDragDropEvent, InOperation);
+	//return Super::NativeOnDrop(InGeometry, InDragDropEvent, InOperation);
+	
+	 const USPItemDragDropOperation* ItemDragDrop = Cast<USPItemDragDropOperation>(InOperation);
+	
+	 if(PlayerCharacter && ItemDragDrop->SourceItem)
+	 {
+	 	PlayerCharacter->DropItem(ItemDragDrop->SourceItem, ItemDragDrop->SourceItem->Quantity);
+	 	return true;
+	 }
+	 return false;
 }

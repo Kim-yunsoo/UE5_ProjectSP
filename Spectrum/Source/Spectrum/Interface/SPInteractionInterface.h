@@ -7,14 +7,15 @@
 #include "SPInteractionInterface.generated.h"
 
 class ASPCharacterPlayer;
+class USPHUDWidget;
 
 UENUM()
 enum class EInteractableType : uint8
 {
 	Pickup UMETA(DisplayName = "Pickup"),
-	NonPlayerCharacter UMETA(DisplayName = "NonPlayerCharacter"), //ÀÌ°Ç ¾ÈÇØµµ µÉµí
-	Device UMETA(DisplayName = "Device"), // Á¶ÇÕ´ë, npc
-	Toggle UMETA(DisplayName = "Toggle"), //·¹¹ö, ÀÌ°Íµµ ÇÊ¿ä ¾øÀ»µí
+	NonPlayerCharacter UMETA(DisplayName = "NonPlayerCharacter"), //ì´ê±´ ì•ˆí•´ë„ ë ë“¯
+	Device UMETA(DisplayName = "Device"), // ì¡°í•©ëŒ€, npc
+	Toggle UMETA(DisplayName = "Toggle"), //ë ˆë²„, ì´ê²ƒë„ í•„ìš” ì—†ì„ë“¯
 	Container UMETA(DisplayName = "Container")
 };
 
@@ -42,11 +43,11 @@ struct FInteractableData
 	UPROPERTY(EditInstanceOnly)
 	FText Action;
 
-	//pick up¿¡ »ç¿ë
+	//pick upì— ì‚¬ìš©
 	UPROPERTY(EditInstanceOnly)
 	int32 Quantity;
 
-	//µµ¾î µ¹¸±¶§ »ç¿ëÇÏ´Âµ¥ Áö±İÀº ÇÊ¿ä ¾øÀ» µí
+	//ë„ì–´ ëŒë¦´ë•Œ ì‚¬ìš©í•˜ëŠ”ë° ì§€ê¸ˆì€ í•„ìš” ì—†ì„ ë“¯
 	UPROPERTY(EditInstanceOnly)
 	float InteractionDuration;
 };
@@ -72,7 +73,7 @@ public:
 	virtual void EndFocus();
 	virtual void BeginInteract();
 	virtual void EndInteract();
-	virtual void Interact(ASPCharacterPlayer* PlayerCharacter);
-
+	virtual void Interact(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget);
+	virtual void Interact2(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget);
 	FInteractableData InteractableData;
 };

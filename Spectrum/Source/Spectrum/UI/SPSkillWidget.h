@@ -21,6 +21,7 @@ protected:
 public:
 	void UpdateSlowBar(float NewCurrentPercent);
 	void UpdateIceBar(float NewCurrentPercent);
+	void UpdateTeleBar(float NewCurrentPercent);
 
 protected:
 	UPROPERTY()
@@ -31,4 +32,7 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<class UProgressBar> IceBar;
+
+	UPROPERTY()
+	TObjectPtr<class UProgressBar> TeleBar;
 };
