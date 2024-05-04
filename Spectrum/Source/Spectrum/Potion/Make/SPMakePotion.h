@@ -9,6 +9,7 @@
 #include "SPMakePotion.generated.h"
 
 
+class UBoxComponent;
 
 UCLASS()
 class SPECTRUM_API ASPMakePotion : public AActor,  public ISPInteractionInterface
@@ -41,10 +42,16 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere, Category = "MakePotion | Components")
 	TObjectPtr<UStaticMeshComponent> Mesh;
-
-	UPROPERTY()
-	TObjectPtr<USPHUDWidget> HUDWidgetTest;
+	
+	UPROPERTY(VisibleAnywhere, Category = "Pickup | Components")
+	TObjectPtr<UBoxComponent> Trigger;
  
 	UFUNCTION(Client, Unreliable)
 	void ClientRPCInteract(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget);
+
+	UFUNCTION()
+	void OnTriggerEnter(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void OnTriggerExit(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 };

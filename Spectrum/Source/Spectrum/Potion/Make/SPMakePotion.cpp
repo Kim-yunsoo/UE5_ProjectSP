@@ -5,6 +5,8 @@
 
 #include "SpectrumLog.h"
 #include "SPMakingPotionWidget.h"
+#include "Character/SPCharacterPlayer.h"
+#include "Components/BoxComponent.h"
 #include "UI/SPHUDWidget.h"
 
 class ASPPlayerController;
@@ -15,14 +17,21 @@ ASPMakePotion::ASPMakePotion()
 	PrimaryActorTick.bCanEverTick = true;
 	
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>("Mesh");
-	Mesh->SetSimulatePhysics(true); //½Ã¹Ä·¹ÀÌ¼Ç true °í¹ÎÇØº¸±â
-	SetRootComponent(Mesh);
+	//Mesh->SetSimulatePhysics(true); //½Ã¹Ä·¹ÀÌ¼Ç true °í¹ÎÇØº¸±â
+	//SetRootComponent(Mesh);
+	Trigger = CreateDefaultSubobject<UBoxComponent>(TEXT("PickupTriggerComponent"));
 }
 // Called when the game starts or when spawned
 void ASPMakePotion::BeginPlay()
 {
 	Super::BeginPlay();
 	InteractableData = InstanceInteractableDate;
+	FVector ActorLocation = GetActorLocation();
+	Trigger->SetRelativeLocation(ActorLocation);
+	Trigger->SetRelativeScale3D(FVector(6,5,20));
+	
+	Trigger->OnComponentBeginOverlap.AddDynamic(this, &ASPMakePotion::OnTriggerEnter);
+	Trigger->OnComponentEndOverlap.AddDynamic(this, &ASPMakePotion::OnTriggerExit);
 }
 
 // Called every frame
@@ -33,7 +42,6 @@ void ASPMakePotion::Tick(float DeltaTime)
 
 void ASPMakePotion::Interact2(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget)
 {
-	HUDWidgetTest = HUDWidget;
 	if(bIsVisible)
 	{
 		bIsVisible = false;
@@ -48,8 +56,6 @@ void ASPMakePotion::Interact2(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget*
 		HUDWidget->UpdateMakingPotionWidget(true);
 		HUDWidget->ToggleMenu();
 	}
-	
-	//ClientRPCInteract(PlayerCharacter, HUDWidget);
 }
 
 void ASPMakePotion::EndInteract()
@@ -68,3 +74,23 @@ void ASPMakePotion::ClientRPCInteract_Implementation(ASPCharacterPlayer* PlayerC
 
 
 
+void ASPMakePotion::OnTriggerEnter(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	ASPCharacterPlayer* PlayerCharacter = Cast<ASPCharacterPlayer>(OtherActor);
+	if (PlayerCharacter)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("TESTESTET"));
+		PlayerCharacter->PerformInteractionCheck();
+	}
+}
+
+void ASPMakePotion::OnTriggerExit(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex)
+{
+	ASPCharacterPlayer* PlayerCharacter = Cast<ASPCharacterPlayer>(OtherActor);
+	if (PlayerCharacter)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("outout!!"));
+		PlayerCharacter->NoInteractableFound();
+	}
+}

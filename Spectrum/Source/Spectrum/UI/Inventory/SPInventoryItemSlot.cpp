@@ -57,7 +57,7 @@ FReply USPInventoryItemSlot::NativeOnMouseButtonDown(const FGeometry& InGeometry
 	}
 	return Reply.Unhandled();
 }
-//���� �޴� ���� �� ���
+
 void USPInventoryItemSlot::NativeOnMouseLeave(const FPointerEvent& InMouseEvent)
 {
 	Super::NativeOnMouseLeave(InMouseEvent);

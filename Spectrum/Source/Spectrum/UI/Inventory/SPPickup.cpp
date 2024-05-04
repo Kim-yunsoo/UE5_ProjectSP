@@ -6,7 +6,6 @@
 #include "Potion/SPItemBase.h"
 #include "SpectrumLog.h"
 #include "Components/BoxComponent.h"
-#include "Engine/TriggerVolume.h"
 
 // Sets default values
 ASPPickup::ASPPickup()
@@ -17,6 +16,7 @@ ASPPickup::ASPPickup()
 	PickupMesh = CreateDefaultSubobject<UStaticMeshComponent>("PickupMesh");
 	PickupMesh->SetSimulatePhysics(true);
 	Trigger = CreateDefaultSubobject<UBoxComponent>(TEXT("PickupTriggerComponent"));
+
 }
 
 // Called when the game starts or when spawned
@@ -29,9 +29,11 @@ void ASPPickup::BeginPlay()
 		this->AActor::SetReplicateMovement(true);
 	}
 	InitializePickup(USPItemBase::StaticClass(), ItemQuantity);
+	
 	FVector ActorLocation = GetActorLocation();
 	Trigger->SetRelativeLocation(ActorLocation);
 	Trigger->SetRelativeScale3D(FVector(1,1,3));
+	
 	Trigger->OnComponentBeginOverlap.AddDynamic(this, &ASPPickup::OnTriggerEnter);
 	Trigger->OnComponentEndOverlap.AddDynamic(this, &ASPPickup::OnTriggerExit);
 }
