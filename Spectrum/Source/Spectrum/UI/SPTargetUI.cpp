@@ -9,7 +9,6 @@
 
 void USPTargetUI::UpdateTargetUI(bool IsAim)
 {
-	UE_LOG(LogTemp, Log, TEXT("UpdateTargetUI"));
 	if(IsAim)
 		this->SetVisibility(ESlateVisibility::Visible);
 	else

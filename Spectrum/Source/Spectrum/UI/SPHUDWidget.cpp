@@ -113,10 +113,8 @@ void USPHUDWidget::UpdateMakingPotionWidget(bool bIsVisible)
 {
 	if(bIsVisible)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("MakingPotionWidget1111"));
 		if(MakingPotionWidget)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("MakingPotionWidget"));
 			MakingPotionWidget->SetVisibility(ESlateVisibility::Visible);
 		}
 	}
@@ -125,7 +123,6 @@ void USPHUDWidget::UpdateMakingPotionWidget(bool bIsVisible)
 		if(MakingPotionWidget)
 		{
 			MakingPotionWidget->SetVisibility(ESlateVisibility::Hidden);
-			UE_LOG(LogTemp, Warning, TEXT("NoMakingPotionWidget"));
 		}
 	}
 }

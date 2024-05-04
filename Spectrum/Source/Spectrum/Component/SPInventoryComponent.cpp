@@ -19,7 +19,6 @@ USPInventoryComponent::USPInventoryComponent()
 	{
 		// 데이터 테이블이 유효하면 설정
 		ItemDataTable = DataTableFinder.Object;
-		UE_LOG(LogTemp, Warning, TEXT("DATA TEST"));
 	}
 	// ...
 	InventorySlotsCapacity = 100;
@@ -47,8 +46,6 @@ int32 USPInventoryComponent::RemoveAmountOfItem(USPItemBase* ItemIn, int32 Desir
 		const int32 ActualAmountToRemove = FMath::Min(DesiredAmountToRemove, ItemIn->Quantity);
 		int ServerCount = ItemIn->Quantity - ActualAmountToRemove;
 		ItemIn->SetQuantity(ServerCount);
-		UE_LOG(LogTemp, Warning, TEXT("RemoveAmountOfItem num %d"), IsMiniPotion(ItemIn->ID));
-		UE_LOG(LogTemp, Warning, TEXT("RemoveAmountOfItem %d"), ServerCount);
 		if(ItemIn->ItemType == EItemType::IngredientPotion)
 		{
 			
@@ -57,7 +54,6 @@ int32 USPInventoryComponent::RemoveAmountOfItem(USPItemBase* ItemIn, int32 Desir
 		}
 		else if (ItemIn->ItemType == EItemType::Potion)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("RemoveAmountOfItem Here"));
 
 			ClientRPCUpdatePotion(IsPotion(ItemIn->ID), ServerCount);
 		}
@@ -67,7 +63,6 @@ int32 USPInventoryComponent::RemoveAmountOfItem(USPItemBase* ItemIn, int32 Desir
 
 USPItemBase* USPInventoryComponent::MakingPotion()
 {
-	UE_LOG(LogTemp, Warning, TEXT("MakingPotion"));
 	int Blue = 0;
 	int Yellow = 0;
 	int Red = 0;
@@ -88,7 +83,6 @@ USPItemBase* USPInventoryComponent::MakingPotion()
 		}
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("blue %d Yellow %d Red %d"),Blue, Yellow, Red)
 	//FName DesiredItemID = "HAPPY";
 	if(Blue == 2 && Yellow == 1)
 	{
@@ -139,14 +133,12 @@ USPItemBase* USPInventoryComponent::MakingPotion()
 int USPInventoryComponent::HandleStackableItems(USPItemBase* ItemIn, int32 RequestedAddAmount)
 {
 	int num = IsPotion(ItemIn->ID);
-	UE_LOG(LogTemp, Warning, TEXT("IsPotion %d"), num);
 
 	//Todo 10개 제한으로 다시 바꾸기 
 	if(num != -1)
 	{
 		int ServerCount = InventoryContents[num]->Quantity + RequestedAddAmount;
 		InventoryContents[num]->SetQuantity(ServerCount);
-		UE_LOG(LogTemp, Warning, TEXT("HandleStackableItems %d"), ServerCount);
 		return ServerCount;
 	}
 	return -1;
@@ -160,7 +152,6 @@ int USPInventoryComponent::HandleStackableItemsMini(USPItemBase* ItemIn, int32 R
 	{
 		int ServerCount = InventoryMiniContents[num]->Quantity + RequestedAddAmount;
 		InventoryMiniContents[num]->SetQuantity(ServerCount);
-		UE_LOG(LogTemp, Warning, TEXT("HandleStackableItemsMini %d"), ServerCount);
 
 		return ServerCount;
 	}
@@ -175,14 +166,12 @@ void USPInventoryComponent::HandleAddItem(USPItemBase* InputItem)
 	if (InputItem->ItemType == EItemType::IngredientPotion)
 	{
 		int ServerCount = HandleStackableItemsMini(InputItem, InitialRequestedAddmount);
-		UE_LOG(LogTemp, Warning, TEXT("HandleAddItem %d"), ServerCount);
 
 		ClientRPCUpdateMiniPotion(IsMiniPotion(InputItem->ID), ServerCount);
 	}
 	else if (InputItem->ItemType == EItemType::Potion)
 	{
 		int ServerCount = HandleStackableItems(InputItem, InitialRequestedAddmount);
-		UE_LOG(LogTemp, Warning, TEXT("HandleAddItem %d"), ServerCount);
 		ClientRPCUpdatePotion(IsPotion(InputItem->ID), ServerCount);
 	}
 }
@@ -311,17 +300,12 @@ int USPInventoryComponent::IsMiniPotion(FName ID)
 
 void USPInventoryComponent::ClientRPCUpdateMiniPotion_Implementation(const int& num, const int&ServerCount)
 {
-	UE_LOG(LogTemp, Warning, TEXT("HERERERE!?"));
-	UE_LOG(LogTemp, Warning, TEXT(" ClientRPC %d"), num);
-	UE_LOG(LogTemp, Warning, TEXT(" ClientRPC %d"), ServerCount);
 	InventoryMiniContents[num]->SetQuantity(ServerCount);
 	OnInventoryMiniUpdated.Broadcast(InventoryMiniContents);
 }
 
 void USPInventoryComponent::ClientRPCUpdatePotion_Implementation(const int& num, const int&ServerCount)
 {
-	UE_LOG(LogTemp, Warning, TEXT(" ClientRPC %d"), num);
-	UE_LOG(LogTemp, Warning, TEXT(" ClientRPC %d"), ServerCount);
 	InventoryContents[num]->SetQuantity(ServerCount);
 	OnInventoryUpdated.Broadcast(InventoryContents);
 }
@@ -340,16 +324,13 @@ USPItemBase* USPInventoryComponent::FindMiniItem(FName ID)
 
 USPItemBase* USPInventoryComponent::FindPotionItem(FName ID)
 {
-	UE_LOG(LogTemp, Warning, TEXT("FINDPOTION1"));
 
 	for(USPItemBase* InventoryItem : InventoryContents)
 	{
 		if (InventoryItem && InventoryItem->ID == ID)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("FINDPOTION2"));
 			return InventoryItem;
 		}
 	}
-	UE_LOG(LogTemp, Warning, TEXT("FINDPOTION3"));
 	return nullptr;
 }

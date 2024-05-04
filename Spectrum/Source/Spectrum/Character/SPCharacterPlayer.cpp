@@ -633,7 +633,6 @@ void ASPCharacterPlayer::ShoulderLook(const FInputActionValue& Value)
 
 		if (GetControlRotation().Yaw > PreControlYawRotation)
 		{
-			//UE_LOG(LogTemp, Log, TEXT("TEST1"));
 			bIsTurnRight = true;
 			bIsTurnLeft = false;
 			if (!HasAuthority())
@@ -726,7 +725,6 @@ void ASPCharacterPlayer::Aiming(const FInputActionValue& Value)
 		Aiming_CameraMove(); //애니메이션 작동
 		ServerRPCAiming();
 		bIsAiming = true;
-		UE_LOG(LogTemp, Log, TEXT("Aiming"));
 		OnAimChanged.Broadcast(bIsAiming);
 	}
 }
@@ -740,7 +738,6 @@ void ASPCharacterPlayer::StopAiming(const FInputActionValue& Value)
 {
 	bIsAiming = false;
 
-	UE_LOG(LogTemp, Log, TEXT("StopAiming"));
 	OnAimChanged.Broadcast(bIsAiming);
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->bUseControllerDesiredRotation = false;
@@ -878,8 +875,6 @@ void ASPCharacterPlayer::PurplePotionSpawn(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::Interaction(const FInputActionValue& Value)
 {
-	//Todo 멀티 연결하기
-	SP_LOG(LogSPNetwork, Log, TEXT("Interaction"));
 
 	TArray<AActor*> OverlappingActors;
 	GetOverlappingActors(OverlappingActors);
@@ -892,7 +887,6 @@ void ASPCharacterPlayer::Interaction(const FInputActionValue& Value)
 			ISPGetInterface* PotionActor = Cast<ISPGetInterface>(Actor);
 			if (PotionActor)
 			{
-				SP_LOG(LogSPNetwork, Log, TEXT("IsPotion"));
 				PotionActor->GetPotion();
 				break;
 			}
@@ -916,7 +910,6 @@ void ASPCharacterPlayer::IceSKill(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::TeleSKill(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp, Log, TEXT("TeleskilL!!"));
 	if ((GetCharacterMovement()->MovementMode == EMovementMode::MOVE_Walking || GetCharacterMovement()->MovementMode ==
 		EMovementMode::MOVE_None) && false == IsMontagePlaying())
 	{
@@ -1057,7 +1050,6 @@ void ASPCharacterPlayer::OnRep_Potion()
 {
 	if (Potion)
 	{
-		SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("Potion YSE"));
 		FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
 		                                          EAttachmentRule::SnapToTarget, true);
 		Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
@@ -1204,20 +1196,17 @@ void ASPCharacterPlayer::ClientRPCIceAnimation_Implementation(ASPCharacterPlayer
 
 void ASPCharacterPlayer::ServerRPCDragItem_Implementation(int Num, const int32 QuantityToDrop)
 {
-	 for(USPItemBase* ItemBase : PlayerInventory->GetInventorMiniContents())
-	 {
-	 	UE_LOG(LogTemp, Warning, TEXT("%s %d"), *ItemBase->ItemTextData.Name.ToString(), ItemBase->Quantity);
-	 }
+	 // for(USPItemBase* ItemBase : PlayerInventory->GetInventorMiniContents())
+	 // {
+	 // 	UE_LOG(LogTemp, Warning, TEXT("%s %d"), *ItemBase->ItemTextData.Name.ToString(), ItemBase->Quantity);
+	 // }
 	USPItemBase* ItemBase = PlayerInventory->FindMatchingMiniItem(Num);
 	PlayerInventory->RemoveAmountOfItem(ItemBase, 1);
 	GetInventory()->AddInventorMakeContents(ItemBase);
-	SP_LOG(LogSPNetwork, Log, TEXT("DragItem %d"), GetInventory()->GetInventorMakeContents().Num());
 	if (GetInventory()->GetInventorMakeContents().Num() == 3)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Three"));
 		USPItemBase* Item = PlayerInventory->MakingPotion();
 		int MakeNum = PlayerInventory->IsPotion(Item->ID);
-		SP_LOG(LogSPNetwork, Log, TEXT("Making %d"), MakeNum);
 		ClientRPCUpdateMakingPotion(MakeNum);
 		PlayerInventory->ClearMakeArray();
 	}
@@ -1232,11 +1221,9 @@ void ASPCharacterPlayer::ClientRPCUpdateMakingPotion_Implementation(int Num)
 
 void ASPCharacterPlayer::ServerRPCBackItem_Implementation(int Num, const int32 QuantityToDrop)
 {
-	SP_LOG(LogSPNetwork, Log, TEXT("BackItem"));
 	USPItemBase* ItemBase = PlayerInventory->FindMatchingMiniItem(Num);
 	PlayerInventory->HandleAddItem(ItemBase);
 	GetInventory()->RemoveInventorMakeContents(ItemBase);
-	SP_LOG(LogSPNetwork, Log, TEXT("DragItem %d"), GetInventory()->GetInventorMakeContents().Num());
 }
 
 void ASPCharacterPlayer::ServerRPCAddItemClick_Implementation(int Num)
@@ -1256,7 +1243,6 @@ void ASPCharacterPlayer::ClientRPCTeleAnimation_Implementation(ASPCharacterPlaye
 
 void ASPCharacterPlayer::OnRep_PotionSpawn()
 {
-	SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("Potionspawn"));
 }
 
 void ASPCharacterPlayer::PlayTurnAnimation()
@@ -1504,19 +1490,16 @@ void ASPCharacterPlayer::SetupHUDWidget(USPHUDWidget* InUserWidget)
 void ASPCharacterPlayer::PerformInteractionCheck()
 {
 	InteractionData.LastInteractionCheckTime = GetWorld()->GetTimeSeconds();
-	UE_LOG(LogTemp, Warning, TEXT("FoundInteractable1"));
 	TArray<AActor*> OverlappingActors;
 	GetOverlappingActors(OverlappingActors, ASPPickup::StaticClass()); // 겹친 액터들을 검출합니다.
 	//GetOverlappingActors(OverlappingActors, ASPPickup::StaticClass());
 	// Todo 배열에 액터 종류 확인해서 넣기
 	for (AActor* OverlappingActor : OverlappingActors)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("FoundInteractable1-1"));
 		if (OverlappingActor->Implements<USPInteractionInterface>()) // 상호작용 가능한지 확인합니다.
 		{
 			if (OverlappingActor != InteractionData.CurrentInteractable)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("FoundInteractable2"));
 				FoundInteractable(OverlappingActor); // 상호작용할 수 있는 액터를 찾았을 때의 처리를 수행합니다.
 				return;
 			}
@@ -1527,7 +1510,6 @@ void ASPCharacterPlayer::PerformInteractionCheck()
 
 void ASPCharacterPlayer::FoundInteractable(AActor* NewInteractable)
 {
-	UE_LOG(LogTemp, Warning, TEXT("FoundInteractable3"));
 
 	//이전 상호 작용이 있는지 확인
 	if (IsInteracting())
@@ -1679,7 +1661,6 @@ void ASPCharacterPlayer::DropItem(USPItemBase* ItemToDrop, const int32 QuantityT
 
 void ASPCharacterPlayer::DragItem(USPItemBase* ItemToDrop, const int32 QuantityToDrop)
 {
-	SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("DragItem"));
 	int num = PlayerInventory->IsMiniPotion(ItemToDrop->ID);
 	ServerRPCDragItem(num, 1);
 }
@@ -1687,8 +1668,6 @@ void ASPCharacterPlayer::DragItem(USPItemBase* ItemToDrop, const int32 QuantityT
 void ASPCharacterPlayer::BackItem(USPItemBase* ItemToDrop, const int32 QuantityToDrop)
 {
 	int num = PlayerInventory->IsMiniPotion(ItemToDrop->ID);
-	SP_LOG(LogSPNetwork, Log, TEXT("%d"), num);
-	SP_LOG(LogSPNetwork, Log, TEXT("BackItem"));
 	ServerRPCBackItem(num, QuantityToDrop);
 		
 	// TArray<USPItemBase*> InventoryContents = GetInventory()->GetInventorMakeContents();
@@ -1741,7 +1720,6 @@ void ASPCharacterPlayer::PlayIceSkillAnimation()
 
 void ASPCharacterPlayer::PlayTeleSkillAnimation()
 {
-	UE_LOG(LogTemp, Log, TEXT("PlayTeleSkillAnimation"));
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	AnimInstance->StopAllMontages(0.0f);
 	AnimInstance->Montage_Play(SkillTeleMontage);
@@ -1805,7 +1783,6 @@ void ASPCharacterPlayer::OverlapPortal(const FVector& Location)
 	GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([&]
 		                                       {
 			                                       this->SetActorRelativeLocation(Location);
-			                                       UE_LOG(LogTemp, Log, TEXT("%s"), *GetActorLocation().ToString());
 		                                       }
 	                                       ), 1.5f, false);
 }
@@ -1898,7 +1875,6 @@ void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 	GetCharacterMovement()->bUseControllerDesiredRotation = false;
 	if (false == bIsHolding)
 	{
-		// SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("ServerRPCGraping_Implementation!!"));
 
 		//FVector SphereLocationStart = Sphere->K2_GetComponentLocation();
 		FVector SphereLocationStart = FollowCamera->K2_GetComponentLocation();
@@ -1944,7 +1920,6 @@ void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 				{
 					outHitResult.Component->SetSimulatePhysics(true);
 					outHitResult.GetActor()->SetOwner(this);
-					// UE_LOG(LogTemp,Log,TEXT("%s"),*(outHitResult.GetActor()->GetOwner())->GetName() );
 					HitComponent = outHitResult.GetComponent();
 					HitMyActor=outHitResult.GetActor();
 					MultiChangeCollision(TEXT("BlackItemCollision"));

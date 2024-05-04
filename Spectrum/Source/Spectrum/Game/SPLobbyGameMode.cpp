@@ -12,6 +12,5 @@ void ASPLobbyGameMode::PostInitializeComponents()
 
 void ASPLobbyGameMode::DefaultGameTimer()
 {
-	UE_LOG(LogTemp,Log,TEXT("Default"));
 	GetWorld()->ServerTravel(TEXT("/Game/Spectrum/Room/Map/Building?listen")); //다른 월드로 이동한다.
 }

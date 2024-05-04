@@ -37,11 +37,9 @@ void USPTeleSkill::TickComponent(float DeltaTime, ELevelTick TickType, FActorCom
 	FGameTime CurrentGameTime = GetWorld()->GetTime();
 	if (CurrentGameTime.GetWorldTimeSeconds() < ActivetedTimeStamp + CoolDown)
 	{
-		// UE_LOG(LogTemp,Log,TEXT("%f"),CurrentGameTime.GetWorldTimeSeconds() - ActivetedTimeStamp);
 
 		float ElapsedTime =( CurrentGameTime.GetWorldTimeSeconds() - ActivetedTimeStamp)/CoolDown;
 		float CDTime= FMath::Clamp(1.0f-ElapsedTime, 0.0f, 1.0f);
-		// UE_LOG(LogTemp,Log,TEXT("%f"),CDTime);
 		ClientSkillRPC(CDTime);
 	}
 	else

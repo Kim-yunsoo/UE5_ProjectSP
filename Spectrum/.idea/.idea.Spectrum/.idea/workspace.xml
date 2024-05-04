@@ -12,23 +12,14 @@
   <component name="ChangeListManager">
     <list default="true" id="930c52c5-2823-422b-ab9a-d68c3757d86e" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/DefaultEngine.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultEngine.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/MagicProjectilesVol2/Particles/Hits/CP_TeleHit.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/MagicProjectilesVol2/Particles/Hits/CP_TeleHit.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/MagicProjectilesVol2/Particles/Hits/P_Hit_ElectricBall01_Yellow.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/MagicProjectilesVol2/Particles/Hits/P_Hit_ElectricBall01_Yellow.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Room/Map/Building.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Room/Map/Building.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/UMG/Skill/WB_Skill.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/UMG/Skill/WB_Skill.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/UMG/WBP_SPHUD.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/UMG/WBP_SPHUD.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/UMG/WB_SPHUD.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Yunsoo/YunsooMap.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Yunsoo/YunsooMap.umap" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Object/SPObject.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Object/SPObject.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Object/SPObject.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Object/SPObject.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPPickup.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPPickup.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Component/SPInventoryComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Component/SPInventoryComponent.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Game/SPLobbyGameMode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Game/SPLobbyGameMode.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Skill/SPIceSkill.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Skill/SPIceSkill.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Spectrum/Skill/SPSlowSkill.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Skill/SPSlowSkill.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Skill/SPTeleSkill.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Skill/SPTeleSkill.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Spectrum/UI/SPHUDWidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/UI/SPHUDWidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/UI/SPHUDWidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/UI/SPHUDWidget.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/UI/SPSkillWidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/UI/SPSkillWidget.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/UI/SPTargetUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/UI/SPTargetUI.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -258,7 +249,7 @@
       <workItem from="1714806515797" duration="3096000" />
       <workItem from="1714809650466" duration="20638000" />
       <workItem from="1714836140030" duration="3148000" />
-      <workItem from="1714839375476" duration="2518000" />
+      <workItem from="1714839375476" duration="3380000" />
     </task>
     <servers />
   </component>
