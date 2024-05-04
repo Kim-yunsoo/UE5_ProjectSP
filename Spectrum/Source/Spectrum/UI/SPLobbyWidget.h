@@ -91,6 +91,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Matching")
 	void Matching();
 
+	UFUNCTION(BlueprintCallable, Category = "Matching")
+	FString MatchingServer();
+
 	// 전체 게시판 위젯
 	UFUNCTION(BlueprintCallable, Category = "PublicChat")
 	void PublicChat(const FString& num, const FString& chat);

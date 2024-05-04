@@ -2,7 +2,7 @@
 #include "Creature.h"
 
 class GameSession;
-class Room;
+class Lobby;
 
 class Player : public Creature
 {

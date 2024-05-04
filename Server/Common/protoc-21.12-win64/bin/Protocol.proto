@@ -29,28 +29,36 @@ message S_MEMBERSHIP
 	PlayerType membership_type = 3;
 }
 
-message C_ENTER_GAME
+message C_CREATE_ROOM
 {
-	uint64 playerIndex = 1;
-}
-
-message S_ENTER_GAME
-{
-	bool success = 1;
-	PlayerInfo player = 2;
+	string ip_address = 1;
+	string membership_id = 2;
+	PlayerType membership_type = 3;
+	SchoolType school_type = 4;
 }
 
 message C_ENTER_ROOM
 {
-	uint64 playerIndex = 1;
-	Membership membership = 2;
+	string membership_id = 1;
+	PlayerType membership_type = 2;
+	SchoolType school_type = 3;
 }
 
 message S_ENTER_ROOM
 {
 	bool success = 1;
-	PlayerInfo player = 2;
-	repeated PlayerInfo players = 3;
+}
+
+message S_ENTER_GAME
+{
+	bool success = 1;
+	string membership_id_0 = 2;
+	PlayerType membership_type_0 = 3;
+	string membership_id_1 = 4;
+	PlayerType membership_type_1 = 5;
+	string membership_id_2 = 6;
+	PlayerType membership_type_2 = 7;
+	string server_ip = 8;
 }
 
 message C_LEAVE_GAME
@@ -60,7 +68,8 @@ message C_LEAVE_GAME
 
 message S_LEAVE_GAME
 {
-
+	string  a=1;
+	PlayerType b=2;
 }
 
 message S_SPAWN

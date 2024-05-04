@@ -6,9 +6,9 @@
 #include "Thing.h"
 
 LobbyInfomation G_LobbyInfo;
-RoomRef GRoom = make_shared<Room>();
+LobbyRef GRoom = make_shared<Lobby>();
 
-Room::Room()
+Lobby::Lobby()
 {
 	//createAllObject();
 	for (int i = 0; i < 8; i++) {
@@ -28,69 +28,69 @@ Room::Room()
 
 }
 
-Room::~Room()
+Lobby::~Lobby()
 {
 
 }
 
-bool Room::EnterRoom(ObjectRef object, bool randPos)
+bool Lobby::EnterRoom(ObjectRef object, bool randPos)
 {
 	WRITE_LOCK;
 
-	bool success = EnterObject(object);
+	bool success = EnterPlayer(object);
 
 
 
-	// 입장 사실을 신입 플레이어에게 알린다
-	if(auto player = dynamic_pointer_cast<Player>(object))
-	{
-		Protocol::S_ENTER_GAME enterGamePkt;
-		enterGamePkt.set_success(success);
+	//// 입장 사실을 신입 플레이어에게 알린다
+	//if(auto player = dynamic_pointer_cast<Player>(object))
+	//{
+	//	Protocol::S_ENTER_GAME enterGamePkt;
+	//	enterGamePkt.set_success(success);
 
-		Protocol::PlayerInfo* playerInfo = new Protocol::PlayerInfo();
-		playerInfo->CopyFrom(*player->objectInfo);
-		enterGamePkt.set_allocated_player(playerInfo);
-		//enterGamePkt.release_player();
+	//	Protocol::PlayerInfo* playerInfo = new Protocol::PlayerInfo();
+	//	playerInfo->CopyFrom(*player->objectInfo);
+	//	enterGamePkt.set_allocated_player(playerInfo);
+	//	//enterGamePkt.release_player();
 
-		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(enterGamePkt);
-		if (auto session = player->session.lock())
-			session->Send(sendBuffer);
-	}
+	//	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(enterGamePkt);
+	//	if (auto session = player->session.lock())
+	//		session->Send(sendBuffer);
+	//}
 
-	// 입장 사실을 다른 플레이어에게 알린다
-	{
-		Protocol::S_SPAWN spawnPkt;
+	//// 입장 사실을 다른 플레이어에게 알린다
+	//{
+	//	Protocol::S_SPAWN spawnPkt;
 
-		Protocol::PlayerInfo* objectInfo = spawnPkt.add_players();
-		objectInfo->CopyFrom(*object->objectInfo);
+	//	Protocol::PlayerInfo* objectInfo = spawnPkt.add_players();
+	//	objectInfo->CopyFrom(*object->objectInfo);
 
-		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(spawnPkt);
-		Broadcast(sendBuffer, object->objectInfo->object_id());
-	}
+	//	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(spawnPkt);
+	//	Broadcast(sendBuffer, object->objectInfo->object_id());
+	//}
 
-	// 기존 입장한 플레이어 목록을 신입 플레이어한테 전송해준다
-	if (auto player = dynamic_pointer_cast<Player>(object))
-	{
-		Protocol::S_SPAWN spawnPkt;
+	//// 기존 입장한 플레이어 목록을 신입 플레이어한테 전송해준다
+	//if (auto player = dynamic_pointer_cast<Player>(object))
+	//{
+	//	Protocol::S_SPAWN spawnPkt;
 
-		for (auto& item : _player)
-		{
-			if (item.second->IsPlayer() == false)		// 플레이어한테만 전송. 물건들한테는 보낼 필요 없으니까!
-				continue;
+	//	for (auto& item : _player)
+	//	{
+	//		if (item.second->IsPlayer() == false)		// 플레이어한테만 전송. 물건들한테는 보낼 필요 없으니까!
+	//			continue;
 
-			Protocol::PlayerInfo* playerInfo = spawnPkt.add_players();
-			playerInfo->CopyFrom(*item.second->objectInfo);
-		}
+	//		Protocol::PlayerInfo* playerInfo = spawnPkt.add_players();
+	//		playerInfo->CopyFrom(*item.second->objectInfo);
+	//	}
 
-		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(spawnPkt);
-		if (auto session = player->session.lock())
-			session->Send(sendBuffer);
-	}
+	//	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(spawnPkt);
+	//	if (auto session = player->session.lock())
+	//		session->Send(sendBuffer);
+	//}
 
 	return success;
 }
 
-bool Room::LeaveRoom(ObjectRef object)
+bool Lobby::LeaveRoom(ObjectRef object)
 {
 	if (object == nullptr)
 		return false;
@@ -125,59 +125,59 @@ bool Room::LeaveRoom(ObjectRef object)
 	return success;
 }
 
-bool Room::HandleEnterPlayerLocked(PlayerRef player)
+bool Lobby::HandleEnterPlayerLocked(PlayerRef player)
 {
 	WRITE_LOCK;
 
-	bool success = EnterObject(player);
+	bool success = EnterPlayer(player);
 
 
 
-	// 입장 사실을 신입 플레이어에게 알린다
-	{
-		Protocol::S_ENTER_GAME enterGamePkt;
-		enterGamePkt.set_success(success);
+	//// 입장 사실을 신입 플레이어에게 알린다
+	//{
+	//	Protocol::S_ENTER_GAME enterGamePkt;
+	//	enterGamePkt.set_success(success);
 
-		Protocol::PlayerInfo* playerInfo = new Protocol::PlayerInfo();
-		playerInfo->CopyFrom(*player->objectInfo);
-		enterGamePkt.set_allocated_player(playerInfo);
-		//enterGamePkt.release_player();
+	//	Protocol::PlayerInfo* playerInfo = new Protocol::PlayerInfo();
+	//	playerInfo->CopyFrom(*player->objectInfo);
+	//	enterGamePkt.set_allocated_player(playerInfo);
+	//	//enterGamePkt.release_player();
 
-		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(enterGamePkt);
-		if (auto session = player->session.lock())
-			session->Send(sendBuffer);
-	}
+	//	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(enterGamePkt);
+	//	if (auto session = player->session.lock())
+	//		session->Send(sendBuffer);
+	//}
 
-	// 입장 사실을 다른 플레이어에게 알린다
-	{
-		Protocol::S_SPAWN spawnPkt;
+	//// 입장 사실을 다른 플레이어에게 알린다
+	//{
+	//	Protocol::S_SPAWN spawnPkt;
 
-		Protocol::PlayerInfo* playerInfo = spawnPkt.add_players();
-		playerInfo->CopyFrom(*player->objectInfo);
+	//	Protocol::PlayerInfo* playerInfo = spawnPkt.add_players();
+	//	playerInfo->CopyFrom(*player->objectInfo);
 
-		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(spawnPkt);
-		Broadcast(sendBuffer, player->objectInfo->object_id());
-	}
+	//	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(spawnPkt);
+	//	Broadcast(sendBuffer, player->objectInfo->object_id());
+	//}
 
-	// 기존 입장한 플레이어 목록을 신입 플레이어한테 전송해준다
-	{
-		Protocol::S_SPAWN spawnPkt;
+	//// 기존 입장한 플레이어 목록을 신입 플레이어한테 전송해준다
+	//{
+	//	Protocol::S_SPAWN spawnPkt;
 
-		for (auto& item : _player)
-		{
-			if(item.second->IsPlayer() == false)		// 플레이어 정보만 보내줌. 물건들 정보는 뒤에서 따로
-				continue;
+	//	for (auto& item : _player)
+	//	{
+	//		if(item.second->IsPlayer() == false)		// 플레이어 정보만 보내줌. 물건들 정보는 뒤에서 따로
+	//			continue;
 
-			Protocol::PlayerInfo* playerInfo = spawnPkt.add_players();
-			playerInfo->CopyFrom(*item.second->objectInfo);
-		}
+	//		Protocol::PlayerInfo* playerInfo = spawnPkt.add_players();
+	//		playerInfo->CopyFrom(*item.second->objectInfo);
+	//	}
 
-		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(spawnPkt);
-		if (auto session = player->session.lock())
-			session->Send(sendBuffer);
-	}
+	//	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(spawnPkt);
+	//	if (auto session = player->session.lock())
+	//		session->Send(sendBuffer);
+	//}
 
-		//// 맵에 배치될 물건들 정보 전송
+	//	//// 맵에 배치될 물건들 정보 전송
 
 
 	return success;
@@ -185,7 +185,7 @@ bool Room::HandleEnterPlayerLocked(PlayerRef player)
 }
 
 
-bool Room::HandleLeavePlayerLocked(PlayerRef player)
+bool Lobby::HandleLeavePlayerLocked(PlayerRef player)
 {
 	if (player == nullptr)
 		return false;
@@ -224,7 +224,7 @@ bool Room::HandleLeavePlayerLocked(PlayerRef player)
 
 
 
-bool Room::EnterObject(ObjectRef object)
+bool Lobby::EnterPlayer(ObjectRef object)
 {
 	// 있다면 문제가 있다.
 	if (_player.find(object->objectInfo->object_id()) != _player.end())
@@ -232,27 +232,27 @@ bool Room::EnterObject(ObjectRef object)
 
 	_player.insert(make_pair(object->objectInfo->object_id(), object));
 	
-	object->room.store(shared_from_this());
+	object->lobby.store(shared_from_this());
 
 	return true;
 }
 
 
-bool Room::LeaveObject(uint64 objectId)
+bool Lobby::LeaveObject(uint64 objectId)
 {
 	// 없다면 문제가 있다.
 	if (_player.find(objectId) == _player.end())
 		return false;
 
 	ObjectRef object = _player[objectId];
-	object->room.store(weak_ptr<Room>());
+	object->lobby.store(weak_ptr<Lobby>());
 
 	_player.erase(objectId);
 
 	return true;
 }
 
-void Room::Broadcast(SendBufferRef sendBuffer, uint64 exceptId)
+void Lobby::Broadcast(SendBufferRef sendBuffer, uint64 exceptId)
 {	// 플레이어한테만 전송
 	for (auto& item : _player)
 	{
@@ -268,7 +268,7 @@ void Room::Broadcast(SendBufferRef sendBuffer, uint64 exceptId)
 	}
 }
 
-void Room::ObjectBroadcast(SendBufferRef sendBuffer)
+void Lobby::ObjectBroadcast(SendBufferRef sendBuffer)
 {	// 플레이어한테만 전송
 	for (auto& item : _player)
 	{

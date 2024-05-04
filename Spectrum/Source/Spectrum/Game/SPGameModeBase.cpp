@@ -11,6 +11,7 @@ extern Protocol::PlayerType school_num_type;
 extern bool okok;
 bool bAlreadyTraveled = false;
 extern int32 NumPlayers;
+extern std::array<Protocol::PlayerType, 3> school_type;
 
 ASPGameModeBase::ASPGameModeBase()
 {
@@ -117,36 +118,12 @@ void ASPGameModeBase::PostLogin(APlayerController* NewPlayer)
 
 			//pawn_PlayerType->PlayerType = 0;
 
-			// 여기서 클라이언트의 정보에 따라 이름 설정
-			//int32 NumPlayers = UGameplayStatics::GetPlayerControllerID(NewPlayer);
-			//Protocol::PlayerType player_type;
-			//if (pawn_PlayerType->PlayerType  == 0)
-			//	player_type = Protocol::PLAYER_TYPE_PURPLE_MAN;
-			//else if (pawn_PlayerType->PlayerType  == 1)
-			//	player_type = Protocol::PLAYER_TYPE_GREEN_MAN;
-			//else if (pawn_PlayerType->PlayerType  == 2)
-			//	player_type = Protocol::PLAYER_TYPE_GREEN_WOMAN;
-
-			//Protocol::PlayerType player_type;
-			//if (pawn_PlayerType->PlayerType == 0)
-			//	player_type = Protocol::PLAYER_TYPE_PURPLE_MAN;
-			//else if (pawn_PlayerType->PlayerType == 1)
-			//	player_type = Protocol::PLAYER_TYPE_GREEN_MAN;
-			//else if (pawn_PlayerType->PlayerType == 2)
-			//	player_type = Protocol::PLAYER_TYPE_GREEN_WOMAN;
-
-			//switch (rand() % 3)
-			//{
-			//case 0:
-			//	school_num_type = Protocol::PLAYER_TYPE_GREEN_WOMAN;
-			//	break;
-			//case 1:
-			//	school_num_type = Protocol::PLAYER_TYPE_PURPLE_MAN;
-			//	break;
-			//case 2:
-			//	school_num_type = Protocol::PLAYER_TYPE_ORANGE_WOMAN;
-			//	break;
-			//}
+			// 정보에 따라 폰 설정
+			if (mynum < 3)
+			{
+				school_num_type = school_type[mynum];
+				mynum++;
+			}
 
 			switch (school_num_type)
 			{

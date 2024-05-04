@@ -18,6 +18,8 @@ extern LobbyInfomation MyLobbyInfo;	// 로비 정보 저장하는 구조체
 Protocol::PlayerType school_num_type;
 bool okok= false;
 int32 NumPlayers;
+std::array<Protocol::PlayerType, 3> school_type;/* =
+{ Protocol::PLAYER_TYPE_GREEN_MAN ,Protocol::PLAYER_TYPE_PURPLE_WOMAN, Protocol::PLAYER_TYPE_ORANGE_WOMAN };*/
 
 bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len)
 {
@@ -49,21 +51,6 @@ bool Handle_S_LOGIN(PacketSessionRef& session, Protocol::S_LOGIN& pkt)
 		FString Fmyid = FString(UTF8_TO_TCHAR(myid.c_str()));
 		FString Fmytype;
 		MyPlayerInfo.my_membership_id = myid;
-
-		//switch (rand()%3)
-		//{
-		//case 0:
-		//	school_num_type = Protocol::PLAYER_TYPE_GREEN_WOMAN;
-		//	break;
-		//case 1:
-		//	school_num_type = Protocol::PLAYER_TYPE_GREEN_WOMAN;
-		//	break;
-		//case 2:
-		//	school_num_type = Protocol::PLAYER_TYPE_ORANGE_WOMAN;
-		//	break;
-
-		//}
-
 
 		switch (mytype)
 		{
@@ -134,7 +121,10 @@ bool Handle_S_ENTER_GAME(PacketSessionRef& session, Protocol::S_ENTER_GAME& pkt)
 	{
 		GameInstance->HandleLobby(pkt);
 	}
-
+	// 나중에 이름까지 구조체에 저장
+	school_type[0] = pkt.membership_type_0();
+	school_type[1] = pkt.membership_type_1();
+	school_type[2] = pkt.membership_type_2();
 
 	return true;
 }

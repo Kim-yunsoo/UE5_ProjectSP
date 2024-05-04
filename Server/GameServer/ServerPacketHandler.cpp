@@ -97,26 +97,35 @@ bool Handle_C_LOGIN(PacketSessionRef& session, Protocol::C_LOGIN& pkt)
 	loginPkt.set_success(isThere);
 	SEND_PACKET(loginPkt);
 
+	{
+		// S_ENTER_GAME 보내기 -> 나중에 매치메이킹 구현하고 고치기
+		// 매치메이킹 구현 전 임시로 보냄
+		// 서버만들기 버튼 누른 사람이 0번
+		// 나머지는 순서대로 1, 2번
+		// 룸 정보 어디에 저장할지 생각하기
+
+		Protocol::S_ENTER_GAME enterGamePkt;
+		enterGamePkt.set_success(true);
+		enterGamePkt.set_membership_id_0("test1");
+		enterGamePkt.set_membership_type_0(Protocol::PLAYER_TYPE_GREEN_MAN);
+		enterGamePkt.set_membership_id_1("test2");
+		enterGamePkt.set_membership_type_1(Protocol::PLAYER_TYPE_PURPLE_WOMAN);
+		enterGamePkt.set_membership_id_2("test3");
+		enterGamePkt.set_membership_type_2(Protocol::PLAYER_TYPE_ORANGE_WOMAN);
+
+		//enterGamePkt.set_membership_0().set_membership_id("test1");
+		//enterGamePkt.set_membership_0().set_membership_type(Protocol::PLAYER_TYPE_GREEN_MAN);
+		//enterGamePkt.set_membership_1().set_membership_id("test2");
+		//enterGamePkt.set_membership_1().set_membership_type(Protocol::PLAYER_TYPE_PURPLE_WOMAN);
+		//enterGamePkt.set_membership_2().set_membership_id("test3");
+		//enterGamePkt.set_membership_2().set_membership_type(Protocol::PLAYER_TYPE_ORANGE_WOMAN);
+
+		SEND_PACKET(enterGamePkt);
+	}
+
+
 	// 로비에 접속한 클라이언트를 추가
 	//Lobby->HandleEnterPlayerLocked(static_pointer_cast<GameSession>(session));
-
-	//// 전체 게시판 정보 전송
-	//Protocol::S_PUBLIC_CHAT publicChatPkt;
-	//for (int i = 0; i < 8; i++) {
-	//	publicChatPkt.set_membership_id(G_LobbyInfo.publicBoard[i].membership_id);
-	//	publicChatPkt.set_msg(G_LobbyInfo.publicBoard[i].msg);
-	//	publicChatPkt.set_msg_num(G_LobbyInfo.publicBoard[i].msg_num);
-	//	SEND_PACKET(publicChatPkt);
-	//}
-
-	//// 학교 게시판 정보 전송
-	//Protocol::S_PRIVATE_CHAT privateChatPkt;
-	//for (int i = 0; i < 3; i++) {
-	//	privateChatPkt.set_membership_id(G_LobbyInfo.privateBoard[i].membership_id);
-	//	privateChatPkt.set_msg(G_LobbyInfo.privateBoard[i].msg);
-	//	privateChatPkt.set_membership_type(G_LobbyInfo.privateBoard[i].membership_type);
-	//	SEND_PACKET(privateChatPkt);
-	//}
 
 
 
@@ -202,29 +211,37 @@ bool Handle_C_MEMBERSHIP(PacketSessionRef& session, Protocol::C_MEMBERSHIP& pkt)
 	return true;
 }
 
-bool Handle_C_ENTER_GAME(PacketSessionRef& session, Protocol::C_ENTER_GAME& pkt)
+bool Handle_C_CREATE_ROOM(PacketSessionRef& session, Protocol::C_CREATE_ROOM& pkt)
 {
-	// 플레이어 생성
-	PlayerRef player = ObjectUtils::CreatePlayer(static_pointer_cast<GameSession>(session));
-	//player->objectInfo->set_membership_id(pkt.membership_id());
-	//player->objectInfo->set_membership_type(pkt.membership_type());
-	
-	// 방에 입장
-	GRoom->HandleEnterPlayerLocked(player);
+	// 방 생성
 
-	cout<< "Player Enter" << endl;
 
 	return true;
 }
 
+//bool Handle_C_ENTER_GAME(PacketSessionRef& session, Protocol::C_ENTER_GAME& pkt)
+//{
+//	// 플레이어 생성
+//	PlayerRef player = ObjectUtils::CreatePlayer(static_pointer_cast<GameSession>(session));
+//	//player->objectInfo->set_membership_id(pkt.membership_id());
+//	//player->objectInfo->set_membership_type(pkt.membership_type());
+//	
+//	// 방에 입장
+//	GRoom->HandleEnterPlayerLocked(player);
+//
+//	cout<< "Player Enter" << endl;
+//
+//	return true;
+//}
+
 bool Handle_C_ENTER_ROOM(PacketSessionRef& session, Protocol::C_ENTER_ROOM& pkt)
 {
-	Protocol::S_ENTER_ROOM enterRoomPkt;
-	Protocol::PlayerInfo* player = enterRoomPkt.add_players();
-	enterRoomPkt.set_success(true);
-	SEND_PACKET(enterRoomPkt);
+	//Protocol::S_ENTER_ROOM enterRoomPkt;
+	//Protocol::PlayerInfo* player = enterRoomPkt.add_players();
+	//enterRoomPkt.set_success(true);
+	//SEND_PACKET(enterRoomPkt);
 
-	return false;
+	return true;
 }
 
 bool Handle_C_LEAVE_GAME(PacketSessionRef& session, Protocol::C_LEAVE_GAME& pkt)
@@ -235,11 +252,11 @@ bool Handle_C_LEAVE_GAME(PacketSessionRef& session, Protocol::C_LEAVE_GAME& pkt)
 	if (player == nullptr)
 		return false;
 
-	RoomRef room = player->room.load().lock();
-	if (room == nullptr)
+	LobbyRef lobby = player->lobby.load().lock();
+	if (lobby == nullptr)
 		return false;
 
-	room->HandleLeavePlayerLocked(player);
+	lobby->HandleLeavePlayerLocked(player);
 
 	return true;
 }

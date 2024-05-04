@@ -35,11 +35,11 @@ public:
 };
 
 
-class Room : public enable_shared_from_this<Room>
+class Lobby : public enable_shared_from_this<Lobby>
 {
 public:
-	Room();
-	virtual ~Room();
+	Lobby();
+	virtual ~Lobby();
 
 public:
 	bool EnterRoom(ObjectRef object, bool randPos = true);
@@ -53,7 +53,7 @@ public:
 
 
 private:
-	bool EnterObject(ObjectRef object);
+	bool EnterPlayer(ObjectRef object);
 	bool LeaveObject(uint64 objectId);
 
 	USE_LOCK;
@@ -68,4 +68,4 @@ public:
 	unordered_map<uint64, ObjectRef> _objects;
 };
 
-extern RoomRef GRoom;
+extern LobbyRef GRoom;

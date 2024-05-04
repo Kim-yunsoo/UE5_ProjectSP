@@ -149,7 +149,7 @@ void USpectrumGameInstance::HandleSpawn(const Protocol::PlayerInfo& ObjectInfo, 
 
 void USpectrumGameInstance::HandleSpawn(const Protocol::S_ENTER_GAME& EnterGamePkt)
 {
-	HandleSpawn(EnterGamePkt.player(), true);
+	//HandleSpawn(EnterGamePkt.player(), true);
 }
 
 void USpectrumGameInstance::HandleSpawn(const Protocol::S_SPAWN& SpawnPkt)

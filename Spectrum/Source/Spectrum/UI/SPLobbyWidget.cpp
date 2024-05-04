@@ -137,6 +137,13 @@ void USPLobbyWidget::Matching()
 
 }
 
+FString USPLobbyWidget::MatchingServer()
+{
+	// ¸ÅÄªÇÒ ¼­¹ö
+	//return TEXT("Open 192.168.45.163");
+	return TEXT("Open 127.0.0.1");
+}
+
 void USPLobbyWidget::PublicChat(const FString& num, const FString& chat)
 {
 
@@ -152,78 +159,66 @@ void USPLobbyWidget::PublicChat(const FString& num, const FString& chat)
 
 }
 
-
-
 FString USPLobbyWidget::PublicChatUpdate_0()
 {
 	FString Public_Chat_Id = FString(UTF8_TO_TCHAR(MyLobbyInfo.publicBoard[0].msg_id.c_str()));
 	FString Public_Chat_Msg = FString(UTF8_TO_TCHAR(MyLobbyInfo.publicBoard[0].msg.c_str()));
 	return Public_Chat_Id + TEXT(" : ") + Public_Chat_Msg;
 }
-
 FString USPLobbyWidget::PublicChatUpdate_1()
 {
 	FString Public_Chat_Id = FString(UTF8_TO_TCHAR(MyLobbyInfo.publicBoard[1].msg_id.c_str()));
 	FString Public_Chat_Msg = FString(UTF8_TO_TCHAR(MyLobbyInfo.publicBoard[1].msg.c_str()));
 	return Public_Chat_Id + TEXT(" : ") + Public_Chat_Msg;
 }
-
 FString USPLobbyWidget::PublicChatUpdate_2()
 {
 	FString Public_Chat_Id = FString(UTF8_TO_TCHAR(MyLobbyInfo.publicBoard[2].msg_id.c_str()));
 	FString Public_Chat_Msg = FString(UTF8_TO_TCHAR(MyLobbyInfo.publicBoard[2].msg.c_str()));
 	return Public_Chat_Id + TEXT(" : ") + Public_Chat_Msg;
 }
-
 FString USPLobbyWidget::PublicChatUpdate_3()
 {
 	FString Public_Chat_Id = FString(UTF8_TO_TCHAR(MyLobbyInfo.publicBoard[3].msg_id.c_str()));
 	FString Public_Chat_Msg = FString(UTF8_TO_TCHAR(MyLobbyInfo.publicBoard[3].msg.c_str()));
 	return Public_Chat_Id + TEXT(" : ") + Public_Chat_Msg;
 }
-
 FString USPLobbyWidget::PublicChatUpdate_4()
 {
 	FString Public_Chat_Id = FString(UTF8_TO_TCHAR(MyLobbyInfo.publicBoard[4].msg_id.c_str()));
 	FString Public_Chat_Msg = FString(UTF8_TO_TCHAR(MyLobbyInfo.publicBoard[4].msg.c_str()));
 	return Public_Chat_Id + TEXT(" : ") + Public_Chat_Msg;
 }
-
 FString USPLobbyWidget::PublicChatUpdate_5()
 {
 	FString Public_Chat_Id = FString(UTF8_TO_TCHAR(MyLobbyInfo.publicBoard[5].msg_id.c_str()));
 	FString Public_Chat_Msg = FString(UTF8_TO_TCHAR(MyLobbyInfo.publicBoard[5].msg.c_str()));
 	return Public_Chat_Id + TEXT(" : ") + Public_Chat_Msg;
 }
-
 FString USPLobbyWidget::PublicChatUpdate_6()
 {
 	FString Public_Chat_Id = FString(UTF8_TO_TCHAR(MyLobbyInfo.publicBoard[6].msg_id.c_str()));
 	FString Public_Chat_Msg = FString(UTF8_TO_TCHAR(MyLobbyInfo.publicBoard[6].msg.c_str()));
 	return Public_Chat_Id + TEXT(" : ") + Public_Chat_Msg;
 }
-
 FString USPLobbyWidget::PublicChatUpdate_7()
 {
 	FString Public_Chat_Id = FString(UTF8_TO_TCHAR(MyLobbyInfo.publicBoard[7].msg_id.c_str()));
 	FString Public_Chat_Msg = FString(UTF8_TO_TCHAR(MyLobbyInfo.publicBoard[7].msg.c_str()));
 	return Public_Chat_Id + TEXT(" : ") + Public_Chat_Msg;
 }
-
 FString USPLobbyWidget::PrivateChatUpdate_G()
 {
 	FString Private_Chat_Id = FString(UTF8_TO_TCHAR(MyLobbyInfo.privateBoard[0].msg_id.c_str()));
 	FString Private_Chat_Msg = FString(UTF8_TO_TCHAR(MyLobbyInfo.privateBoard[0].msg.c_str()));
 	return Private_Chat_Id + TEXT(" : ") + Private_Chat_Msg;
 }
-
 FString USPLobbyWidget::PrivateChatUpdate_P()
 {
 	FString Private_Chat_Id = FString(UTF8_TO_TCHAR(MyLobbyInfo.privateBoard[1].msg_id.c_str()));
 	FString Private_Chat_Msg = FString(UTF8_TO_TCHAR(MyLobbyInfo.privateBoard[1].msg.c_str()));
 	return Private_Chat_Id + TEXT(" : ") + Private_Chat_Msg;
 }
-
 FString USPLobbyWidget::PrivateChatUpdate_O()
 {
 	FString Private_Chat_Id = FString(UTF8_TO_TCHAR(MyLobbyInfo.privateBoard[2].msg_id.c_str()));

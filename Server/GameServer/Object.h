@@ -16,7 +16,7 @@ public:
 
 
 public:
-	atomic<weak_ptr<Room>> room;
+	atomic<weak_ptr<Lobby>> lobby;
 
 protected:
 	bool isPlayer = false;

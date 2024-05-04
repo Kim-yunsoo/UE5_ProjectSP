@@ -28,6 +28,7 @@ public:
 	virtual void BeginPlay() override;
 
 	void TravelToNextLevel();
+	int mynum = 0;
 
 	//virtual void Tick(float DeltaTime) override;
 	//void PostInitializeComponents() override;
