@@ -60,6 +60,12 @@ void USPHUDWidget::NativeConstruct()
 		InteractionWidget->SetVisibility(ESlateVisibility::Collapsed); 
 	}
 
+	ISPCharacterHUDInterface* CharacterWidget = Cast<ISPCharacterHUDInterface>(GetOwningPlayerPawn());
+	if(CharacterWidget)
+	{
+		CharacterWidget->SetupHUDWidget(this);
+	}
+
 }
 
 void USPHUDWidget::DisplayMenu()

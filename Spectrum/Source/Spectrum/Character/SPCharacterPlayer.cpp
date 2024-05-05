@@ -997,7 +997,6 @@ void ASPCharacterPlayer::SlowSKill(const FInputActionValue& Value)
 		// bIsActiveSlowSkill = false;
 
 		ServerRPCSlowSkill(GetWorld()->GetGameState()->GetServerWorldTimeSeconds());
-
 		// if (!HasAuthority())
 		// {
 		// 	FTimerHandle Handle;
@@ -1021,6 +1020,7 @@ void ASPCharacterPlayer::ServerRPCSlowSkill_Implementation(float AttackStartTime
 {
 	if (bIsActiveSlowSkill)
 	{
+
 		bIsActiveSlowSkill = false;
 		SlowSkillComponent->ActivetedTimeStamp = GetWorld()->GetTime().GetWorldTimeSeconds();
 		AttackTimeDifference = GetWorld()->GetTimeSeconds() - AttackStartTime;
