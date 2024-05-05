@@ -5,6 +5,7 @@
 
 #include "SpectrumLog.h"
 #include "SPGameTimeWidget.h"
+#include "SPManualWidget.h"
 #include "SPScoreWidget.h"
 #include "SPSkillWidget.h"
 #include "Interface/SPCharacterHUDInterface.h"
@@ -29,6 +30,9 @@ void USPHUDWidget::NativeConstruct()
 	TargetUI = Cast<USPTargetUI>(GetWidgetFromName(TEXT("WBTargetUI")));
 	MakingPotionWidget = Cast<USPMakingPotionWidget>(GetWidgetFromName(TEXT("WBPSPMakingPotionWidget")));
 
+	ManualWidget = Cast<USPManualWidget>(GetWidgetFromName(TEXT("WBPManual")));
+
+	
 	if(!MakingPotionWidget)
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("isit?????"));
@@ -123,6 +127,26 @@ void USPHUDWidget::UpdateMakingPotionWidget(bool bIsVisible)
 		if(MakingPotionWidget)
 		{
 			MakingPotionWidget->SetVisibility(ESlateVisibility::Hidden);
+		}
+	}
+}
+
+void USPHUDWidget::UpdateManualWidget(bool bIsVisible)
+{
+	if(bIsVisible)
+	{
+		if(ManualWidget)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("aaHAPPY"));
+			ManualWidget->SetVisibility(ESlateVisibility::Visible);
+		}
+	}
+	else
+	{
+		if(ManualWidget)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("HAPPY"));
+			ManualWidget->SetVisibility(ESlateVisibility::Hidden);
 		}
 	}
 }

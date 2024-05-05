@@ -19,7 +19,10 @@ class SPECTRUM_API ASPMakePotion : public AActor,  public ISPInteractionInterfac
 public:	
 	// Sets default values for this actor's properties
 	ASPMakePotion();
-
+	
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UBoxComponent> Trigger;
+	
 	
 protected:
 	// Called when the game starts or when spawned
@@ -42,10 +45,7 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere, Category = "MakePotion | Components")
 	TObjectPtr<UStaticMeshComponent> Mesh;
-	
-	UPROPERTY(VisibleAnywhere, Category = "Pickup | Components")
-	TObjectPtr<UBoxComponent> Trigger;
- 
+
 	UFUNCTION(Client, Unreliable)
 	void ClientRPCInteract(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget);
 

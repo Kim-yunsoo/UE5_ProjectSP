@@ -46,10 +46,12 @@
 #include "Component/SPInventoryComponent.h"
 #include "Player/SPPlayerController.h"
 #include "Potion/SPItemBase.h"
+#include "Potion/Make/SPMakePotion.h"
 #include "Skill/SPIceSkill.h"
 #include "Skill/SPTeleSkill.h"
 #include "UI/SPHUDWidget.h"
 #include "Potion/SPPickup.h"
+#include "UI/Interaction/SPManual.h"
 
 
 ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializer)
@@ -588,6 +590,7 @@ void ASPCharacterPlayer::SetCharacterControl(ECharacterControlType NewCharacterC
 	}
 	HUDWidget->bIsMenuVisible = true;
 	HUDWidget->UpdateMakingPotionWidget(false);
+	HUDWidget->UpdateManualWidget(false);
 	HUDWidget->ToggleMenu();
 }
 
@@ -989,7 +992,6 @@ void ASPCharacterPlayer::SlowSKill(const FInputActionValue& Value)
 		// bIsActiveSlowSkill = false;
 
 		ServerRPCSlowSkill(GetWorld()->GetGameState()->GetServerWorldTimeSeconds());
-
 		// if (!HasAuthority())
 		// {
 		// 	FTimerHandle Handle;
@@ -1013,6 +1015,7 @@ void ASPCharacterPlayer::ServerRPCSlowSkill_Implementation(float AttackStartTime
 {
 	if (bIsActiveSlowSkill)
 	{
+
 		bIsActiveSlowSkill = false;
 		SlowSkillComponent->ActivetedTimeStamp = GetWorld()->GetTime().GetWorldTimeSeconds();
 		AttackTimeDifference = GetWorld()->GetTimeSeconds() - AttackStartTime;
@@ -1491,9 +1494,14 @@ void ASPCharacterPlayer::PerformInteractionCheck()
 {
 	InteractionData.LastInteractionCheckTime = GetWorld()->GetTimeSeconds();
 	TArray<AActor*> OverlappingActors;
+	TArray<AActor*> ASPMakePotionActor;
+	TArray<AActor*> ASPCombinationActor;
 	GetOverlappingActors(OverlappingActors, ASPPickup::StaticClass()); // 겹친 액터들을 검출합니다.
-	//GetOverlappingActors(OverlappingActors, ASPPickup::StaticClass());
+	GetOverlappingActors(ASPMakePotionActor, ASPMakePotion::StaticClass());
+	GetOverlappingActors(ASPCombinationActor, ASPManual::StaticClass());
 	// Todo 배열에 액터 종류 확인해서 넣기
+	OverlappingActors.Append(ASPMakePotionActor);
+	OverlappingActors.Append(ASPCombinationActor);
 	for (AActor* OverlappingActor : OverlappingActors)
 	{
 		if (OverlappingActor->Implements<USPInteractionInterface>()) // 상호작용 가능한지 확인합니다.

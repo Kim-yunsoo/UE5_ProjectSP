@@ -24,6 +24,10 @@ enum : uint16
 	PKT_S_DESPAWN = 1011,
 	PKT_C_CHAT = 1012,
 	PKT_S_CHAT = 1013,
+	PKT_C_PUBLIC_CHAT = 1014,
+	PKT_S_PUBLIC_CHAT = 1015,
+	PKT_C_PRIVATE_CHAT = 1016,
+	PKT_S_PRIVATE_CHAT = 1017,
 };
 
 // Custom Handlers
@@ -34,6 +38,8 @@ bool Handle_C_ENTER_GAME(PacketSessionRef& session, Protocol::C_ENTER_GAME& pkt)
 bool Handle_C_ENTER_ROOM(PacketSessionRef& session, Protocol::C_ENTER_ROOM& pkt);
 bool Handle_C_LEAVE_GAME(PacketSessionRef& session, Protocol::C_LEAVE_GAME& pkt);
 bool Handle_C_CHAT(PacketSessionRef& session, Protocol::C_CHAT& pkt);
+bool Handle_C_PUBLIC_CHAT(PacketSessionRef& session, Protocol::C_PUBLIC_CHAT& pkt);
+bool Handle_C_PRIVATE_CHAT(PacketSessionRef& session, Protocol::C_PRIVATE_CHAT& pkt);
 
 class ServerPacketHandler
 {
@@ -48,6 +54,8 @@ public:
 		GPacketHandler[PKT_C_ENTER_ROOM] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_ENTER_ROOM>(Handle_C_ENTER_ROOM, session, buffer, len); };
 		GPacketHandler[PKT_C_LEAVE_GAME] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_LEAVE_GAME>(Handle_C_LEAVE_GAME, session, buffer, len); };
 		GPacketHandler[PKT_C_CHAT] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_CHAT>(Handle_C_CHAT, session, buffer, len); };
+		GPacketHandler[PKT_C_PUBLIC_CHAT] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_PUBLIC_CHAT>(Handle_C_PUBLIC_CHAT, session, buffer, len); };
+		GPacketHandler[PKT_C_PRIVATE_CHAT] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_PRIVATE_CHAT>(Handle_C_PRIVATE_CHAT, session, buffer, len); };
 	}
 
 	static bool HandlePacket(PacketSessionRef& session, BYTE* buffer, int32 len)
@@ -63,6 +71,8 @@ public:
 	static SendBufferRef MakeSendBuffer(Protocol::S_SPAWN& pkt) { return MakeSendBuffer(pkt, PKT_S_SPAWN); }
 	static SendBufferRef MakeSendBuffer(Protocol::S_DESPAWN& pkt) { return MakeSendBuffer(pkt, PKT_S_DESPAWN); }
 	static SendBufferRef MakeSendBuffer(Protocol::S_CHAT& pkt) { return MakeSendBuffer(pkt, PKT_S_CHAT); }
+	static SendBufferRef MakeSendBuffer(Protocol::S_PUBLIC_CHAT& pkt) { return MakeSendBuffer(pkt, PKT_S_PUBLIC_CHAT); }
+	static SendBufferRef MakeSendBuffer(Protocol::S_PRIVATE_CHAT& pkt) { return MakeSendBuffer(pkt, PKT_S_PRIVATE_CHAT); }
 
 private:
 	template<typename PacketType, typename ProcessFunc>

@@ -39,18 +39,18 @@ void USPSkillWidget::NativeConstruct()
 	}
 }
 
-void USPSkillWidget::UpdateSlowBar(float NewCurrentPercent) //µ¨¸®°ÔÀÌÆ®·Î ¹Þ±â
+void USPSkillWidget::UpdateSlowBar(float NewCurrentPercent) //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Þ±ï¿½
 {
 
 	SlowBar->SetPercent(NewCurrentPercent);
 }
 
-void USPSkillWidget::UpdateIceBar(float NewCurrentPercent) //µ¨¸®°ÔÀÌÆ®·Î ¹Þ±â
+void USPSkillWidget::UpdateIceBar(float NewCurrentPercent) //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Þ±ï¿½
 {
 	IceBar->SetPercent(NewCurrentPercent);
 }
 
-void USPSkillWidget::UpdateTeleBar(float NewCurrentPercent) //µ¨¸®°ÔÀÌÆ®·Î ¹Þ±â
+void USPSkillWidget::UpdateTeleBar(float NewCurrentPercent) //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Þ±ï¿½
 {
 	TeleBar->SetPercent(NewCurrentPercent);
 }

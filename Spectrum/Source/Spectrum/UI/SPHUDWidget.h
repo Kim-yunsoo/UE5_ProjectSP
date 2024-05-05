@@ -39,6 +39,9 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<class USPMakingPotionWidget> MakingPotionWidget;
+
+	UPROPERTY()
+	TObjectPtr<class USPManualWidget> ManualWidget;
 	
 	UPROPERTY()
 	TObjectPtr<class USPSkillWidget> SlowSkillWidget;
@@ -74,6 +77,7 @@ public:
 	void UpdateTime(float CountdownTime);
 	void UpdateSlowCDTime(float NewCurrentTime);
 	void UpdateMakingPotionWidget(bool bIsVisible);
+	void UpdateManualWidget(bool bIsVisible);
 	void UpdateIceCDTime(float NewCurrentTime);
 	void UpdateTeleCDTime(float NewCurrentTime);
 	void UpdateScore(const ColorType& Mycolor, const int32 Score);

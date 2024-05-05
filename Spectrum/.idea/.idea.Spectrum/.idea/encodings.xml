@@ -1,16 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding">
-    <file url="file://$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterMovementComponent.h" charset="x-windows-949" />
-    <file url="file://$PROJECT_DIR$/Source/Spectrum/Component/SPInventoryComponent.cpp" charset="x-windows-949" />
-    <file url="file://$PROJECT_DIR$/Source/Spectrum/Game/SPLobbyGameMode.cpp" charset="x-windows-949" />
-    <file url="file://$PROJECT_DIR$/Source/Spectrum/Object/SPObject.h" charset="x-windows-949" />
-    <file url="file://$PROJECT_DIR$/Source/Spectrum/Potion/SPBlackPotion.cpp" charset="x-windows-949" />
-    <file url="file://$PROJECT_DIR$/Source/Spectrum/Skill/SPSlowSkill.cpp" charset="x-windows-949" />
-    <file url="file://$PROJECT_DIR$/Source/Spectrum/UI/Inventory/SPPickup.cpp" charset="x-windows-949" />
-    <file url="file://$PROJECT_DIR$/Source/Spectrum/UI/LobbyWidget.cpp" charset="x-windows-949" />
     <file url="file://$PROJECT_DIR$/Source/Spectrum/UI/SPSkillWidget.cpp" charset="x-windows-949" />
-    <file url="file://$PROJECT_DIR$/Source/Spectrum/UI/SPTargetUI.cpp" charset="x-windows-949" />
     <file url="PROJECT" charset="x-windows-949" />
   </component>
 </project>

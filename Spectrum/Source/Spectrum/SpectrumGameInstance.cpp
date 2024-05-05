@@ -1,5 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½Ä¿ï¿½ï¿½Æ® ï¿½ï¿½ï¿½â¼­ ï¿½ï¿½.
+// °ÔÀÓ ¼­¹ö¿¡ Á¢¼Ó, µð½ºÄ¿³ØÆ® ¿©±â¼­ ÇÔ.
 
 #include "SpectrumGameInstance.h"
 #include "Sockets.h"
@@ -11,175 +11,190 @@
 #include "ClientPacketHandler.h"
 #include "Object/SPObject.h"
 #include "Character/SPCharacterPlayer.h"
-
+#include "UI/SPLobbyWidget.h"
 
 
 void USpectrumGameInstance::ConnectToGameServer()
 {
-	// // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
-	// Socket = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateSocket(TEXT("Stream"), TEXT("Client Socket"));
-	//
-	// FIPv4Address Ip;
-	// FIPv4Address::Parse(IpAddress, Ip);
-	//
-	// TSharedRef<FInternetAddr> InternetAddr = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateInternetAddr();
-	// InternetAddr->SetIp(Ip.Value);
-	// InternetAddr->SetPort(Port);
-	//
-	// // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½Æ®ï¿½ï¿½Å© Ä¿ï¿½Ø¼ï¿½)
-	// //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("connect to server")));
-	//
-	// bool bConnected = Socket->Connect(*InternetAddr);
-	//
-	// // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
-	// if (bConnected)
-	// {
-	// 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("connection Success")));
-	//
-	// 	// Session ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½Ä¿ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
-	// 	GameServerSession = MakeShared<PacketSession>(Socket);
-	// 	GameServerSession->Run();		// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Æ°ï¿½
-	//
-	// 	//// ï¿½Îºñ¿¡¼ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ã¢ ï¿½ï¿½ï¿½ï¿½
-	// 	//{ // ï¿½Î±ï¿½ï¿½ï¿½	ï¿½ï¿½Å¶ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-	// 	//	Protocol::C_LOGIN Pkt;
-	// 	//	//SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(Pkt);
-	//
-	// 	//	//SendPacket(SendBuffer);
-	// 	//	Pkt.set_id("test");
-	//
-	// 		//SEND_PACKET(Pkt);
-	// 	//}
-	//
-	// }
-	// else
-	// {
-	// 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("connection failed")));
-	// }
+	// ¼ÒÄÏ »ý¼º
+	Socket = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateSocket(TEXT("Stream"), TEXT("Client Socket"));
+
+	FIPv4Address Ip;
+	FIPv4Address::Parse(IpAddress, Ip);
+
+	TSharedRef<FInternetAddr> InternetAddr = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateInternetAddr();
+	InternetAddr->SetIp(Ip.Value);
+	InternetAddr->SetPort(Port);
+
+	// ¼­¹ö¿¡ Á¢¼Ó(³×Æ®¿öÅ© Ä¿³Ø¼Ç)
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("connect to server")));
+
+	bool bConnected = Socket->Connect(*InternetAddr);
+
+	// Á¢¼Ó ¼º°ø ¿©ºÎ
+	if (bConnected)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("connection Success")));
+
+		// Session ¸¸µé±â(¿öÄ¿ ½º·¹µå »ý¼º)
+		GameServerSession = MakeShared<PacketSession>(Socket);
+		GameServerSession->Run();		// ÀÌÁ¦ ¸ÖÆ¼½º·¹µå·Î µ¹¾Æ°¨
+
+		//// ·Îºñ¿¡¼­ Ä³¸¯ÅÍ ¼±ÅÃÃ¢ ¶ç¿ì±â
+		//{ // ·Î±×ÀÎ	ÆÐÅ¶ º¸³»±â
+		//	Protocol::C_LOGIN Pkt;
+		//	//SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(Pkt);
+
+		//	//SendPacket(SendBuffer);
+		//	Pkt.set_id("test");
+
+			//SEND_PACKET(Pkt);
+		//}
+
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("connection failed")));
+	}
+
+	//LobbyWidget = CreateWidget<USPLobbyWidget>(this, LobbyWidgetClass);
+	//PlayerType = 0;
+
 }
 
 void USpectrumGameInstance::DisconnectToGameServer()
 {
 
-	// // Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ë·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-	// if (Socket == nullptr || GameServerSession == nullptr)
-	// 	return;
-	//
-	// Protocol::C_LEAVE_GAME LeavePkt;
-	// SEND_PACKET(LeavePkt);
-	//
-	// /*if(Socket)
-	// {
-	// 	ISocketSubsystem* SocketSubsystem = ISocketSubsystem::Get();
-	// 	SocketSubsystem->DestroySocket(Socket);
-	// 	Socket = nullptr;
-	// }*/
+	// Å¬¶óÀÌ¾ðÆ®°¡ Á¾·áÇÏ¸é ¼­¹ö¿¡°Ô ¾Ë·ÁÁà¾ßÇÔ
+	if (Socket == nullptr || GameServerSession == nullptr)
+		return;
+
+	Protocol::C_LEAVE_GAME LeavePkt;
+	SEND_PACKET(LeavePkt);
+
+	/*if(Socket)
+	{
+		ISocketSubsystem* SocketSubsystem = ISocketSubsystem::Get();
+		SocketSubsystem->DestroySocket(Socket);
+		Socket = nullptr;
+	}*/
 }
 
 void USpectrumGameInstance::HandleRecvPackets()
 {
 
-	// if (Socket == nullptr || GameServerSession == nullptr)
-	// {
-	// 	return;
-	// }
-	//
-	// GameServerSession->HandleRecvPackets();	// ï¿½ï¿½Ä¿ ï¿½ï¿½ï¿½ï¿½ï¿½å°¡ ï¿½ï¿½ï¿½ï¿½ Å¥ï¿½ï¿½ ï¿½Ò¸ï¿½ï¿½Ï¿ï¿½ Ã³ï¿½ï¿½
+	if (Socket == nullptr || GameServerSession == nullptr)
+	{
+		return;
+	}
+
+	GameServerSession->HandleRecvPackets();	// ¿öÄ¿ ½º·¹µå°¡ ±ÜÀº Å¥¸¦ ¼Ò¸ðÇÏ¿© Ã³¸®
 
 }
 
 void USpectrumGameInstance::SendPacket(SendBufferRef SendBuffer)
 {
 
-	// if(Socket == nullptr || GameServerSession == nullptr)
-	// {
-	// 	return;
-	// }
-	//
-	// GameServerSession->SendPacket(SendBuffer);	// Å¥ï¿½ï¿½ ï¿½×¾ï¿½ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½
+	if(Socket == nullptr || GameServerSession == nullptr)
+	{
+		return;
+	}
+
+	GameServerSession->SendPacket(SendBuffer);	// Å¥¸¦ ½×¾ÆÁÖ´Â ¿ªÇÒ
 }
 
+//void USpectrumGameInstance::AsyncClientPawn(const FString& serverIP, const int32 ServerPort, int32 PawnIndex)
+//{
+//	if (Socket == nullptr || GameServerSession == nullptr)
+//		return;
+//
+//	TArray<uint8> DataArray;
+//	DataArray.Append(reinterpret_cast<const uint8*>(&PawnIndex), sizeof(int32));
+//
+//	int32 BytesSent = 0;
+//	Socket->Send(DataArray.GetData(), DataArray.Num(), BytesSent);
+//}
 
 void USpectrumGameInstance::HandleSpawn(const Protocol::PlayerInfo& ObjectInfo, bool IsMine)
 {
-	// if (Socket == nullptr || GameServerSession == nullptr)
-	// 	return;
-	//
-	// auto* World = GetWorld();
-	// if (World == nullptr)
-	// 	return;
-	//
-	// // ï¿½ßºï¿½ Ã³ï¿½ï¿½ Ã¼Å©
-	// const uint64 ObjectId = ObjectInfo.object_id();
-	// if (Players.Find(ObjectId) != nullptr)
-	// 	return;
-	//
-	// //FVector SpawnLocation(ObjectInfo.pos_info().x(), ObjectInfo.pos_info().y(), ObjectInfo.pos_info().z());
-	//
-	// if (IsMine)
-	// {
-	// 	auto* PC = UGameplayStatics::GetPlayerController(this, 0);
-	// 	ASPCharacterPlayer* Player = Cast<ASPCharacterPlayer>(PC->GetPawn());
-	// 	if (Player == nullptr)
-	// 		return;
-	//
-	// 	//Player->SetPostionInfo(ObjectInfo.pos_info());
-	//
-	// 	MyPlayer = Player;
-	// 	Players.Add(ObjectInfo.object_id(), Player);
-	// }
+	if (Socket == nullptr || GameServerSession == nullptr)
+		return;
+
+	auto* World = GetWorld();
+	if (World == nullptr)
+		return;
+
+	// Áßº¹ Ã³¸® Ã¼Å©
+	const uint64 ObjectId = ObjectInfo.object_id();
+	if (Players.Find(ObjectId) != nullptr)
+		return;
+
+	//FVector SpawnLocation(ObjectInfo.pos_info().x(), ObjectInfo.pos_info().y(), ObjectInfo.pos_info().z());
+
+	if (IsMine)
+	{
+		auto* PC = UGameplayStatics::GetPlayerController(this, 0);
+		ASPCharacterPlayer* Player = Cast<ASPCharacterPlayer>(PC->GetPawn());
+		if (Player == nullptr)
+			return;
+
+		//Player->SetPostionInfo(ObjectInfo.pos_info());
+
+		MyPlayer = Player;
+		Players.Add(ObjectInfo.object_id(), Player);
+	}
 
 
 }
 
 void USpectrumGameInstance::HandleSpawn(const Protocol::S_ENTER_GAME& EnterGamePkt)
 {
-	//HandleSpawn(EnterGamePkt.player(), true);
+	HandleSpawn(EnterGamePkt.player(), true);
 }
 
 void USpectrumGameInstance::HandleSpawn(const Protocol::S_SPAWN& SpawnPkt)
 {
-	// for (auto& Player : SpawnPkt.players())
-	// {
-	// 	HandleSpawn(Player, false);
-	// }
+	for (auto& Player : SpawnPkt.players())
+	{
+		HandleSpawn(Player, false);
+	}
 }
 
 void USpectrumGameInstance::HandleDespawn(uint64 ObjectId)
 {
 
-	// if (Socket == nullptr || GameServerSession == nullptr)
-	// 	return;
-	//
-	// auto* World = GetWorld();
-	// if (World == nullptr)
-	// 	return;
-	//
-	// ASPCharacterPlayer** FindActor = Players.Find(ObjectId);
-	// if (FindActor == nullptr)
-	// 	return;
-	//
-	// World->DestroyActor(*FindActor);
+	if (Socket == nullptr || GameServerSession == nullptr)
+		return;
+
+	auto* World = GetWorld();
+	if (World == nullptr)
+		return;
+
+	ASPCharacterPlayer** FindActor = Players.Find(ObjectId);
+	if (FindActor == nullptr)
+		return;
+
+	World->DestroyActor(*FindActor);
 }
 
 void USpectrumGameInstance::HandleDespawn(const Protocol::S_DESPAWN& DespawnPkt)
 {
 
-	// for (auto& ObjectId : DespawnPkt.object_ids())
-	// {
-	// 	HandleDespawn(ObjectId);
-	// }
+	for (auto& ObjectId : DespawnPkt.object_ids())
+	{
+		HandleDespawn(ObjectId);
+	}
 }
 
 void USpectrumGameInstance::HandleLobby(const Protocol::S_ENTER_GAME& LobbyPkt)
 {
-	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(ï¿½Ú½ï¿½ï¿½ï¿½ ï¿½Ð±ï¿½, ï¿½ï¿½ï¿½ï¿½)
+	// ¹ÞÀº Á¤º¸ ÀúÀå(ÀÚ½ÅÀÇ ÇÐ±³, ¼ºº°)
 
 }
 
 void USpectrumGameInstance::HandleLobby(const Protocol::S_LOGIN& LobbyPkt)
 {
-	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(ï¿½Ú½ï¿½ï¿½ï¿½ ï¿½Ð±ï¿½, ï¿½ï¿½ï¿½ï¿½)
+	// ¹ÞÀº Á¤º¸ ÀúÀå(ÀÚ½ÅÀÇ ÇÐ±³, ¼ºº°)
 	//const Protocol::PositionInfo& Info = LobbyPkt.info();
 	//Player->SetDestInfo(Info);
 
@@ -187,8 +202,8 @@ void USpectrumGameInstance::HandleLobby(const Protocol::S_LOGIN& LobbyPkt)
 
 void USpectrumGameInstance::HandleRoom(const Protocol::S_ENTER_ROOM& RoomPkt)
 {
-	// ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
-	// ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(ï¿½æ¿¡ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
+	// ¹æ ÀÔÀå
+	// ¹æ ¾ÈÀÇ Á¤º¸ ÀúÀå(¹æ¿¡ ÀÖ´Â »ç¶÷µé Á¤º¸)
 }
 
 
