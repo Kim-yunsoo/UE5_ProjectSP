@@ -29,14 +29,17 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Gravity ;
 
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Projectile")
+	UPROPERTY(Replicated)
 	TObjectPtr<UParticleSystemComponent> MainVFX;
 
 
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Projectile")
+	UPROPERTY(Replicated)
 	TObjectPtr<UParticleSystem> EmitterHit;
 	
 	virtual void BeginPlay() override;
 	
 	uint8 bIsOnce :1 ;
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const;
+
 };

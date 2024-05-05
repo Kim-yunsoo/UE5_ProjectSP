@@ -2,37 +2,48 @@
 
 
 #include "Skill/SkillActor/SPSlowSkillActor.h"
+
+#include "SpectrumLog.h"
+#include "Character/SPCharacterPlayer.h"
 #include "Components/BoxComponent.h"
+#include "Data/SPSkillFVXStructs.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Interface/SPSkillInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Net/UnrealNetwork.h"
 #include "Particles/ParticleSystemComponent.h"
 
+struct FSkillFVXData;
 // Sets default values
 ASPSlowSkillActor::ASPSlowSkillActor()
 {
+	static ConstructorHelpers::FObjectFinder<UDataTable> VFXDataRef(TEXT("/Script/Engine.DataTable'/Game/Spectrum/Data/DT_SkillFVXData.DT_SkillFVXData'"));
+	if(VFXDataRef.Object)
+	{
+		VFXDataTable = VFXDataRef.Object;
+	}
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	// PrimaryActorTick.bCanEverTick = true;
 
-	static ConstructorHelpers::FObjectFinder<UParticleSystem> GreenVfxRef(TEXT(
-		"/Script/Engine.ParticleSystem'/Game/MagicProjectilesVol2/Particles/Projectiles/CP_GreenProjectile.CP_GreenProjectile'"));
-	if (GreenVfxRef.Succeeded())
-	{
-		MainVFX->SetTemplate(GreenVfxRef.Object);
-		MainVFX->SetRelativeLocation(FVector(50.0f, 0.0f, 0.0f));
-	}
-
-	static ConstructorHelpers::FObjectFinder<UParticleSystem> GreenHitRef(
-		TEXT("/Script/Engine.ParticleSystem'/Game/MagicProjectilesVol2/Particles/Hits/CP_GreenHit.CP_GreenHit'"));
-
-	if (GreenHitRef.Succeeded())
-	{
-		EmitterHit = GreenHitRef.Object;
-	}
+	// static ConstructorHelpers::FObjectFinder<UParticleSystem> GreenVfxRef(TEXT(
+	// 	"/Script/Engine.ParticleSystem'/Game/MagicProjectilesVol2/Particles/Projectiles/CP_GreenProjectile.CP_GreenProjectile'"));
+	// if (GreenVfxRef.Succeeded())
+	// {
+	// 	MainVFX->SetTemplate(GreenVfxRef.Object);
+	// 	MainVFX->SetRelativeLocation(FVector(50.0f, 0.0f, 0.0f));
+	// }
+	//
+	// static ConstructorHelpers::FObjectFinder<UParticleSystem> GreenHitRef(
+	// 	TEXT("/Script/Engine.ParticleSystem'/Game/MagicProjectilesVol2/Particles/Hits/CP_GreenHit.CP_GreenHit'"));
+	//
+	// if (GreenHitRef.Succeeded())
+	// {
+	// 	EmitterHit = GreenHitRef.Object;
+	// }
 
 	// HitParticle = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("HitParticle"));
-
+	SetReplicates(true);
 	bIsHoming = false;
 }
 
@@ -46,7 +57,25 @@ void ASPSlowSkillActor::BeginPlay()
 {
 	Super::BeginPlay();
 
+	ASPCharacterPlayer* MyPlayer= Cast<ASPCharacterPlayer>(GetOwner());
+
+	if(MyPlayer )
+	{
+		FString ScoolColor = UEnum::GetValueAsString(MyPlayer->SchoolAffiliation);
+
+		FSkillFVXData* FvxData = VFXDataTable->FindRow<FSkillFVXData>( FName(*ScoolColor),"");
+		if(FvxData)
+		{
+			// 	MainVFX->SetTemplate(GreenVfxRef.Object);
+			// 	MainVFX->SetRelativeLocation(FVector(50.0f, 0.0f, 0.0f));
+			MainVFX->SetTemplate((FvxData->AssetData.ProjectileFVX));
+			MainVFX->SetRelativeLocation(FVector(50.0f, 0.0f, 0.0f));
+			
+			EmitterHit=FvxData->AssetData.HitFVX;
+		}
 	
+	}
+
 	//BoxCollision->IgnoreActorWhenMoving(GetOwner(),true);
 
 	BoxCollision->OnComponentHit.AddDynamic(this, &ASPSlowSkillActor::OnBoxCollisionHit);
@@ -94,6 +123,7 @@ void ASPSlowSkillActor::InitTarget(AActor* TargetPlayer)
 	TargetActor = TargetPlayer;
 	bIsHoming = true;
 }
+
 
 void ASPSlowSkillActor::MultiRPCSlowSkill_Implementation(const FHitResult& Hit)
 {

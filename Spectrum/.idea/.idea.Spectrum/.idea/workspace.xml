@@ -11,12 +11,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="930c52c5-2823-422b-ab9a-d68c3757d86e" name="변경" comment="">
-      <change afterPath="$PROJECT_DIR$/Source/Spectrum/Data/SPSkillFVXStructs.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Room/Map/Building.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Room/Map/Building.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/UMG/Overlay/WB_SPScoreWidget.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/UMG/Overlay/WB_SPScoreWidget.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/UMG/WBP_SPHUD.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/UMG/WBP_SPHUD.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Data/SPSkilllData.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Data/SPSkilllData.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Assets/Potion/S_Potion/M_Rainbow.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Assets/Potion/S_Potion/M_Rainbow.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Spectrum/BluePrint/BP_SPTEST.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/BluePrint/BP_SPTEST.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Data/DT_SkillFVXData.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Data/DT_SkillFVXData.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Input/IMC_SP_Shoulder.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Input/IMC_SP_Shoulder.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Game/SPGameState.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Game/SPGameState.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPPotionSpawner.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPPotionSpawner.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Skill/SPSlowSkill.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Skill/SPSlowSkill.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Skill/SkillActor/SPSkillActorBase.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Skill/SkillActor/SPSkillActorBase.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Skill/SkillActor/SPSkillActorBase.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Skill/SkillActor/SPSkillActorBase.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Skill/SkillActor/SPSlowSkillActor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Skill/SkillActor/SPSlowSkillActor.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Skill/SkillActor/SPSlowSkillActor.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Skill/SkillActor/SPSlowSkillActor.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/UI/SPGameTimeWidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/UI/SPGameTimeWidget.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,46 +48,7 @@
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Intermediate/Build/Win64/UnrealEditor/Inc/Spectrum/UHT/SPSkillFVXStructs.gen.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Spectrum/Interface/SPPotionSpawnInterface.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Spectrum/Interface/SPPotionSpawnInterface.h" root0="FORCE_HIGHLIGHTING" />
   </component>
@@ -248,7 +218,7 @@
       <workItem from="1714836140030" duration="3148000" />
       <workItem from="1714839375476" duration="3380000" />
       <workItem from="1714889936100" duration="179000" />
-      <workItem from="1714890718775" duration="7267000" />
+      <workItem from="1714890718775" duration="17864000" />
     </task>
     <servers />
   </component>

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "SPSkillActorBase.h"
+#include "Character/SPCharacterPlayer.h"
 #include "GameFramework/Actor.h"
 #include "SPSlowSkillActor.generated.h"
 
@@ -20,6 +21,15 @@ public:
 	// ASPSlowSkillActor(AActor* TargetPlayer);
 
 protected:
+	// UPROPERTY(Replicated)
+	// TObjectPtr<UParticleSystemComponent> SlowVFX;
+	//
+	//
+	// UPROPERTY(Replicated)
+	// TObjectPtr<UParticleSystem> SlowEmitterHit;
+	
+	UPROPERTY()
+	TObjectPtr<UDataTable> VFXDataTable;
 	UFUNCTION(NetMulticast, Unreliable)
 	void MultiRPCSlowSkill(const FHitResult& Hit );
 
@@ -60,7 +70,9 @@ protected:
 	void RotateToTarget();
 public:
 	void InitTarget( AActor* TargetPlayer);
+	
+
 	// Called every frame
 	// virtual void Tick(float DeltaTime) override;
-
+	
 };

@@ -67,10 +67,11 @@ void USPSlowSkill::SkillAction()
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
-	ASPSlowSkillActor* MyActor =GetWorld()->SpawnActor<ASPSlowSkillActor>(ASPSlowSkillActor::StaticClass(),Owner->SkillLocation->GetComponentLocation(),
-											   Owner->SkillLocation->GetComponentRotation(), SpawnParams);
+	FTransform SpawnTransform(Owner->SkillLocation->GetComponentRotation(), Owner->SkillLocation->GetComponentLocation());
+	ASPSlowSkillActor* MyActor =GetWorld()->SpawnActorDeferred<ASPSlowSkillActor>(ASPSlowSkillActor::StaticClass(),SpawnTransform);
 	MyActor->SetOwner(Owner);
-	
+	SP_SUBLOG(LogSPNetwork,Log,TEXT("Owner"));
+	MyActor->FinishSpawning(SpawnTransform);
 }
 
 void USPSlowSkill::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

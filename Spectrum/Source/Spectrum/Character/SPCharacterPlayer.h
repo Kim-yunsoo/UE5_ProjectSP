@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "Potion/SPBlackPotion.h"
 #include "InputActionValue.h"
+#include "SPGlobalEnum.h"
 #include "Interface/SPSkillInterface.h"
 #include "Interface/SPCharacterHUDInterface.h"
 #include "Interface/SPInteractionInterface.h"
@@ -109,6 +110,7 @@ protected:
 	void GreenPotionSpawn(const FInputActionValue& Value);
 	void OrangePotionSpawn(const FInputActionValue& Value);
 	void PurplePotionSpawn(const FInputActionValue& Value);
+	void SpectrumPotionSpawn(const FInputActionValue& Value);
 	void SlowSKill(const FInputActionValue& Value);
 	void IceSKill(const FInputActionValue& Value);
 	void TeleSKill(const FInputActionValue& Value);
@@ -279,6 +281,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> ToggleMenu;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> SpectrumFive;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputMappingContext* DefaultMappingContext;
 
@@ -585,10 +590,12 @@ public:
 	UPROPERTY(Replicated)
 	uint8 bIsActiveGraping :1;
 
-	// UPROPERTY(EditAnywhere,BlueprintReadWrite)
-	// ESchoolColor SchoolAffiliation;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	ColorType SchoolAffiliation;
 
 	UFUNCTION(NetMulticast,Unreliable)
 	void MultiChangeCollision(const FName& CollisionName);
+
+	
 	
 };

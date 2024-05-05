@@ -5,6 +5,7 @@
 
 #include "Components/BoxComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Net/UnrealNetwork.h"
 #include "Particles/ParticleSystemComponent.h"
 
 // Sets default values
@@ -49,5 +50,10 @@ void ASPSkillActorBase::BeginPlay()
 	ProjectileMovement->HomingAccelerationMagnitude = 7000.f;
 }
 
-
+void ASPSkillActorBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(ASPSkillActorBase,MainVFX);
+	DOREPLIFETIME(ASPSkillActorBase,EmitterHit);
+}
 

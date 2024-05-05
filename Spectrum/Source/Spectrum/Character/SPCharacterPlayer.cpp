@@ -311,7 +311,13 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 		TeleR = TeleRRef.Object;
 	}
 
-
+	static ConstructorHelpers::FObjectFinder<UInputAction> SpectrumFiveRef(
+		TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_SpectrumPotionSpawn.IA_SP_SpectrumPotionSpawn'"));
+	if (nullptr != SpectrumFiveRef.Object)
+	{
+		SpectrumFive = SpectrumFiveRef.Object;
+	}
+	
 	/*static ConstructorHelpers::FObjectFinder<UAnimMontage> ThrowMontageRef(TEXT("/Script/Engine.AnimMontage'/Game/Spectrum/Animation/AniMeta/Man/AM_SP_Throw.AM_SP_Throw'"));
 	if (ThrowMontageRef.Object)
 	{
@@ -490,6 +496,9 @@ void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Player
 
 		EnhancedInputComponent->BindAction(BlackFour, ETriggerEvent::Triggered, this,
 		                                   &ASPCharacterPlayer::BlackPotionSpawn);
+
+		EnhancedInputComponent->BindAction(SpectrumFive, ETriggerEvent::Triggered, this,
+										   &ASPCharacterPlayer::SpectrumPotionSpawn);
 
 		EnhancedInputComponent->BindAction(ThrowCtrl, ETriggerEvent::Triggered, this, &ASPCharacterPlayer::AimPotion);
 		EnhancedInputComponent->BindAction(ThrowCtrl, ETriggerEvent::Completed, this, &ASPCharacterPlayer::ThrowPotion);
@@ -874,6 +883,11 @@ void ASPCharacterPlayer::OrangePotionSpawn(const FInputActionValue& Value)
 void ASPCharacterPlayer::PurplePotionSpawn(const FInputActionValue& Value)
 {
 	ServerRPCPurplePotionSpawn();
+}
+
+void ASPCharacterPlayer::SpectrumPotionSpawn(const FInputActionValue& Value)
+{
+	UE_LOG(LogTemp,Log,TEXT("Spectrum!"));
 }
 
 void ASPCharacterPlayer::Interaction(const FInputActionValue& Value)

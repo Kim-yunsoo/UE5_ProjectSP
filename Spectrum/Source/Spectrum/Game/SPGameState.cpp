@@ -62,7 +62,6 @@ void ASPGameState::DefaultGameTimer()
 
 void ASPGameState::OnRapTime()
 {
-
 	OnTime.Broadcast(RemainingTime);
 }
 
