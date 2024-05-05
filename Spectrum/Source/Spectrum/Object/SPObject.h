@@ -111,4 +111,5 @@ public://DynamicMaterial
 
 public:
 	void SetObjectCollisionType(const FName& CollisionType);
+
 };

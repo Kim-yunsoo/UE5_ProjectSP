@@ -41,13 +41,16 @@ public:
 	UFUNCTION(Server,Unreliable)
 	void ServerRPC(ASPObject* Object);
 	
-	UFUNCTION(Server,Unreliable)
-	void ServerSpectrumRPC(const TArray<AActor*>& ObjectArray);
 
-	// UFUNCTION(NetMulticast,Unreliable)
-	// void MultiSpectrumRPC(ASPObject* Object);
+	UFUNCTION(NetMulticast,Unreliable)
+	void MultiSpectrumRPC(const TArray<AActor*>& ObjectArray);
 	FORCEINLINE void AddScore(const ColorType& MyColor) {OnScore.Broadcast(MyColor);}
 
-	
-	
+	// UPROPERTY()
+	// ASPObject* MyObject ;
+
+
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const;
+
 };

@@ -774,10 +774,10 @@ void ASPCharacterPlayer::ServerRPCStopAiming_Implementation()
 
 void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 {
-	if (bIsActiveGraping)
-	{
+	// if (bIsActiveGraping)
+	// {
 	ServerRPCGraping();
-	}
+	// }
 }
 
 void ASPCharacterPlayer::StopGraping(const FInputActionValue& Value)

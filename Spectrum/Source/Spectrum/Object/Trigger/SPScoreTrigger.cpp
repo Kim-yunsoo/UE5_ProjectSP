@@ -8,6 +8,7 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/GameModeBase.h"
 #include "GameFramework/GameState.h"
+#include "Net/UnrealNetwork.h"
 #include "Object/SPObject.h"
 #include "Potion/SPSpectrumPotion.h"
 
@@ -16,7 +17,7 @@ class ASPGameModeBase;
 ASPScoreTrigger::ASPScoreTrigger()
 {
 	Trigger = CreateDefaultSubobject<UBoxComponent>(TEXT("Trigger"));
-	//SetReplicates(true);
+	SetReplicates(true);
 }
 
 // Called when the game starts or when spawned
@@ -44,75 +45,63 @@ void ASPScoreTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor
 	if (SpectrumPotionHit)
 	{
 		SetOwner(OtherActor->GetOwner());
-		SP_LOG(LogSPNetwork,Log,TEXT("%s"),*(this->GetOwner())->GetName());
-		
+		SP_LOG(LogSPNetwork, Log, TEXT("%s"), *(this->GetOwner())->GetName());
+
 		TArray<AActor*> OverlappingActors;
 		Trigger->GetOverlappingActors(OverlappingActors);
 
-		ServerSpectrumRPC(OverlappingActors);
-		
-		// UE_LOG(LogTemp,Log,TEXT("%d"), OverlappingActors.Num());
-		// int num = 0;
-		// for (AActor* Actor : OverlappingActors)
-		// {
-		// 	if (ASPObject* MyObject = Cast<ASPObject>(Actor))
-		// 	{
-		// 		if (MyObject->bIsScoreReflected == false)
-		// 		{
-		// 			UE_LOG(LogTemp,Log,TEXT("ASPObject"));
-		// 			//SP_LOG(LogSPNetwork,Log,TEXT("%s"),*(MyObject->GetOwner())->GetName());
-		// 			ServerRPC(MyObject);
-		// 		}
-		// 	}
-		// }
+		MultiSpectrumRPC(OverlappingActors);
 	}
 }
 
-// void ASPScoreTrigger::MultiSpectrumRPC_Implementation(ASPObject* Object)
-// {
-// 	if(Object->MyColorType != Color)
-// 	{
-// 		ISPDamageInterface* ChangeColor = Cast<ISPDamageInterface>(Object);
-// 			
-// 		if(Color==ColorType::Green)
-// 		{
-// 			ChangeColor->OnChangeColorGreen();
-// 		}
-// 		else if(Color==ColorType::Orange)
-// 		{
-// 			ChangeColor->OnChangeColorOrange();
-// 		}
-// 		if(Color==ColorType::Purple)
-// 		{
-// 			ChangeColor->OnChangeColorPurple();
-// 		}
-// 	}
-// }
 
-void ASPScoreTrigger::ServerSpectrumRPC_Implementation(const TArray<AActor*>& ObjectArray)
+void ASPScoreTrigger::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+}
+
+void ASPScoreTrigger::MultiSpectrumRPC_Implementation(const TArray<AActor*>& ObjectArray)
 {
 	for (AActor* Actor : ObjectArray)
 	{
+		//UE_LOG(LogTemp,Log,TEXT("%s"),*Actor->GetName());
 		if (ASPObject* MyObject = Cast<ASPObject>(Actor))
 		{
-			if (MyObject->bIsScoreReflected == false)
+			SP_LOG(LogSPNetwork, Log, TEXT("Server"));
+			if (MyObject->MyColorType != Color)
 			{
-				//UE_LOG(LogTemp,Log,TEXT("ASPObject"));
-				//SP_LOG(LogSPNetwork,Log,TEXT("%s"),*(MyObject->GetOwner())->GetName());
-				//ServerRPC(MyObject);
-				MyObject->bIsScoreReflected = true;
-				ACharacter* player = Cast<ACharacter>(GetOwner());
-				if (player)
+				ISPDamageInterface* ChangeColor = Cast<ISPDamageInterface>(MyObject);
+
+				if (Color == ColorType::Green)
 				{
-					//SP_LOG(LogSPNetwork,Log,TEXT("ServerRPC2"));
-					//MultiSpectrumRPC(Object);
-					AGameStateBase* State = player->GetController()->GetWorld()->GetGameState();
-
-					ISPScoreInterface* ScoreFuntion = Cast<ISPScoreInterface>(State);
-
-					if (ScoreFuntion)
+					ChangeColor->OnChangeColorGreen();
+				}
+				else if (Color == ColorType::Orange)
+				{
+					ChangeColor->OnChangeColorOrange();
+				}
+				if (Color == ColorType::Purple)
+				{
+					ChangeColor->OnChangeColorPurple();
+				}
+			}
+			//MultiSpectrumRPC(MyObject);
+			if (HasAuthority())
+			{
+				if (MyObject->bIsScoreReflected == false)
+				{
+					MyObject->bIsScoreReflected = true;
+					ACharacter* player = Cast<ACharacter>(GetOwner());
+					if (player)
 					{
-						ScoreFuntion->AddScore(Color); //State에서 점수를 올려준다. 
+						AGameStateBase* State = player->GetController()->GetWorld()->GetGameState();
+
+						ISPScoreInterface* ScoreFuntion = Cast<ISPScoreInterface>(State);
+
+						if (ScoreFuntion)
+						{
+							ScoreFuntion->AddScore(Color); //State에서 점수를 올려준다. 
+						}
 					}
 				}
 			}
@@ -122,13 +111,10 @@ void ASPScoreTrigger::ServerSpectrumRPC_Implementation(const TArray<AActor*>& Ob
 
 void ASPScoreTrigger::ServerRPC_Implementation(ASPObject* Object)
 {
-	SP_LOG(LogSPNetwork,Log,TEXT("ServerRPC!"));
-
 	Object->bIsScoreReflected = true;
 	ACharacter* player = Cast<ACharacter>(GetOwner());
 	if (player)
 	{
-		SP_LOG(LogSPNetwork,Log,TEXT("ServerRPC2"));
 		//MultiSpectrumRPC(Object);
 		AGameStateBase* State = player->GetController()->GetWorld()->GetGameState();
 

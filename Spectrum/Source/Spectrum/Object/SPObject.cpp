@@ -146,6 +146,7 @@ void ASPObject::SetObjectCollisionType(const FName& CollisionType)
 	ObjectMesh->SetCollisionProfileName(CollisionType);
 }
 
+
 // Called every frame
 
 void ASPObject::OnChangeColorGreen()
