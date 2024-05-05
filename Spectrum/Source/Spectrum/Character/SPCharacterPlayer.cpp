@@ -1915,7 +1915,6 @@ void ASPCharacterPlayer::MultiChangeCollision_Implementation(const FName& Collis
 		MyObject->SetObjectCollisionType(CollisionName);
 	}
 }
-
 void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 {
 	GetCharacterMovement()->bOrientRotationToMovement = true;
@@ -2017,15 +2016,15 @@ void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 					NAME_None,
 					HitComponent->K2_GetComponentLocation()
 				);
-				if (bIsActiveGraping)
-				{
+				// if (bIsActiveGraping)
+				// {
 					bIsHolding = true;
 
 					FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld,
 					                                          EAttachmentRule::KeepWorld, true);
 					FollowCamera->AttachToComponent(CameraBoom, AttachmentRules, NAME_None);
 					CameraMove();
-				}
+				// }
 
 				// }
 			}
