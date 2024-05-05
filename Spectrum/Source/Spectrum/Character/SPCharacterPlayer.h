@@ -461,6 +461,9 @@ public:
 	void ServerRPCPurplePotionSpawn();
 
 	UFUNCTION(Server, Unreliable)
+	void ServerRPCSpectrumPotionSpawn();
+
+	UFUNCTION(Server, Unreliable)
 	void ServerRPCSlowSkill(float AttackStartTime);
 
 	UFUNCTION(Server, Unreliable)

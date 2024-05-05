@@ -51,6 +51,7 @@
 #include "Skill/SPTeleSkill.h"
 #include "UI/SPHUDWidget.h"
 #include "Potion/SPPickup.h"
+#include "Potion/SPSpectrumPotion.h"
 #include "UI/Interaction/SPManual.h"
 
 
@@ -888,8 +889,37 @@ void ASPCharacterPlayer::PurplePotionSpawn(const FInputActionValue& Value)
 void ASPCharacterPlayer::SpectrumPotionSpawn(const FInputActionValue& Value)
 {
 	UE_LOG(LogTemp,Log,TEXT("Spectrum!"));
-}
+	ServerRPCSpectrumPotionSpawn();
 
+}
+void ASPCharacterPlayer::ServerRPCSpectrumPotionSpawn_Implementation()
+{
+	if (false == bIsSpawn)
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
+		Potion = GetWorld()->SpawnActor<ASPSpectrumPotion>(ASPSpectrumPotion::StaticClass(),
+														 GetMesh()->GetSocketLocation("Item_Socket"),
+														 FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
+		bIsSpawn = true;
+		if (Potion)
+		{
+			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+													  EAttachmentRule::SnapToTarget, true);
+			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
+		}
+	}
+	else
+	{
+		if (Potion)
+		{
+			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+													  EAttachmentRule::SnapToTarget, true);
+			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
+		}
+	}
+}
 void ASPCharacterPlayer::Interaction(const FInputActionValue& Value)
 {
 
@@ -1257,6 +1287,8 @@ void ASPCharacterPlayer::ClientRPCTeleAnimation_Implementation(ASPCharacterPlaye
 		CharacterToPlay->PlayTeleSkillAnimation();
 	}
 }
+
+
 
 void ASPCharacterPlayer::OnRep_PotionSpawn()
 {
