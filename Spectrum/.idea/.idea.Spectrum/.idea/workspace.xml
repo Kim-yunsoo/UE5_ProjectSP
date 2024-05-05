@@ -11,7 +11,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="930c52c5-2823-422b-ab9a-d68c3757d86e" name="변경" comment="">
+      <change afterPath="$PROJECT_DIR$/Source/Spectrum/Data/SPSkillFVXStructs.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Room/Map/Building.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Room/Map/Building.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Spectrum/UMG/Overlay/WB_SPScoreWidget.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/UMG/Overlay/WB_SPScoreWidget.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Spectrum/UMG/WBP_SPHUD.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/UMG/WBP_SPHUD.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Data/SPSkilllData.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Data/SPSkilllData.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -243,7 +248,7 @@
       <workItem from="1714836140030" duration="3148000" />
       <workItem from="1714839375476" duration="3380000" />
       <workItem from="1714889936100" duration="179000" />
-      <workItem from="1714890718775" duration="4176000" />
+      <workItem from="1714890718775" duration="7267000" />
     </task>
     <servers />
   </component>

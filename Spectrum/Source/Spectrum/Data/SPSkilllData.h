@@ -15,15 +15,10 @@ class SPECTRUM_API USPSkilllData : public UPrimaryDataAsset
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
-	TObjectPtr<UAnimMontage> SkillMontage;
+	
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite)
+	TObjectPtr<UParticleSystem> ProjectileVfx;
 
-	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
-	TObjectPtr<UTexture> SkillTexture;
-
-	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
-	float CoolDown;
-
-	// UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
-	// TObjectPtr<class UNiagaraSystem> Niagara;
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite)
+	TObjectPtr<UParticleSystem> HitVfx;
 };
