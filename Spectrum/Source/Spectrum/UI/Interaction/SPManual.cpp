@@ -95,13 +95,13 @@ void ASPManual::Interact2(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUD
 	{
 		bIsVisible = false;
 		HUDWidget->UpdateManualWidget(false);
-		HUDWidget->ToggleMenu();
+		HUDWidget->ToggleMouse();
 	}
 	else
 	{
 		bIsVisible = true;
 		HUDWidget->UpdateManualWidget(true);
-		HUDWidget->ToggleMenu();
+		HUDWidget->ToggleMouse();
 	}
 }
 

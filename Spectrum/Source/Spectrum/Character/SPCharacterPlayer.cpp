@@ -365,11 +365,11 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 		// 필요에 따라 추가적인 MeshFinder 사용하여 다른 메시 로드 및 추가
 	}
 
-	static ConstructorHelpers::FObjectFinder<UInputAction> ToggleMenuRef(
-		TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_Inventory.IA_SP_Inventory'"));
-	if (nullptr != ToggleMenuRef.Object)
+	static ConstructorHelpers::FObjectFinder<UInputAction> KeyMenuRef(
+		TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_Key.IA_SP_Key'"));
+	if (nullptr != KeyMenuRef.Object)
 	{
-		ToggleMenu = ToggleMenuRef.Object;
+		KeyMenu = KeyMenuRef.Object;
 	}
 	//Effect
 
@@ -406,7 +406,8 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 	bIsActiveIceSkill = true;
 	bIsActiveTeleSkill = true;
 	bIsActiveGraping = true;
-
+	KeyToggle = true;
+	
 	// bIsActiveSlowSkill = true;
 	HitDistance = 1800.f;
 
@@ -507,8 +508,8 @@ void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Player
 		                                   &ASPCharacterPlayer::SlowSKill);
 		EnhancedInputComponent->BindAction(IceE, ETriggerEvent::Triggered, this,
 		                                   &ASPCharacterPlayer::IceSKill);
-		EnhancedInputComponent->BindAction(ToggleMenu, ETriggerEvent::Triggered, this,
-		                                   &ASPCharacterPlayer::ToggleMenuAction);
+		EnhancedInputComponent->BindAction(KeyMenu, ETriggerEvent::Triggered, this,
+		                                   &ASPCharacterPlayer::ToggleKeyWidget);
 		EnhancedInputComponent->BindAction(TeleR, ETriggerEvent::Triggered, this,
 		                                   &ASPCharacterPlayer::TeleSKill);
 	}
@@ -586,10 +587,10 @@ void ASPCharacterPlayer::SetCharacterControl(ECharacterControlType NewCharacterC
 	{
 		HUDWidget = SPController->GetSPHUDWidget();
 	}
-	HUDWidget->bIsMenuVisible = true;
+	HUDWidget->bIsShowMouse = true;
 	HUDWidget->UpdateMakingPotionWidget(false);
 	HUDWidget->UpdateManualWidget(false);
-	HUDWidget->ToggleMenu();
+	HUDWidget->ToggleMouse();
 }
 
 void ASPCharacterPlayer::ShoulderMove(const FInputActionValue& Value)
@@ -901,9 +902,19 @@ void ASPCharacterPlayer::Interaction(const FInputActionValue& Value)
 	}
 }
 
-void ASPCharacterPlayer::ToggleMenuAction(const FInputActionValue& Value)
+void ASPCharacterPlayer::ToggleKeyWidget(const FInputActionValue& Value)
 {
-	HUDWidget->ToggleMenu();
+	//HUDWidget->bIsShowMouse();
+	if(KeyToggle)
+	{
+		HUDWidget->ToggleKeyWidget(false);
+		KeyToggle = false;
+	}
+	else
+	{
+		HUDWidget->ToggleKeyWidget(true);
+		KeyToggle = true;
+	}
 }
 
 void ASPCharacterPlayer::IceSKill(const FInputActionValue& Value)

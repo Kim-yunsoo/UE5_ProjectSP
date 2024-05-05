@@ -5,13 +5,13 @@
 
 #include "SpectrumLog.h"
 #include "SPGameTimeWidget.h"
+#include "SPKeyWidget.h"
 #include "SPManualWidget.h"
 #include "SPScoreWidget.h"
 #include "SPSkillWidget.h"
 #include "Interface/SPCharacterHUDInterface.h"
 #include "Potion/Make/SPMakingPotionWidget.h"
 #include "UI/SPTargetUI.h"
-#include "UI/SPMainMenu.h"
 #include "UI/Interaction/SPInteractionWidget.h"
 
 class ISPCharacterHUDInterface;
@@ -35,23 +35,12 @@ void USPHUDWidget::NativeConstruct()
 
 	ManualWidget = Cast<USPManualWidget>(GetWidgetFromName(TEXT("WBPManual")));
 
-	
-	if(!MakingPotionWidget)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("isit?????"));
-	}
 	//ensure(TargetUI);
 	GameTimeWidget= Cast<USPGameTimeWidget>(GetWidgetFromName(TEXT("WBGameTimeWidget")));
 	
 	//ensure(TargetUI);
 
-	//MainMenuWidget = Cast<USPMainMenu>(GetWidgetFromName(TEXT("WBTargetUI")));
-	if(MainMenuClass)
-	{
-		MainMenuWidget = CreateWidget<USPMainMenu>(GetWorld(), MainMenuClass);
-		MainMenuWidget->AddToViewport(5);
-		MainMenuWidget->SetVisibility(ESlateVisibility::Collapsed); 
-	}
+	KeyWidget = Cast<USPKeyWidget>(GetWidgetFromName("WBPKey"));
 	
 	if(InteractionWidgetClass)
 	{
@@ -68,38 +57,19 @@ void USPHUDWidget::NativeConstruct()
 
 }
 
-void USPHUDWidget::DisplayMenu()
+
+
+void USPHUDWidget::ToggleMouse()
 {
-	if(MainMenuWidget)
+	if(bIsShowMouse)
 	{
-		bIsMenuVisible = true;
-		MainMenuWidget->SetVisibility(ESlateVisibility::Collapsed);
-	}
-
-}
-
-void USPHUDWidget::HideMenu()
-{
-	if(MainMenuWidget)
-	{
-		bIsMenuVisible = false;
-		MainMenuWidget->SetVisibility(ESlateVisibility::Collapsed);
-	}
-}
-
-void USPHUDWidget::ToggleMenu()
-{
-	if(bIsMenuVisible)
-	{
-		HideMenu();
-
 		const FInputModeGameOnly InputMode;
 		GetOwningPlayer()->SetInputMode(InputMode);
 		GetOwningPlayer()->SetShowMouseCursor(false);
 	}
 	else
 	{
-		DisplayMenu();
+	
 		const FInputModeGameAndUI InputMode;
 		GetOwningPlayer()->SetInputMode(InputMode);
 		GetOwningPlayer()->SetShowMouseCursor(true);
@@ -195,6 +165,24 @@ void USPHUDWidget::UpdateInteractionWidget(const FInteractableData* Interactable
 		}
 
 		InteractionWidget->UpdateWidget(InteractableData);
+	}
+}
+
+void USPHUDWidget::ToggleKeyWidget(bool bIsVisible)
+{
+	if(bIsVisible)
+	{
+		if(KeyWidget)
+		{
+			KeyWidget->SetVisibility(ESlateVisibility::Visible);
+		}
+	}
+	else
+	{
+		if(KeyWidget)
+		{
+			KeyWidget->SetVisibility(ESlateVisibility::Hidden);
+		}
 	}
 }
 

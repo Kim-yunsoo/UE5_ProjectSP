@@ -46,13 +46,13 @@ void ASPMakePotion::Interact2(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget*
 	{
 		bIsVisible = false;
 		HUDWidget->UpdateMakingPotionWidget(false);
-		HUDWidget->ToggleMenu();
+		HUDWidget->ToggleMouse();
 	}
 	else
 	{
 		bIsVisible = true;
 		HUDWidget->UpdateMakingPotionWidget(true);
-		HUDWidget->ToggleMenu();
+		HUDWidget->ToggleMouse();
 	}
 }
 

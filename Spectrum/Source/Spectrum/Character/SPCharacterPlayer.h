@@ -114,7 +114,10 @@ protected:
 	void TeleSKill(const FInputActionValue& Value);
 
 	void Interaction(const FInputActionValue& Value);
-	void ToggleMenuAction(const FInputActionValue& Value);
+	void ToggleKeyWidget(const FInputActionValue& Value);
+	
+	UPROPERTY()
+	uint8 KeyToggle : 1;
 	ECharacterControlType CurrentCharacterControlType;
 
 public:
@@ -276,7 +279,7 @@ protected:
 	TObjectPtr<class UInputAction> TeleR;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UInputAction> ToggleMenu;
+	TObjectPtr<class UInputAction> KeyMenu;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputMappingContext* DefaultMappingContext;
