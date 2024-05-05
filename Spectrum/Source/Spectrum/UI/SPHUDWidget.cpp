@@ -3,17 +3,21 @@
 
 #include "UI/SPHUDWidget.h"
 
+#include "LandscapeGizmoActiveActor.h"
 #include "SpectrumLog.h"
 #include "SPGameTimeWidget.h"
 #include "SPKeyWidget.h"
 #include "SPManualWidget.h"
 #include "SPScoreWidget.h"
 #include "SPSkillWidget.h"
+#include "Character/SPCharacterPlayer.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Interface/SPCharacterHUDInterface.h"
 #include "Potion/Make/SPMakingPotionWidget.h"
 #include "UI/SPTargetUI.h"
 #include "UI/Interaction/SPInteractionWidget.h"
 
+class UCharacterMovementComponent;
 class ISPCharacterHUDInterface;
 
 USPHUDWidget::USPHUDWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -59,20 +63,23 @@ void USPHUDWidget::NativeConstruct()
 
 
 
-void USPHUDWidget::ToggleMouse()
+void USPHUDWidget::ToggleMouse(bool bIsShowMouse)
 {
+	ASPCharacterPlayer *PlayerCharacter = Cast<ASPCharacterPlayer>(GetOwningPlayerPawn());
 	if(bIsShowMouse)
+	{
+		const FInputModeGameAndUI InputMode;
+		GetOwningPlayer()->SetInputMode(InputMode);
+		GetOwningPlayer()->SetShowMouseCursor(true);
+		
+		PlayerCharacter->GetCharacterMovement()->MovementMode = EMovementMode::MOVE_None;
+	}
+	else
 	{
 		const FInputModeGameOnly InputMode;
 		GetOwningPlayer()->SetInputMode(InputMode);
 		GetOwningPlayer()->SetShowMouseCursor(false);
-	}
-	else
-	{
-	
-		const FInputModeGameAndUI InputMode;
-		GetOwningPlayer()->SetInputMode(InputMode);
-		GetOwningPlayer()->SetShowMouseCursor(true);
+		PlayerCharacter->GetCharacterMovement()->MovementMode = EMovementMode::MOVE_Walking;
 	}
 }
 
@@ -110,17 +117,17 @@ void USPHUDWidget::UpdateManualWidget(bool bIsVisible)
 	{
 		if(ManualWidget)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("aaHAPPY"));
 			ManualWidget->SetVisibility(ESlateVisibility::Visible);
 		}
+		ToggleMouse(true);
 	}
 	else
 	{
 		if(ManualWidget)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("HAPPY"));
 			ManualWidget->SetVisibility(ESlateVisibility::Hidden);
 		}
+		ToggleMouse(false);
 	}
 }
 

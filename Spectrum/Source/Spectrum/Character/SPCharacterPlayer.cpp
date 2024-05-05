@@ -587,10 +587,9 @@ void ASPCharacterPlayer::SetCharacterControl(ECharacterControlType NewCharacterC
 	{
 		HUDWidget = SPController->GetSPHUDWidget();
 	}
-	HUDWidget->bIsShowMouse = true;
 	HUDWidget->UpdateMakingPotionWidget(false);
 	HUDWidget->UpdateManualWidget(false);
-	HUDWidget->ToggleMouse();
+	HUDWidget->ToggleMouse(false);
 }
 
 void ASPCharacterPlayer::ShoulderMove(const FInputActionValue& Value)

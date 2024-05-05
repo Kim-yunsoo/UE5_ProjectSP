@@ -64,12 +64,11 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	TSubclassOf<USPInteractionWidget> InteractionWidgetClass;
 
-	bool bIsShowMouse;
 
 
 	/////////////////
 
-	void ToggleMouse();
+	void ToggleMouse(bool bIsShowMouse);
 
 	void UpdateTime(float CountdownTime);
 	void UpdateSlowCDTime(float NewCurrentTime);

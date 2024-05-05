@@ -27,7 +27,7 @@ void USPInventoryItemSlot::NativeConstruct()
 	
 	if(ItemReference)
 	{
-		ItemIcon->SetBrushFromTexture(ItemReference->ItemAssetData.Icon);
+		ItemIcon->SetBrushFromTexture(ItemReference->ItemAssetData.Icon );
 	}
 	if(ItemReference->ItemNumericData.bIsStackable)
 	{
