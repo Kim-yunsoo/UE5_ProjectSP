@@ -29,21 +29,17 @@ void ASPGameState::AddScore(const ColorType& MyColor)
 	if (MyColor == ColorType::Green)
 	{
 		++GreenScore;
-		MultiRPC(MyColor, GreenScore);
-		// OnRep_AddSocreEnvet(MyColor, GreenScore); //이 이벤트를 서버에서만 부르니까 문제가 생긴다. 
+		On_RapGreenScore();
 	}
 	else if (MyColor == ColorType::Orange)
 	{
 		++OrangeScore;
-
-		MultiRPC(MyColor, OrangeScore);
-		// OnRep_AddSocreEnvet(MyColor, OrangeScore);
+		On_RapOrangeScore();
 	}
 	else if (MyColor == ColorType::Purple)
 	{
 		++PurpleScore;
-		MultiRPC(MyColor, PurpleScore);
-
+		On_RapPurpleScore();
 	}
 }
 
@@ -60,16 +56,28 @@ void ASPGameState::DefaultGameTimer()
 	}
 }
 
+void ASPGameState::On_RapGreenScore()
+{
+	OnScore.Broadcast(ColorType::Green, GreenScore);
+}
+
+void ASPGameState::On_RapOrangeScore()
+{
+	OnScore.Broadcast(ColorType::Orange, OrangeScore);
+}
+
+void ASPGameState::On_RapPurpleScore()
+{
+	OnScore.Broadcast(ColorType::Purple, PurpleScore);
+}
+
 void ASPGameState::OnRapTime()
 {
 	OnTime.Broadcast(RemainingTime);
 }
 
 
-void ASPGameState::MultiRPC_Implementation(const ColorType& Mycolor, const int Score)
-{
-	OnScore.Broadcast(Mycolor, Score);
-}
+
 
 
 void ASPGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

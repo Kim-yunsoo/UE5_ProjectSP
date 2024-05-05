@@ -27,19 +27,18 @@ public:
 	
 protected:
 	
-	UPROPERTY(Replicated)
+	UPROPERTY(ReplicatedUsing=On_RapGreenScore)
 	int32 GreenScore;
 
-	UPROPERTY(Replicated)
+	UPROPERTY(ReplicatedUsing=On_RapOrangeScore)
 	int32 OrangeScore;
 
-	UPROPERTY(Replicated)
+	UPROPERTY(ReplicatedUsing=On_RapPurpleScore)
 	int32 PurpleScore;
 
 	virtual void AddScore(const ColorType& MyColor) override;
 
-	UFUNCTION(NetMulticast,Unreliable)
-	void MultiRPC(const ColorType& Mycolor, const int Score);
+
 	
 public:
 	UPROPERTY(Transient, ReplicatedUsing= OnRapTime) //게임 시간 
@@ -50,6 +49,14 @@ protected: //Timer
 
 	virtual void DefaultGameTimer(); //타이머로 사용할 함수 
 	FTimerHandle GameTimerHandle;
+	UFUNCTION()
+	void On_RapGreenScore();
+
+	UFUNCTION()
+	void On_RapOrangeScore();
+
+	UFUNCTION()
+	void On_RapPurpleScore();
 	
 	UFUNCTION()
 	void OnRapTime();

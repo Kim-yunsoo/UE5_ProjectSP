@@ -7,6 +7,7 @@
 
 #include "GameFramework/Actor.h"
 #include "SPScoreTrigger.generated.h"
+class ASPObject;
 enum class ColorType : uint8;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FScoreDelegate, const ColorType& /*MyColor*/);
@@ -40,7 +41,13 @@ public:
 	UFUNCTION(Server,Unreliable)
 	void ServerRPC(ASPObject* Object);
 	
+	UFUNCTION(Server,Unreliable)
+	void ServerSpectrumRPC(const TArray<AActor*>& ObjectArray);
 
+	// UFUNCTION(NetMulticast,Unreliable)
+	// void MultiSpectrumRPC(ASPObject* Object);
 	FORCEINLINE void AddScore(const ColorType& MyColor) {OnScore.Broadcast(MyColor);}
+
+	
 	
 };
