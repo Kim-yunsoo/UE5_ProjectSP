@@ -10,17 +10,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="930c52c5-2823-422b-ab9a-d68c3757d86e" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Component/SPInventoryComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Component/SPInventoryComponent.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Game/SPLobbyGameMode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Game/SPLobbyGameMode.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Skill/SPIceSkill.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Skill/SPIceSkill.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Skill/SPSlowSkill.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Skill/SPSlowSkill.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Skill/SPTeleSkill.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Skill/SPTeleSkill.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/UI/SPHUDWidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/UI/SPHUDWidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/UI/SPTargetUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/UI/SPTargetUI.cpp" afterDir="false" />
-    </list>
+    <list default="true" id="930c52c5-2823-422b-ab9a-d68c3757d86e" name="변경" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -250,6 +240,7 @@
       <workItem from="1714809650466" duration="20638000" />
       <workItem from="1714836140030" duration="3148000" />
       <workItem from="1714839375476" duration="3380000" />
+      <workItem from="1714889936100" duration="179000" />
     </task>
     <servers />
   </component>
