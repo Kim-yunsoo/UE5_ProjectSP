@@ -18,6 +18,7 @@ void USPGameTimeWidget::NativeConstruct()
 
 void USPGameTimeWidget::UpdateTime(const float Time)
 {
+	UE_LOG(LogTemp,Log,TEXT("update!"));
 	int32 Minutes = FMath::FloorToInt(Time / 60.f); //분을 계산
 	int32 Seconds = Time - Minutes *60;
 

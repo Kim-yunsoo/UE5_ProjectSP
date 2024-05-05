@@ -13,9 +13,7 @@ struct FInteractableData;
 class USPInteractionWidget;
 class USPMainMenu;
 
-/**
- * 
- */
+
 UCLASS()
 class SPECTRUM_API USPHUDWidget : public UUserWidget
 {
@@ -60,11 +58,11 @@ protected:
 	TObjectPtr<class USPGameTimeWidget> GameTimeWidget;
 	
 public:
-	// UPROPERTY(EditDefaultsOnly, Category = "Widgets")
-	// TSubclassOf<USPMainMenu> MainMenuClass;
-	//
-	// UPROPERTY(EditDefaultsOnly, Category = "Widgets")
-	// TSubclassOf<USPInteractionWidget> InteractionWidgetClass;
+	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
+	TSubclassOf<USPMainMenu> MainMenuClass;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
+	TSubclassOf<USPInteractionWidget> InteractionWidgetClass;
 
 	bool bIsMenuVisible;
 
