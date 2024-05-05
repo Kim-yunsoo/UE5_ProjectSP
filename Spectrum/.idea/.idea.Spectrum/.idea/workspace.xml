@@ -12,24 +12,6 @@
   <component name="ChangeListManager">
     <list default="true" id="930c52c5-2823-422b-ab9a-d68c3757d86e" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Gamemode/BP_SPGameModeBase.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Gamemode/BP_SPGameModeBase.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Assets/Potion/O_Potion/O_Potion.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Assets/Potion/O_Potion/O_Potion.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Potion/B_Potion/B_Potion.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Potion/B_Potion/B_Potion.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Potion/G_Potion/G_Potion1.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Potion/G_Potion/G_Potion1.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Potion/O_Potion/O_Potion.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Potion/O_Potion/O_Potion.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Room/Map/Building.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Room/Map/Building.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/UMG/Overlay/WB_GameTimeWidget.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/UMG/Overlay/WB_GameTimeWidget.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/UMG/Skill/WB_Skill1.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/UMG/WBP_SPHUD.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/UMG/WBP_SPHUD.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Game/SPGameModeBase.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Game/SPGameModeBase.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Game/SPGameModeBase.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Game/SPGameModeBase.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Player/SPPlayerController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Player/SPPlayerController.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Player/SPPlayerController.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Player/SPPlayerController.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/SpectrumGameInstance.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/SpectrumGameInstance.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/UI/SPGameTimeWidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/UI/SPGameTimeWidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/UI/SPHUDWidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/UI/SPHUDWidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/UI/SPHUDWidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/UI/SPHUDWidget.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

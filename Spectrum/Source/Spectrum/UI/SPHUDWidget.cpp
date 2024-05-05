@@ -26,7 +26,7 @@ void USPHUDWidget::NativeConstruct()
 	SlowSkillWidget = Cast<USPSkillWidget>(GetWidgetFromName("WB_Skill"));
 	IceSkillWidget = Cast<USPSkillWidget>(GetWidgetFromName("WB_Skill"));
 	TeleSkillWidget = Cast<USPSkillWidget>(GetWidgetFromName("WB_Skill"));
-	ScoreWidget = Cast<USPScoreWidget>(GetWidgetFromName("WBSPScoreWidget"));
+	ScoreWidget = Cast<USPScoreWidget>(GetWidgetFromName("WB_SPScoreWidget"));
 	TargetUI = Cast<USPTargetUI>(GetWidgetFromName(TEXT("WBTargetUI")));
 	MakingPotionWidget = Cast<USPMakingPotionWidget>(GetWidgetFromName(TEXT("WBPSPMakingPotionWidget")));
 	ManualWidget = Cast<USPManualWidget>(GetWidgetFromName(TEXT("WBPManual")));
