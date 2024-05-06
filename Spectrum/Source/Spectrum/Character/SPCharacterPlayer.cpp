@@ -427,6 +427,8 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 
 	//Inventory
 	PlayerInventory = CreateDefaultSubobject<USPInventoryComponent>(TEXT("playerInventory"));
+
+	GravityArrow->SetIsReplicated(true);
 	//this->AddOwnedComponent(PlayerInventory);
 	//PlayerInventory->SetIsReplicated(true);
 }
@@ -449,7 +451,7 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (bIsHolding)
+	if (bIsHolding && HasAuthority())
 	{
 		PhysicsHandleComponent->SetTargetLocation(GravityArrow->K2_GetComponentLocation());
 	}
@@ -1744,6 +1746,7 @@ void ASPCharacterPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 	DOREPLIFETIME(ASPCharacterPlayer, bIsHolding);
 	DOREPLIFETIME(ASPCharacterPlayer, InteractionCheck);
 	DOREPLIFETIME(ASPCharacterPlayer, bIsActiveGraping);
+	//DOREPLIFETIME(ASPCharacterPlayer, PhysicsHandleComponent);
 	// DOREPLIFETIME(ASPCharacterPlayer, bIsActiveSlowSkill);
 	//bIsActiveSlowSkill
 	// DOREPLIFETIME(ASPCharacterPlayer, bIsActiveSlowSkill);
@@ -1927,9 +1930,7 @@ void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 		APlayerController* PlayerController = GetController<APlayerController>();
 		if (PlayerController != nullptr)
 		{
-			// if(bIsActiveGraping)
-			// {
-
+	
 
 			FRotator ControlRotation = PlayerController->GetControlRotation();
 			FVector ReseltFoward = UKismetMathLibrary::GetForwardVector(ControlRotation);

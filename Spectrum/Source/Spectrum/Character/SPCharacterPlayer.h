@@ -161,7 +161,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	TObjectPtr<class UStaticMeshComponent> Sphere;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gravity Gun")
+	UPROPERTY( BlueprintReadWrite, Category = "Gravity Gun")
 	TObjectPtr<class UPhysicsHandleComponent> PhysicsHandleComponent;
 
 public:
