@@ -6,6 +6,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 //#include "GeometryCollection/GeometryCollection.h"
 //D:\UE_5.3\Engine\Source\Runtime\Experimental\GeometryCollectionEngine\Public\GeometryCollection\GeometryCollectionComponent.h
+#include "SpectrumLog.h"
 #include "SPGlobalEnum.h"
 #include "GeometryCollection\GeometryCollectionComponent.h"
 #include "Net/UnrealNetwork.h"
@@ -25,6 +26,9 @@ ASPObject::ASPObject()
 	ObjectMesh->SetMobility(EComponentMobility::Movable);
 	ObjectMesh->SetUseCCD(true);
 	ObjectMesh->SetRenderCustomDepth(true);
+	ObjectMesh->SetIsReplicated(true);
+	this->SetReplicates(true);
+	
 	// ObjectMesh->SetIsReplicated(true);
 	
 	bHasBeenCalled = true;
@@ -46,6 +50,8 @@ ASPObject::ASPObject()
 		PurpleData=PurpleDataRef.Object;
 	}
 
+	
+	//NetPriority=2.0f;
 }
 
 ASPObject::~ASPObject()
@@ -144,6 +150,21 @@ void ASPObject::DynamicSetColor(const UDataTable* Table)
 void ASPObject::SetObjectCollisionType(const FName& CollisionType)
 {
 	ObjectMesh->SetCollisionProfileName(CollisionType);
+}
+
+bool ASPObject::IsNetRelevantFor(const AActor* RealViewer, const AActor* ViewTarget, const FVector& SrcLocation) const
+{
+	bool NetRelevantResult= Super::IsNetRelevantFor(RealViewer, ViewTarget, SrcLocation);
+	if(!NetRelevantResult )
+	{
+		SP_LOG(LogSPNetwork,Log,TEXT("Not Relevant : [%s] %s "), *RealViewer->GetName(),*SrcLocation.ToCompactString());
+	}
+	else
+	{
+		//SP_LOG(LogSPNetwork,Log,TEXT("Pass"));
+		
+	}
+	return NetRelevantResult;
 }
 
 

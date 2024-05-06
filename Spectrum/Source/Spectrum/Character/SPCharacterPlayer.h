@@ -161,7 +161,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	TObjectPtr<class UStaticMeshComponent> Sphere;
 
-	UPROPERTY( BlueprintReadWrite, Category = "Gravity Gun")
+	UPROPERTY( EditAnywhere,BlueprintReadWrite, Category = "Gravity Gun")
 	TObjectPtr<class UPhysicsHandleComponent> PhysicsHandleComponent;
 
 public:
@@ -314,11 +314,12 @@ public:
 	
 
 protected:
-	UPROPERTY()
+	 UPROPERTY()
 	UPrimitiveComponent* HitComponent;
-	UPROPERTY()
-	AActor* HitMyActor;
-	FHitResult outHitResult;
+	 UPROPERTY()
+	 AActor* HitMyActor;
+	// UPROPERTY(Replicated)
+	// FHitResult outHitResult;
 
 	float HitDistance;
 
@@ -446,7 +447,7 @@ public:
 	void ServerRPCStopAiming();
 
 	UFUNCTION(Server, Unreliable)
-	void ServerRPCGraping();
+	void ServerRPCGraping(const FHitResult& outHitResult);
 
 	UFUNCTION(Server, Unreliable)
 	void ServerRPCStopGraping();
@@ -599,6 +600,7 @@ public:
 	UFUNCTION(NetMulticast,Unreliable)
 	void MultiChangeCollision(const FName& CollisionName);
 
-	
+	UFUNCTION(Client,Unreliable)
+	void TEST(const FHitResult& test);
 	
 };
