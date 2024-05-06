@@ -106,78 +106,79 @@ void ASPGameModeBase::PostLogin(APlayerController* NewPlayer)
 	//okok = true;
 
 	//if (okok) {
-
+		//
 		Super::PostLogin(NewPlayer);
-
-		// 정보 받아서 폰 설정 
+		//
+		// // 정보 받아서 폰 설정 
 		auto CastPlayer = Cast<ASPPlayerController>(NewPlayer);
-		if (CastPlayer)
-		{
-			USpectrumGameInstance* pawn_PlayerType = Cast<USpectrumGameInstance>(NewPlayer->PlayerState);
-
-			//pawn_PlayerType->PlayerType = 0;
-
-			// 여기서 클라이언트의 정보에 따라 이름 설정
-			//int32 NumPlayers = UGameplayStatics::GetPlayerControllerID(NewPlayer);
-			//Protocol::PlayerType player_type;
-			//if (pawn_PlayerType->PlayerType  == 0)
-			//	player_type = Protocol::PLAYER_TYPE_PURPLE_MAN;
-			//else if (pawn_PlayerType->PlayerType  == 1)
-			//	player_type = Protocol::PLAYER_TYPE_GREEN_MAN;
-			//else if (pawn_PlayerType->PlayerType  == 2)
-			//	player_type = Protocol::PLAYER_TYPE_GREEN_WOMAN;
-
-			//Protocol::PlayerType player_type;
-			//if (pawn_PlayerType->PlayerType == 0)
-			//	player_type = Protocol::PLAYER_TYPE_PURPLE_MAN;
-			//else if (pawn_PlayerType->PlayerType == 1)
-			//	player_type = Protocol::PLAYER_TYPE_GREEN_MAN;
-			//else if (pawn_PlayerType->PlayerType == 2)
-			//	player_type = Protocol::PLAYER_TYPE_GREEN_WOMAN;
-
-			//switch (rand() % 3)
-			//{
-			//case 0:
-			//	school_num_type = Protocol::PLAYER_TYPE_GREEN_WOMAN;
-			//	break;
-			//case 1:
-			//	school_num_type = Protocol::PLAYER_TYPE_PURPLE_MAN;
-			//	break;
-			//case 2:
-			//	school_num_type = Protocol::PLAYER_TYPE_ORANGE_WOMAN;
-			//	break;
-			//}
-
-			switch (school_num_type)
-			{
-			case Protocol::PLAYER_TYPE_GREEN_MAN:
-				CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharacterMan2"));
-				break;
-			case Protocol::PLAYER_TYPE_GREEN_WOMAN:
-				CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharaterPlayer_W2"));
-				break;
-			case Protocol::PLAYER_TYPE_PURPLE_MAN:
-				CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharacterMan1"));
-				break;
-			case Protocol::PLAYER_TYPE_PURPLE_WOMAN:
-				CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharaterPlayer_W1"));
-				break;
-			case Protocol::PLAYER_TYPE_ORANGE_MAN:
-				CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharacterMan3"));
-				break;
-			case Protocol::PLAYER_TYPE_ORANGE_WOMAN:
-				CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharaterPlayer_W3"));
-				break;
-			}
-
-		}
-
-		//UWorld* World = GetWorld();
-		//if (!ensure(World != nullptr)) return;
-
-		//World->ServerTravel("Building?listen");
-		//}
-	
+		// if (CastPlayer)
+		// {
+		// 	USpectrumGameInstance* pawn_PlayerType = Cast<USpectrumGameInstance>(NewPlayer->PlayerState);
+		//
+		// 	//pawn_PlayerType->PlayerType = 0;
+		//
+		// 	// 여기서 클라이언트의 정보에 따라 이름 설정
+		// 	//int32 NumPlayers = UGameplayStatics::GetPlayerControllerID(NewPlayer);
+		// 	//Protocol::PlayerType player_type;
+		// 	//if (pawn_PlayerType->PlayerType  == 0)
+		// 	//	player_type = Protocol::PLAYER_TYPE_PURPLE_MAN;
+		// 	//else if (pawn_PlayerType->PlayerType  == 1)
+		// 	//	player_type = Protocol::PLAYER_TYPE_GREEN_MAN;
+		// 	//else if (pawn_PlayerType->PlayerType  == 2)
+		// 	//	player_type = Protocol::PLAYER_TYPE_GREEN_WOMAN;
+		//
+		// 	//Protocol::PlayerType player_type;
+		// 	//if (pawn_PlayerType->PlayerType == 0)
+		// 	//	player_type = Protocol::PLAYER_TYPE_PURPLE_MAN;
+		// 	//else if (pawn_PlayerType->PlayerType == 1)
+		// 	//	player_type = Protocol::PLAYER_TYPE_GREEN_MAN;
+		// 	//else if (pawn_PlayerType->PlayerType == 2)
+		// 	//	player_type = Protocol::PLAYER_TYPE_GREEN_WOMAN;
+		//
+		// 	//switch (rand() % 3)
+		// 	//{
+		// 	//case 0:
+		// 	//	school_num_type = Protocol::PLAYER_TYPE_GREEN_WOMAN;
+		// 	//	break;
+		// 	//case 1:
+		// 	//	school_num_type = Protocol::PLAYER_TYPE_PURPLE_MAN;
+		// 	//	break;
+		// 	//case 2:
+		// 	//	school_num_type = Protocol::PLAYER_TYPE_ORANGE_WOMAN;
+		// 	//	break;
+		// 	//}
+		//
+		// 	switch (school_num_type)
+		// 	{
+		// 	case Protocol::PLAYER_TYPE_GREEN_MAN:
+		// 		CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharacterMan2"));
+		// 		break;
+		// 	case Protocol::PLAYER_TYPE_GREEN_WOMAN:
+		// 		CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharaterPlayer_W2"));
+		// 		break;
+		// 	case Protocol::PLAYER_TYPE_PURPLE_MAN:
+		// 		CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharacterMan1"));
+		// 		break;
+		// 	case Protocol::PLAYER_TYPE_PURPLE_WOMAN:
+		// 		CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharaterPlayer_W1"));
+		// 		break;
+		// 	case Protocol::PLAYER_TYPE_ORANGE_MAN:
+		// 		CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharacterMan3"));
+		// 		break;
+		// 	case Protocol::PLAYER_TYPE_ORANGE_WOMAN:
+		// 		CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharaterPlayer_W3"));
+		// 		break;
+		// 	}
+		//
+		// }
+		CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPTEST.BP_SPTEST"));
+		//
+		// //UWorld* World = GetWorld();
+		// //if (!ensure(World != nullptr)) return;
+		//
+		// //World->ServerTravel("Building?listen");
+		// //}
+		//
 
 
 }

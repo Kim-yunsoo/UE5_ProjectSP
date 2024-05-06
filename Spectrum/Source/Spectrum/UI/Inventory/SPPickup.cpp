@@ -125,7 +125,7 @@ void ASPPickup::TakePickup(ASPCharacterPlayer* Taker)
 			if (USPInventoryComponent* PlayerInvetory = Taker->GetInventory())
 			{
 				FTimerHandle TimerHandle;
-				PlayerInvetory->HandleAddItem(ItemReference);
+				PlayerInvetory->HandleAddItem(ItemReference, 1);
 				GetWorld()->GetTimerManager().SetTimer(TimerHandle,[this](){
 					                                       this->Destroy();
 				                                       }, 0.1f, false);

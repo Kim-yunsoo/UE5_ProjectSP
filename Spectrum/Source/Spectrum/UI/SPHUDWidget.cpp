@@ -71,7 +71,6 @@ void USPHUDWidget::ToggleMouse(bool bIsShowMouse)
 		const FInputModeGameAndUI InputMode;
 		GetOwningPlayer()->SetInputMode(InputMode);
 		GetOwningPlayer()->SetShowMouseCursor(true);
-		
 		PlayerCharacter->GetCharacterMovement()->MovementMode = EMovementMode::MOVE_None;
 	}
 	else
@@ -101,6 +100,7 @@ void USPHUDWidget::UpdateMakingPotionWidget(bool bIsVisible)
 		{
 			MakingPotionWidget->SetVisibility(ESlateVisibility::Visible);
 		}
+		ToggleMouse(true);
 	}
 	else
 	{
@@ -108,6 +108,7 @@ void USPHUDWidget::UpdateMakingPotionWidget(bool bIsVisible)
 		{
 			MakingPotionWidget->SetVisibility(ESlateVisibility::Hidden);
 		}
+		ToggleMouse(false);
 	}
 }
 

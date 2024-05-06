@@ -33,7 +33,7 @@ public:
 	// Sets default values for this component's properties
 	USPInventoryComponent();
 	UFUNCTION(Category = "Inventory")
-	void HandleAddItem(USPItemBase* InputItem);
+	void HandleAddItem(USPItemBase* InputItem, int InitialRequestedAddmount);
 
 	UFUNCTION()
 	USPItemBase* InitializeInventory(const TSubclassOf<USPItemBase> BaseClass, FName DesiredItemID);

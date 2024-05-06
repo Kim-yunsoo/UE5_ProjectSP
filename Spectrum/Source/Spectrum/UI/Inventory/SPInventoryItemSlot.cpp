@@ -43,7 +43,7 @@ void USPInventoryItemSlot::NativeConstruct()
 FReply USPInventoryItemSlot::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
 {
 	FReply Reply = Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
-	if(InMouseEvent.GetEffectingButton() == EKeys::LeftMouseButton )
+	if(InMouseEvent.GetEffectingButton() == EKeys::LeftMouseButton)
 	{
 		return Reply.Handled().DetectDrag(TakeWidget(), EKeys::LeftMouseButton);
 	}
@@ -71,7 +71,7 @@ void USPInventoryItemSlot::HideText()
 FReply USPInventoryItemSlot::NativeOnMouseButtonUp(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
 {
 	FReply Reply = Super::NativeOnMouseButtonUp(InGeometry, InMouseEvent);
-	if(ItemReference->Quantity != 0)
+	if(ItemReference->Quantity == 1)
 	{
 		ASPCharacterPlayer* Player = Cast<ASPCharacterPlayer>(GetOwningPlayerPawn());
 		int num = Player->GetInventory()->IsPotion(ItemReference->ID);

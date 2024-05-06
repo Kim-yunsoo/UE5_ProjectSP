@@ -95,13 +95,17 @@ USPItemBase* USPInventoryComponent::MakingPotion()
 		FName DesiredItemID = "G_Potion";
 		const FItemData* ItemData = ItemDataTable->FindRow<FItemData>(DesiredItemID, DesiredItemID.ToString());
 		// 원하는 항목 찾기
-		USPItemBase* Item = NewObject<USPItemBase>(); 
-		Item->ID = ItemData->ID;
-		Item->ItemType = ItemData->ItemType;
-		Item->ItemTextData = ItemData->ItemTextData;
-		Item->ItemNumericData = ItemData->ItemNumericData;
-		Item->ItemAssetData = ItemData->ItemAssetData;
-		return Item;
+
+			UE_LOG(LogTemp, Warning, TEXT("Green"))
+			USPItemBase* Item = NewObject<USPItemBase>(); 
+			Item->ID = ItemData->ID;
+			Item->ItemType = ItemData->ItemType;
+			Item->ItemTextData = ItemData->ItemTextData;
+			Item->ItemNumericData = ItemData->ItemNumericData;
+			Item->ItemAssetData = ItemData->ItemAssetData;
+			Item->Quantity = 1;
+			return Item;
+		
 	}
 	else if(Blue == 1 && Red == 2)
 	{
@@ -114,6 +118,7 @@ USPItemBase* USPInventoryComponent::MakingPotion()
 		Item->ItemTextData = ItemData->ItemTextData;
 		Item->ItemNumericData = ItemData->ItemNumericData;
 		Item->ItemAssetData = ItemData->ItemAssetData;
+		Item->Quantity = 1;
 		return Item;
 	}
 	else if (Red == 1 && Yellow ==2)
@@ -127,6 +132,7 @@ USPItemBase* USPInventoryComponent::MakingPotion()
 		Item->ItemTextData = ItemData->ItemTextData;
 		Item->ItemNumericData = ItemData->ItemNumericData;
 		Item->ItemAssetData = ItemData->ItemAssetData;
+		Item->Quantity = 1;
 		return Item;
 	}
 	else
@@ -167,11 +173,10 @@ int USPInventoryComponent::HandleStackableItemsMini(USPItemBase* ItemIn, int32 R
 	return -1;
 }
 
-void USPInventoryComponent::HandleAddItem(USPItemBase* InputItem)
+void USPInventoryComponent::HandleAddItem(USPItemBase* InputItem, int InitialRequestedAddmount)
 {
 	SP_SUBLOG(LogSPSkill, Log, TEXT("%s"), TEXT("HandleAddItem"));
 
-	const int32 InitialRequestedAddmount = 1;
 	if (InputItem->ItemType == EItemType::IngredientPotion)
 	{
 		int ServerCount = HandleStackableItemsMini(InputItem, InitialRequestedAddmount);
@@ -186,6 +191,7 @@ void USPInventoryComponent::HandleAddItem(USPItemBase* InputItem)
 		ClientRPCUpdatePotion(IsPotion(InputItem->ID), ServerCount);
 	}
 }
+
 
 
 USPItemBase* USPInventoryComponent::InitializeInventory(const TSubclassOf<USPItemBase> BaseClass, FName DesiredItemID)
@@ -282,6 +288,7 @@ int USPInventoryComponent::IsPotion(FName ID)
 {
 	for (int32 Index = 0; Index < InventoryContents.Num(); ++Index)
 	{
+
 		const USPItemBase* InventoryItem = InventoryContents[Index];
 		if (InventoryItem && InventoryItem->ID == ID)
 		{

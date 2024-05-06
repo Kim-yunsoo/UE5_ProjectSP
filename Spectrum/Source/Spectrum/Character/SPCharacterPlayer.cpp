@@ -1227,8 +1227,8 @@ void ASPCharacterPlayer::ServerRPCDragItem_Implementation(int Num, const int32 Q
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Three"));
 		USPItemBase* Item = PlayerInventory->MakingPotion();
+
 		int MakeNum = PlayerInventory->IsPotion(Item->ID);
-		SP_LOG(LogSPNetwork, Log, TEXT("Making %d"), MakeNum);
 		ClientRPCUpdateMakingPotion(MakeNum);
 		PlayerInventory->ClearMakeArray();
 	}
@@ -1237,23 +1237,27 @@ void ASPCharacterPlayer::ServerRPCDragItem_Implementation(int Num, const int32 Q
 void ASPCharacterPlayer::ClientRPCUpdateMakingPotion_Implementation(int Num)
 {
 	USPItemBase* ItemBase = PlayerInventory->FindMatchingItem(Num);
+
 	HUDWidget->MakingPotionWieget(ItemBase);
 }
 
-
 void ASPCharacterPlayer::ServerRPCBackItem_Implementation(int Num, const int32 QuantityToDrop)
 {
-	SP_LOG(LogSPNetwork, Log, TEXT("BackItem"));
 	USPItemBase* ItemBase = PlayerInventory->FindMatchingMiniItem(Num);
-	PlayerInventory->HandleAddItem(ItemBase);
+	PlayerInventory->HandleAddItem(ItemBase, 1);
 	GetInventory()->RemoveInventorMakeContents(ItemBase);
-	SP_LOG(LogSPNetwork, Log, TEXT("DragItem %d"), GetInventory()->GetInventorMakeContents().Num());
 }
 
 void ASPCharacterPlayer::ServerRPCAddItemClick_Implementation(int Num)
 {
 	USPItemBase* ItemBase = PlayerInventory->FindMatchingItem(Num);
-	PlayerInventory->HandleAddItem(ItemBase);
+	if(IsLocallyControlled())
+		PlayerInventory->HandleAddItem(ItemBase, 0);
+	else
+	{
+		PlayerInventory->HandleAddItem(ItemBase, 1);
+
+	}
 }
 
 

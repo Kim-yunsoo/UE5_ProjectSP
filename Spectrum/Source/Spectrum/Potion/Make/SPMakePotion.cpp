@@ -42,14 +42,13 @@ void ASPMakePotion::Tick(float DeltaTime)
 
 void ASPMakePotion::Interact2(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget)
 {
-	if(bIsVisible)
+	// if(bIsVisible)
+	// {
+	// 	bIsVisible = false;
+	// 	HUDWidget->UpdateMakingPotionWidget(false);
+	// }
+	// else
 	{
-		bIsVisible = false;
-		HUDWidget->UpdateMakingPotionWidget(false);
-	}
-	else
-	{
-		bIsVisible = true;
 		HUDWidget->UpdateMakingPotionWidget(true);
 		HUDWidget->ToggleMouse(true);
 	}
@@ -89,3 +88,4 @@ void ASPMakePotion::OnTriggerExit(UPrimitiveComponent* OverlappedComp, AActor* O
 		PlayerCharacter->NoInteractableFound();
 	}
 }
+

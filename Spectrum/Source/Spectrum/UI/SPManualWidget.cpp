@@ -26,7 +26,6 @@ void USPManualWidget::NativeConstruct()
 
 void USPManualWidget::SpectrumLocationCallBack()
 {
-	UE_LOG(LogTemp, Log, TEXT("SpectrumLocationCallBack!!!"));
 	SpectrumLocationImage->SetVisibility(ESlateVisibility::Visible);
 	MainImage->SetVisibility(ESlateVisibility::Hidden);
 	ManualImage->SetVisibility(ESlateVisibility::Hidden);
@@ -43,7 +42,6 @@ void USPManualWidget::ManualCallBack()
 
 void USPManualWidget::BackCallBack()
 {
-	UE_LOG(LogTemp, Log, TEXT("BACK!!!"));
 	if(MainImage->IsVisible())
 	{
 		ASPCharacterPlayer* Player = Cast<ASPCharacterPlayer>(GetOwningPlayerPawn());
