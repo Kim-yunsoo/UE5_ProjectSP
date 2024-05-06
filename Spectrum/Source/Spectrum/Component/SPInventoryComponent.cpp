@@ -269,6 +269,9 @@ void USPInventoryComponent::BeginPlay()
 	USPItemBase* B_Potion = InitializeInventory(USPItemBase::StaticClass(), "B_Potion");
 	B_Potion->OwningInventory = this;
 	InventoryContents.Add(B_Potion);
+	USPItemBase* S_Potion = InitializeInventory(USPItemBase::StaticClass(), "S_Potion");
+	S_Potion->OwningInventory = this;
+	InventoryContents.Add(S_Potion);
 	
 	USPItemBase* R_Mini = InitializeInventory(USPItemBase::StaticClass(), "R_Mini");
 	R_Mini->OwningInventory = this;
