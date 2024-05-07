@@ -25,7 +25,7 @@ void ASPManual::BeginPlay()
 	InteractableData = InstanceInteractableDate;
 	FVector ActorLocation = GetActorLocation();
 	Trigger->SetRelativeLocation(ActorLocation);
-	Trigger->SetRelativeScale3D(FVector(6,5,20));
+	Trigger->SetRelativeScale3D(FVector(3,5,15));
 	
 	Trigger->OnComponentBeginOverlap.AddDynamic(this, &ASPManual::OnTriggerEnter);
 	Trigger->OnComponentEndOverlap.AddDynamic(this, &ASPManual::OnTriggerExit);
@@ -38,6 +38,7 @@ void ASPManual::OnTriggerEnter(UPrimitiveComponent* OverlappedComp, AActor* Othe
 	if (PlayerCharacter)
 	{
 		PlayerCharacter->PerformInteractionCheck();
+			UE_LOG(LogTemp,Warning, "ASPManual In!!!");
 	}
 }
 
@@ -48,6 +49,7 @@ void ASPManual::OnTriggerExit(UPrimitiveComponent* OverlappedComp, AActor* Other
 	if (PlayerCharacter)
 	{
 		PlayerCharacter->NoInteractableFound();
+			UE_LOG(LogTemp,Warning, "ASPManual OUT!!!");
 	}
 }
 

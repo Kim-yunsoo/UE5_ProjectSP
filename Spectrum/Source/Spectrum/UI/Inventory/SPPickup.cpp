@@ -30,7 +30,7 @@ void ASPPickup::BeginPlay()
 	
 	FVector ActorLocation = GetActorLocation();
 	Trigger->SetRelativeLocation(ActorLocation);
-	Trigger->SetRelativeScale3D(FVector(1,1,3));
+	Trigger->SetRelativeScale3D(FVector(1,1,2));
 	
 	Trigger->OnComponentBeginOverlap.AddDynamic(this, &ASPPickup::OnTriggerEnter);
 	Trigger->OnComponentEndOverlap.AddDynamic(this, &ASPPickup::OnTriggerExit);
