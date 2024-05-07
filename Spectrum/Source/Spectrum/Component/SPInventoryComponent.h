@@ -79,8 +79,7 @@ public:
 	FORCEINLINE void AddInventorMakeContents(USPItemBase* Item) {InventoryMakeContents.Add(Item);};
 	FORCEINLINE void ClearMakeArray() {InventoryMakeContents.Empty();};
 
-	UPROPERTY(VisibleAnywhere, Category = "Inventory")
-	TArray<USPItemBase*> InventoryContents;
+
 	
 protected:
 	// Called when the game starts
@@ -101,6 +100,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Inventory")
 	TArray<USPItemBase*> InventoryMakeContents;
 
+	UPROPERTY(VisibleAnywhere, Category = "Inventory")
+	TArray<USPItemBase*> InventoryContents;
 	
 	int HandleStackableItems(USPItemBase* ItemIn, int32 RequestedAddAmount);
 	int HandleStackableItemsMini(USPItemBase* ItemIn, int32 RequestedAddAmount);

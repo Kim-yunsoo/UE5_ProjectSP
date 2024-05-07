@@ -501,6 +501,7 @@ public:
 	
 
 	
+	
 	//OnRep
 	UFUNCTION()
 	void OnRep_PotionSpawn();
@@ -587,4 +588,19 @@ public:
 
 	// UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	// ESchoolColor SchoolAffiliation;
+
+
+
+	//Todo 치트키 7번
+	UPROPERTY()
+	uint8 bIsSeven : 1;
+
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCSeven();
+	void SevenKey(const FInputActionValue& Value);
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> SevenKeyAction;
+
+	
 };

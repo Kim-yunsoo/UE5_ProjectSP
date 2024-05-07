@@ -11,20 +11,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7867eded-7ca2-4bdd-bc93-f7f67cebbb08" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Ingyeong.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Ingyeong.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/StartUI/PrivateChatWidget.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/StartUI/PrivateChatWidget.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/UMG/WBP_SPHUD.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/UMG/WBP_SPHUD.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ForestLandscape.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/GrassLandscape.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Input/IMC_SP_Shoulder.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Input/IMC_SP_Shoulder.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Component/SPInventoryComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Component/SPInventoryComponent.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Spectrum/Component/SPInventoryComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Component/SPInventoryComponent.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/Make/SPMakingPotionWidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/Make/SPMakingPotionWidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPItemBase.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPItemBase.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/UI/Inventory/SPInventoryItemSlot.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/UI/Inventory/SPInventoryItemSlot.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/UI/Inventory/SPInventoryWidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/UI/Inventory/SPInventoryWidget.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/UI/Inventory/SPPickup.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/UI/Inventory/SPPickup.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -203,7 +195,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1715089772121</updated>
-      <workItem from="1715089773153" duration="5749000" />
+      <workItem from="1715089773153" duration="7576000" />
     </task>
     <servers />
   </component>

@@ -12,11 +12,9 @@ ASPPickup::ASPPickup()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
-
 	PickupMesh = CreateDefaultSubobject<UStaticMeshComponent>("PickupMesh");
 	PickupMesh->SetSimulatePhysics(true);
 	Trigger = CreateDefaultSubobject<UBoxComponent>(TEXT("PickupTriggerComponent"));
-
 }
 
 // Called when the game starts or when spawned
@@ -170,16 +168,12 @@ void ASPPickup::OnTriggerExit(UPrimitiveComponent* OverlappedComp, AActor* Other
 
 void ASPPickup::ServerRPCInteract_Implementation(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget)
 {
-	SP_LOG(LogSPNetwork,Log,TEXT("ServerRPCInteract_Implementation"));
 
 	
 }
 
 void ASPPickup::ClientRPCUpdateWidget_Implementation(ASPCharacterPlayer* Taker)
 {
-	SP_LOG(LogSPNetwork,Log,TEXT("ClientRPC"));
-	
-	
 }
 
 
