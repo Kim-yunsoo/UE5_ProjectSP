@@ -19,7 +19,7 @@ void ASPPlayerController::OnPossess(APawn* aPawn)
 {
 	Super::OnPossess(aPawn);
 
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("OnPossess"));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("OnPossess"));
 	auto Instance = Cast<USpectrumGameInstance>(GetWorld()->GetGameInstance());
 	if (!Instance) return;
 	if (Instance->ClientPawnClass == nullptr) return;
@@ -45,9 +45,6 @@ void ASPPlayerController::ChangePawnName(FString path)
 	CallServerDuetoChangePawn(GetPawn()->GetActorLocation(), PAWN_C, GetPawn());
 }
 
-//void ASPPlayerController::CallServerDuetoChangePawn(FVector location, TSubclassOf<APawn> PAWN_C, APawn* OLDpAWN)
-//{
-//}
 
 void ASPPlayerController::CallServerDuetoChangePawn_Implementation(FVector location, TSubclassOf<APawn> PAWN_C, APawn* OLDpAWN)
 {

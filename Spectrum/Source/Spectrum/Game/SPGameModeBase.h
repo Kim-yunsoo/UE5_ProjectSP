@@ -27,9 +27,8 @@ public:
 
 	virtual void BeginPlay() override;
 
-	void TravelToNextLevel();
+	int mynum = 0;
 
-	//virtual void Tick(float DeltaTime) override;
 	//void PostInitializeComponents() override;
 protected:
 	virtual void PostLogin(APlayerController* NewPlayer) override;
@@ -39,9 +38,6 @@ private:
 	class USPLobbyWidget* LobbyWidget;
 
 	TMap<APlayerController*, bool> alreadyChange;
-	//TArray<APlayerController*> JoinPlayers;
 
-	//virtual void PostInitializeComponents() override; //여기서 타이머 가동한다. 
-	//virtual void DefaultGameTimer(); //타이머로 사용할 함수
 
 };
