@@ -10,6 +10,7 @@ public:
 	Player();
 	virtual ~Player();
 
+
 	weak_ptr<GameSession> session;
 
 };

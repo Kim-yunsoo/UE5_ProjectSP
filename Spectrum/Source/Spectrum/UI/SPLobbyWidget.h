@@ -16,7 +16,8 @@ class PlayerInfomation
 public:
 	bool issuccess;
 	std::string my_membership_id;	
-	int school_type;
+	Protocol::SchoolType school_type;
+	int school_num_type;
 	Protocol::PlayerType player_type;
 };
 
@@ -45,9 +46,9 @@ public:
 	std::array <publicchatInfo, 8> publicBoard;
 
 	// 프라이빗 게시판 정보
-	std::array <privatechatInfo, 3> privateBoard;
+	std::array<std::array<privatechatInfo, 7>, 3> privateBoard;
 
-	// 매칭룸 정보
+	//std::array <privatechatInfo, 7> privateBoard_G;
 
 };
 
@@ -63,11 +64,14 @@ class SPECTRUM_API USPLobbyWidget : public UUserWidget
 	USPLobbyWidget(const FObjectInitializer& ObjectInitializer);
 
 public:
-	UFUNCTION(BlueprintCallable, Category = "Server")
-	void CreateServer();
+	std::string GetMyIP();
 
-	UFUNCTION(BlueprintCallable, Category = "Server")
-	void JoinServer();
+//public:
+//	UFUNCTION(BlueprintCallable, Category = "Server")
+//	void CreateServer();
+//
+//	UFUNCTION(BlueprintCallable, Category = "Server")
+//	void JoinServer();
 
 public:
 	// 시작 로그인 위젯
@@ -89,23 +93,23 @@ public:
 
 	// 매칭 위젯
 	UFUNCTION(BlueprintCallable, Category = "Matching")
-	void Matching();
+	void CreateRoom();
+
+	UFUNCTION(BlueprintCallable, Category = "Matching")
+	void JoinRoom();
 
 	UFUNCTION(BlueprintCallable, Category = "Matching")
 	FString MatchingServer();
 
+	UFUNCTION(BlueprintCallable, Category = "Matching")
+	bool MatchingSuccess_H();
+
+	UFUNCTION(BlueprintCallable, Category = "Matching")
+	bool MatchingSuccess_C();
+
 	// 전체 게시판 위젯
 	UFUNCTION(BlueprintCallable, Category = "PublicChat")
 	void PublicChat(const FString& num, const FString& chat);
-
-	//UPROPERTY( BlueprintReadOnly, Category = "Chat Data")
-	//FString UserId;
-
-	//UPROPERTY( BlueprintReadOnly, Category = "Chat Data")
-	//FString ChatMessage;
-
-	//UFUNCTION(BlueprintCallable, Category = "PublicChat")
-	//FString PublicChatUpdate(/*const FString& id, const FString& chat*/);
 
 	UFUNCTION(BlueprintCallable, Category = "PublicChat")
 	FString PublicChatUpdate_0();
@@ -159,11 +163,11 @@ public:
 	void PrivateChat(const int& school_num, const FString& chat);
 
 	UPROPERTY(BlueprintReadWrite, Category = "PrivateChat")
-	int school_O;
+	int school_G=0;
 	UPROPERTY(BlueprintReadWrite, Category = "PrivateChat")
-	int school_P;
+	int school_P=1;
 	UPROPERTY(BlueprintReadWrite, Category = "PrivateChat")
-	int school_G;
+	int school_O=2;
 
 	UPROPERTY(BlueprintReadWrite, Category = "PrivateChat")
 	FString Pre_chat_O;
@@ -175,14 +179,58 @@ public:
 	//UFUNCTION(BlueprintCallable, Category = "PrivateChat")
 	//FString PrivateChatUpdate();
 
-	UFUNCTION(BlueprintCallable, Category = "PrivateChat")
-	FString PrivateChatUpdate_G();
+	//UFUNCTION(BlueprintCallable, Category = "PrivateChat")
+	//FString PrivateChatUpdate_G();
 
 	UFUNCTION(BlueprintCallable, Category = "PrivateChat")
-	FString PrivateChatUpdate_P();
-
+	FString PrivateChatUpdate_G_0();
 	UFUNCTION(BlueprintCallable, Category = "PrivateChat")
-	FString PrivateChatUpdate_O();
+	FString PrivateChatUpdate_G_1();
+	UFUNCTION(BlueprintCallable, Category = "PrivateChat")
+	FString PrivateChatUpdate_G_2();
+	UFUNCTION(BlueprintCallable, Category = "PrivateChat")
+	FString PrivateChatUpdate_G_3();
+	UFUNCTION(BlueprintCallable, Category = "PrivateChat")
+	FString PrivateChatUpdate_G_4();
+	UFUNCTION(BlueprintCallable, Category = "PrivateChat")
+	FString PrivateChatUpdate_G_5();
+	UFUNCTION(BlueprintCallable, Category = "PrivateChat")
+	FString PrivateChatUpdate_G_6();
+	UFUNCTION(BlueprintCallable, Category = "PrivateChat")
+	FString PrivateChatUpdate_P_0();
+	UFUNCTION(BlueprintCallable, Category = "PrivateChat")
+	FString PrivateChatUpdate_P_1();
+	UFUNCTION(BlueprintCallable, Category = "PrivateChat")
+	FString PrivateChatUpdate_P_2();
+	UFUNCTION(BlueprintCallable, Category = "PrivateChat")
+	FString PrivateChatUpdate_P_3();
+	UFUNCTION(BlueprintCallable, Category = "PrivateChat")
+	FString PrivateChatUpdate_P_4();
+	UFUNCTION(BlueprintCallable, Category = "PrivateChat")
+	FString PrivateChatUpdate_P_5();
+	UFUNCTION(BlueprintCallable, Category = "PrivateChat")
+	FString PrivateChatUpdate_P_6();
+	UFUNCTION(BlueprintCallable, Category = "PrivateChat")
+	FString PrivateChatUpdate_O_0();
+	UFUNCTION(BlueprintCallable, Category = "PrivateChat")
+	FString PrivateChatUpdate_O_1();
+	UFUNCTION(BlueprintCallable, Category = "PrivateChat")
+	FString PrivateChatUpdate_O_2();
+	UFUNCTION(BlueprintCallable, Category = "PrivateChat")
+	FString PrivateChatUpdate_O_3();
+	UFUNCTION(BlueprintCallable, Category = "PrivateChat")
+	FString PrivateChatUpdate_O_4();
+	UFUNCTION(BlueprintCallable, Category = "PrivateChat")
+	FString PrivateChatUpdate_O_5();
+	UFUNCTION(BlueprintCallable, Category = "PrivateChat")
+	FString PrivateChatUpdate_O_6();
+
+
+	//UFUNCTION(BlueprintCallable, Category = "PrivateChat")
+	//FString PrivateChatUpdate_P();
+
+	//UFUNCTION(BlueprintCallable, Category = "PrivateChat")
+	//FString PrivateChatUpdate_O();
 
 	//UFUNCTION(BlueprintCallable, Category = "PrivateChat")	// 해당 게시판이 맞는지
 	//bool SchoolSuccess(const int& num);
@@ -195,3 +243,10 @@ public:
 
 };
 
+extern PlayerInfomation MyPlayerInfo;	// 자신의 정보 저장하는 구조체
+extern LobbyInfomation MyLobbyInfo;	// 로비 정보 저장하는 구조체
+extern bool matching_H;
+extern bool matching_C;
+extern int pir_num_G;
+extern int pir_num_P;
+extern int pir_num_O;

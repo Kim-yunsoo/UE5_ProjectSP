@@ -8,37 +8,12 @@
 #include "../Spectrum/Player/SPPlayerController.h"
 //extern Protocol::PlayerType player_type;
 extern Protocol::PlayerType school_num_type;
-extern bool okok;
-bool bAlreadyTraveled = false;
 extern int32 NumPlayers;
 extern std::array<Protocol::PlayerType, 3> school_type;
 
 ASPGameModeBase::ASPGameModeBase()
 {
-	//static ConstructorHelpers::FClassFinder<APawn> ThirdPersonClassRef(TEXT("/Game/ThirdPerson/Blueprints/BP_ThirdPersonCharacter.BP_ThirdPersonCharacter_C"));
-
-	//if (ThirdPersonClassRef.Class)
-	//{
-	//	DefaultPawnClass = ThirdPersonClassRef.Class;
-	//}
-
-	//static ConstructorHelpers::FClassFinder<APawn> DefaultPawnClassRef(TEXT("/Script/Spectrum.SPCharacterPlayer"));
-	//if (DefaultPawnClassRef.Class)
-	//{
-	//	DefaultPawnClass = DefaultPawnClassRef.Class;
-	//}
-
-	//static ConstructorHelpers::FClassFinder<APlayerController> PlayerControllerClassRef(TEXT("/Script/Spectrum.SPPlayerController"));
-	//if (PlayerControllerClassRef.Class) {
-	//	PlayerControllerClass = PlayerControllerClassRef.Class;
-	//}
-
-	//static ConstructorHelpers::FClassFinder< UUserWidget> LobbyWidgetClassRef(TEXT("/Game/Spectrum/StartUI/StartMenuWidget.StartMenuWidget"));
-	//if (LobbyWidgetClassRef.Class)
-	//{
-	//	SPLobbyWidgetClass = LobbyWidgetClassRef.Class;
-	//}	
-	//bUseSeamlessTravel = true; // Seamless Travel 활성화
+	
 }
 
 bool ASPGameModeBase::TryChangePawn(APlayerController* pCon, FVector location, TSubclassOf<APawn> PAWN_C)
@@ -63,51 +38,11 @@ void ASPGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//TravelToNextLevel();
-	//if (SPLobbyWidgetClass)
-	//{
-	//	LobbyWidget = CreateWidget<USPLobbyWidget>(GetWorld(), SPLobbyWidgetClass);
-	//	if (LobbyWidget)
-	//	{
-	//		LobbyWidget->AddToViewport();
-	//	}
-	//}
 }
 
-//void ASPGameModeBase::PostInitializeComponents()
-//{
-//	Super::PostInitializeComponents();
-//	FTimerHandle GameTimerHandle;
-//	GetWorldTimerManager().SetTimer(GameTimerHandle, this, &ASPGameModeBase::DefaultGameTimer, 1.0f, false);
-//}
-//
-//void ASPGameModeBase::DefaultGameTimer()
-//{
-//	if (bAlreadyTraveled == false) {
-//		bAlreadyTraveled = true;
-//		UE_LOG(LogTemp, Log, TEXT("Default"));
-//		//GetWorld()->ServerTravel(TEXT("/Game/Spectrum/Room/Map/Building?listen")); // 다른 월드로 이동한다.
-//		//okok = true;
-//	}
-//}
-
-//void ASPGameModeBase::Tick(float DeltaTime)
-//{
-//	Super::Tick(DeltaTime);
-//
-//	//if (okok) 
-//	//GetWorld()->ServerTravel(TEXT("/Game/Spectrum/Room/Map/Building?listen")); // 다른 월드로 이동
-//
-//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Tick")));
-//}
 
 void ASPGameModeBase::PostLogin(APlayerController* NewPlayer)
 {
-	//_sleep(3000);
-	//okok = true;
-
-	//if (okok) {
-
 		Super::PostLogin(NewPlayer);
 
 		// 정보 받아서 폰 설정 
@@ -146,23 +81,6 @@ void ASPGameModeBase::PostLogin(APlayerController* NewPlayer)
 				CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharaterPlayer_W3"));
 				break;
 			}
-
 		}
-
-		//UWorld* World = GetWorld();
-		//if (!ensure(World != nullptr)) return;
-
-		//World->ServerTravel("Building?listen");
-		//}
-	
-
-
 }
 
-void ASPGameModeBase::TravelToNextLevel()
-{
-	UWorld* World = GetWorld();
-if (!ensure(World != nullptr)) return;
-
-World->ServerTravel("Building?listen");
-}

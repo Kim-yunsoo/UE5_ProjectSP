@@ -57,6 +57,9 @@ extern C_CREATE_ROOMDefaultTypeInternal _C_CREATE_ROOM_default_instance_;
 class C_ENTER_ROOM;
 struct C_ENTER_ROOMDefaultTypeInternal;
 extern C_ENTER_ROOMDefaultTypeInternal _C_ENTER_ROOM_default_instance_;
+class C_GAME_OVER;
+struct C_GAME_OVERDefaultTypeInternal;
+extern C_GAME_OVERDefaultTypeInternal _C_GAME_OVER_default_instance_;
 class C_LEAVE_GAME;
 struct C_LEAVE_GAMEDefaultTypeInternal;
 extern C_LEAVE_GAMEDefaultTypeInternal _C_LEAVE_GAME_default_instance_;
@@ -107,6 +110,7 @@ PROTOBUF_NAMESPACE_OPEN
 template<> ::Protocol::C_CHAT* Arena::CreateMaybeMessage<::Protocol::C_CHAT>(Arena*);
 template<> ::Protocol::C_CREATE_ROOM* Arena::CreateMaybeMessage<::Protocol::C_CREATE_ROOM>(Arena*);
 template<> ::Protocol::C_ENTER_ROOM* Arena::CreateMaybeMessage<::Protocol::C_ENTER_ROOM>(Arena*);
+template<> ::Protocol::C_GAME_OVER* Arena::CreateMaybeMessage<::Protocol::C_GAME_OVER>(Arena*);
 template<> ::Protocol::C_LEAVE_GAME* Arena::CreateMaybeMessage<::Protocol::C_LEAVE_GAME>(Arena*);
 template<> ::Protocol::C_LOGIN* Arena::CreateMaybeMessage<::Protocol::C_LOGIN>(Arena*);
 template<> ::Protocol::C_MEMBERSHIP* Arena::CreateMaybeMessage<::Protocol::C_MEMBERSHIP>(Arena*);
@@ -1553,6 +1557,124 @@ class S_ENTER_GAME final :
 };
 // -------------------------------------------------------------------
 
+class C_GAME_OVER final :
+    public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:Protocol.C_GAME_OVER) */ {
+ public:
+  inline C_GAME_OVER() : C_GAME_OVER(nullptr) {}
+  explicit PROTOBUF_CONSTEXPR C_GAME_OVER(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  C_GAME_OVER(const C_GAME_OVER& from);
+  C_GAME_OVER(C_GAME_OVER&& from) noexcept
+    : C_GAME_OVER() {
+    *this = ::std::move(from);
+  }
+
+  inline C_GAME_OVER& operator=(const C_GAME_OVER& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline C_GAME_OVER& operator=(C_GAME_OVER&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const C_GAME_OVER& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const C_GAME_OVER* internal_default_instance() {
+    return reinterpret_cast<const C_GAME_OVER*>(
+               &_C_GAME_OVER_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    8;
+
+  friend void swap(C_GAME_OVER& a, C_GAME_OVER& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(C_GAME_OVER* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(C_GAME_OVER* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  C_GAME_OVER* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<C_GAME_OVER>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyFrom;
+  inline void CopyFrom(const C_GAME_OVER& from) {
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl(*this, from);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeFrom;
+  void MergeFrom(const C_GAME_OVER& from) {
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl(*this, from);
+  }
+  public:
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.C_GAME_OVER";
+  }
+  protected:
+  explicit C_GAME_OVER(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // @@protoc_insertion_point(class_scope:Protocol.C_GAME_OVER)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+  };
+  friend struct ::TableStruct_Protocol_2eproto;
+};
+// -------------------------------------------------------------------
+
 class C_LEAVE_GAME final :
     public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:Protocol.C_LEAVE_GAME) */ {
  public:
@@ -1600,7 +1722,7 @@ class C_LEAVE_GAME final :
                &_C_LEAVE_GAME_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    8;
+    9;
 
   friend void swap(C_LEAVE_GAME& a, C_LEAVE_GAME& b) {
     a.Swap(&b);
@@ -1719,7 +1841,7 @@ class S_LEAVE_GAME final :
                &_S_LEAVE_GAME_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    9;
+    10;
 
   friend void swap(S_LEAVE_GAME& a, S_LEAVE_GAME& b) {
     a.Swap(&b);
@@ -1883,7 +2005,7 @@ class S_SPAWN final :
                &_S_SPAWN_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    10;
+    11;
 
   friend void swap(S_SPAWN& a, S_SPAWN& b) {
     a.Swap(&b);
@@ -2040,7 +2162,7 @@ class S_DESPAWN final :
                &_S_DESPAWN_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    11;
+    12;
 
   friend void swap(S_DESPAWN& a, S_DESPAWN& b) {
     a.Swap(&b);
@@ -2202,7 +2324,7 @@ class C_CHAT final :
                &_C_CHAT_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    12;
+    13;
 
   friend void swap(C_CHAT& a, C_CHAT& b) {
     a.Swap(&b);
@@ -2355,7 +2477,7 @@ class S_CHAT final :
                &_S_CHAT_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    13;
+    14;
 
   friend void swap(S_CHAT& a, S_CHAT& b) {
     a.Swap(&b);
@@ -2519,7 +2641,7 @@ class C_PUBLIC_CHAT final :
                &_C_PUBLIC_CHAT_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    14;
+    15;
 
   friend void swap(C_PUBLIC_CHAT& a, C_PUBLIC_CHAT& b) {
     a.Swap(&b);
@@ -2704,7 +2826,7 @@ class S_PUBLIC_CHAT final :
                &_S_PUBLIC_CHAT_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    15;
+    16;
 
   friend void swap(S_PUBLIC_CHAT& a, S_PUBLIC_CHAT& b) {
     a.Swap(&b);
@@ -2889,7 +3011,7 @@ class C_PRIVATE_CHAT final :
                &_C_PRIVATE_CHAT_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    16;
+    17;
 
   friend void swap(C_PRIVATE_CHAT& a, C_PRIVATE_CHAT& b) {
     a.Swap(&b);
@@ -3069,7 +3191,7 @@ class S_PRIVATE_CHAT final :
                &_S_PRIVATE_CHAT_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    17;
+    18;
 
   friend void swap(S_PRIVATE_CHAT& a, S_PRIVATE_CHAT& b) {
     a.Swap(&b);
@@ -4070,6 +4192,10 @@ inline void S_ENTER_GAME::set_allocated_server_ip(std::string* server_ip) {
 
 // -------------------------------------------------------------------
 
+// C_GAME_OVER
+
+// -------------------------------------------------------------------
+
 // C_LEAVE_GAME
 
 // -------------------------------------------------------------------
@@ -4925,6 +5051,8 @@ inline void S_PRIVATE_CHAT::set_membership_type(::Protocol::SchoolType value) {
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

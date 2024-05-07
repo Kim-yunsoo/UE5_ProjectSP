@@ -18,16 +18,17 @@ enum : uint16
 	PKT_C_ENTER_ROOM = 1005,
 	PKT_S_ENTER_ROOM = 1006,
 	PKT_S_ENTER_GAME = 1007,
-	PKT_C_LEAVE_GAME = 1008,
-	PKT_S_LEAVE_GAME = 1009,
-	PKT_S_SPAWN = 1010,
-	PKT_S_DESPAWN = 1011,
-	PKT_C_CHAT = 1012,
-	PKT_S_CHAT = 1013,
-	PKT_C_PUBLIC_CHAT = 1014,
-	PKT_S_PUBLIC_CHAT = 1015,
-	PKT_C_PRIVATE_CHAT = 1016,
-	PKT_S_PRIVATE_CHAT = 1017,
+	PKT_C_GAME_OVER = 1008,
+	PKT_C_LEAVE_GAME = 1009,
+	PKT_S_LEAVE_GAME = 1010,
+	PKT_S_SPAWN = 1011,
+	PKT_S_DESPAWN = 1012,
+	PKT_C_CHAT = 1013,
+	PKT_S_CHAT = 1014,
+	PKT_C_PUBLIC_CHAT = 1015,
+	PKT_S_PUBLIC_CHAT = 1016,
+	PKT_C_PRIVATE_CHAT = 1017,
+	PKT_S_PRIVATE_CHAT = 1018,
 };
 
 // Custom Handlers
@@ -71,6 +72,7 @@ public:
 	static SendBufferRef MakeSendBuffer(Protocol::C_MEMBERSHIP& pkt) { return MakeSendBuffer(pkt, PKT_C_MEMBERSHIP); }
 	static SendBufferRef MakeSendBuffer(Protocol::C_CREATE_ROOM& pkt) { return MakeSendBuffer(pkt, PKT_C_CREATE_ROOM); }
 	static SendBufferRef MakeSendBuffer(Protocol::C_ENTER_ROOM& pkt) { return MakeSendBuffer(pkt, PKT_C_ENTER_ROOM); }
+	static SendBufferRef MakeSendBuffer(Protocol::C_GAME_OVER& pkt) { return MakeSendBuffer(pkt, PKT_C_GAME_OVER); }
 	static SendBufferRef MakeSendBuffer(Protocol::C_LEAVE_GAME& pkt) { return MakeSendBuffer(pkt, PKT_C_LEAVE_GAME); }
 	static SendBufferRef MakeSendBuffer(Protocol::C_CHAT& pkt) { return MakeSendBuffer(pkt, PKT_C_CHAT); }
 	static SendBufferRef MakeSendBuffer(Protocol::C_PUBLIC_CHAT& pkt) { return MakeSendBuffer(pkt, PKT_C_PUBLIC_CHAT); }

@@ -27,14 +27,14 @@ void USpectrumGameInstance::ConnectToGameServer()
 	InternetAddr->SetPort(Port);
 
 	// 辑滚俊 立加(匙飘况农 目池记)
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("connect to server")));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("connect to server")));
 
 	bool bConnected = Socket->Connect(*InternetAddr);
 
 	// 立加 己傍 咯何
 	if (bConnected)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("connection Success")));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("connection Success")));
 
 		// Session 父甸扁(况目 胶饭靛 积己)
 		GameServerSession = MakeShared<PacketSession>(Socket);
@@ -54,7 +54,7 @@ void USpectrumGameInstance::ConnectToGameServer()
 	}
 	else
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("connection failed")));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("connection failed")));
 	}
 
 	//LobbyWidget = CreateWidget<USPLobbyWidget>(this, LobbyWidgetClass);

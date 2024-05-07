@@ -61,6 +61,11 @@ message S_ENTER_GAME
 	string server_ip = 8;
 }
 
+message C_GAME_OVER
+{
+
+}
+
 message C_LEAVE_GAME
 {
 

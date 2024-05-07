@@ -11,7 +11,7 @@
 #include <sstream>
 #include "GameSessionManager.h"
 
-extern LobbyInfomation G_LobbyInfo;
+extern LobbyInformation G_LobbyInfo;
 
 PacketHandlerFunc GPacketHandler[UINT16_MAX];
 
@@ -86,48 +86,31 @@ bool Handle_C_LOGIN(PacketSessionRef& session, Protocol::C_LOGIN& pkt)
 			PlayerRef player = ObjectUtils::CreatePlayer(static_pointer_cast<GameSession>(session));
 			//player->objectInfo->set_player_id(loginPkt.membership_id());
 			//player->objectInfo->set_membership_type(loginPkt.membership_type());
-			player->player_id = pkt.membership_id();
+			std::string str = pkt.membership_id();
+			player->player_id = str;
 			player->membership_type = loginPkt.membership_type();
 
-			// 방에 입장
-			GRoom->HandleEnterPlayerLocked(player);
+			//cout << *player->player_id << endl;
+
+			// 로비에 입장
+			GLobby->EnterLobbyLocked(player);
+			//GLobby->RoomSend(nullptr, player->player_id);
+
+
+			//test
+			//Protocol::S_ENTER_GAME enterGamePkt;
+			//SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(enterGamePkt);
+			//GSessionManager.Broadcast(sendBuffer);
+			
+
 		}
 	}
 	file.close(); // 파일을 닫습니다.
 	loginPkt.set_success(isThere);
 	SEND_PACKET(loginPkt);
-
-	{
-		// S_ENTER_GAME 보내기 -> 나중에 매치메이킹 구현하고 고치기
-		// 매치메이킹 구현 전 임시로 보냄
-		// 서버만들기 버튼 누른 사람이 0번
-		// 나머지는 순서대로 1, 2번
-		// 룸 정보 어디에 저장할지 생각하기
-
-		Protocol::S_ENTER_GAME enterGamePkt;
-		enterGamePkt.set_success(true);
-		enterGamePkt.set_membership_id_0("test1");
-		enterGamePkt.set_membership_type_0(Protocol::PLAYER_TYPE_GREEN_MAN);
-		enterGamePkt.set_membership_id_1("test2");
-		enterGamePkt.set_membership_type_1(Protocol::PLAYER_TYPE_PURPLE_WOMAN);
-		enterGamePkt.set_membership_id_2("test3");
-		enterGamePkt.set_membership_type_2(Protocol::PLAYER_TYPE_ORANGE_WOMAN);
-
-		//enterGamePkt.set_membership_0().set_membership_id("test1");
-		//enterGamePkt.set_membership_0().set_membership_type(Protocol::PLAYER_TYPE_GREEN_MAN);
-		//enterGamePkt.set_membership_1().set_membership_id("test2");
-		//enterGamePkt.set_membership_1().set_membership_type(Protocol::PLAYER_TYPE_PURPLE_WOMAN);
-		//enterGamePkt.set_membership_2().set_membership_id("test3");
-		//enterGamePkt.set_membership_2().set_membership_type(Protocol::PLAYER_TYPE_ORANGE_WOMAN);
-
-		SEND_PACKET(enterGamePkt);
-	}
-
-
+	
 	// 로비에 접속한 클라이언트를 추가
 	//Lobby->HandleEnterPlayerLocked(static_pointer_cast<GameSession>(session));
-
-
 
 	isThere = false;
 
@@ -183,30 +166,13 @@ bool Handle_C_MEMBERSHIP(PacketSessionRef& session, Protocol::C_MEMBERSHIP& pkt)
 	PlayerRef player = ObjectUtils::CreatePlayer(static_pointer_cast<GameSession>(session));
 	//player->objectInfo->set_player_id(loginPkt.membership_id());
 	//player->objectInfo->set_membership_type(loginPkt.membership_type());
-	player->player_id = pkt.membership_id();
+	std::string str = pkt.membership_id();
+	player->player_id = str;
 	player->membership_type = membershipPkt.membership_type();
+	
 
-	// 방에 입장
-	GRoom->HandleEnterPlayerLocked(player);
-
-	//// 전체 게시판 정보 전송
-	//Protocol::S_PUBLIC_CHAT publicChatPkt;
-	//for (int i = 0; i < 8; i++) {
-	//	publicChatPkt.set_membership_id(G_LobbyInfo.publicBoard[i].membership_id);
-	//	publicChatPkt.set_msg(G_LobbyInfo.publicBoard[i].msg);
-	//	publicChatPkt.set_msg_num(G_LobbyInfo.publicBoard[i].msg_num);
-	//	SEND_PACKET(publicChatPkt);
-	//}
-
-	//// 학교 게시판 정보 전송
-	//Protocol::S_PRIVATE_CHAT privateChatPkt;
-	//for (int i = 0; i < 3; i++) {
-	//	privateChatPkt.set_membership_id(G_LobbyInfo.privateBoard[i].membership_id);
-	//	privateChatPkt.set_msg(G_LobbyInfo.privateBoard[i].msg);
-	//	privateChatPkt.set_membership_type(G_LobbyInfo.privateBoard[i].membership_type);
-	//	SEND_PACKET(privateChatPkt);
-	//}
-
+	// 로비에 입장
+	GLobby->EnterLobbyLocked(player);
 
 	return true;
 }
@@ -214,32 +180,113 @@ bool Handle_C_MEMBERSHIP(PacketSessionRef& session, Protocol::C_MEMBERSHIP& pkt)
 bool Handle_C_CREATE_ROOM(PacketSessionRef& session, Protocol::C_CREATE_ROOM& pkt)
 {
 	// 방 생성
+	//cout << "Create Room:" << pkt.membership_id() << ", ip:" << pkt.ip_address() << endl;
 
+	// 방 생성
+	if (pkt.school_type() == Protocol::SCHOOL_TYPE_GREEN) {
+		RoomList.emplace_back(pkt.ip_address(), 0, 0, pkt.membership_id(), pkt.membership_type());
+		cout << "Create Room GREEN, " << pkt.membership_id() << ", ip:" << pkt.ip_address() << endl;
+		cout << "Enter Room GREEN" << pkt.membership_id() << endl;
+	}
+	else if (pkt.school_type() == Protocol::SCHOOL_TYPE_PURPLE) {
+		RoomList.emplace_back(pkt.ip_address(), 0, 0, pkt.membership_id(), pkt.membership_type(), 0);
+		cout << "Create Room PURPLE" << pkt.membership_id() << ", ip:" << pkt.ip_address() << endl;
+		cout << "Enter Room PURPLE" << pkt.membership_id() << endl;
+	}
+	else if (pkt.school_type() == Protocol::SCHOOL_TYPE_ORANGE) {
+		RoomList.emplace_back(pkt.ip_address(), 0, 0, pkt.membership_id(), pkt.membership_type(), 0, 0);
+		cout << "Create Room ORANGE" << pkt.membership_id() << ", ip:" << pkt.ip_address() << endl;
+		cout << "Enter Room ORANGE" << pkt.membership_id() << endl;
+	}
 
 	return true;
 }
 
-//bool Handle_C_ENTER_GAME(PacketSessionRef& session, Protocol::C_ENTER_GAME& pkt)
-//{
-//	// 플레이어 생성
-//	PlayerRef player = ObjectUtils::CreatePlayer(static_pointer_cast<GameSession>(session));
-//	//player->objectInfo->set_membership_id(pkt.membership_id());
-//	//player->objectInfo->set_membership_type(pkt.membership_type());
-//	
-//	// 방에 입장
-//	GRoom->HandleEnterPlayerLocked(player);
-//
-//	cout<< "Player Enter" << endl;
-//
-//	return true;
-//}
-
 bool Handle_C_ENTER_ROOM(PacketSessionRef& session, Protocol::C_ENTER_ROOM& pkt)
 {
-	//Protocol::S_ENTER_ROOM enterRoomPkt;
-	//Protocol::PlayerInfo* player = enterRoomPkt.add_players();
-	//enterRoomPkt.set_success(true);
-	//SEND_PACKET(enterRoomPkt);
+	switch (pkt.school_type()) {
+	case Protocol::SCHOOL_TYPE_GREEN:
+		// RoomList 중 Index_G이 -1인 방을 찾아서 해당 방에 입장
+		for (int i = 0; i < RoomList.size(); i++) {
+			if (RoomList[i].Index_G == -1) {
+				RoomList[i].Index_G = 0;
+				RoomList[i].membership_id_G = pkt.membership_id();
+				RoomList[i].membership_type_G = pkt.membership_type();
+				RoomList[i].memberCount += 1;
+				cout << "Enter Room GREEN" << pkt.membership_id() << endl;
+				break;
+			}
+		}
+		break;
+
+	case Protocol::SCHOOL_TYPE_PURPLE:
+		// RoomList 중 Index_P이 -1인 방을 찾아서 해당 방에 입장
+		for (int i = 0; i < RoomList.size(); i++) {
+			if (RoomList[i].Index_P == -1) {
+				RoomList[i].Index_P = 0;
+				RoomList[i].membership_id_P = pkt.membership_id();
+				RoomList[i].membership_type_P = pkt.membership_type();
+				RoomList[i].memberCount += 1;
+				cout << "Enter Room PURPLE" << pkt.membership_id() << endl;
+				break;
+			}
+		}
+		break;
+
+	case Protocol::SCHOOL_TYPE_ORANGE:
+		// RoomList 중 Index_O이 -1인 방을 찾아서 해당 방에 입장
+		for (int i = 0; i < RoomList.size(); i++) {
+			if (RoomList[i].Index_O == -1) {
+				RoomList[i].Index_O = 0;
+				RoomList[i].membership_id_O = pkt.membership_id();
+				RoomList[i].membership_type_O = pkt.membership_type();
+				RoomList[i].memberCount += 1;
+				cout << "Enter Room ORANGE" << pkt.membership_id() << endl;
+				break;
+			}
+		}
+		break;
+	}
+
+	// RoomList 중 memberCount가 2인 방을 찾아서 방의 모든 클라이언트에게 게임 시작 패킷 전송
+	for (int i = 0; i < RoomList.size(); i++) {
+		if (RoomList[i].memberCount == 2) {
+			// 게임 시작 패킷 전송
+			Protocol::S_ENTER_GAME enterGamePkt;
+			enterGamePkt.set_success(true);
+			enterGamePkt.set_membership_id_0(RoomList[i].membership_id_G);
+			enterGamePkt.set_membership_type_0(RoomList[i].membership_type_G);
+			enterGamePkt.set_membership_id_1(RoomList[i].membership_id_P);
+			enterGamePkt.set_membership_type_1(RoomList[i].membership_type_P);
+			enterGamePkt.set_membership_id_2(RoomList[i].membership_id_O);
+			enterGamePkt.set_membership_type_2(RoomList[i].membership_type_O);
+			enterGamePkt.set_server_ip(RoomList[i].ip_address);
+			//enterGamePkt.set_server_ip("123456789");
+
+			//SEND_PACKET(enterGamePkt);
+
+			{
+				// 룸에 있는 클라이언트에게 게임 시작 패킷 전송
+				SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(enterGamePkt);
+				GSessionManager.RoomBroadcast(sendBuffer, RoomList[i].membership_id_G);
+				GSessionManager.RoomBroadcast(sendBuffer, RoomList[i].membership_id_P);
+				GSessionManager.RoomBroadcast(sendBuffer, RoomList[i].membership_id_O);
+
+				cout << enterGamePkt.server_ip() << endl;
+			}
+
+
+			// 나중에 게임 종료 패킷 받으면 RoomList에서 해당 방 삭제
+			//RoomList.erase(RoomList.begin() + i);
+			break;
+		}
+	}	
+
+	return true;
+}
+
+bool Handle_C_GAME_OVER(PacketSessionRef& session, Protocol::C_GAME_OVER& pkt)
+{
 
 	return true;
 }
@@ -256,7 +303,7 @@ bool Handle_C_LEAVE_GAME(PacketSessionRef& session, Protocol::C_LEAVE_GAME& pkt)
 	if (lobby == nullptr)
 		return false;
 
-	lobby->HandleLeavePlayerLocked(player);
+	lobby->LeaveLobbyLocked(player);
 
 	return true;
 }
@@ -303,7 +350,7 @@ bool Handle_C_PRIVATE_CHAT(PacketSessionRef& session, Protocol::C_PRIVATE_CHAT& 
 	privateChatPkt.set_msg(pkt.msg());
 	privateChatPkt.set_membership_type(pkt.membership_type());
 
-	SEND_PACKET(privateChatPkt);
+	//SEND_PACKET(privateChatPkt);		// 에디터 하나만 할거면 이걸로
 
 	auto send_Buffer = ServerPacketHandler::MakeSendBuffer(privateChatPkt);
 	GSessionManager.Broadcast(send_Buffer);

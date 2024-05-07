@@ -18,16 +18,17 @@ enum : uint16
 	PKT_C_ENTER_ROOM = 1005,
 	PKT_S_ENTER_ROOM = 1006,
 	PKT_S_ENTER_GAME = 1007,
-	PKT_C_LEAVE_GAME = 1008,
-	PKT_S_LEAVE_GAME = 1009,
-	PKT_S_SPAWN = 1010,
-	PKT_S_DESPAWN = 1011,
-	PKT_C_CHAT = 1012,
-	PKT_S_CHAT = 1013,
-	PKT_C_PUBLIC_CHAT = 1014,
-	PKT_S_PUBLIC_CHAT = 1015,
-	PKT_C_PRIVATE_CHAT = 1016,
-	PKT_S_PRIVATE_CHAT = 1017,
+	PKT_C_GAME_OVER = 1008,
+	PKT_C_LEAVE_GAME = 1009,
+	PKT_S_LEAVE_GAME = 1010,
+	PKT_S_SPAWN = 1011,
+	PKT_S_DESPAWN = 1012,
+	PKT_C_CHAT = 1013,
+	PKT_S_CHAT = 1014,
+	PKT_C_PUBLIC_CHAT = 1015,
+	PKT_S_PUBLIC_CHAT = 1016,
+	PKT_C_PRIVATE_CHAT = 1017,
+	PKT_S_PRIVATE_CHAT = 1018,
 };
 
 // Custom Handlers
@@ -36,6 +37,7 @@ bool Handle_C_LOGIN(PacketSessionRef& session, Protocol::C_LOGIN& pkt);
 bool Handle_C_MEMBERSHIP(PacketSessionRef& session, Protocol::C_MEMBERSHIP& pkt);
 bool Handle_C_CREATE_ROOM(PacketSessionRef& session, Protocol::C_CREATE_ROOM& pkt);
 bool Handle_C_ENTER_ROOM(PacketSessionRef& session, Protocol::C_ENTER_ROOM& pkt);
+bool Handle_C_GAME_OVER(PacketSessionRef& session, Protocol::C_GAME_OVER& pkt);
 bool Handle_C_LEAVE_GAME(PacketSessionRef& session, Protocol::C_LEAVE_GAME& pkt);
 bool Handle_C_CHAT(PacketSessionRef& session, Protocol::C_CHAT& pkt);
 bool Handle_C_PUBLIC_CHAT(PacketSessionRef& session, Protocol::C_PUBLIC_CHAT& pkt);
@@ -52,6 +54,7 @@ public:
 		GPacketHandler[PKT_C_MEMBERSHIP] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_MEMBERSHIP>(Handle_C_MEMBERSHIP, session, buffer, len); };
 		GPacketHandler[PKT_C_CREATE_ROOM] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_CREATE_ROOM>(Handle_C_CREATE_ROOM, session, buffer, len); };
 		GPacketHandler[PKT_C_ENTER_ROOM] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_ENTER_ROOM>(Handle_C_ENTER_ROOM, session, buffer, len); };
+		GPacketHandler[PKT_C_GAME_OVER] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_GAME_OVER>(Handle_C_GAME_OVER, session, buffer, len); };
 		GPacketHandler[PKT_C_LEAVE_GAME] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_LEAVE_GAME>(Handle_C_LEAVE_GAME, session, buffer, len); };
 		GPacketHandler[PKT_C_CHAT] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_CHAT>(Handle_C_CHAT, session, buffer, len); };
 		GPacketHandler[PKT_C_PUBLIC_CHAT] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_PUBLIC_CHAT>(Handle_C_PUBLIC_CHAT, session, buffer, len); };

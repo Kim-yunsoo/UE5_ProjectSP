@@ -142,6 +142,17 @@ struct S_ENTER_GAMEDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 S_ENTER_GAMEDefaultTypeInternal _S_ENTER_GAME_default_instance_;
+PROTOBUF_CONSTEXPR C_GAME_OVER::C_GAME_OVER(
+    ::_pbi::ConstantInitialized) {}
+struct C_GAME_OVERDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR C_GAME_OVERDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~C_GAME_OVERDefaultTypeInternal() {}
+  union {
+    C_GAME_OVER _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 C_GAME_OVERDefaultTypeInternal _C_GAME_OVER_default_instance_;
 PROTOBUF_CONSTEXPR C_LEAVE_GAME::C_LEAVE_GAME(
     ::_pbi::ConstantInitialized) {}
 struct C_LEAVE_GAMEDefaultTypeInternal {
@@ -282,7 +293,7 @@ struct S_PRIVATE_CHATDefaultTypeInternal {
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 S_PRIVATE_CHATDefaultTypeInternal _S_PRIVATE_CHAT_default_instance_;
 }  // namespace Protocol
-static ::_pb::Metadata file_level_metadata_Protocol_2eproto[18];
+static ::_pb::Metadata file_level_metadata_Protocol_2eproto[19];
 static constexpr ::_pb::EnumDescriptor const** file_level_enum_descriptors_Protocol_2eproto = nullptr;
 static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_Protocol_2eproto = nullptr;
 
@@ -360,6 +371,12 @@ const uint32_t TableStruct_Protocol_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   PROTOBUF_FIELD_OFFSET(::Protocol::S_ENTER_GAME, _impl_.membership_id_2_),
   PROTOBUF_FIELD_OFFSET(::Protocol::S_ENTER_GAME, _impl_.membership_type_2_),
   PROTOBUF_FIELD_OFFSET(::Protocol::S_ENTER_GAME, _impl_.server_ip_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::Protocol::C_GAME_OVER, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Protocol::C_LEAVE_GAME, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -449,16 +466,17 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 43, -1, -1, sizeof(::Protocol::C_ENTER_ROOM)},
   { 52, -1, -1, sizeof(::Protocol::S_ENTER_ROOM)},
   { 59, -1, -1, sizeof(::Protocol::S_ENTER_GAME)},
-  { 73, -1, -1, sizeof(::Protocol::C_LEAVE_GAME)},
-  { 79, -1, -1, sizeof(::Protocol::S_LEAVE_GAME)},
-  { 87, -1, -1, sizeof(::Protocol::S_SPAWN)},
-  { 94, -1, -1, sizeof(::Protocol::S_DESPAWN)},
-  { 101, -1, -1, sizeof(::Protocol::C_CHAT)},
-  { 108, -1, -1, sizeof(::Protocol::S_CHAT)},
-  { 116, -1, -1, sizeof(::Protocol::C_PUBLIC_CHAT)},
-  { 125, -1, -1, sizeof(::Protocol::S_PUBLIC_CHAT)},
-  { 134, -1, -1, sizeof(::Protocol::C_PRIVATE_CHAT)},
-  { 143, -1, -1, sizeof(::Protocol::S_PRIVATE_CHAT)},
+  { 73, -1, -1, sizeof(::Protocol::C_GAME_OVER)},
+  { 79, -1, -1, sizeof(::Protocol::C_LEAVE_GAME)},
+  { 85, -1, -1, sizeof(::Protocol::S_LEAVE_GAME)},
+  { 93, -1, -1, sizeof(::Protocol::S_SPAWN)},
+  { 100, -1, -1, sizeof(::Protocol::S_DESPAWN)},
+  { 107, -1, -1, sizeof(::Protocol::C_CHAT)},
+  { 114, -1, -1, sizeof(::Protocol::S_CHAT)},
+  { 122, -1, -1, sizeof(::Protocol::C_PUBLIC_CHAT)},
+  { 131, -1, -1, sizeof(::Protocol::S_PUBLIC_CHAT)},
+  { 140, -1, -1, sizeof(::Protocol::C_PRIVATE_CHAT)},
+  { 149, -1, -1, sizeof(::Protocol::S_PRIVATE_CHAT)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -470,6 +488,7 @@ static const ::_pb::Message* const file_default_instances[] = {
   &::Protocol::_C_ENTER_ROOM_default_instance_._instance,
   &::Protocol::_S_ENTER_ROOM_default_instance_._instance,
   &::Protocol::_S_ENTER_GAME_default_instance_._instance,
+  &::Protocol::_C_GAME_OVER_default_instance_._instance,
   &::Protocol::_C_LEAVE_GAME_default_instance_._instance,
   &::Protocol::_S_LEAVE_GAME_default_instance_._instance,
   &::Protocol::_S_SPAWN_default_instance_._instance,
@@ -507,21 +526,21 @@ const char descriptor_table_protodef_Protocol_2eproto[] PROTOBUF_SECTION_VARIABL
   "\030\005 \001(\0162\024.Protocol.PlayerType\022\027\n\017membersh"
   "ip_id_2\030\006 \001(\t\022/\n\021membership_type_2\030\007 \001(\016"
   "2\024.Protocol.PlayerType\022\021\n\tserver_ip\030\010 \001("
-  "\t\"\016\n\014C_LEAVE_GAME\":\n\014S_LEAVE_GAME\022\t\n\001a\030\001"
-  " \001(\t\022\037\n\001b\030\002 \001(\0162\024.Protocol.PlayerType\"0\n"
-  "\007S_SPAWN\022%\n\007players\030\001 \003(\0132\024.Protocol.Pla"
-  "yerInfo\"\037\n\tS_DESPAWN\022\022\n\nobject_ids\030\001 \003(\004"
-  "\"\025\n\006C_CHAT\022\013\n\003msg\030\001 \001(\t\"\'\n\006S_CHAT\022\020\n\010pla"
-  "yerId\030\001 \001(\004\022\013\n\003msg\030\002 \001(\t\"D\n\rC_PUBLIC_CHA"
-  "T\022\025\n\rmembership_id\030\001 \001(\t\022\013\n\003msg\030\002 \001(\t\022\017\n"
-  "\007msg_num\030\003 \001(\t\"D\n\rS_PUBLIC_CHAT\022\025\n\rmembe"
-  "rship_id\030\001 \001(\t\022\013\n\003msg\030\002 \001(\t\022\017\n\007msg_num\030\003"
-  " \001(\t\"c\n\016C_PRIVATE_CHAT\022\025\n\rmembership_id\030"
-  "\001 \001(\t\022\013\n\003msg\030\002 \001(\t\022-\n\017membership_type\030\003 "
-  "\001(\0162\024.Protocol.SchoolType\"c\n\016S_PRIVATE_C"
-  "HAT\022\025\n\rmembership_id\030\001 \001(\t\022\013\n\003msg\030\002 \001(\t\022"
-  "-\n\017membership_type\030\003 \001(\0162\024.Protocol.Scho"
-  "olTypeb\006proto3"
+  "\t\"\r\n\013C_GAME_OVER\"\016\n\014C_LEAVE_GAME\":\n\014S_LE"
+  "AVE_GAME\022\t\n\001a\030\001 \001(\t\022\037\n\001b\030\002 \001(\0162\024.Protoco"
+  "l.PlayerType\"0\n\007S_SPAWN\022%\n\007players\030\001 \003(\013"
+  "2\024.Protocol.PlayerInfo\"\037\n\tS_DESPAWN\022\022\n\no"
+  "bject_ids\030\001 \003(\004\"\025\n\006C_CHAT\022\013\n\003msg\030\001 \001(\t\"\'"
+  "\n\006S_CHAT\022\020\n\010playerId\030\001 \001(\004\022\013\n\003msg\030\002 \001(\t\""
+  "D\n\rC_PUBLIC_CHAT\022\025\n\rmembership_id\030\001 \001(\t\022"
+  "\013\n\003msg\030\002 \001(\t\022\017\n\007msg_num\030\003 \001(\t\"D\n\rS_PUBLI"
+  "C_CHAT\022\025\n\rmembership_id\030\001 \001(\t\022\013\n\003msg\030\002 \001"
+  "(\t\022\017\n\007msg_num\030\003 \001(\t\"c\n\016C_PRIVATE_CHAT\022\025\n"
+  "\rmembership_id\030\001 \001(\t\022\013\n\003msg\030\002 \001(\t\022-\n\017mem"
+  "bership_type\030\003 \001(\0162\024.Protocol.SchoolType"
+  "\"c\n\016S_PRIVATE_CHAT\022\025\n\rmembership_id\030\001 \001("
+  "\t\022\013\n\003msg\030\002 \001(\t\022-\n\017membership_type\030\003 \001(\0162"
+  "\024.Protocol.SchoolTypeb\006proto3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_deps[2] = {
   &::descriptor_table_Enum_2eproto,
@@ -529,9 +548,9 @@ static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_de
 };
 static ::_pbi::once_flag descriptor_table_Protocol_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Protocol_2eproto = {
-    false, false, 1534, descriptor_table_protodef_Protocol_2eproto,
+    false, false, 1549, descriptor_table_protodef_Protocol_2eproto,
     "Protocol.proto",
-    &descriptor_table_Protocol_2eproto_once, descriptor_table_Protocol_2eproto_deps, 2, 18,
+    &descriptor_table_Protocol_2eproto_once, descriptor_table_Protocol_2eproto_deps, 2, 19,
     schemas, file_default_instances, TableStruct_Protocol_2eproto::offsets,
     file_level_metadata_Protocol_2eproto, file_level_enum_descriptors_Protocol_2eproto,
     file_level_service_descriptors_Protocol_2eproto,
@@ -2750,6 +2769,46 @@ void S_ENTER_GAME::InternalSwap(S_ENTER_GAME* other) {
 
 // ===================================================================
 
+class C_GAME_OVER::_Internal {
+ public:
+};
+
+C_GAME_OVER::C_GAME_OVER(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase(arena, is_message_owned) {
+  // @@protoc_insertion_point(arena_constructor:Protocol.C_GAME_OVER)
+}
+C_GAME_OVER::C_GAME_OVER(const C_GAME_OVER& from)
+  : ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase() {
+  C_GAME_OVER* const _this = this; (void)_this;
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  // @@protoc_insertion_point(copy_constructor:Protocol.C_GAME_OVER)
+}
+
+
+
+
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData C_GAME_OVER::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl,
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl,
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*C_GAME_OVER::GetClassData() const { return &_class_data_; }
+
+
+
+
+
+
+
+::PROTOBUF_NAMESPACE_ID::Metadata C_GAME_OVER::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
+      file_level_metadata_Protocol_2eproto[8]);
+}
+
+// ===================================================================
+
 class C_LEAVE_GAME::_Internal {
  public:
 };
@@ -2785,7 +2844,7 @@ const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*C_LEAVE_GAME::GetClassData() c
 ::PROTOBUF_NAMESPACE_ID::Metadata C_LEAVE_GAME::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
-      file_level_metadata_Protocol_2eproto[8]);
+      file_level_metadata_Protocol_2eproto[9]);
 }
 
 // ===================================================================
@@ -3018,7 +3077,7 @@ void S_LEAVE_GAME::InternalSwap(S_LEAVE_GAME* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata S_LEAVE_GAME::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
-      file_level_metadata_Protocol_2eproto[9]);
+      file_level_metadata_Protocol_2eproto[10]);
 }
 
 // ===================================================================
@@ -3206,7 +3265,7 @@ void S_SPAWN::InternalSwap(S_SPAWN* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata S_SPAWN::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
-      file_level_metadata_Protocol_2eproto[10]);
+      file_level_metadata_Protocol_2eproto[11]);
 }
 
 // ===================================================================
@@ -3399,7 +3458,7 @@ void S_DESPAWN::InternalSwap(S_DESPAWN* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata S_DESPAWN::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
-      file_level_metadata_Protocol_2eproto[11]);
+      file_level_metadata_Protocol_2eproto[12]);
 }
 
 // ===================================================================
@@ -3602,7 +3661,7 @@ void C_CHAT::InternalSwap(C_CHAT* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata C_CHAT::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
-      file_level_metadata_Protocol_2eproto[12]);
+      file_level_metadata_Protocol_2eproto[13]);
 }
 
 // ===================================================================
@@ -3832,7 +3891,7 @@ void S_CHAT::InternalSwap(S_CHAT* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata S_CHAT::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
-      file_level_metadata_Protocol_2eproto[13]);
+      file_level_metadata_Protocol_2eproto[14]);
 }
 
 // ===================================================================
@@ -4135,7 +4194,7 @@ void C_PUBLIC_CHAT::InternalSwap(C_PUBLIC_CHAT* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata C_PUBLIC_CHAT::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
-      file_level_metadata_Protocol_2eproto[14]);
+      file_level_metadata_Protocol_2eproto[15]);
 }
 
 // ===================================================================
@@ -4438,7 +4497,7 @@ void S_PUBLIC_CHAT::InternalSwap(S_PUBLIC_CHAT* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata S_PUBLIC_CHAT::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
-      file_level_metadata_Protocol_2eproto[15]);
+      file_level_metadata_Protocol_2eproto[16]);
 }
 
 // ===================================================================
@@ -4721,7 +4780,7 @@ void C_PRIVATE_CHAT::InternalSwap(C_PRIVATE_CHAT* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata C_PRIVATE_CHAT::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
-      file_level_metadata_Protocol_2eproto[16]);
+      file_level_metadata_Protocol_2eproto[17]);
 }
 
 // ===================================================================
@@ -5004,7 +5063,7 @@ void S_PRIVATE_CHAT::InternalSwap(S_PRIVATE_CHAT* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata S_PRIVATE_CHAT::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
-      file_level_metadata_Protocol_2eproto[17]);
+      file_level_metadata_Protocol_2eproto[18]);
 }
 
 // @@protoc_insertion_point(namespace_scope)
@@ -5041,6 +5100,10 @@ Arena::CreateMaybeMessage< ::Protocol::S_ENTER_ROOM >(Arena* arena) {
 template<> PROTOBUF_NOINLINE ::Protocol::S_ENTER_GAME*
 Arena::CreateMaybeMessage< ::Protocol::S_ENTER_GAME >(Arena* arena) {
   return Arena::CreateMessageInternal< ::Protocol::S_ENTER_GAME >(arena);
+}
+template<> PROTOBUF_NOINLINE ::Protocol::C_GAME_OVER*
+Arena::CreateMaybeMessage< ::Protocol::C_GAME_OVER >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::Protocol::C_GAME_OVER >(arena);
 }
 template<> PROTOBUF_NOINLINE ::Protocol::C_LEAVE_GAME*
 Arena::CreateMaybeMessage< ::Protocol::C_LEAVE_GAME >(Arena* arena) {
