@@ -17,7 +17,11 @@ ASPPickup::ASPPickup()
 	
 
 	PickupMesh = CreateDefaultSubobject<UStaticMeshComponent>("PickupMesh");
-	PickupMesh->SetSimulatePhysics(true);
+	
+	//PickupMesh->SetSimulatePhysics(true);
+	SetRootComponent(PickupMesh);
+	
+	
 	Trigger = CreateDefaultSubobject<UBoxComponent>(TEXT("PickupTriggerComponent"));
 	static ConstructorHelpers::FObjectFinder<UDataTable> DataTableFinder(TEXT("/Script/Engine.DataTable'/Game/Spectrum/ItemData/Item.Item'"));
 	if (DataTableFinder.Succeeded())
@@ -25,8 +29,8 @@ ASPPickup::ASPPickup()
 		ItemDataTable = DataTableFinder.Object;
 	}
 	PotionRange=4;
-	PickupMesh->SetSimulatePhysics(false);
-	Trigger->SetSimulatePhysics(false);
+	//PickupMesh->SetSimulatePhysics(false);
+	//Trigger->SetSimulatePhysics(false);
 }
 
 // Called when the game starts or when spawned
