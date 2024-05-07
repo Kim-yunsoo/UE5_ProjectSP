@@ -8,36 +8,12 @@
 #include "../Spectrum/Player/SPPlayerController.h"
 //extern Protocol::PlayerType player_type;
 extern Protocol::PlayerType school_num_type;
-extern bool okok;
-bool bAlreadyTraveled = false;
 extern int32 NumPlayers;
+extern std::array<Protocol::PlayerType, 3> school_type;
 
 ASPGameModeBase::ASPGameModeBase()
 {
-	//static ConstructorHelpers::FClassFinder<APawn> ThirdPersonClassRef(TEXT("/Game/ThirdPerson/Blueprints/BP_ThirdPersonCharacter.BP_ThirdPersonCharacter_C"));
-
-	//if (ThirdPersonClassRef.Class)
-	//{
-	//	DefaultPawnClass = ThirdPersonClassRef.Class;
-	//}
-
-	//static ConstructorHelpers::FClassFinder<APawn> DefaultPawnClassRef(TEXT("/Script/Spectrum.SPCharacterPlayer"));
-	//if (DefaultPawnClassRef.Class)
-	//{
-	//	DefaultPawnClass = DefaultPawnClassRef.Class;
-	//}
-
-	//static ConstructorHelpers::FClassFinder<APlayerController> PlayerControllerClassRef(TEXT("/Script/Spectrum.SPPlayerController"));
-	//if (PlayerControllerClassRef.Class) {
-	//	PlayerControllerClass = PlayerControllerClassRef.Class;
-	//}
-
-	//static ConstructorHelpers::FClassFinder< UUserWidget> LobbyWidgetClassRef(TEXT("/Game/Spectrum/StartUI/StartMenuWidget.StartMenuWidget"));
-	//if (LobbyWidgetClassRef.Class)
-	//{
-	//	SPLobbyWidgetClass = LobbyWidgetClassRef.Class;
-	//}	
-	//bUseSeamlessTravel = true; // Seamless Travel È°¼ºÈ­
+	
 }
 
 bool ASPGameModeBase::TryChangePawn(APlayerController* pCon, FVector location, TSubclassOf<APawn> PAWN_C)
@@ -62,131 +38,49 @@ void ASPGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//TravelToNextLevel();
-	//if (SPLobbyWidgetClass)
-	//{
-	//	LobbyWidget = CreateWidget<USPLobbyWidget>(GetWorld(), SPLobbyWidgetClass);
-	//	if (LobbyWidget)
-	//	{
-	//		LobbyWidget->AddToViewport();
-	//	}
-	//}
 }
 
-//void ASPGameModeBase::PostInitializeComponents()
-//{
-//	Super::PostInitializeComponents();
-//	FTimerHandle GameTimerHandle;
-//	GetWorldTimerManager().SetTimer(GameTimerHandle, this, &ASPGameModeBase::DefaultGameTimer, 1.0f, false);
-//}
-//
-//void ASPGameModeBase::DefaultGameTimer()
-//{
-//	if (bAlreadyTraveled == false) {
-//		bAlreadyTraveled = true;
-//		UE_LOG(LogTemp, Log, TEXT("Default"));
-//		//GetWorld()->ServerTravel(TEXT("/Game/Spectrum/Room/Map/Building?listen")); // ´Ù¸¥ ¿ùµå·Î ÀÌµ¿ÇÑ´Ù.
-//		//okok = true;
-//	}
-//}
-
-//void ASPGameModeBase::Tick(float DeltaTime)
-//{
-//	Super::Tick(DeltaTime);
-//
-//	//if (okok) 
-//	//GetWorld()->ServerTravel(TEXT("/Game/Spectrum/Room/Map/Building?listen")); // ´Ù¸¥ ¿ùµå·Î ÀÌµ¿
-//
-//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Tick")));
-//}
 
 void ASPGameModeBase::PostLogin(APlayerController* NewPlayer)
 {
-	//_sleep(3000);
-	//okok = true;
-
-	//if (okok) {
-		//
 		Super::PostLogin(NewPlayer);
 		//
-		// // Á¤º¸ ¹Þ¾Æ¼­ Æù ¼³Á¤ 
+		// // ï¿½ï¿½ï¿½ï¿½ ï¿½Þ¾Æ¼ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 
 		auto CastPlayer = Cast<ASPPlayerController>(NewPlayer);
-		// if (CastPlayer)
-		// {
-		// 	USpectrumGameInstance* pawn_PlayerType = Cast<USpectrumGameInstance>(NewPlayer->PlayerState);
-		//
-		// 	//pawn_PlayerType->PlayerType = 0;
-		//
-		// 	// ¿©±â¼­ Å¬¶óÀÌ¾ðÆ®ÀÇ Á¤º¸¿¡ µû¶ó ÀÌ¸§ ¼³Á¤
-		// 	//int32 NumPlayers = UGameplayStatics::GetPlayerControllerID(NewPlayer);
-		// 	//Protocol::PlayerType player_type;
-		// 	//if (pawn_PlayerType->PlayerType  == 0)
-		// 	//	player_type = Protocol::PLAYER_TYPE_PURPLE_MAN;
-		// 	//else if (pawn_PlayerType->PlayerType  == 1)
-		// 	//	player_type = Protocol::PLAYER_TYPE_GREEN_MAN;
-		// 	//else if (pawn_PlayerType->PlayerType  == 2)
-		// 	//	player_type = Protocol::PLAYER_TYPE_GREEN_WOMAN;
-		//
-		// 	//Protocol::PlayerType player_type;
-		// 	//if (pawn_PlayerType->PlayerType == 0)
-		// 	//	player_type = Protocol::PLAYER_TYPE_PURPLE_MAN;
-		// 	//else if (pawn_PlayerType->PlayerType == 1)
-		// 	//	player_type = Protocol::PLAYER_TYPE_GREEN_MAN;
-		// 	//else if (pawn_PlayerType->PlayerType == 2)
-		// 	//	player_type = Protocol::PLAYER_TYPE_GREEN_WOMAN;
-		//
-		// 	//switch (rand() % 3)
-		// 	//{
-		// 	//case 0:
-		// 	//	school_num_type = Protocol::PLAYER_TYPE_GREEN_WOMAN;
-		// 	//	break;
-		// 	//case 1:
-		// 	//	school_num_type = Protocol::PLAYER_TYPE_PURPLE_MAN;
-		// 	//	break;
-		// 	//case 2:
-		// 	//	school_num_type = Protocol::PLAYER_TYPE_ORANGE_WOMAN;
-		// 	//	break;
-		// 	//}
-		//
-		// 	switch (school_num_type)
-		// 	{
-		// 	case Protocol::PLAYER_TYPE_GREEN_MAN:
-		// 		CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharacterMan2"));
-		// 		break;
-		// 	case Protocol::PLAYER_TYPE_GREEN_WOMAN:
-		// 		CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharaterPlayer_W2"));
-		// 		break;
-		// 	case Protocol::PLAYER_TYPE_PURPLE_MAN:
-		// 		CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharacterMan1"));
-		// 		break;
-		// 	case Protocol::PLAYER_TYPE_PURPLE_WOMAN:
-		// 		CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharaterPlayer_W1"));
-		// 		break;
-		// 	case Protocol::PLAYER_TYPE_ORANGE_MAN:
-		// 		CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharacterMan3"));
-		// 		break;
-		// 	case Protocol::PLAYER_TYPE_ORANGE_WOMAN:
-		// 		CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharaterPlayer_W3"));
-		// 		break;
-		// 	}
-		//
-		// }
-		CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPTEST.BP_SPTEST"));
-		//
-		// //UWorld* World = GetWorld();
-		// //if (!ensure(World != nullptr)) return;
-		//
-		// //World->ServerTravel("Building?listen");
-		// //}
-		//
+		if (CastPlayer)
+		{
+			USpectrumGameInstance* pawn_PlayerType = Cast<USpectrumGameInstance>(NewPlayer->PlayerState);
 
+			//pawn_PlayerType->PlayerType = 0;
 
+			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+			if (mynum < 3)
+			{
+				school_num_type = school_type[mynum];
+				mynum++;
+			}
+
+			switch (school_num_type)
+			{
+			case Protocol::PLAYER_TYPE_GREEN_MAN:
+				CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharacterMan2"));
+				break;
+			case Protocol::PLAYER_TYPE_GREEN_WOMAN:
+				CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharaterPlayer_W2"));
+				break;
+			case Protocol::PLAYER_TYPE_PURPLE_MAN:
+				CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharacterMan1"));
+				break;
+			case Protocol::PLAYER_TYPE_PURPLE_WOMAN:
+				CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharaterPlayer_W1"));
+				break;
+			case Protocol::PLAYER_TYPE_ORANGE_MAN:
+				CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharacterMan3"));
+				break;
+			case Protocol::PLAYER_TYPE_ORANGE_WOMAN:
+				CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharaterPlayer_W3"));
+				break;
+			}
+		}
 }
 
-void ASPGameModeBase::TravelToNextLevel()
-{
-	UWorld* World = GetWorld();
-if (!ensure(World != nullptr)) return;
-
-World->ServerTravel("Building?listen");
-}

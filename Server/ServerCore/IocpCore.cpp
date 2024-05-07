@@ -2,24 +2,22 @@
 #include "IocpCore.h"
 #include "IocpEvent.h"
 
-/*--------------
-	IocpCore
----------------*/
-
 IocpCore::IocpCore()
 {
+	// IOCP 핸들 생성
 	_iocpHandle = ::CreateIoCompletionPort(INVALID_HANDLE_VALUE, 0, 0, 0);
 	ASSERT_CRASH(_iocpHandle != INVALID_HANDLE_VALUE);
 }
 
 IocpCore::~IocpCore()
 {
+	// IOCP 핸들 닫기
 	::CloseHandle(_iocpHandle);
 }
 
 bool IocpCore::Register(IocpObjectRef iocpObject)
 {
-	return ::CreateIoCompletionPort(iocpObject->GetHandle(), _iocpHandle, /*key*/0, 0);
+	return ::CreateIoCompletionPort(iocpObject->GetHandle(), _iocpHandle, 0, 0);
 }
 
 bool IocpCore::Dispatch(uint32 timeoutMs)
@@ -41,7 +39,6 @@ bool IocpCore::Dispatch(uint32 timeoutMs)
 		case WAIT_TIMEOUT:
 			return false;
 		default:
-			// TODO : 로그 찍기
 			IocpObjectRef iocpObject = iocpEvent->owner;
 			iocpObject->Dispatch(iocpEvent, numOfBytes);
 			break;
