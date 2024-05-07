@@ -79,6 +79,8 @@ public:
 	FORCEINLINE void AddInventorMakeContents(USPItemBase* Item) {InventoryMakeContents.Add(Item);};
 	FORCEINLINE void ClearMakeArray() {InventoryMakeContents.Empty();};
 
+	UPROPERTY(VisibleAnywhere, Category = "Inventory")
+	TArray<USPItemBase*> InventoryContents;
 	
 protected:
 	// Called when the game starts
@@ -90,8 +92,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Inventory")
 	float inventoryWeightCapacity;
 
-	UPROPERTY(VisibleAnywhere, Category = "Inventory")
-	TArray<USPItemBase*> InventoryContents;
+	// UPROPERTY(VisibleAnywhere, Category = "Inventory")
+	// TArray<USPItemBase*> InventoryContents;
 	
 	UPROPERTY(VisibleAnywhere, Category = "Inventory")
 	TArray<USPItemBase*> InventoryMiniContents;

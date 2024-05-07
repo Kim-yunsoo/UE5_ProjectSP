@@ -71,6 +71,7 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
 	GetCharacterMovement()->JumpZVelocity = 350.0f;
+	GetCharacterMovement()->JumpZVelocity = 350.0f;
 	GetCharacterMovement()->AirControl = 0.4f;
 	GetCharacterMovement()->MaxWalkSpeed = 500.f;
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
@@ -1215,6 +1216,7 @@ void ASPCharacterPlayer::ClientRPCIceAnimation_Implementation(ASPCharacterPlayer
 
 void ASPCharacterPlayer::ServerRPCDragItem_Implementation(int Num, const int32 QuantityToDrop)
 {
+	UE_LOG(LogTemp, Warning, TEXT("ServerRPCDragItem_Implementation %d"),PlayerInventory->InventoryContents[0]->Quantity);
 	 for(USPItemBase* ItemBase : PlayerInventory->GetInventorMiniContents())
 	 {
 	 	UE_LOG(LogTemp, Warning, TEXT("%s %d"), *ItemBase->ItemTextData.Name.ToString(), ItemBase->Quantity);
@@ -1227,11 +1229,18 @@ void ASPCharacterPlayer::ServerRPCDragItem_Implementation(int Num, const int32 Q
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Three"));
 		USPItemBase* Item = PlayerInventory->MakingPotion();
+		if(Item)
+		{
+			int MakeNum = PlayerInventory->IsPotion(Item->ID);
+			UE_LOG(LogTemp, Warning, TEXT("ServerRPCDragItem_Implementation1 %d"),PlayerInventory->InventoryContents[0]->Quantity);
 
-		int MakeNum = PlayerInventory->IsPotion(Item->ID);
-		ClientRPCUpdateMakingPotion(MakeNum);
-		PlayerInventory->ClearMakeArray();
+			ClientRPCUpdateMakingPotion(MakeNum);
+			UE_LOG(LogTemp, Warning, TEXT("ServerRPCDragItem_Implementation1 %d"),PlayerInventory->InventoryContents[0]->Quantity);
+
+			PlayerInventory->ClearMakeArray();
+		}
 	}
+	
 }
 
 void ASPCharacterPlayer::ClientRPCUpdateMakingPotion_Implementation(int Num)
@@ -1252,16 +1261,7 @@ void ASPCharacterPlayer::ServerRPCAddItemClick_Implementation(int Num)
 {
 	USPItemBase* ItemBase = PlayerInventory->FindMatchingItem(Num);
 	PlayerInventory->HandleAddItem(ItemBase, 1);
-	// if(HasAuthority())
-	// {
-	// 	if(IsLocallyControlled())
-	// 		PlayerInventory->HandleAddItem(ItemBase, 0);
-	// }
-	// else
-	// {
-	// 
-	//
-	// }
+
 }
 
 

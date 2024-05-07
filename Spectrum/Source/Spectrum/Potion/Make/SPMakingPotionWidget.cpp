@@ -23,6 +23,8 @@ void USPMakingPotionWidget::ClearWidget()
 	{
 		Drop->ClearChildren();
 	}
+	Make->ClearChildren();
+	
 	UE_LOG(LogTemp, Log, TEXT("SpectrumLocationCallBack!!!"));
 
 	
@@ -36,10 +38,10 @@ void USPMakingPotionWidget::MakingPotion(USPItemBase* Item)
 	else
 	{
 		ItemSlot->SetItemReference(Item);
-		ItemSlot->ItemReference->Quantity = 1;
+		//ItemSlot->ItemReference->Quantity = 1;
 		ItemSlot->HideText();
 	}
-		
+	UE_LOG(LogTemp, Warning, TEXT("MakingPotion"))
 	Make->AddChild(ItemSlot);
 }
 
@@ -93,8 +95,8 @@ bool USPMakingPotionWidget::NativeOnDrop(const FGeometry& InGeometry, const FDra
 				ItemSlot->HideText();
 			}
 			ClosestDropWidget->AddChild(ItemSlot);
-			//ÀÎº¥Åä¸® ¼ýÀÚ ÁÙ°Ô ÇÏ±â
-			//¿©±â¼­ ¼­¹ö·Î °¡¾ßÇÔ!
+			//ì¸ë²¤í† ë¦¬ ìˆ«ìž ì¤„ê²Œ í•˜ê¸°
+			//ì—¬ê¸°ì„œ ì„œë²„ë¡œ ê°€ì•¼í•¨!
 			UE_LOG(LogTemp, Warning, TEXT("%s"), *GetOwningPlayer()->GetName());
 			PlayerCharacter->DragItem(ItemDragDrop->SourceItem,1);
 			return true;

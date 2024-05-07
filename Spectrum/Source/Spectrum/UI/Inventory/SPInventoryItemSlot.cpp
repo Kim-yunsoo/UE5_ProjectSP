@@ -71,7 +71,7 @@ void USPInventoryItemSlot::HideText()
 FReply USPInventoryItemSlot::NativeOnMouseButtonUp(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
 {
 	FReply Reply = Super::NativeOnMouseButtonUp(InGeometry, InMouseEvent);
-	if(ItemReference->Quantity == 1)
+	if(!PlayerCharacter->GetInventory()->IsPotion(ItemReference->ID))
 	{
 		ASPCharacterPlayer* Player = Cast<ASPCharacterPlayer>(GetOwningPlayerPawn());
 		int num = Player->GetInventory()->IsPotion(ItemReference->ID);
