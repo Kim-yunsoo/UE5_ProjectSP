@@ -39,13 +39,13 @@ void USPHUDWidget::NativeConstruct()
 	
 	//ensure(TargetUI);
 
-	MainMenuWidget = Cast<USPMainMenu>(GetWidgetFromName(TEXT("WBTargetUI")));
-	 if(MainMenuClass)
-	 {
-	 	MainMenuWidget = CreateWidget<USPMainMenu>(GetWorld(), MainMenuClass);
-	 	MainMenuWidget->AddToViewport(5);
-	 	MainMenuWidget->SetVisibility(ESlateVisibility::Collapsed); 
-	 }
+	// MainMenuWidget = Cast<USPMainMenu>(GetWidgetFromName(TEXT("WBTargetUI")));
+	//  if(MainMenuClass)
+	//  {
+	//  	MainMenuWidget = CreateWidget<USPMainMenu>(GetWorld(), MainMenuClass);
+	//  	MainMenuWidget->AddToViewport(5);
+	//  	MainMenuWidget->SetVisibility(ESlateVisibility::Collapsed); 
+	//  }
 	KeyWidget = Cast<USPKeyWidget>(GetWidgetFromName("WBPKey"));
 	
 	 if(InteractionWidgetClass)

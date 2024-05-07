@@ -2,9 +2,6 @@
 
 
 #include "Game/SPGameModeBase.h"
-
-#include "SpectrumLog.h"
-#include "SPGameState.h"
 #include "UI/SPLobbyWidget.h"
 #include "GameFramework/GameStateBase.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
@@ -16,74 +13,73 @@ extern std::array<Protocol::PlayerType, 3> school_type;
 
 ASPGameModeBase::ASPGameModeBase()
 {
-	
+   
 }
 
 bool ASPGameModeBase::TryChangePawn(APlayerController* pCon, FVector location, TSubclassOf<APawn> PAWN_C)
 {
-	if (alreadyChange.Contains(pCon)) return false;
+   if (alreadyChange.Contains(pCon)) return false;
 
-	auto newPawn = UAIBlueprintHelperLibrary::SpawnAIFromClass(GetWorld(), PAWN_C, nullptr, location, FRotator::ZeroRotator);
-	if (!newPawn) return false;
+   auto newPawn = UAIBlueprintHelperLibrary::SpawnAIFromClass(GetWorld(), PAWN_C, nullptr, location, FRotator::ZeroRotator);
+   if (!newPawn) return false;
 
-	alreadyChange.Add(pCon, true);
-	pCon->Possess(newPawn);
-	return true;
+   alreadyChange.Add(pCon, true);
+   pCon->Possess(newPawn);
+   return true;
 }
 
 void ASPGameModeBase::TryDestroyOldpawn_Implementation(APawn* pawn)
 {
-	if (pawn->IsValidLowLevel())
-		pawn->Destroy();
+   if (pawn->IsValidLowLevel())
+      pawn->Destroy();
 }
 
 void ASPGameModeBase::BeginPlay()
 {
-	Super::BeginPlay();
+   Super::BeginPlay();
 
 }
 
 
 void ASPGameModeBase::PostLogin(APlayerController* NewPlayer)
 {
-		Super::PostLogin(NewPlayer);
-		//
-		// // ���� �޾Ƽ� �� ���� 
-		auto CastPlayer = Cast<ASPPlayerController>(NewPlayer);
-		if (CastPlayer)
-		{
-			USpectrumGameInstance* pawn_PlayerType = Cast<USpectrumGameInstance>(NewPlayer->PlayerState);
+      Super::PostLogin(NewPlayer);
 
-			//pawn_PlayerType->PlayerType = 0;
+      // 정보 받아서 폰 설정 
+      auto CastPlayer = Cast<ASPPlayerController>(NewPlayer);
+      if (CastPlayer)
+      {
+         USpectrumGameInstance* pawn_PlayerType = Cast<USpectrumGameInstance>(NewPlayer->PlayerState);
 
-			// ������ ���� �� ����
-			if (mynum < 3)
-			{
-				school_num_type = school_type[mynum];
-				mynum++;
-			}
+         //pawn_PlayerType->PlayerType = 0;
 
-			switch (school_num_type)
-			{
-			case Protocol::PLAYER_TYPE_GREEN_MAN:
-				CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharacterMan2"));
-				break;
-			case Protocol::PLAYER_TYPE_GREEN_WOMAN:
-				CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharaterPlayer_W2"));
-				break;
-			case Protocol::PLAYER_TYPE_PURPLE_MAN:
-				CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharacterMan1"));
-				break;
-			case Protocol::PLAYER_TYPE_PURPLE_WOMAN:
-				CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharaterPlayer_W1"));
-				break;
-			case Protocol::PLAYER_TYPE_ORANGE_MAN:
-				CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharacterMan3"));
-				break;
-			case Protocol::PLAYER_TYPE_ORANGE_WOMAN:
-				CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharaterPlayer_W3"));
-				break;
-			}
-		}
+         // 정보에 따라 폰 설정
+         if (mynum < 3)
+         {
+            school_num_type = school_type[mynum];
+            mynum++;
+         }
+
+         switch (school_num_type)
+         {
+         case Protocol::PLAYER_TYPE_GREEN_MAN:
+            CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharacterMan2"));
+            break;
+         case Protocol::PLAYER_TYPE_GREEN_WOMAN:
+            CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharaterPlayer_W2"));
+            break;
+         case Protocol::PLAYER_TYPE_PURPLE_MAN:
+            CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharacterMan1"));
+            break;
+         case Protocol::PLAYER_TYPE_PURPLE_WOMAN:
+            CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharaterPlayer_W1"));
+            break;
+         case Protocol::PLAYER_TYPE_ORANGE_MAN:
+            CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharacterMan3"));
+            break;
+         case Protocol::PLAYER_TYPE_ORANGE_WOMAN:
+            CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharaterPlayer_W3"));
+            break;
+         }
+      }
 }
-

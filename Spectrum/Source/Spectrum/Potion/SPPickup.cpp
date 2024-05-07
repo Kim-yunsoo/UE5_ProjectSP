@@ -165,7 +165,7 @@ void ASPPickup::TakePickup(ASPCharacterPlayer* Taker) //서버
 			if (USPInventoryComponent* PlayerInvetory = Taker->GetInventory())
 			{
 				FTimerHandle TimerHandle;
-				PlayerInvetory->HandleAddItem(ItemReference);
+				PlayerInvetory->HandleAddItem(ItemReference,1);
 				GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this]()
 				{
 					//여기서 스포너한테 신호 보내야겠다.

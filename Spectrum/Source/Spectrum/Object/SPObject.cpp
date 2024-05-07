@@ -26,9 +26,9 @@ ASPObject::ASPObject()
 	ObjectMesh->SetMobility(EComponentMobility::Movable);
 	ObjectMesh->SetUseCCD(true);
 	ObjectMesh->SetRenderCustomDepth(true);
+	SetRootComponent(ObjectMesh);
 	//ObjectMesh->SetIsReplicated(true);
 	//this->SetReplicates(true);
-	
 	// ObjectMesh->SetIsReplicated(true);
 	
 	bHasBeenCalled = true;
