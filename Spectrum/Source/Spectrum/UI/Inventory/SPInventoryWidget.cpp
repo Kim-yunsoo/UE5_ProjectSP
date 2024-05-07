@@ -28,7 +28,7 @@ void USPInventoryWidget::RefreshInventory(TArray<USPItemBase*> Inventory)
 
 void USPInventoryWidget::SetInfoText()
 {
-	//¹«°Ô ¼³Á¤
+	//ë¬´ê²Œ ì„¤ì •
 }
 
 void USPInventoryWidget::NativeOnInitialized()

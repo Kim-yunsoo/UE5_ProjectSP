@@ -77,14 +77,20 @@ protected:
 	
 	virtual bool NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent,
 		UDragDropOperation* InOperation) override;
-	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
+	//virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
 	//void UpdatePotionWidget(bool IsVisible);
 
 	UPROPERTY(VisibleAnywhere, Category = "Inventory Slot")
 	TObjectPtr<USPItemBase> ItemReference;
 
 	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	class UButton* Back;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
 	TArray<USPItemBase*> InventoryMaking;
+
+	UFUNCTION()
+	void BackCallBack();
 	
 };

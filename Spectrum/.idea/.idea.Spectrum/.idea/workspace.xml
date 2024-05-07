@@ -17,6 +17,11 @@
       <change beforePath="$PROJECT_DIR$/Content/Spectrum/BluePrint/BP_SPCharacterOther.uasset" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Spectrum/BluePrint/BP_SPCharacterOther2.uasset" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Spectrum/BluePrint/BP_SPCharaterPlayer_W.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/BluePrint/BP_SPCharaterPlayer_W.uasset" afterDir="false" />
+  <component name="ChangeListManager">
+    <list default="true" id="a2e251f0-7dc9-4c33-9fda-73e6d995c881" name="변경" comment="">
+      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Room/Map/Building.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Room/Map/Building.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/Make/SPMakePotion.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/Make/SPMakePotion.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/UI/Interaction/SPManual.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/UI/Interaction/SPManual.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

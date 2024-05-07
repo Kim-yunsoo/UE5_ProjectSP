@@ -17,7 +17,7 @@ USPInventoryComponent::USPInventoryComponent()
 	static ConstructorHelpers::FObjectFinder<UDataTable> DataTableFinder(TEXT("/Script/Engine.DataTable'/Game/Spectrum/ItemData/Item.Item'"));
 	if (DataTableFinder.Succeeded())
 	{
-		// µ¥ÀÌÅÍ Å×ÀÌºíÀÌ À¯È¿ÇÏ¸é ¼³Á¤
+		// ë°ì´í„° í…Œì´ë¸”ì´ ìœ íš¨í•˜ë©´ ì„¤ì •
 		ItemDataTable = DataTableFinder.Object;
 	}
 	// ...
@@ -88,39 +88,45 @@ USPItemBase* USPInventoryComponent::MakingPotion()
 	{
 		FName DesiredItemID = "G_Potion";
 		const FItemData* ItemData = ItemDataTable->FindRow<FItemData>(DesiredItemID, DesiredItemID.ToString());
-		// ¿øÇÏ´Â Ç×¸ñ Ã£±â
-		USPItemBase* Item = NewObject<USPItemBase>(); 
-		Item->ID = ItemData->ID;
-		Item->ItemType = ItemData->ItemType;
-		Item->ItemTextData = ItemData->ItemTextData;
-		Item->ItemNumericData = ItemData->ItemNumericData;
-		Item->ItemAssetData = ItemData->ItemAssetData;
-		return Item;
+		// ì›í•˜ëŠ” í•­ëª© ì°¾ê¸°
+
+			UE_LOG(LogTemp, Warning, TEXT("Green"))
+			USPItemBase* Item = NewObject<USPItemBase>(); 
+			Item->ID = ItemData->ID;
+			Item->ItemType = ItemData->ItemType;
+			Item->ItemTextData = ItemData->ItemTextData;
+			Item->ItemNumericData = ItemData->ItemNumericData;
+			Item->ItemAssetData = ItemData->ItemAssetData;
+			Item->Quantity = 1;
+			return Item;
+		
 	}
 	else if(Blue == 1 && Red == 2)
 	{
 		FName DesiredItemID = "P_Potion";
 		const FItemData* ItemData = ItemDataTable->FindRow<FItemData>(DesiredItemID, DesiredItemID.ToString());
-		// ¿øÇÏ´Â Ç×¸ñ Ã£±â
+		// ì›í•˜ëŠ” í•­ëª© ì°¾ê¸°
 		USPItemBase* Item = NewObject<USPItemBase>(); 
 		Item->ID = ItemData->ID;
 		Item->ItemType = ItemData->ItemType;
 		Item->ItemTextData = ItemData->ItemTextData;
 		Item->ItemNumericData = ItemData->ItemNumericData;
 		Item->ItemAssetData = ItemData->ItemAssetData;
+		Item->Quantity = 1;
 		return Item;
 	}
 	else if (Red == 1 && Yellow ==2)
 	{
 		FName DesiredItemID = "O_Potion";
 		const FItemData* ItemData = ItemDataTable->FindRow<FItemData>(DesiredItemID, DesiredItemID.ToString());
-		// ¿øÇÏ´Â Ç×¸ñ Ã£±â
+		// ì›í•˜ëŠ” í•­ëª© ì°¾ê¸°
 		USPItemBase* Item = NewObject<USPItemBase>(); 
 		Item->ID = ItemData->ID;
 		Item->ItemType = ItemData->ItemType;
 		Item->ItemTextData = ItemData->ItemTextData;
 		Item->ItemNumericData = ItemData->ItemNumericData;
 		Item->ItemAssetData = ItemData->ItemAssetData;
+		Item->Quantity = 1;
 		return Item;
 	}
 	else
@@ -134,9 +140,10 @@ int USPInventoryComponent::HandleStackableItems(USPItemBase* ItemIn, int32 Reque
 {
 	int num = IsPotion(ItemIn->ID);
 
-	//Todo 10°³ Á¦ÇÑÀ¸·Î ´Ù½Ã ¹Ù²Ù±â 
+	//Todo 10ê°œ ì œí•œìœ¼ë¡œ ë‹¤ì‹œ ë°”ê¾¸ê¸° 
 	if(num != -1)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("InventoryContents %d"),InventoryContents[num]->Quantity);
 		int ServerCount = InventoryContents[num]->Quantity + RequestedAddAmount;
 		InventoryContents[num]->SetQuantity(ServerCount);
 		return ServerCount;
@@ -147,7 +154,7 @@ int USPInventoryComponent::HandleStackableItems(USPItemBase* ItemIn, int32 Reque
 int USPInventoryComponent::HandleStackableItemsMini(USPItemBase* ItemIn, int32 RequestedAddAmount)
 {
 	int num = IsMiniPotion(ItemIn->ID);
-	//Todo 10°³ Á¦ÇÑÀ¸·Î ´Ù½Ã ¹Ù²Ù±â 
+	//Todo 10ê°œ ì œí•œìœ¼ë¡œ ë‹¤ì‹œ ë°”ê¾¸ê¸° 
 	if(num != -1)
 	{
 		int ServerCount = InventoryMiniContents[num]->Quantity + RequestedAddAmount;
@@ -158,11 +165,10 @@ int USPInventoryComponent::HandleStackableItemsMini(USPItemBase* ItemIn, int32 R
 	return -1;
 }
 
-void USPInventoryComponent::HandleAddItem(USPItemBase* InputItem)
+void USPInventoryComponent::HandleAddItem(USPItemBase* InputItem, int InitialRequestedAddmount)
 {
 	SP_SUBLOG(LogSPSkill, Log, TEXT("%s"), TEXT("HandleAddItem"));
 
-	const int32 InitialRequestedAddmount = 1;
 	if (InputItem->ItemType == EItemType::IngredientPotion)
 	{
 		int ServerCount = HandleStackableItemsMini(InputItem, InitialRequestedAddmount);
@@ -177,12 +183,13 @@ void USPInventoryComponent::HandleAddItem(USPItemBase* InputItem)
 }
 
 
+
 USPItemBase* USPInventoryComponent::InitializeInventory(const TSubclassOf<USPItemBase> BaseClass, FName DesiredItemID)
 {
 	if (ItemDataTable && !DesiredItemID.IsNone())
 	{
 		const FItemData* ItemData = ItemDataTable->FindRow<FItemData>(DesiredItemID, DesiredItemID.ToString());
-		// ¿øÇÏ´Â Ç×¸ñ Ã£±â
+		// ì›í•˜ëŠ” í•­ëª© ì°¾ê¸°
 
 		 USPItemBase* ItemReference = NewObject<USPItemBase>(this, BaseClass);
 
@@ -252,6 +259,12 @@ void USPInventoryComponent::BeginPlay()
 	USPItemBase* B_Potion = InitializeInventory(USPItemBase::StaticClass(), "B_Potion");
 	B_Potion->OwningInventory = this;
 	InventoryContents.Add(B_Potion);
+	USPItemBase* S_Potion = InitializeInventory(USPItemBase::StaticClass(), "S_Potion");
+	S_Potion->OwningInventory = this;
+	InventoryContents.Add(S_Potion);
+
+	for(int i =0; i< InventoryContents.Num(); ++i)
+		InventoryContents[i]->Quantity = 0;
 	
 	USPItemBase* R_Mini = InitializeInventory(USPItemBase::StaticClass(), "R_Mini");
 	R_Mini->OwningInventory = this;
@@ -262,6 +275,10 @@ void USPInventoryComponent::BeginPlay()
 	USPItemBase* B_Mini = InitializeInventory(USPItemBase::StaticClass(), "B_Mini");
 	B_Mini->OwningInventory = this;
 	InventoryMiniContents.Add(B_Mini);
+
+	for(int i =0; i< InventoryMiniContents.Num(); ++i)
+		InventoryMiniContents[i]->Quantity = 0;
+	
 	OnInventoryUpdated.Broadcast(InventoryContents);
 	OnInventoryMiniUpdated.Broadcast(InventoryMiniContents);
 }
@@ -307,6 +324,8 @@ void USPInventoryComponent::ClientRPCUpdateMiniPotion_Implementation(const int& 
 void USPInventoryComponent::ClientRPCUpdatePotion_Implementation(const int& num, const int&ServerCount)
 {
 	InventoryContents[num]->SetQuantity(ServerCount);
+	UE_LOG(LogTemp, Warning, TEXT(" ClientRPC %d"), InventoryContents[num]->Quantity);
+
 	OnInventoryUpdated.Broadcast(InventoryContents);
 }
 

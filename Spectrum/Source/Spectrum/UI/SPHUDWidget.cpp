@@ -3,17 +3,21 @@
 
 #include "UI/SPHUDWidget.h"
 
+#include "LandscapeGizmoActiveActor.h"
 #include "SpectrumLog.h"
 #include "SPGameTimeWidget.h"
+#include "SPKeyWidget.h"
 #include "SPManualWidget.h"
 #include "SPScoreWidget.h"
 #include "SPSkillWidget.h"
+#include "Character/SPCharacterPlayer.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Interface/SPCharacterHUDInterface.h"
 #include "Potion/Make/SPMakingPotionWidget.h"
 #include "UI/SPTargetUI.h"
-#include "UI/SPMainMenu.h"
 #include "UI/Interaction/SPInteractionWidget.h"
 
+class UCharacterMovementComponent;
 class ISPCharacterHUDInterface;
 
 USPHUDWidget::USPHUDWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -30,10 +34,6 @@ void USPHUDWidget::NativeConstruct()
 	TargetUI = Cast<USPTargetUI>(GetWidgetFromName(TEXT("WBTargetUI")));
 	MakingPotionWidget = Cast<USPMakingPotionWidget>(GetWidgetFromName(TEXT("WBPSPMakingPotionWidget")));
 	ManualWidget = Cast<USPManualWidget>(GetWidgetFromName(TEXT("WBPManual")));
-	
-	if(!MakingPotionWidget)
-	{
-	}
 	//ensure(TargetUI);
 	GameTimeWidget= Cast<USPGameTimeWidget>(GetWidgetFromName(TEXT("WB_GameTimeWidget")));
 	
@@ -46,6 +46,7 @@ void USPHUDWidget::NativeConstruct()
 	 	MainMenuWidget->AddToViewport(5);
 	 	MainMenuWidget->SetVisibility(ESlateVisibility::Collapsed); 
 	 }
+	KeyWidget = Cast<USPKeyWidget>(GetWidgetFromName("WBPKey"));
 	
 	 if(InteractionWidgetClass)
 	 {
@@ -60,41 +61,24 @@ void USPHUDWidget::NativeConstruct()
 	}
 }
 
-void USPHUDWidget::DisplayMenu()
+
+
+void USPHUDWidget::ToggleMouse(bool bIsShowMouse)
 {
-	if(MainMenuWidget)
+	ASPCharacterPlayer *PlayerCharacter = Cast<ASPCharacterPlayer>(GetOwningPlayerPawn());
+	if(bIsShowMouse)
 	{
-		bIsMenuVisible = true;
-		MainMenuWidget->SetVisibility(ESlateVisibility::Collapsed);
-	}
-
-}
-
-void USPHUDWidget::HideMenu()
-{
-	if(MainMenuWidget)
-	{
-		bIsMenuVisible = false;
-		MainMenuWidget->SetVisibility(ESlateVisibility::Collapsed);
-	}
-}
-
-void USPHUDWidget::ToggleMenu()
-{
-	if(bIsMenuVisible)
-	{
-		HideMenu();
-
-		const FInputModeGameOnly InputMode;
-		GetOwningPlayer()->SetInputMode(InputMode);
-		GetOwningPlayer()->SetShowMouseCursor(false);
-	}
-	else
-	{
-		DisplayMenu();
 		const FInputModeGameAndUI InputMode;
 		GetOwningPlayer()->SetInputMode(InputMode);
 		GetOwningPlayer()->SetShowMouseCursor(true);
+		PlayerCharacter->GetCharacterMovement()->MovementMode = EMovementMode::MOVE_None;
+	}
+	else
+	{
+		const FInputModeGameOnly InputMode;
+		GetOwningPlayer()->SetInputMode(InputMode);
+		GetOwningPlayer()->SetShowMouseCursor(false);
+		PlayerCharacter->GetCharacterMovement()->MovementMode = EMovementMode::MOVE_Walking;
 	}
 }
 
@@ -116,6 +100,7 @@ void USPHUDWidget::UpdateMakingPotionWidget(bool bIsVisible)
 		{
 			MakingPotionWidget->SetVisibility(ESlateVisibility::Visible);
 		}
+		ToggleMouse(true);
 	}
 	else
 	{
@@ -123,6 +108,7 @@ void USPHUDWidget::UpdateMakingPotionWidget(bool bIsVisible)
 		{
 			MakingPotionWidget->SetVisibility(ESlateVisibility::Hidden);
 		}
+		ToggleMouse(false);
 	}
 }
 
@@ -134,6 +120,7 @@ void USPHUDWidget::UpdateManualWidget(bool bIsVisible)
 		{
 			ManualWidget->SetVisibility(ESlateVisibility::Visible);
 		}
+		ToggleMouse(true);
 	}
 	else
 	{
@@ -141,6 +128,7 @@ void USPHUDWidget::UpdateManualWidget(bool bIsVisible)
 		{
 			ManualWidget->SetVisibility(ESlateVisibility::Hidden);
 		}
+		ToggleMouse(false);
 	}
 }
 
@@ -185,6 +173,24 @@ void USPHUDWidget::UpdateInteractionWidget(const FInteractableData* Interactable
 		}
 
 		InteractionWidget->UpdateWidget(InteractableData);
+	}
+}
+
+void USPHUDWidget::ToggleKeyWidget(bool bIsVisible)
+{
+	if(bIsVisible)
+	{
+		if(KeyWidget)
+		{
+			KeyWidget->SetVisibility(ESlateVisibility::Visible);
+		}
+	}
+	else
+	{
+		if(KeyWidget)
+		{
+			KeyWidget->SetVisibility(ESlateVisibility::Hidden);
+		}
 	}
 }
 

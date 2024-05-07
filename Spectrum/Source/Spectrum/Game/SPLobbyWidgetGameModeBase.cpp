@@ -21,7 +21,7 @@ void ASPLobbyWidgetGameModeBase::DefaultGameTimer()
 	if (bAlreadyTraveled == false) {
 		bAlreadyTraveled = true;
 		UE_LOG(LogTemp, Log, TEXT("Default"));
-		GetWorld()->ServerTravel(TEXT("/Game/Spectrum/Room/Map/Building?listen")); // 다른 월드로 이동한다.
+		//GetWorld()->ServerTravel(TEXT("/Game/Spectrum/Room/Map/Building?listen")); // 다른 월드로 이동한다.
 		//okok = true;
 	}
 }

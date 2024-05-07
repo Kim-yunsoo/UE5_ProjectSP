@@ -7,8 +7,10 @@
 #include "UI/Inventory/SPInventoryItemSlot.h"
 #include "Character/SPCharacterPlayer.h"
 #include "Component/SPInventoryComponent.h"
+#include "Components/Button.h"
 #include "Components/SizeBox.h"
 #include "Components/WrapBox.h"
+#include "UI/SPHUDWidget.h"
 #include "UI/Inventory/SPItemDragDropOperation.h"
 
 class ASPMakePotion;
@@ -21,6 +23,11 @@ void USPMakingPotionWidget::ClearWidget()
 	{
 		Drop->ClearChildren();
 	}
+	Make->ClearChildren();
+	
+	UE_LOG(LogTemp, Log, TEXT("SpectrumLocationCallBack!!!"));
+
+	
 }
 
 void USPMakingPotionWidget::MakingPotion(USPItemBase* Item)
@@ -31,9 +38,10 @@ void USPMakingPotionWidget::MakingPotion(USPItemBase* Item)
 	else
 	{
 		ItemSlot->SetItemReference(Item);
+		//ItemSlot->ItemReference->Quantity = 1;
 		ItemSlot->HideText();
 	}
-		
+	UE_LOG(LogTemp, Warning, TEXT("MakingPotion"))
 	Make->AddChild(ItemSlot);
 }
 
@@ -41,6 +49,8 @@ void USPMakingPotionWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 	PlayerCharacter = Cast<ASPCharacterPlayer>(GetOwningPlayerPawn());
+	Back = Cast<UButton>(GetWidgetFromName(TEXT("Back")));
+	Back->OnClicked.AddDynamic(this, &USPMakingPotionWidget::BackCallBack);
 }
 
 bool USPMakingPotionWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent,
@@ -48,7 +58,7 @@ bool USPMakingPotionWidget::NativeOnDrop(const FGeometry& InGeometry, const FDra
 {
 	const USPItemDragDropOperation* ItemDragDrop = Cast<USPItemDragDropOperation>(InOperation);
     
-	if (ItemDragDrop && PlayerCharacter && ItemDragDrop->SourceItem)
+	if (ItemDragDrop && PlayerCharacter && ItemDragDrop->SourceItem->Quantity != 0)
 	{
 		FVector2D DropLocation = InDragDropEvent.GetScreenSpacePosition();
 
@@ -85,8 +95,8 @@ bool USPMakingPotionWidget::NativeOnDrop(const FGeometry& InGeometry, const FDra
 				ItemSlot->HideText();
 			}
 			ClosestDropWidget->AddChild(ItemSlot);
-			//ÀÎº¥Åä¸® ¼ýÀÚ ÁÙ°Ô ÇÏ±â
-			//¿©±â¼­ ¼­¹ö·Î °¡¾ßÇÔ!
+			//ì¸ë²¤í† ë¦¬ ìˆ«ìž ì¤„ê²Œ í•˜ê¸°
+			//ì—¬ê¸°ì„œ ì„œë²„ë¡œ ê°€ì•¼í•¨!
 			UE_LOG(LogTemp, Warning, TEXT("%s"), *GetOwningPlayer()->GetName());
 			PlayerCharacter->DragItem(ItemDragDrop->SourceItem,1);
 			return true;
@@ -95,10 +105,16 @@ bool USPMakingPotionWidget::NativeOnDrop(const FGeometry& InGeometry, const FDra
 	return false;
 }
 
-FReply USPMakingPotionWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
+// FReply USPMakingPotionWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
+// {
+// 	FReply Reply = Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
+//
+// 	return Reply.Unhandled();
+//
+// }
+
+void USPMakingPotionWidget::BackCallBack()
 {
-	FReply Reply = Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
-
-	return Reply.Unhandled();
-
+	UE_LOG(LogTemp, Log, TEXT("SpectrumLocationCallBack!!!"));
+	PlayerCharacter->HUDWidget->UpdateMakingPotionWidget(false);
 }

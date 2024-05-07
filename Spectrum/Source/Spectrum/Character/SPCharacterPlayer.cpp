@@ -72,6 +72,7 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
 	GetCharacterMovement()->JumpZVelocity = 350.0f;
+	GetCharacterMovement()->JumpZVelocity = 350.0f;
 	GetCharacterMovement()->AirControl = 0.4f;
 	GetCharacterMovement()->MaxWalkSpeed = 500.f;
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
@@ -373,12 +374,20 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 		// 필요에 따라 추가적인 MeshFinder 사용하여 다른 메시 로드 및 추가
 	}
 
-	static ConstructorHelpers::FObjectFinder<UInputAction> ToggleMenuRef(
-		TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_Inventory.IA_SP_Inventory'"));
-	if (nullptr != ToggleMenuRef.Object)
+	static ConstructorHelpers::FObjectFinder<UInputAction> KeyMenuRef(
+		TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_Key.IA_SP_Key'"));
+	if (nullptr != KeyMenuRef.Object)
 	{
-		ToggleMenu = ToggleMenuRef.Object;
+		KeyMenu = KeyMenuRef.Object;
 	}
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> SevenKeyActionRef(
+	TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_Seven.IA_SP_Seven'"));
+	if (nullptr != SevenKeyActionRef.Object)
+	{
+		SevenKeyAction = SevenKeyActionRef.Object;
+	}
+	
 	//Effect
 
 	// static ConstructorHelpers::FObjectFinder<UParticleSystem> SlowEffectRef(
@@ -415,6 +424,8 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 	bIsActiveGraping = true;
 	SphereRange = 10000000;
 
+	KeyToggle = true;
+	bIsSeven = false;
 	// bIsActiveSlowSkill = true;
 	HitDistance = 1800.f;
 
@@ -521,10 +532,12 @@ void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Player
 		                                   &ASPCharacterPlayer::SlowSKill);
 		EnhancedInputComponent->BindAction(IceE, ETriggerEvent::Triggered, this,
 		                                   &ASPCharacterPlayer::IceSKill);
-		EnhancedInputComponent->BindAction(ToggleMenu, ETriggerEvent::Triggered, this,
-		                                   &ASPCharacterPlayer::ToggleMenuAction);
+		EnhancedInputComponent->BindAction(KeyMenu, ETriggerEvent::Triggered, this,
+		                                   &ASPCharacterPlayer::ToggleKeyWidget);
 		EnhancedInputComponent->BindAction(TeleR, ETriggerEvent::Triggered, this,
 		                                   &ASPCharacterPlayer::TeleSKill);
+		EnhancedInputComponent->BindAction(SevenKeyAction, ETriggerEvent::Triggered, this,
+								   &ASPCharacterPlayer::SevenKey);
 	}
 }
 
@@ -600,10 +613,9 @@ void ASPCharacterPlayer::SetCharacterControl(ECharacterControlType NewCharacterC
 	{
 		HUDWidget = SPController->GetSPHUDWidget();
 	}
-	HUDWidget->bIsMenuVisible = true;
 	HUDWidget->UpdateMakingPotionWidget(false);
 	HUDWidget->UpdateManualWidget(false);
-	HUDWidget->ToggleMenu();
+	HUDWidget->ToggleMouse(false);
 }
 
 void ASPCharacterPlayer::ShoulderMove(const FInputActionValue& Value)
@@ -937,9 +949,19 @@ void ASPCharacterPlayer::Interaction(const FInputActionValue& Value)
 	}
 }
 
-void ASPCharacterPlayer::ToggleMenuAction(const FInputActionValue& Value)
+void ASPCharacterPlayer::ToggleKeyWidget(const FInputActionValue& Value)
 {
-	HUDWidget->ToggleMenu();
+	//HUDWidget->bIsShowMouse();
+	if(KeyToggle)
+	{
+		HUDWidget->ToggleKeyWidget(false);
+		KeyToggle = false;
+	}
+	else
+	{
+		HUDWidget->ToggleKeyWidget(true);
+		KeyToggle = true;
+	}
 }
 
 void ASPCharacterPlayer::IceSKill(const FInputActionValue& Value)
@@ -1117,7 +1139,42 @@ void ASPCharacterPlayer::ClientRPCStopAnimation_Implementation(ASPCharacterPlaye
 
 void ASPCharacterPlayer::ServerRPCGreenPotionSpawn_Implementation()
 {
-	if (PlayerInventory->CountPotion(PlayerInventory->IsPotion("G_Potion")))
+	if(!bIsSeven)
+	{
+		if(PlayerInventory->CountPotion(PlayerInventory->IsPotion("G_Potion")))
+		{
+			if (false == bIsSpawn)
+			{
+				FActorSpawnParameters SpawnParams;
+				SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+				SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
+				Potion = GetWorld()->SpawnActor<ASPGreenPotion>(ASPGreenPotion::StaticClass(),
+																GetMesh()->GetSocketLocation("Item_Socket"),
+																FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
+				//Potion->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+				//Potion->SetupAttachment(RootComponent);
+				//Potion->RegisterComponent();
+				bIsSpawn = true;
+				if (Potion)
+				{
+					FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+															  EAttachmentRule::SnapToTarget, true);
+					Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
+				}
+			}
+			else
+			{
+				if (Potion)
+				{
+					FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+															  EAttachmentRule::SnapToTarget, true);
+					Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
+				}
+			}
+			PlayerInventory->RemoveAmountOfItem(PlayerInventory->FindPotionItem("G_Potion"), 1);
+		}
+	}
+	else
 	{
 		if (false == bIsSpawn)
 		{
@@ -1147,13 +1204,46 @@ void ASPCharacterPlayer::ServerRPCGreenPotionSpawn_Implementation()
 				Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
 			}
 		}
-		PlayerInventory->RemoveAmountOfItem(PlayerInventory->FindPotionItem("G_Potion"), 1);
 	}
+	
+	
 }
 
 void ASPCharacterPlayer::ServerRPCOrangePotionSpawn_Implementation()
 {
-	if (PlayerInventory->CountPotion(PlayerInventory->IsPotion("O_Potion")))
+	if(!bIsSeven)
+	{
+		if(PlayerInventory->CountPotion(PlayerInventory->IsPotion("O_Potion")))
+		{
+			if (false == bIsSpawn)
+			{
+				FActorSpawnParameters SpawnParams;
+				SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+				SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
+				Potion = GetWorld()->SpawnActor<ASPOrangePotion>(ASPOrangePotion::StaticClass(),
+																 GetMesh()->GetSocketLocation("Item_Socket"),
+																 FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
+				bIsSpawn = true;
+				if (Potion)
+				{
+					FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+															  EAttachmentRule::SnapToTarget, true);
+					Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
+				}
+			}
+			else
+			{
+				if (Potion)
+				{
+					FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+															  EAttachmentRule::SnapToTarget, true);
+					Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
+				}
+			}
+			PlayerInventory->RemoveAmountOfItem(PlayerInventory->FindPotionItem("O_Potion"), 1);
+		}
+	}
+	else
 	{
 		if (false == bIsSpawn)
 		{
@@ -1180,13 +1270,45 @@ void ASPCharacterPlayer::ServerRPCOrangePotionSpawn_Implementation()
 				Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
 			}
 		}
-		PlayerInventory->RemoveAmountOfItem(PlayerInventory->FindPotionItem("O_Potion"), 1);
 	}
+	
 }
 
 void ASPCharacterPlayer::ServerRPCPurplePotionSpawn_Implementation()
 {
-	if (PlayerInventory->CountPotion(PlayerInventory->IsPotion("P_Potion")))
+	if(!bIsSeven)
+	{
+		if(PlayerInventory->CountPotion(PlayerInventory->IsPotion("P_Potion")))
+		{
+			if (false == bIsSpawn)
+			{
+				FActorSpawnParameters SpawnParams;
+				SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+				SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
+				Potion = GetWorld()->SpawnActor<ASPPurplePotion>(ASPPurplePotion::StaticClass(),
+																 GetMesh()->GetSocketLocation("Item_Socket"),
+																 FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
+				bIsSpawn = true;
+				if (Potion)
+				{
+					FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+															  EAttachmentRule::SnapToTarget, true);
+					Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
+				}
+			}
+			else
+			{
+				if (Potion)
+				{
+					FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+															  EAttachmentRule::SnapToTarget, true);
+					Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
+				}
+			}
+			PlayerInventory->RemoveAmountOfItem(PlayerInventory->FindPotionItem("P_Potion"), 1);
+		}
+	}
+	else
 	{
 		if (false == bIsSpawn)
 		{
@@ -1194,13 +1316,13 @@ void ASPCharacterPlayer::ServerRPCPurplePotionSpawn_Implementation()
 			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 			SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
 			Potion = GetWorld()->SpawnActor<ASPPurplePotion>(ASPPurplePotion::StaticClass(),
-			                                                 GetMesh()->GetSocketLocation("Item_Socket"),
-			                                                 FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
+															 GetMesh()->GetSocketLocation("Item_Socket"),
+															 FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
 			bIsSpawn = true;
 			if (Potion)
 			{
 				FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
-				                                          EAttachmentRule::SnapToTarget, true);
+														  EAttachmentRule::SnapToTarget, true);
 				Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
 			}
 		}
@@ -1209,12 +1331,12 @@ void ASPCharacterPlayer::ServerRPCPurplePotionSpawn_Implementation()
 			if (Potion)
 			{
 				FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
-				                                          EAttachmentRule::SnapToTarget, true);
+														  EAttachmentRule::SnapToTarget, true);
 				Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
 			}
 		}
-		PlayerInventory->RemoveAmountOfItem(PlayerInventory->FindPotionItem("P_Potion"), 1);
 	}
+	
 }
 
 
@@ -1247,30 +1369,35 @@ void ASPCharacterPlayer::ServerRPCDragItem_Implementation(int Num, const int32 Q
 	if (GetInventory()->GetInventorMakeContents().Num() == 3)
 	{
 		USPItemBase* Item = PlayerInventory->MakingPotion();
-		int MakeNum = PlayerInventory->IsPotion(Item->ID);
-		ClientRPCUpdateMakingPotion(MakeNum);
-		PlayerInventory->ClearMakeArray();
+		if(Item)
+		{
+			int MakeNum = PlayerInventory->IsPotion(Item->ID);
+			ClientRPCUpdateMakingPotion(MakeNum);
+			PlayerInventory->ClearMakeArray();
+		}
 	}
+	
 }
 
 void ASPCharacterPlayer::ClientRPCUpdateMakingPotion_Implementation(int Num)
 {
 	USPItemBase* ItemBase = PlayerInventory->FindMatchingItem(Num);
+
 	HUDWidget->MakingPotionWieget(ItemBase);
 }
-
 
 void ASPCharacterPlayer::ServerRPCBackItem_Implementation(int Num, const int32 QuantityToDrop)
 {
 	USPItemBase* ItemBase = PlayerInventory->FindMatchingMiniItem(Num);
-	PlayerInventory->HandleAddItem(ItemBase);
+	PlayerInventory->HandleAddItem(ItemBase, 1);
 	GetInventory()->RemoveInventorMakeContents(ItemBase);
 }
 
 void ASPCharacterPlayer::ServerRPCAddItemClick_Implementation(int Num)
 {
 	USPItemBase* ItemBase = PlayerInventory->FindMatchingItem(Num);
-	PlayerInventory->HandleAddItem(ItemBase);
+	PlayerInventory->HandleAddItem(ItemBase, 1);
+
 }
 
 
@@ -1535,7 +1662,6 @@ void ASPCharacterPlayer::PerformInteractionCheck()
 	GetOverlappingActors(OverlappingActors, ASPPickup::StaticClass()); // 겹친 액터들을 검출합니다.
 	GetOverlappingActors(ASPMakePotionActor, ASPMakePotion::StaticClass());
 	GetOverlappingActors(ASPCombinationActor, ASPManual::StaticClass());
-	// Todo 배열에 액터 종류 확인해서 넣기
 	OverlappingActors.Append(ASPMakePotionActor);
 	OverlappingActors.Append(ASPCombinationActor);
 	for (AActor* OverlappingActor : OverlappingActors)
@@ -1854,7 +1980,6 @@ bool ASPCharacterPlayer::IsMontagePlaying()
 
 
 
-
 void ASPCharacterPlayer::NetTESTRPCSlowSkill_Implementation()
 {
 	GetCharacterMovement()->MaxWalkSpeed = 100.f;
@@ -1874,7 +1999,40 @@ void ASPCharacterPlayer::NetTESTRPCSlowSkill_Implementation()
 
 void ASPCharacterPlayer::ServerRPCBlackPotionSpawn_Implementation()
 {
-	if (PlayerInventory->CountPotion(PlayerInventory->IsPotion("B_Potion")))
+	if(!bIsSeven)
+	{
+		if(PlayerInventory->CountPotion(PlayerInventory->IsPotion("B_Potion")))
+		{
+			if (false == bIsSpawn)
+			{
+				FVector ItemLocation = GetMesh()->GetSocketLocation("Item_Socket");
+				FActorSpawnParameters SpawnParams;
+				SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+				SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
+				Potion = GetWorld()->SpawnActor<ASPBlackPotion>(ASPBlackPotion::StaticClass(),
+																GetMesh()->GetSocketLocation("Item_Socket"),
+																FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
+				bIsSpawn = true;
+				if (Potion)
+				{
+					FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+															  EAttachmentRule::SnapToTarget, true);
+					Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
+				}
+			}
+			else
+			{
+				if (Potion)
+				{
+					FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+															  EAttachmentRule::SnapToTarget, true);
+					Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
+				}
+			}
+			PlayerInventory->RemoveAmountOfItem(PlayerInventory->FindPotionItem("B_Potion"), 1);
+		}
+	}
+	else
 	{
 		if (false == bIsSpawn)
 		{
@@ -1902,7 +2060,6 @@ void ASPCharacterPlayer::ServerRPCBlackPotionSpawn_Implementation()
 				Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
 			}
 		}
-		PlayerInventory->RemoveAmountOfItem(PlayerInventory->FindPotionItem("B_Potion"), 1);
 	}
 }
 
@@ -1974,7 +2131,7 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 {
-	GetCharacterMovement()->bOrientRotationToMovement = true;
+GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->bUseControllerDesiredRotation = false;
 	if (false == bIsHolding)
 	{
@@ -2217,4 +2374,19 @@ void ASPCharacterPlayer::QuaterMove(const FInputActionValue& Value)
 		FRotator Rotator = UKismetMathLibrary::FindLookAtRotation(Location, Location + DesiredMoveDirection);
 		DesiredYaw = Rotator.Yaw;
 	}
+
 }
+
+//////////////////////////////////////
+void ASPCharacterPlayer::SevenKey(const FInputActionValue& Value)
+{
+	bIsSeven = true;
+	ServerRPCSeven();
+	UE_LOG(LogTemp, Warning, TEXT("SEVEN"));
+}
+
+void ASPCharacterPlayer::ServerRPCSeven_Implementation()
+{
+	bIsSeven = true;
+}
+/////////////////////////////////////////////

@@ -7,65 +7,83 @@
 #include "SPGameState.h"
 #include "UI/SPLobbyWidget.h"
 #include "GameFramework/GameStateBase.h"
+#include "Blueprint/AIBlueprintHelperLibrary.h"
+#include "../Spectrum/Player/SPPlayerController.h"
+//extern Protocol::PlayerType player_type;
+extern Protocol::PlayerType school_num_type;
+extern int32 NumPlayers;
+extern std::array<Protocol::PlayerType, 3> school_type;
 
 ASPGameModeBase::ASPGameModeBase()
 {
-	GameStateClass=ASPGameState::StaticClass();
-	bUseSeamlessTravel=true;
 	
-	//static ConstructorHelpers::FClassFinder<APawn> ThirdPersonClassRef(TEXT("/Game/ThirdPerson/Blueprints/BP_ThirdPersonCharacter.BP_ThirdPersonCharacter_C"));
+}
 
-	//if (ThirdPersonClassRef.Class)
-	//{
-	//	DefaultPawnClass = ThirdPersonClassRef.Class;
-	//}
+bool ASPGameModeBase::TryChangePawn(APlayerController* pCon, FVector location, TSubclassOf<APawn> PAWN_C)
+{
+	if (alreadyChange.Contains(pCon)) return false;
 
-	//static ConstructorHelpers::FClassFinder<APawn> DefaultPawnClassRef(TEXT("/Script/Spectrum.SPCharacterPlayer"));
-	//if (DefaultPawnClassRef.Class)
-	//{
-	//	DefaultPawnClass = DefaultPawnClassRef.Class;
-	//}
+	auto newPawn = UAIBlueprintHelperLibrary::SpawnAIFromClass(GetWorld(), PAWN_C, nullptr, location, FRotator::ZeroRotator);
+	if (!newPawn) return false;
 
-	//static ConstructorHelpers::FClassFinder<APlayerController> PlayerControllerClassRef(TEXT("/Script/Spectrum.SPPlayerController"));
-	//if (PlayerControllerClassRef.Class) {
-	//	PlayerControllerClass = PlayerControllerClassRef.Class;
-	//}
+	alreadyChange.Add(pCon, true);
+	pCon->Possess(newPawn);
+	return true;
+}
 
-	//static ConstructorHelpers::FClassFinder< UUserWidget> LobbyWidgetClassRef(TEXT("/Game/Spectrum/StartUI/StartMenuWidget.StartMenuWidget"));
-	//if (LobbyWidgetClassRef.Class)
-	//{
-	//	SPLobbyWidgetClass = LobbyWidgetClassRef.Class;
-	//}	
+void ASPGameModeBase::TryDestroyOldpawn_Implementation(APawn* pawn)
+{
+	if (pawn->IsValidLowLevel())
+		pawn->Destroy();
 }
 
 void ASPGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//if (SPLobbyWidgetClass)
-	//{
-	//	LobbyWidget = CreateWidget<USPLobbyWidget>(GetWorld(), SPLobbyWidgetClass);
-	//	if (LobbyWidget)
-	//	{
-	//		LobbyWidget->AddToViewport();
-	//	}
-	//}
-	
 }
 
-void ASPGameModeBase::PostInitializeComponents()
+
+void ASPGameModeBase::PostLogin(APlayerController* NewPlayer)
 {
-	Super::PostInitializeComponents();
-	//GetWorldTimerManager().SetTimer(GameTimerHandle, this, &ASPGameModeBase::DefaultGameTimer, 20.0f,false);
+		Super::PostLogin(NewPlayer);
+		//
+		// // ���� �޾Ƽ� �� ���� 
+		auto CastPlayer = Cast<ASPPlayerController>(NewPlayer);
+		if (CastPlayer)
+		{
+			USpectrumGameInstance* pawn_PlayerType = Cast<USpectrumGameInstance>(NewPlayer->PlayerState);
 
+			//pawn_PlayerType->PlayerType = 0;
+
+			// ������ ���� �� ����
+			if (mynum < 3)
+			{
+				school_num_type = school_type[mynum];
+				mynum++;
+			}
+
+			switch (school_num_type)
+			{
+			case Protocol::PLAYER_TYPE_GREEN_MAN:
+				CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharacterMan2"));
+				break;
+			case Protocol::PLAYER_TYPE_GREEN_WOMAN:
+				CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharaterPlayer_W2"));
+				break;
+			case Protocol::PLAYER_TYPE_PURPLE_MAN:
+				CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharacterMan1"));
+				break;
+			case Protocol::PLAYER_TYPE_PURPLE_WOMAN:
+				CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharaterPlayer_W1"));
+				break;
+			case Protocol::PLAYER_TYPE_ORANGE_MAN:
+				CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharacterMan3"));
+				break;
+			case Protocol::PLAYER_TYPE_ORANGE_WOMAN:
+				CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharaterPlayer_W3"));
+				break;
+			}
+		}
 }
-
-void ASPGameModeBase::DefaultGameTimer()
-{
-	UE_LOG(LogTemp,Log,TEXT("Default"));
-	EndMatch();
-	GetWorld()->ServerTravel(TEXT("/Game/Spectrum/Room/Map/Building?listen")); 
-}
-
-
 

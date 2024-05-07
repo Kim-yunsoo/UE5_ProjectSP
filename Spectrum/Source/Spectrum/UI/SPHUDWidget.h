@@ -28,9 +28,6 @@ protected:
 protected:
 	UPROPERTY()
 	TObjectPtr<class USPTargetUI> TargetUI;
-
-	UPROPERTY()
-	TObjectPtr<class USPMainMenu> MainMenuWidget;
 	
 	UPROPERTY()
 	TObjectPtr<class USPInteractionWidget> InteractionWidget;
@@ -55,22 +52,20 @@ protected:
 	TObjectPtr<class USPScoreWidget> ScoreWidget;
 
 	UPROPERTY()
+	TObjectPtr<class USPKeyWidget> KeyWidget;
+
+	UPROPERTY()
 	TObjectPtr<class USPGameTimeWidget> GameTimeWidget;
 	
 public:
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
-	TSubclassOf<USPMainMenu> MainMenuClass;
-	
-	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	TSubclassOf<USPInteractionWidget> InteractionWidgetClass;
 
-	bool bIsMenuVisible;
 
 
 	/////////////////
-	void DisplayMenu();
-	void HideMenu();
-	void ToggleMenu();
+
+	void ToggleMouse(bool bIsShowMouse);
 
 	void UpdateTime(float CountdownTime);
 	void UpdateSlowCDTime(float NewCurrentTime);
@@ -82,7 +77,7 @@ public:
 	void ShowInteractionWidget();
 	void HideInteractionWidget();
 	void UpdateInteractionWidget(const FInteractableData* InteractableData);
-
+	void ToggleKeyWidget(bool bIsVisible);
 	void ClearMakingWieget();
 	void MakingPotionWieget(USPItemBase* Item);
 protected:

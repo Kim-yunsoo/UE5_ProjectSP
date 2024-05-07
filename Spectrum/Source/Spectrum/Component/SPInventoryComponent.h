@@ -33,7 +33,7 @@ public:
 	// Sets default values for this component's properties
 	USPInventoryComponent();
 	UFUNCTION(Category = "Inventory")
-	void HandleAddItem(USPItemBase* InputItem);
+	void HandleAddItem(USPItemBase* InputItem, int InitialRequestedAddmount);
 
 	UFUNCTION()
 	USPItemBase* InitializeInventory(const TSubclassOf<USPItemBase> BaseClass, FName DesiredItemID);
@@ -79,6 +79,7 @@ public:
 	FORCEINLINE void AddInventorMakeContents(USPItemBase* Item) {InventoryMakeContents.Add(Item);};
 	FORCEINLINE void ClearMakeArray() {InventoryMakeContents.Empty();};
 
+
 	
 protected:
 	// Called when the game starts
@@ -90,8 +91,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Inventory")
 	float inventoryWeightCapacity;
 
-	UPROPERTY(VisibleAnywhere, Category = "Inventory")
-	TArray<USPItemBase*> InventoryContents;
+	// UPROPERTY(VisibleAnywhere, Category = "Inventory")
+	// TArray<USPItemBase*> InventoryContents;
 	
 	UPROPERTY(VisibleAnywhere, Category = "Inventory")
 	TArray<USPItemBase*> InventoryMiniContents;
@@ -99,6 +100,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Inventory")
 	TArray<USPItemBase*> InventoryMakeContents;
 
+	UPROPERTY(VisibleAnywhere, Category = "Inventory")
+	TArray<USPItemBase*> InventoryContents;
 	
 	int HandleStackableItems(USPItemBase* ItemIn, int32 RequestedAddAmount);
 	int HandleStackableItemsMini(USPItemBase* ItemIn, int32 RequestedAddAmount);

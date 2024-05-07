@@ -17,7 +17,7 @@ ASPMakePotion::ASPMakePotion()
 	PrimaryActorTick.bCanEverTick = true;
 	
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>("Mesh");
-	//Mesh->SetSimulatePhysics(true); //½Ã¹Ä·¹ÀÌ¼Ç true °í¹ÎÇØº¸±â
+	//Mesh->SetSimulatePhysics(true); //ï¿½Ã¹Ä·ï¿½ï¿½Ì¼ï¿½ true ï¿½ï¿½ï¿½ï¿½Øºï¿½ï¿½ï¿½
 	//SetRootComponent(Mesh);
 	Trigger = CreateDefaultSubobject<UBoxComponent>(TEXT("PickupTriggerComponent"));
 }
@@ -28,7 +28,7 @@ void ASPMakePotion::BeginPlay()
 	InteractableData = InstanceInteractableDate;
 	FVector ActorLocation = GetActorLocation();
 	Trigger->SetRelativeLocation(ActorLocation);
-	Trigger->SetRelativeScale3D(FVector(6,5,20));
+	Trigger->SetRelativeScale3D(FVector(6,5,15));
 	
 	Trigger->OnComponentBeginOverlap.AddDynamic(this, &ASPMakePotion::OnTriggerEnter);
 	Trigger->OnComponentEndOverlap.AddDynamic(this, &ASPMakePotion::OnTriggerExit);
@@ -42,17 +42,15 @@ void ASPMakePotion::Tick(float DeltaTime)
 
 void ASPMakePotion::Interact2(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget)
 {
-	if(bIsVisible)
+	// if(bIsVisible)
+	// {
+	// 	bIsVisible = false;
+	// 	HUDWidget->UpdateMakingPotionWidget(false);
+	// }
+	// else
 	{
-		bIsVisible = false;
-		HUDWidget->UpdateMakingPotionWidget(false);
-		HUDWidget->ToggleMenu();
-	}
-	else
-	{
-		bIsVisible = true;
 		HUDWidget->UpdateMakingPotionWidget(true);
-		HUDWidget->ToggleMenu();
+		HUDWidget->ToggleMouse(true);
 	}
 }
 
@@ -62,7 +60,7 @@ void ASPMakePotion::EndInteract()
 	//bIsVisible = false;
 	//HUDWidgetTest->UpdateMakingPotionWidget(false);
 
-	//Todo ´Ù ³¡³ª¸é À§Á¬ ³ª°¡¾ßÇÔ
+	//Todo ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 }
 
 void ASPMakePotion::ClientRPCInteract_Implementation(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget)
@@ -78,6 +76,8 @@ void ASPMakePotion::OnTriggerEnter(UPrimitiveComponent* OverlappedComp, AActor* 
 	if (PlayerCharacter)
 	{
 		PlayerCharacter->PerformInteractionCheck();
+		UE_LOG(LogTemp,Warning, TEXT("make In!!!"));
+		
 	}
 }
 
@@ -88,5 +88,7 @@ void ASPMakePotion::OnTriggerExit(UPrimitiveComponent* OverlappedComp, AActor* O
 	if (PlayerCharacter)
 	{
 		PlayerCharacter->NoInteractableFound();
+		UE_LOG(LogTemp,Warning, TEXT("make OUT!!!"));
 	}
 }
+

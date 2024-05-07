@@ -29,7 +29,7 @@ public:
 	TObjectPtr<USPInventoryComponent> OwningInventory;
 	
 	UPROPERTY(VisibleAnywhere, Category = "Item")
-	int32 Quantity; //Ç×¸ñÀÌ ÀÎº¥Åä¸®·Î ÀÌµ¿ÇÒ ¶§ ¼ö·®
+	int32 Quantity; //í•­ëª©ì´ ì¸ë²¤í† ë¦¬ë¡œ ì´ë™í•  ë•Œ ìˆ˜ëŸ‰
 	
 	UPROPERTY(VisibleAnywhere, Category = "Item")
 	FName ID;
@@ -55,7 +55,7 @@ public:
 	UFUNCTION(Category = "Item")
 	virtual void Use(ASPCharacterPlayer* Character);
 
-protected: //Ç×¸ñ °Ë»öÇÒ ¶§ »ç¿ë
+protected: //í•­ëª© ê²€ìƒ‰í•  ë•Œ ì‚¬ìš©
 	bool operator==(const FName& OtherID) const
 	{
 		return this->ID == OtherID;

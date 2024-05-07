@@ -34,7 +34,9 @@ protected:
 	virtual void NativeOnMouseLeave(const FPointerEvent& InMouseEvent) override;
 public:
 	void HideText();
-
+	
+	UPROPERTY(VisibleAnywhere, Category = "Inventory Slot")
+	TObjectPtr<USPItemBase> ItemReference;
 protected:
 	virtual FReply NativeOnMouseButtonUp(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
 	
@@ -42,8 +44,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Inventory Slot")
 	TSubclassOf<USPDrageItemVisual> DragItemVisualClass;
 	
-	UPROPERTY(VisibleAnywhere, Category = "Inventory Slot")
-	TObjectPtr<USPItemBase> ItemReference;
+
 
 	UPROPERTY(VisibleAnywhere, Category = "Inventory Slot" , meta=(BindWidget))
 	TObjectPtr<UBorder> ItemBorder;
