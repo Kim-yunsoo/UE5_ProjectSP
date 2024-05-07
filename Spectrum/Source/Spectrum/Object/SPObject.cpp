@@ -25,8 +25,8 @@ ASPObject::ASPObject()
 	ObjectMesh->SetMobility(EComponentMobility::Movable);
 	ObjectMesh->SetUseCCD(true);
 	ObjectMesh->SetRenderCustomDepth(true);
-	// ObjectMesh->SetIsReplicated(true);
-	
+	ObjectMesh->SetIsReplicated(true);
+
 	bHasBeenCalled = true;
 	bIsScoreReflected = false;
 
@@ -45,7 +45,7 @@ ASPObject::ASPObject()
 	{
 		PurpleData=PurpleDataRef.Object;
 	}
-
+	
 }
 
 ASPObject::~ASPObject()

@@ -1251,13 +1251,17 @@ void ASPCharacterPlayer::ServerRPCBackItem_Implementation(int Num, const int32 Q
 void ASPCharacterPlayer::ServerRPCAddItemClick_Implementation(int Num)
 {
 	USPItemBase* ItemBase = PlayerInventory->FindMatchingItem(Num);
-	if(IsLocallyControlled())
-		PlayerInventory->HandleAddItem(ItemBase, 0);
-	else
-	{
-		PlayerInventory->HandleAddItem(ItemBase, 1);
-
-	}
+	PlayerInventory->HandleAddItem(ItemBase, 1);
+	// if(HasAuthority())
+	// {
+	// 	if(IsLocallyControlled())
+	// 		PlayerInventory->HandleAddItem(ItemBase, 0);
+	// }
+	// else
+	// {
+	// 
+	//
+	// }
 }
 
 
@@ -1903,6 +1907,7 @@ void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 {
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->bUseControllerDesiredRotation = false;
+	
 	if (false == bIsHolding)
 	{
 		// SP_LOG(LogSPNetwork, Log, TEXT("%s"), TEXT("ServerRPCGraping_Implementation!!"));
@@ -1945,7 +1950,6 @@ void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 			{
 				outHitResult.Component->SetSimulatePhysics(true);
 				outHitResult.GetActor()->SetOwner(this);
-				// UE_LOG(LogTemp,Log,TEXT("%s"),*(outHitResult.GetActor()->GetOwner())->GetName() );
 				HitComponent = outHitResult.GetComponent();
 
 				FVector SphereTracePoint = HitComponent->K2_GetComponentLocation();
