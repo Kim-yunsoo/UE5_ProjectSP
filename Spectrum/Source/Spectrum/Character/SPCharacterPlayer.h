@@ -316,10 +316,10 @@ public:
 protected:
 	 UPROPERTY()
 	UPrimitiveComponent* HitComponent;
-	 UPROPERTY()
+	 UPROPERTY(Replicated)
 	 AActor* HitMyActor;
-	// UPROPERTY(Replicated)
-	// FHitResult outHitResult;
+	 UPROPERTY()
+	 FHitResult outHitResult;
 
 	float HitDistance;
 
@@ -447,7 +447,7 @@ public:
 	void ServerRPCStopAiming();
 
 	UFUNCTION(Server, Unreliable)
-	void ServerRPCGraping(const FHitResult& outHitResult);
+	void ServerRPCGraping();
 
 	UFUNCTION(Server, Unreliable)
 	void ServerRPCStopGraping();
@@ -600,7 +600,5 @@ public:
 	UFUNCTION(NetMulticast,Unreliable)
 	void MultiChangeCollision(const FName& CollisionName);
 
-	UFUNCTION(Client,Unreliable)
-	void TEST(const FHitResult& test);
 	
 };

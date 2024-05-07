@@ -17,7 +17,8 @@ class ASPGameModeBase;
 ASPScoreTrigger::ASPScoreTrigger()
 {
 	Trigger = CreateDefaultSubobject<UBoxComponent>(TEXT("Trigger"));
-	SetReplicates(true);
+	//SetReplicates(true);
+	bReplicates = true; 
 }
 
 // Called when the game starts or when spawned

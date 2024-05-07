@@ -26,8 +26,8 @@ ASPObject::ASPObject()
 	ObjectMesh->SetMobility(EComponentMobility::Movable);
 	ObjectMesh->SetUseCCD(true);
 	ObjectMesh->SetRenderCustomDepth(true);
-	ObjectMesh->SetIsReplicated(true);
-	this->SetReplicates(true);
+	//ObjectMesh->SetIsReplicated(true);
+	//this->SetReplicates(true);
 	
 	// ObjectMesh->SetIsReplicated(true);
 	
@@ -50,8 +50,8 @@ ASPObject::ASPObject()
 		PurpleData=PurpleDataRef.Object;
 	}
 
-	
-	//NetPriority=2.0f;
+	bReplicates = true; 
+
 }
 
 ASPObject::~ASPObject()
@@ -69,7 +69,7 @@ void ASPObject::BeginPlay()
 	ChaosDynamic = UMaterialInstanceDynamic::Create(OriginMaterial, nullptr, NAME_None);
 	if(HasAuthority())
 	{
-		this->SetReplicates(true);
+		//this->SetReplicates(true);
 		this->AActor::SetReplicateMovement(true);
 	}
 	

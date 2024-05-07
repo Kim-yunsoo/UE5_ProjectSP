@@ -60,8 +60,6 @@ void USPSlowSkill::TickComponent(float DeltaTime, ELevelTick TickType, FActorCom
 
 void USPSlowSkill::SkillAction()
 {
-
-
 	Super::SkillAction();
 	
 	FActorSpawnParameters SpawnParams;

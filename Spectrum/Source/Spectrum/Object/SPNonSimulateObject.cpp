@@ -10,6 +10,7 @@ ASPNonSimulateObject::ASPNonSimulateObject()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	bReplicates = true; 
 
 	//NetDormancy=DORM_Initial;
 }
@@ -18,7 +19,18 @@ ASPNonSimulateObject::ASPNonSimulateObject()
 void ASPNonSimulateObject::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	// if(HasAuthority())
+	// {
+	// 	bReplicates = true; 
+	// 	this->AActor::SetReplicateMovement(true);
+	// }
+	if(HasAuthority())
+	{
+		//this->SetReplicates(true);
+		this->AActor::SetReplicateMovement(true);
+	}
+
 }
 
 // Called every frame

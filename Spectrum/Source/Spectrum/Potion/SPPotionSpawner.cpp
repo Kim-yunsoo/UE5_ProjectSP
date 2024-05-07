@@ -11,15 +11,19 @@ ASPPotionSpawner::ASPPotionSpawner()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	// PrimaryActorTick.bCanEverTick = true;
-	SpawnTimeRate=5.f;
-	SetReplicates(true);
+	SpawnTimeRate = 5.f;
+	//SetReplicates(true);
+	bReplicates = true;
 }
 
 // Called when the game starts or when spawned
 void ASPPotionSpawner::BeginPlay()
 {
 	Super::BeginPlay();
-	SpawnPotion();
+	if (HasAuthority())
+	{
+		SpawnPotion();
+	}
 }
 
 void ASPPotionSpawner::SpawnPotion()
@@ -43,7 +47,6 @@ void ASPPotionSpawner::ServerSpanwRPC_Implementation()
 	SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
 	ASPPickup* PotionObject = GetWorld()->SpawnActor<ASPPickup>(ASPPickup::StaticClass(), GetActorLocation(),
 	                                                            GetActorRotation(), SpawnParams);
-	// Register()
 	if (PotionObject)
 	{
 		PotionObject->SetOwner(this);
