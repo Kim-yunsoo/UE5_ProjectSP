@@ -741,6 +741,7 @@ void ASPCharacterPlayer::Aiming(const FInputActionValue& Value)
 {
 	if (false == bIsHolding)
 	{
+		OnAimChanged.Broadcast(true);
 		Aiming_CameraMove(); //애니메이션 작동
 		ServerRPCAiming();
 		bIsAiming = true;
@@ -750,6 +751,7 @@ void ASPCharacterPlayer::Aiming(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::ServerRPCAiming_Implementation()
 {
+	
 	bIsAiming = true;
 }
 
@@ -757,7 +759,7 @@ void ASPCharacterPlayer::StopAiming(const FInputActionValue& Value)
 {
 	bIsAiming = false;
 
-	OnAimChanged.Broadcast(bIsAiming);
+	OnAimChanged.Broadcast(false);
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->bUseControllerDesiredRotation = false;
 	FollowCamera->K2_AttachToComponent(CameraBoom, NAME_None, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld,
@@ -780,7 +782,7 @@ void ASPCharacterPlayer::ServerRPCStopAiming_Implementation()
 
 void ASPCharacterPlayer::StopGraping(const FInputActionValue& Value)
 {
-	ShowTargetUI(false);
+	//ShowTargetUI(false);
 	ServerRPCStopGraping();
 }
 
@@ -2119,7 +2121,7 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 {
 	// if (bIsActiveGraping)
 	// {
-	ShowTargetUI(true);
+	//ShowTargetUI(true);
 	ServerRPCGraping();
 	// }
 	// GetCharacterMovement()->bOrientRotationToMovement = true;
