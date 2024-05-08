@@ -28,7 +28,10 @@ protected:
 public:
 	FGameTime GameTime;
 	float ActivetedTimeStamp;
-
+	
+	UPROPERTY()
+	TObjectPtr<USoundWave> SkillSound;
+	
 	virtual void SkillAction();
 
 };

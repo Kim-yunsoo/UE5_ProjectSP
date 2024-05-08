@@ -43,6 +43,7 @@ ASPSlowSkillActor::ASPSlowSkillActor()
 	// }
 
 	// HitParticle = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("HitParticle"));
+	
 	SetReplicates(true);
 	bIsHoming = false;
 }

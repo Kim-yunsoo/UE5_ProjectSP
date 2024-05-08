@@ -16,6 +16,14 @@ USPSlowSkill::USPSlowSkill()
 	bAutoActivate = true;
 	CoolDown = 10;
 	// bIsActiveSlowSkill=true;
+	static ConstructorHelpers::FObjectFinder<USoundWave> SoundRef(TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/SlowSkill.SlowSkill'"));
+	 if(SoundRef.Object)
+	 {
+	 	SkillSound=SoundRef.Object;
+	 }
+
+	//SkillSound= LoadObject<USoundWave>(nullptr, TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/SlowSkill.SlowSkill'"));;
+	
 }
 
 void USPSlowSkill::BeginPlay()
@@ -68,7 +76,7 @@ void USPSlowSkill::SkillAction()
 	FTransform SpawnTransform(Owner->SkillLocation->GetComponentRotation(), Owner->SkillLocation->GetComponentLocation());
 	ASPSlowSkillActor* MyActor =GetWorld()->SpawnActorDeferred<ASPSlowSkillActor>(ASPSlowSkillActor::StaticClass(),SpawnTransform);
 	MyActor->SetOwner(Owner);
-	SP_SUBLOG(LogSPNetwork,Log,TEXT("Owner"));
+	//SP_SUBLOG(LogSPNetwork,Log,TEXT("Owner"));
 	MyActor->FinishSpawning(SpawnTransform);
 }
 

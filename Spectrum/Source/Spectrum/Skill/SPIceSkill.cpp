@@ -13,6 +13,14 @@ USPIceSkill::USPIceSkill()
 	PrimaryComponentTick.bStartWithTickEnabled	= true;
 	bAutoActivate = true;
 	CoolDown = 10;
+
+
+	static ConstructorHelpers::FObjectFinder<USoundWave> SoundRef(TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/IceSkillSound.IceSkillSound'"));
+	if(SoundRef.Object)
+	{
+		SkillSound=SoundRef.Object;
+	}
+	
 }
 void USPIceSkill::BeginPlay()
 {
