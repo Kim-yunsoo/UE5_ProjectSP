@@ -1934,7 +1934,6 @@ void ASPCharacterPlayer::PlayTeleSkillAnimation()
 	AnimInstance->StopAllMontages(0.0f);
 	AnimInstance->Montage_Play(SkillTeleMontage);
 	UGameplayStatics::PlaySoundAtLocation(GetWorld(), TeleSkillComponent->SkillSound, GetActorLocation(),GetActorRotation());
-
 }
 
 void ASPCharacterPlayer::HitSlowSkillResult()
