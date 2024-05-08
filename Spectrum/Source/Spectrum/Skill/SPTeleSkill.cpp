@@ -14,6 +14,12 @@ USPTeleSkill::USPTeleSkill()
 	PrimaryComponentTick.bStartWithTickEnabled	= true;
 	bAutoActivate = true;
 	CoolDown = 10;
+
+	static ConstructorHelpers::FObjectFinder<USoundWave> SoundRef(TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/TeleSound.TeleSound'"));
+	if(SoundRef.Object)
+	{
+		SkillSound=SoundRef.Object;
+	}
 }
 
 void USPTeleSkill::BeginPlay()

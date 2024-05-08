@@ -1910,9 +1910,13 @@ void ASPCharacterPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 
 void ASPCharacterPlayer::PlaySkillAnimation()
 {
+	
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	AnimInstance->StopAllMontages(0.0f);
 	AnimInstance->Montage_Play(SkillMontage);
+	//사운드 여기서
+	//void UGameplayStatics::PlaySoundAtLocation();
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), SlowSkillComponent->SkillSound, GetActorLocation(),GetActorRotation());
 }
 
 void ASPCharacterPlayer::PlayIceSkillAnimation()
@@ -1920,6 +1924,8 @@ void ASPCharacterPlayer::PlayIceSkillAnimation()
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	AnimInstance->StopAllMontages(0.0f);
 	AnimInstance->Montage_Play(SkillIceMontage);
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), IceSkillComponent->SkillSound, GetActorLocation(),GetActorRotation());
+
 }
 
 void ASPCharacterPlayer::PlayTeleSkillAnimation()
@@ -1927,6 +1933,8 @@ void ASPCharacterPlayer::PlayTeleSkillAnimation()
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	AnimInstance->StopAllMontages(0.0f);
 	AnimInstance->Montage_Play(SkillTeleMontage);
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), TeleSkillComponent->SkillSound, GetActorLocation(),GetActorRotation());
+
 }
 
 void ASPCharacterPlayer::HitSlowSkillResult()
