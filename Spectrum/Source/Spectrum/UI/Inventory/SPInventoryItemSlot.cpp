@@ -35,7 +35,7 @@ void USPInventoryItemSlot::NativeConstruct()
 	{
 		ItemQuantity->SetVisibility(ESlateVisibility::Collapsed);
 	}
-
+	ClickOn = LoadObject<USoundBase>(nullptr, TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/ClickOn.ClickOn'"));
 }
 
 FReply USPInventoryItemSlot::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
@@ -76,6 +76,7 @@ FReply USPInventoryItemSlot::NativeOnMouseButtonUp(const FGeometry& InGeometry, 
 		Player->AddItemClick(num);
 		SetVisibility(ESlateVisibility::Hidden);
 		Player->HUDWidget->ClearMakingWieget();
+		PlaySound(ClickOn);
 		return Reply.Handled(); 
 	}
 	return Reply.Unhandled();

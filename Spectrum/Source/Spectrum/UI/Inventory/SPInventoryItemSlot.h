@@ -62,4 +62,8 @@ protected:
 	
 	UFUNCTION(Server, Unreliable)
 	void ServerRPCButtonUp(int num);
+	
+	UPROPERTY(EditAnywhere)
+	USoundBase* ClickOn;
+	
 };

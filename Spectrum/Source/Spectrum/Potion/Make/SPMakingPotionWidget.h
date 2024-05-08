@@ -83,6 +83,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Inventory Slot")
 	TObjectPtr<USPItemBase> ItemReference;
 
+	UPROPERTY(EditAnywhere)
+	USoundBase* ClickOn;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	class UButton* Back;

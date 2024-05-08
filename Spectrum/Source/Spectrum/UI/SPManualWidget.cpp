@@ -21,7 +21,7 @@ void USPManualWidget::NativeConstruct()
 	Manual->OnClicked.AddDynamic(this, &USPManualWidget::ManualCallBack);
 	Back->OnClicked.AddDynamic(this, &USPManualWidget::BackCallBack);
 	MainImage->SetVisibility(ESlateVisibility::Visible);
-
+	ClickOn = LoadObject<USoundBase>(nullptr, TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/ClickOn.ClickOn'"));
 }
 
 void USPManualWidget::SpectrumLocationCallBack()
@@ -29,7 +29,8 @@ void USPManualWidget::SpectrumLocationCallBack()
 	SpectrumLocationImage->SetVisibility(ESlateVisibility::Visible);
 	MainImage->SetVisibility(ESlateVisibility::Hidden);
 	ManualImage->SetVisibility(ESlateVisibility::Hidden);
-
+	
+	PlaySound(ClickOn);
 
 }
 
@@ -38,6 +39,8 @@ void USPManualWidget::ManualCallBack()
 	SpectrumLocationImage->SetVisibility(ESlateVisibility::Hidden);
 	MainImage->SetVisibility(ESlateVisibility::Hidden);
 	ManualImage->SetVisibility(ESlateVisibility::Visible);
+	PlaySound(ClickOn);
+
 }
 
 void USPManualWidget::BackCallBack()
@@ -52,5 +55,6 @@ void USPManualWidget::BackCallBack()
 	{
 		MainImage->SetVisibility(ESlateVisibility::Visible);
 	}
-	
+	PlaySound(ClickOn);
+
 }

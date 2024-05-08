@@ -46,6 +46,8 @@ void USPMakingPotionWidget::NativeConstruct()
 	PlayerCharacter = Cast<ASPCharacterPlayer>(GetOwningPlayerPawn());
 	Back = Cast<UButton>(GetWidgetFromName(TEXT("Back")));
 	Back->OnClicked.AddDynamic(this, &USPMakingPotionWidget::BackCallBack);
+
+	ClickOn = LoadObject<USoundBase>(nullptr, TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/ClickOn.ClickOn'"));
 }
 
 bool USPMakingPotionWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent,
@@ -112,4 +114,6 @@ void USPMakingPotionWidget::BackCallBack()
 {
 	UE_LOG(LogTemp, Log, TEXT("SpectrumLocationCallBack!!!"));
 	PlayerCharacter->HUDWidget->UpdateMakingPotionWidget(false);
+
+	PlaySound(ClickOn);
 }

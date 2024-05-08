@@ -33,6 +33,9 @@ class SPECTRUM_API USPManualWidget : public UUserWidget
 	UPROPERTY(VisibleAnywhere, Category = "Manual", meta=(BindWidget))
 	TObjectPtr<UImage> SpectrumLocationImage;
 
+	UPROPERTY(EditAnywhere)
+	USoundBase* ClickOn;
+	
 	virtual void NativeConstruct() override;
 public:
 
