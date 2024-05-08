@@ -4,7 +4,7 @@
 #include "TEST/InterfaceTestActor.h"
 #include "Character/SPCharacterPlayer.h"
 
-#include "NavigationSystemTypes.h"
+
 
 // Sets default values
 AInterfaceTestActor::AInterfaceTestActor()

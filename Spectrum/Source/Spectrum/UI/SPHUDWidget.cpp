@@ -2,9 +2,6 @@
 
 
 #include "UI/SPHUDWidget.h"
-
-#include "LandscapeGizmoActiveActor.h"
-#include "SpectrumLog.h"
 #include "SPGameTimeWidget.h"
 #include "SPKeyWidget.h"
 #include "SPManualWidget.h"

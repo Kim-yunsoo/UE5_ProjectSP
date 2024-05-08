@@ -2,8 +2,6 @@
 
 
 #include "UI/Inventory/SPInventoryItemSlot.h"
-
-#include "SpectrumLog.h"
 #include "SPItemDragDropOperation.h"
 #include "Character/SPCharacterPlayer.h"
 #include "Component/SPInventoryComponent.h"

@@ -4,7 +4,6 @@
 #include "Potion/SPPickup.h"
 #include "Component/SPInventoryComponent.h"
 #include "Potion/SPItemBase.h"
-#include "SpectrumLog.h"
 #include "SPPotionSpawner.h"
 #include "Components/BoxComponent.h"
 #include "Net/UnrealNetwork.h"
@@ -187,13 +186,6 @@ void ASPPickup::TakePickup(ASPCharacterPlayer* Taker) //서버
 	}
 }
 
-void ASPPickup::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
-{
-	// Super::PostEditChangeProperty(PropertyChangedEvent);
-	//
-	// const FName ChangedPropertyName = PropertyChangedEvent.Property?PropertyChangedEvent.Property->GetFName() : NAME_None;
-	//
-}
 
 void ASPPickup::OnTriggerEnter(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
                                int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

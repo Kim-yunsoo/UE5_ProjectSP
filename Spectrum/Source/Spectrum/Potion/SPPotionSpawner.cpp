@@ -2,8 +2,6 @@
 
 
 #include "Potion/SPPotionSpawner.h"
-
-#include "SpectrumLog.h"
 #include "SPPickup.h"
 
 // Sets default values

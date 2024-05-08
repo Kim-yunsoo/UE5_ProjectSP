@@ -1,17 +1,14 @@
 #include "ClientPacketHandler.h"
-#include "BufferReader.h"
 #include "Spectrum.h"
 #include "SpectrumGameInstance.h"
-#include "SocketSubsystem.h"
-#include "PacketSession.h"
 #include "UI/SPLobbyWidget.h"
 #include "Protocol.pb.h"
 //#include <array>
 //#include <string>
 
 PacketHandlerFunc GPacketHandler[UINT16_MAX];
-extern PlayerInfomation MyPlayerInfo;	// ÀÚ½ÅÀÇ Á¤º¸ ÀúÀåÇÏ´Â ±¸Á¶Ã¼
-extern LobbyInfomation MyLobbyInfo;	// ·Îºñ Á¤º¸ ÀúÀåÇÏ´Â ±¸Á¶Ã¼
+extern PlayerInfomation MyPlayerInfo;	// ï¿½Ú½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½Ã¼
+extern LobbyInfomation MyLobbyInfo;	// ï¿½Îºï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½Ã¼
 
 Protocol::PlayerType school_num_type;
 int32 NumPlayers;
@@ -84,13 +81,13 @@ bool Handle_S_LOGIN(PacketSessionRef& session, Protocol::S_LOGIN& pkt)
 
 		NumPlayers = UGameplayStatics::GetPlayerControllerID(GWorld->GetFirstPlayerController());
 
-		// myid,  mytype Ãâ·Â
+		// myid,  mytype ï¿½ï¿½ï¿½
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("ID:%s, type:%s"), *Fmyid, *Fmytype));
 		MyPlayerInfo.player_type = mytype;
 	}
 	else
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Login Failed")));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Login Failed")));
 	}
 	return true;
 }
@@ -102,13 +99,13 @@ bool Handle_S_MEMBERSHIP(PacketSessionRef& session, Protocol::S_MEMBERSHIP& pkt)
 		auto myid = pkt.membership_id();
 		auto mytype = pkt.membership_type();
 
-		// myi,  mytype Ãâ·Â
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("ID:myid , SCHOOL:mytype")));
+		// myi,  mytype ï¿½ï¿½ï¿½
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("ID:myid , SCHOOL:mytype")));
 
-		// ÀÚ±â È¸¿øÁ¤º¸ ÀúÀå
+		// ï¿½Ú±ï¿½ È¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
 
-		// È¸¿ø°¡ÀÔ ¼º°ø ½Ã±×³Î
+		// È¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã±×³ï¿½
 
 		
 	}
@@ -123,12 +120,12 @@ bool Handle_S_ENTER_GAME(PacketSessionRef& session, Protocol::S_ENTER_GAME& pkt)
 	//{
 	//	GameInstance->HandleLobby(pkt);
 	//}
-	// ³ªÁß¿¡ ÀÌ¸§±îÁö ±¸Á¶Ã¼¿¡ ÀúÀå
+	// ï¿½ï¿½ï¿½ß¿ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
 	ServerIP = pkt.server_ip();
 	std::string pktip = pkt.server_ip();
 	FString ip = FString(UTF8_TO_TCHAR(pktip.c_str()));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("%s"), *ip));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("%s"), *ip));
 
 	school_type[0] = pkt.membership_type_0();
 	school_type[1] = pkt.membership_type_1();
@@ -156,7 +153,7 @@ bool Handle_S_LEAVE_GAME(PacketSessionRef& session, Protocol::S_LEAVE_GAME& pkt)
 {
 	if (auto* GameInstance = Cast<USpectrumGameInstance>(GWorld->GetGameInstance()))
 	{
-		// ³ªÁß¿¡ °ÔÀÓ Á¾·áÇÒÁö ·Îºñ·Î °¥Áö °áÁ¤
+		// ï¿½ï¿½ï¿½ß¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Îºï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	}
 
 	return true;
@@ -198,7 +195,7 @@ bool Handle_S_CHAT(PacketSessionRef& session, Protocol::S_CHAT& pkt)
 {
 	auto Msg = pkt.msg();
 	
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Msg")));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Msg")));
 
 	return true;
 }

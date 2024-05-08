@@ -3,7 +3,6 @@
 
 #include "Network/NetWorkWorker.h"
 #include "Sockets.h"
-#include "Serialization/ArrayWriter.h"
 #include "PacketSession.h"
 
 //////////////////// RecvWorker ////////////////////
@@ -18,14 +17,14 @@ RecvWorker::~RecvWorker()
 }
 
 bool RecvWorker::Init()
-{	// ¿©±â¼­ ¿©·¯ ÇÔ¼ö·Î °ü¸® ex) kill, wait
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Recv Thread Init")));
+{	// ï¿½ï¿½ï¿½â¼­ ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ex) kill, wait
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Recv Thread Init")));
 	return true;
 }
 
 uint32 RecvWorker::Run()
-{	// ½º·¹µå ¸ÞÀÎ ÇÔ¼ö
-	// ¹ÞÀº ÆÐÅ¶ Á¶¸³ ¿©±â¼­
+{	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¶ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½â¼­
 
 	while (Running)
 	{
@@ -33,17 +32,17 @@ uint32 RecvWorker::Run()
 
 		if (ReceivePacket(OUT Packet))
 		{
-			// ÆÐÅ¶ Ã³¸®(Á¶¸³)
-			// Á¶¸³ ÈÄ ¸ÞÀÎ ½º·¹µå¿¡ ³Ñ°ÜÁÖ·Á¸é Å©·¯½¬ ³²
-			// ÆÐÅ¶À» ÀúÀå(Å¥¿¡ ÀúÀå)ÇÏ´Â ÇÔ¼ö¸¦ ¸¸µé¾î¼­ ±× ÇÔ¼ö¸¦ È£ÃâÇÏ´Â ¹æ½ÄÀ¸·Î Ã³¸®
-			// ÆÐÅ¶À» ÀúÀåÇÏ´Â ÇÔ¼ö´Â ÆÐÅ¶À» ÀúÀåÇÏ´Â Å¥¸¦ °ü¸®ÇÏ´Â Å¬·¡½º¿¡ ÀÖ¾î¾ß ÇÔ
-			// ÆÐÅ¶À» ÀúÀåÇÏ´Â Å¥¸¦ °ü¸®ÇÏ´Â Å¬·¡½º´Â °ÔÀÓÀÇ ¸ÞÀÎ ½º·¹µå¿¡¼­ °ü¸®ÇØ¾ß ÇÔ
-			// PacketSession¿¡ ÆÐÅ¶À» ÀúÀåÇÏ´Â ÇÔ¼ö¸¦ ¸¸µé¾î¼­ È£Ãâ
+			// ï¿½ï¿½Å¶ Ã³ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½)
+			// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½å¿¡ ï¿½Ñ°ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ Å©ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+			// ï¿½ï¿½Å¶ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(Å¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)ï¿½Ï´ï¿½ ï¿½Ô¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½î¼­ ï¿½ï¿½ ï¿½Ô¼ï¿½ï¿½ï¿½ È£ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½
+			// ï¿½ï¿½Å¶ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Ô¼ï¿½ï¿½ï¿½ ï¿½ï¿½Å¶ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ Å¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¾ï¿½ï¿½ ï¿½ï¿½
+			// ï¿½ï¿½Å¶ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ Å¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½å¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½ï¿½
+			// PacketSessionï¿½ï¿½ ï¿½ï¿½Å¶ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Ô¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½î¼­ È£ï¿½ï¿½
 
-			// ÆÐÅ¶À» ÀúÀåÇÏ´Â ÇÔ¼ö¸¦ È£Ãâ
-			if (TSharedPtr<PacketSession> Session = SessionRef.Pin())	// SessionÀÌ À¯È¿ÇÑÁö Ã¼Å©. TSharedPtr·Î ¹Ù²ã¾ß ÇÔ
+			// ï¿½ï¿½Å¶ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Ô¼ï¿½ï¿½ï¿½ È£ï¿½ï¿½
+			if (TSharedPtr<PacketSession> Session = SessionRef.Pin())	// Sessionï¿½ï¿½ ï¿½ï¿½È¿ï¿½ï¿½ï¿½ï¿½ Ã¼Å©. TSharedPtrï¿½ï¿½ ï¿½Ù²ï¿½ï¿½ ï¿½ï¿½
 			{
-				Session->RecvPacketQueue.Enqueue(Packet);	// ÆÐÅ¶À» ÀúÀå
+				Session->RecvPacketQueue.Enqueue(Packet);	// ï¿½ï¿½Å¶ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			}
 
 		}
@@ -64,7 +63,7 @@ void RecvWorker::Destroy()
 
 bool RecvWorker::ReceivePacket(TArray<uint8>& OutPacket)
 {
-	// ÆÐÅ¶ Çì´õ °ø°£ È®º¸
+	// ï¿½ï¿½Å¶ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½
 	const int32 HeaderSize = sizeof(FPacketHeader);
 	TArray<uint8> HeaderBuffer;
 	HeaderBuffer.AddZeroed(HeaderSize);
@@ -72,24 +71,24 @@ bool RecvWorker::ReceivePacket(TArray<uint8>& OutPacket)
 	if (ReceiveDesiredBytes(HeaderBuffer.GetData(), HeaderSize) == false)
 		return false;
 
-	// ID, Size ÃßÃâ
+	// ID, Size ï¿½ï¿½ï¿½ï¿½
 	FPacketHeader Header;
 	{
-		FMemoryReader Reader(HeaderBuffer);		// ¸®´õ¸¦ ¸¸µé¾î¼­
-		Reader << Header;					// ÇØ´ç ºÎºÐ¸¸  ÃßÃâ
+		FMemoryReader Reader(HeaderBuffer);		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½î¼­
+		Reader << Header;					// ï¿½Ø´ï¿½ ï¿½ÎºÐ¸ï¿½  ï¿½ï¿½ï¿½ï¿½
 		UE_LOG(LogTemp, Log, TEXT("Recv PacketID : %d, PacketSize : %d"), Header.PacketID, Header.PacketSize);
-		// PacketSize´Â Çì´õ¸¦ Á¦¿ÜÇÑ ½ÇÁ¦ µ¥ÀÌÅÍÀÇ Å©±â(¾ÕÀ¸·Î ¾ó¸¶³ª ÀÐ¾î¾ß ÇÏ´ÂÁö ¾Ë·ÁÁÖ´Â ¿ªÇÒ)
-		// PacketID´Â ÆÐÅ¶À» ±¸ºÐÇÏ´Â ¿ªÇÒ(ÆÐÅ¶ÀÌ ´Ù ¿ÔÀ» ¶§ ±× ÆÐÇÍÀ» ¾î¶»°Ô ºÐ¼®ÇØ¾ß ÇÏ´ÂÁö ¾Ë·ÁÁÖ´Â ¿ªÇÒ)
+		// PacketSizeï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å©ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ó¸¶³ï¿½ ï¿½Ð¾ï¿½ï¿½ ï¿½Ï´ï¿½ï¿½ï¿½ ï¿½Ë·ï¿½ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½)
+		// PacketIDï¿½ï¿½ ï¿½ï¿½Å¶ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½Å¶ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½î¶»ï¿½ï¿½ ï¿½Ð¼ï¿½ï¿½Ø¾ï¿½ ï¿½Ï´ï¿½ï¿½ï¿½ ï¿½Ë·ï¿½ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½)
 	}
 
-	// ÆÐÅ¶ Çì´õ º¹»ç
+	// ï¿½ï¿½Å¶ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	OutPacket = HeaderBuffer;
 
-	// ÆÐÅ¶ ³»¿ë ÆÄ½Ì
-	// ¾Æ·¡ ÄÚµå´Â PayloadSize¸¸Å­ÀÇ µ¥ÀÌÅÍ¸¦ ¹Þ¾Æ¼­ OutPacket¿¡ Ãß°¡ÇÏ´Â ÄÚµå
+	// ï¿½ï¿½Å¶ ï¿½ï¿½ï¿½ï¿½ ï¿½Ä½ï¿½
+	// ï¿½Æ·ï¿½ ï¿½Úµï¿½ï¿½ PayloadSizeï¿½ï¿½Å­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½Þ¾Æ¼ï¿½ OutPacketï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ï´ï¿½ ï¿½Úµï¿½
 	TArray<uint8> PayloadBuffer;
 	const int32 PayloadSize = Header.PacketSize - HeaderSize;
-	if (PayloadSize == 0)	// Çì´õ¸¸ ÀÖ´Â ÆÐÅ¶
+	if (PayloadSize == 0)	// ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½Å¶
 		return true;
 
 	OutPacket.AddZeroed(PayloadSize);
@@ -103,8 +102,8 @@ bool RecvWorker::ReceivePacket(TArray<uint8>& OutPacket)
 }
 
 bool RecvWorker::ReceiveDesiredBytes(uint8* Results, int32 Size)
-{	// ¿øÇÏ´Â Å©±âÀÇ ÆÐÅ¶À» ¿Ã ¶§±îÁö ´ë±â
-	// °ÔÀÓÀÇ ¸ÞÀÎ ½º·¹µå°¡ ¾Æ´Ï¶ó¼­ ºí·¯Å·ÀÌ °¡´É
+{	// ï¿½ï¿½ï¿½Ï´ï¿½ Å©ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¶ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½å°¡ ï¿½Æ´Ï¶ï¿½ ï¿½ï¿½Å·ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
 	uint32 PendingDataSize;
 	if (Socket->HasPendingData(PendingDataSize) == false || PendingDataSize <= 0)
@@ -116,7 +115,7 @@ bool RecvWorker::ReceiveDesiredBytes(uint8* Results, int32 Size)
 	{
 		int32 NumRead = 0;
 		Socket->Recv(Results + Offset, Size, OUT NumRead);
-		check(NumRead <= Size);	// ÆÐÅ¶ÀÌ ²÷¾îÁ®¼­ ¿Ã ¼ö ÀÖÀ¸¹Ç·Î ¿¹¿Ü Ã¼Å©
+		check(NumRead <= Size);	// ï¿½ï¿½Å¶ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã¼Å©
 
 		if (NumRead <= 0)
 			return false;
@@ -156,13 +155,13 @@ uint32 SendWorker::Run()
 		
 		if (TSharedPtr<PacketSession> Session = SessionRef.Pin())
 		{
-			if (Session->SendPacketQueue.Dequeue(OUT SendBuffer))	// Å¥¿¡¼­ ÆÐÅ¶À» ²¨³»¿È
+			if (Session->SendPacketQueue.Dequeue(OUT SendBuffer))	// Å¥ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¶ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			{
-				SendPacket(SendBuffer);	// ÆÐÅ¶À» º¸³¿
+				SendPacket(SendBuffer);	// ï¿½ï¿½Å¶ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			}
 		}
 
-		// SleepÇÏ·Á¸é ¿©±â¼­
+		// Sleepï¿½Ï·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½â¼­
 	}
 
 	return 0;
@@ -174,7 +173,7 @@ void SendWorker::Exit()
 }
 
 bool SendWorker::SendPacket(SendBufferRef SendBuffer)
-{// º¸³»±â¸¸ ÇÔ. ÆÐÅ¶ Á¶¸³Àº ´Ù¸¥ °÷¿¡¼­ ÇÔ. ÀÌ¹Ì Á¶¸³ÀÌ µÇ¾î ÀÖÀ½
+{// ï¿½ï¿½ï¿½ï¿½ï¿½â¸¸ ï¿½ï¿½. ï¿½ï¿½Å¶ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½. ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ç¾ï¿½ ï¿½ï¿½ï¿½ï¿½
 	if (SendDesiredBytes(SendBuffer->Buffer(), SendBuffer->WriteSize()) == false)
 		return false;
 
@@ -187,7 +186,7 @@ void SendWorker::Destroy()
 }
 
 bool SendWorker::SendDesiredBytes(const uint8* Buffer, int32 Size)
-{// ¿øÇÏ´Â Å©±âÀÇ ÆÐÅ¶À» º¸³¾ ¶§±îÁö ´ë±â
+{// ï¿½ï¿½ï¿½Ï´ï¿½ Å©ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¶ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 	while (Size > 0)
 	{
 		int32 BytesSent = 0;

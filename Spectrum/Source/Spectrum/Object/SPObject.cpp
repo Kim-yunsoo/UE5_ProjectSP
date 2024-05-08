@@ -2,8 +2,6 @@
 
 
 #include "Object/SPObject.h"
-#include "Spectrum.h"
-#include "Kismet/KismetSystemLibrary.h"
 //#include "GeometryCollection/GeometryCollection.h"
 //D:\UE_5.3\Engine\Source\Runtime\Experimental\GeometryCollectionEngine\Public\GeometryCollection\GeometryCollectionComponent.h
 #include "SpectrumLog.h"

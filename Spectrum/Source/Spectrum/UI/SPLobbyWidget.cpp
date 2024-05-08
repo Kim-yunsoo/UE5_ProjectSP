@@ -54,7 +54,7 @@ std::string USPLobbyWidget::GetMyIP()
 
 	struct addrinfo hints, * res, * ptr;
 	memset(&hints, 0, sizeof(hints));
-	hints.ai_family = AF_INET; // IPv4 ÁÖ¼Ò¸¸ ¿äÃ»
+	hints.ai_family = AF_INET; // IPv4 ï¿½Ö¼Ò¸ï¿½ ï¿½ï¿½Ã»
 	if (getaddrinfo(hostname, NULL, &hints, &res) != 0) {
 		//printf("Error resolving hostname\n");
 		WSACleanup();
@@ -80,7 +80,7 @@ std::string USPLobbyWidget::GetMyIP()
 //
 //void USPLobbyWidget::JoinServer()
 //{
-//	UGameplayStatics::OpenLevel(GetWorld(), FName("127.0.0.1")); // Level ÀÌ¸§ ´ë½Å IP ÁÖ¼Ò.
+//	UGameplayStatics::OpenLevel(GetWorld(), FName("127.0.0.1")); // Level ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ IP ï¿½Ö¼ï¿½.
 //}
 
 void USPLobbyWidget::SetIpAddress(const FString& InIpAddress)
@@ -95,19 +95,19 @@ bool USPLobbyWidget::readyIOCP()
 }
 
 /*************************
-*     ·Î±×ÀÎ ÇÔ¼öµé      *
+*     ï¿½Î±ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½ï¿½ï¿½      *
 **************************/
 void USPLobbyWidget::ValidateID(const FString& ID)
 {
-    // ¾ÆÀÌµð È­¸é¿¡ Ãâ·Â(È®ÀÎ¿ë)
+    // ï¿½ï¿½ï¿½Ìµï¿½ È­ï¿½é¿¡ ï¿½ï¿½ï¿½(È®ï¿½Î¿ï¿½)
     //if( !ID.IsEmpty())
         //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("ID:%s"), *ID));
 
 	std::string myid = TCHAR_TO_UTF8(*ID);
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("ID:%s"), myid));
 
-	// ¾ÆÀÌµð°¡ DB¿¡ ÀÖ´ÂÁö È®ÀÎÇÏ±â À§ÇØ ¼­¹ö·Î º¸³¿
-	{ // ·Î±×ÀÎ	ÆÐÅ¶ º¸³»±â
+	// ï¿½ï¿½ï¿½Ìµï¿½ DBï¿½ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	{ // ï¿½Î±ï¿½ï¿½ï¿½	ï¿½ï¿½Å¶ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		Protocol::C_LOGIN Pkt;
 		Pkt.set_membership_id(myid);
 
@@ -118,7 +118,7 @@ void USPLobbyWidget::ValidateID(const FString& ID)
 
 bool USPLobbyWidget::LoginSuccess()
 {
-	// ·Î±×ÀÎ ¼º°ø½Ã true ¹ÝÈ¯
+	// ï¿½Î±ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ true ï¿½ï¿½È¯
 	bool success = MyPlayerInfo.issuccess;
 	MyPlayerInfo.issuccess = false;
 
@@ -162,11 +162,11 @@ void USPLobbyWidget::Membership(const FString& ID, const int& SCHOOL, const int&
 		break;
 
 	}
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red,
-		FString::Printf(TEXT("ID:%s, type:%d%d"), *ID, SCHOOL, GENDER));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red,
+		//FString::Printf(TEXT("ID:%s, type:%d%d"), *ID, SCHOOL, GENDER));
 
 
-	// È¸¿ø°¡ÀÔ ÆÐÅ¶¿¡ ³Ö¾î¼­ º¸³»±â
+	// È¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¶ï¿½ï¿½ ï¿½Ö¾î¼­ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	if(mytype != Protocol::PlayerType::PLAYER_TYPE_NONE)
 	{
 		Protocol::C_MEMBERSHIP Pkt;
@@ -177,12 +177,12 @@ void USPLobbyWidget::Membership(const FString& ID, const int& SCHOOL, const int&
 }
 
 /*************************
-*     °ÔÀÓ ¸ÅÄª ÇÔ¼öµé   *
+*     ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Äª ï¿½Ô¼ï¿½ï¿½ï¿½   *
 **************************/
 
 void USPLobbyWidget::CreateRoom()
 {
-	// ÀÚ½ÅÀÇ ip ÁÖ¼Ò¸¦ °¡Á®¿Í¼­ ¼­¹ö·Î º¸³»±â
+	// ï¿½Ú½ï¿½ï¿½ï¿½ ip ï¿½Ö¼Ò¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	std::string myip = GetMyIP();
 	Protocol::C_CREATE_ROOM Pkt;
 	Pkt.set_ip_address(myip);
@@ -193,7 +193,7 @@ void USPLobbyWidget::CreateRoom()
 }
 void USPLobbyWidget::JoinRoom()
 {
-	// ÀÚ½ÅÀÇ Á¤º¸¸¦ ¼­¹ö·Î º¸³»±â
+	// ï¿½Ú½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	Protocol::C_ENTER_ROOM Pkt;
 	Pkt.set_membership_id(MyPlayerInfo.my_membership_id);
 	Pkt.set_membership_type(MyPlayerInfo.player_type);
@@ -202,7 +202,7 @@ void USPLobbyWidget::JoinRoom()
 }
 FString USPLobbyWidget::MatchingServer()
 {
-	// ¸ÅÄªÇÒ ¼­¹ö
+	// ï¿½ï¿½Äªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	//return TEXT("Open 192.168.45.163");
 	FString ip = FString(UTF8_TO_TCHAR(ServerIP.c_str()));
 	FString return_ip = TEXT("Open ") + ip;
@@ -228,7 +228,7 @@ bool USPLobbyWidget::MatchingSuccess_C()
 	return matching_C;
 }
 /*************************
-*     ÀüÃ¼ Ã¤ÆÃ ÇÔ¼öµé   *
+*     ï¿½ï¿½Ã¼ Ã¤ï¿½ï¿½ ï¿½Ô¼ï¿½ï¿½ï¿½   *
 **************************/
 
 void USPLobbyWidget::PublicChat(const FString& num, const FString& chat)
@@ -236,7 +236,7 @@ void USPLobbyWidget::PublicChat(const FString& num, const FString& chat)
 
 	std::string mychat = TCHAR_TO_UTF8(*chat);
 
-	// Ã¤ÆÃ ÆÐÅ¶¿¡ ³Ö¾î¼­ º¸³»±â
+	// Ã¤ï¿½ï¿½ ï¿½ï¿½Å¶ï¿½ï¿½ ï¿½Ö¾î¼­ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	Protocol::C_PUBLIC_CHAT Pkt;
 	Pkt.set_membership_id(MyPlayerInfo.my_membership_id);
 	Pkt.set_msg(mychat);
@@ -296,7 +296,7 @@ FString USPLobbyWidget::PublicChatUpdate_7()
 }
 
 /*************************
-*     ÇÐ±³ Ã¤ÆÃ ÇÔ¼öµé   *
+*     ï¿½Ð±ï¿½ Ã¤ï¿½ï¿½ ï¿½Ô¼ï¿½ï¿½ï¿½   *
 **************************/
 
 
@@ -437,35 +437,35 @@ void USPLobbyWidget::PrivateChat(const int& school_num, const FString& chat)
 	{
 		std::string mychat = TCHAR_TO_UTF8(*chat);
 
-		// Ã¤ÆÃ ÆÐÅ¶¿¡ ³Ö¾î¼­ º¸³»±â
+		// Ã¤ï¿½ï¿½ ï¿½ï¿½Å¶ï¿½ï¿½ ï¿½Ö¾î¼­ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		Protocol::C_PRIVATE_CHAT Pkt;
 		Pkt.set_membership_id(MyPlayerInfo.my_membership_id);
 		Pkt.set_msg(mychat);
 		Pkt.set_membership_type(MyPlayerInfo.school_type);
 
 		//switch (school_num){
-		//case 0: //±×¸°
+		//case 0: //ï¿½×¸ï¿½
 		//	Pkt.set_membership_type(Protocol::SCHOOL_TYPE_GREEN);
 		//	break;
-		//case 1: //ÆÛÇÃ
+		//case 1: //ï¿½ï¿½ï¿½ï¿½
 		//	Pkt.set_membership_type(Protocol::SCHOOL_TYPE_PURPLE);
 		//	break;
-		//case 2: //¿À·»Áö
+		//case 2: //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		//	Pkt.set_membership_type(Protocol::SCHOOL_TYPE_ORANGE);
 		//	break;}
 
 		SEND_PACKET(Pkt);
 	}
 
-	//if(school_type == ÀÚ½ÅÀÇ ÇÐ±³)
-	// Ã¤ÆÃ ÆÐÅ¶¿¡ ³Ö¾î¼­ º¸³»±â
+	//if(school_type == ï¿½Ú½ï¿½ï¿½ï¿½ ï¿½Ð±ï¿½)
+	// Ã¤ï¿½ï¿½ ï¿½ï¿½Å¶ï¿½ï¿½ ï¿½Ö¾î¼­ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	// else
-	// Á¢¼Ó ºÒ°¡ ¸Þ¼¼Áö Ãâ·Â
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½Ò°ï¿½ ï¿½Þ¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 }
 
 void USPLobbyWidget::AddFriend(const FString& ID)
 {
-	// Ä£±¸ Ãß°¡ ÆÐÅ¶¿¡ ³Ö¾î¼­ º¸³»±â
+	// Ä£ï¿½ï¿½ ï¿½ß°ï¿½ ï¿½ï¿½Å¶ï¿½ï¿½ ï¿½Ö¾î¼­ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 }
 
 //bool USPLobbyWidget::SchoolSuccess(const int& num)

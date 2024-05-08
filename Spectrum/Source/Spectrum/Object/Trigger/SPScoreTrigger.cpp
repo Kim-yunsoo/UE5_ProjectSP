@@ -6,9 +6,7 @@
 #include "SpectrumLog.h"
 #include "SPGameState.h"
 #include "GameFramework/Character.h"
-#include "GameFramework/GameModeBase.h"
 #include "GameFramework/GameState.h"
-#include "Net/UnrealNetwork.h"
 #include "Object/SPObject.h"
 #include "Potion/SPSpectrumPotion.h"
 

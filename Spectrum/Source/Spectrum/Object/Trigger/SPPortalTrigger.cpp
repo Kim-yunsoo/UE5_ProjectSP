@@ -2,7 +2,6 @@
 
 
 #include "Object/Trigger/SPPortalTrigger.h"
-
 #include "Components/BoxComponent.h"
 #include "Interface/SPTriggerInterface.h"
 

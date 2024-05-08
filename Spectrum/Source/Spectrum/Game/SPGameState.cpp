@@ -2,10 +2,7 @@
 
 
 #include "Game/SPGameState.h"
-#include "EngineUtils.h"
-#include "SpectrumLog.h"
 #include "Net/UnrealNetwork.h"
-#include "Object/Trigger/SPScoreTrigger.h"
 
 class ASPScoreTrigger;
 

@@ -1,10 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "Potion/SPBlackPotion.h"
 #include "Component/SPExplosionComponent.h"
-#include <Kismet/GameplayStatics.h>
 
-#include "SpectrumLog.h"
-#include "Net/UnrealNetwork.h"
 
 // Sets default values
 ASPBlackPotion::ASPBlackPotion()
@@ -39,7 +36,7 @@ void ASPBlackPotion::BeginPlay()
 
 void ASPBlackPotion::HandleActorHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
 {
-	//¼­¹ö¸¸ µé¾î¿È.. 
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.. 
 	// ServerRPCStopAiming();
 	// MultiRPCExplosion();
 	ExplosionComponent->Explode();

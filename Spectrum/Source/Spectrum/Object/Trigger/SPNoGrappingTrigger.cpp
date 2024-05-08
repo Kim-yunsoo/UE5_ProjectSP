@@ -2,10 +2,7 @@
 
 
 #include "Object/Trigger/SPNoGrappingTrigger.h"
-
-#include "Character/SPCharacterPlayer.h"
 #include "Components/BoxComponent.h"
-#include "Interface/SPTriggerInterface.h"
 
 // Sets default values
 ASPNoGrappingTrigger::ASPNoGrappingTrigger()

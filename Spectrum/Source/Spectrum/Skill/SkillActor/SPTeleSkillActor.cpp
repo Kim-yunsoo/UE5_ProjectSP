@@ -2,7 +2,6 @@
 
 
 #include "Skill/SkillActor/SPTeleSkillActor.h"
-
 #include "Components/BoxComponent.h"
 #include "Data/SPTeleportData.h"
 #include "Interface/SPSkillInterface.h"
@@ -58,7 +57,7 @@ void ASPTeleSkillActor::BeginPlay()
 void ASPTeleSkillActor::OnBoxCollisionHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	if (HasAuthority()) //¿©±â¼­ À§Ä¡ ·£´ý Á¤ÇÏ°í º¸³»±â 
+	if (HasAuthority()) //ï¿½ï¿½ï¿½â¼­ ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
 	{
 		// float RandomRow = FMath::RandRange()
 
