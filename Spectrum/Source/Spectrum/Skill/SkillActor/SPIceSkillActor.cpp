@@ -30,7 +30,6 @@ ASPIceSkillActor::ASPIceSkillActor()
 	{
 		EmitterHit = HitRef.Object;
 	}
-
 }
 
 void ASPIceSkillActor::BeginPlay()

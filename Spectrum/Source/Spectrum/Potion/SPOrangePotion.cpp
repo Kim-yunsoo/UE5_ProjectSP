@@ -4,6 +4,7 @@
 #include "Potion/SPOrangePotion.h"
 #include "Component/SPOrangeExplosionComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Particles/ParticleSystem.h"
 
 ASPOrangePotion::ASPOrangePotion()
 {
@@ -21,6 +22,14 @@ ASPOrangePotion::ASPOrangePotion()
 	OrangeExplosionComponent = CreateDefaultSubobject<USPOrangeExplosionComponent>(TEXT("ExplosionComponent"));
 	WaterSound = LoadObject<USoundWave>(nullptr, TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/Water2.Water2'"));
 
+
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> HitRef(
+TEXT("/Script/Engine.ParticleSystem'/Game/MagicProjectilesVol2/Particles/Hits/CP_OrangePotion.CP_OrangePotion'"));
+
+	if (HitRef.Succeeded())
+	{
+		EmitterHit = HitRef.Object;
+	}
 }
 
 void ASPOrangePotion::BeginPlay()
@@ -40,6 +49,9 @@ void ASPOrangePotion::HandleActorHit(AActor* SelfActor, AActor* OtherActor, FVec
 	const FHitResult& Hit)
 {
 	UGameplayStatics::PlaySound2D(GetWorld(), WaterSound);
+	FVector HitLocation = Hit.ImpactPoint;
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), EmitterHit, HitLocation, FRotator::ZeroRotator,
+												 FVector(1.0f), true, EPSCPoolMethod::None, true);
 	OrangeExplosionComponent->Explode();
 	this->SetLifeSpan(0.1f);
 }

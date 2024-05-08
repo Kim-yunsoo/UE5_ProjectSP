@@ -4,6 +4,7 @@
 #include "Potion/SPPotionBase.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Particles/ParticleSystem.h"
 
 // Sets default values
 ASPPotionBase::ASPPotionBase()
@@ -20,6 +21,9 @@ ASPPotionBase::ASPPotionBase()
 	PotionMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PotionMesh"));
 	PotionMesh->SetupAttachment(SphereComponent);
 	PotionMesh->SetCollisionProfileName(TEXT("NoCollision"));
+
+	EmitterHit = CreateDefaultSubobject<UParticleSystem>(TEXT("EmitterHit"));
+
 }
 
 // Called when the game starts or when spawned

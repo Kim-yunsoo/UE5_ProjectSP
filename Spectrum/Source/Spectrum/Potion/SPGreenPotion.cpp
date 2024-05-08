@@ -4,6 +4,7 @@
 #include "Potion/SPGreenPotion.h"
 #include "Component/SPGreenExplosionComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Particles/ParticleSystem.h"
 
 
 ASPGreenPotion::ASPGreenPotion()
@@ -19,8 +20,21 @@ ASPGreenPotion::ASPGreenPotion()
 		PotionMesh->SetRelativeScale3D(FVector(0.025f, 0.025f, 0.025f));
 		PotionMesh->SetCollisionProfileName(TEXT("NoCollision"));
 	}
+
+
 	GreenExplosionComponent = CreateDefaultSubobject<USPGreenExplosionComponent>(TEXT("ExplosionComponent"));
 	WaterSound = LoadObject<USoundWave>(nullptr, TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/Water2.Water2'"));
+
+
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> HitRef(
+	TEXT("/Script/Engine.ParticleSystem'/Game/MagicProjectilesVol2/Particles/Hits/CP_GreenPotion.CP_GreenPotion'"));
+
+	if (HitRef.Succeeded())
+	{
+		EmitterHit = HitRef.Object;
+	}
+
+	
 }
 
 void ASPGreenPotion::BeginPlay()
@@ -38,6 +52,9 @@ void ASPGreenPotion::BeginPlay()
 void ASPGreenPotion::HandleActorHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
 {
 	UGameplayStatics::PlaySound2D(GetWorld(), WaterSound);
+	FVector HitLocation = Hit.ImpactPoint;
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), EmitterHit, HitLocation, FRotator::ZeroRotator,
+												 FVector(1.0f), true, EPSCPoolMethod::None, true);
 	GreenExplosionComponent->Explode();
 	this->SetLifeSpan(0.1f);
 }
