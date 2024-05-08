@@ -18,11 +18,11 @@ void USPComponentBase::BeginPlay()
 
 void USPComponentBase::Explode()
 {
-	//Spawn Emitter at LocationÀ» À§ÇÑ ¼³Á¤
-	FVector ActorLocation = GetOwner()->GetActorLocation(); //¼ÒÀ¯ÇÑ ¾×ÅÍÀÇ À§Ä¡ 
+	//Spawn Emitter at Locationï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	FVector ActorLocation = GetOwner()->GetActorLocation(); //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ 
 	FVector Location = ActorLocation;
 	FRotator Rotation = FRotator(0.0f, 0.0f, 0.0f);
 	FVector Scale{ 1.0f,1.0f,1.0f };
 	FTransform SpawnTransform{ Rotation,Location,Scale };
-	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), Effect, SpawnTransform, true, EPSCPoolMethod::None, true);
+	//UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), Effect, SpawnTransform, true, EPSCPoolMethod::None, true);
 }

@@ -43,7 +43,7 @@ void USPExplosionComponent::Explode()
 	float DrawTime = 5.0f;
 	bool Success = UKismetSystemLibrary::SphereTraceMultiForObjects(GetWorld(), SphereTracePoint, SphereTracePoint,
 																	Radius, ObjectTypes, false, ActorsToIgnore,
-																	EDrawDebugTrace::ForDuration, OutHits, true,
+																	EDrawDebugTrace::None, OutHits, true,
 																	GreenColor, RedColor, DrawTime);
 	if (Success)
 	{

@@ -2201,7 +2201,7 @@ GetCharacterMovement()->bOrientRotationToMovement = true;
 			FVector SphereLocationEnd = ReseltFoward * SphereRange + SphereLocationStart;
 
 			TArray<TEnumAsByte<EObjectTypeQuery>> EmptyObjectTypes;
-			EDrawDebugTrace::Type drawDebugType = EDrawDebugTrace::ForDuration;
+			EDrawDebugTrace::Type drawDebugType = EDrawDebugTrace::None;
 			TArray<AActor*> HitActorsToIgnore;
 			FLinearColor RedColor = FLinearColor(1.0f, 0.0f, 0.0f, 1.0f);
 			FLinearColor GreenColor = FLinearColor(0.0f, 1.0f, 0.0f, 1.0f);
@@ -2214,10 +2214,12 @@ GetCharacterMovement()->bOrientRotationToMovement = true;
 			}
 			// Params.AddIgnoredActor(this);
 			Params.bTraceComplex = true;
+			//Params.bDebugQuery= false; 
 			float DrawTime = 5.0f;
 
 			bool HitSuccess = GetWorld()->LineTraceSingleByChannel(outHitResult, SphereLocationStart, SphereLocationEnd,
 			                                                       ECC_GameTraceChannel1, Params);
+
 			if (HitSuccess && outHitResult.Component->Mobility == EComponentMobility::Movable)
 			{
 				if(bIsActiveGraping)
@@ -2245,7 +2247,7 @@ GetCharacterMovement()->bOrientRotationToMovement = true;
 
 					bool Success = UKismetSystemLibrary::SphereTraceMultiForObjects(
 						GetWorld(), SphereTracePoint, SphereTracePoint, Radius, ObjectTypes, false, ActorsToIgnore,
-						EDrawDebugTrace::ForDuration, OutHits, true, GreenColor1, RedColor1, DrawTime1);
+						EDrawDebugTrace::None, OutHits, true, GreenColor1, RedColor1, DrawTime1);
 
 					ActorPrimitiveArray.Empty();
 
@@ -2292,29 +2294,29 @@ GetCharacterMovement()->bOrientRotationToMovement = true;
 				}
 			}
 
-			const FColor LineColor = HitSuccess ? FColor::Green : FColor::Red;
-
-			DrawDebugLine(
-				GetWorld(),
-				SphereLocationStart,
-				SphereLocationEnd,
-				LineColor,
-				false,
-				5.0f,
-				0,
-				1.0f
-			);
-			if (HitSuccess)
-			{
-				DrawDebugPoint(
-					GetWorld(),
-					outHitResult.ImpactPoint,
-					10.0f,
-					FColor::Blue,
-					false,
-					5.0f
-				);
-			}
+			// const FColor LineColor = HitSuccess ? FColor::Green : FColor::Red;
+			//
+			// DrawDebugLine(
+			// 	GetWorld(),
+			// 	SphereLocationStart,
+			// 	SphereLocationEnd,
+			// 	LineColor,
+			// 	false,
+			// 	5.0f,
+			// 	0,
+			// 	1.0f
+			// );
+			// if (HitSuccess)
+			// {
+			// 	DrawDebugPoint(
+			// 		GetWorld(),
+			// 		outHitResult.ImpactPoint,
+			// 		10.0f,
+			// 		FColor::Blue,
+			// 		false,
+			// 		5.0f
+			// 	);
+			// }
 				
 		}
 	}

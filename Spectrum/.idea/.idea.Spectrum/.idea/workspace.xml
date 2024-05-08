@@ -12,16 +12,17 @@
   <component name="ChangeListManager">
     <list default="true" id="36dc07cf-1872-45e0-88ab-9aa66971cb17" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/MagicProjectilesVol2/Blueprints/BP_Projectile_Waterball01_Blue.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/MagicProjectilesVol2/Blueprints/BP_Projectile_Waterball01_Blue.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/MagicProjectilesVol2/Blueprints/BP_Projectile_Waterball01_Green.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/MagicProjectilesVol2/Blueprints/BP_Projectile_Waterball01_Green.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/MagicProjectilesVol2/Blueprints/BP_Projectile_Waterball01_Red.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/MagicProjectilesVol2/Blueprints/BP_Projectile_Waterball01_Red.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/MagicProjectilesVol2/Particles/Hits/P_Hit_Waterball01_Blue.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MagicProjectilesVol2/Particles/Hits/P_Hit_Waterball01_Black.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MagicProjectilesVol2/Particles/Hits/P_Hit_Waterball01_Purple.uasset" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Spectrum/Room/Map/Building.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Room/Map/Building.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPGreenPotion.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPGreenPotion.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPOrangePotion.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPOrangePotion.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPPotionBase.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPPotionBase.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPPotionBase.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPPotionBase.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Room/Map/Building.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Room/Map/Building.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Component/SPComponentBase.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Component/SPComponentBase.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Component/SPExplosionComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Component/SPExplosionComponent.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Component/SPGreenExplosionComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Component/SPGreenExplosionComponent.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Component/SPOrangeExplosionComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Component/SPOrangeExplosionComponent.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Component/SPPurpleExplosionComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Component/SPPurpleExplosionComponent.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPBlackPotion.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPBlackPotion.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPPurplePotion.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPPurplePotion.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -64,7 +65,7 @@
   "keyToString": {
     "C++ 프로젝트.Spectrum.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "IngyeongSeok",
+    "git-widget-placeholder": "YunsooKim",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -74,9 +75,9 @@
   },
   "keyToStringList": {
     "rider.external.source.directories": [
-      "C:\\Users\\ingyeong\\AppData\\Roaming\\JetBrains\\Rider2024.1\\resharper-host\\DecompilerCache",
-      "C:\\Users\\ingyeong\\AppData\\Roaming\\JetBrains\\Rider2024.1\\resharper-host\\SourcesCache",
-      "C:\\Users\\ingyeong\\AppData\\Local\\Symbols\\src"
+      "C:\\Users\\yunsoo\\AppData\\Roaming\\JetBrains\\Rider2024.1\\resharper-host\\DecompilerCache",
+      "C:\\Users\\yunsoo\\AppData\\Roaming\\JetBrains\\Rider2024.1\\resharper-host\\SourcesCache",
+      "C:\\Users\\yunsoo\\AppData\\Local\\Symbols\\src"
     ]
   }
 }]]></component>
@@ -213,6 +214,7 @@
       <workItem from="1715171066199" duration="1632000" />
       <workItem from="1715172951424" duration="6574000" />
       <workItem from="1715180583525" duration="1849000" />
+      <workItem from="1715186972496" duration="1273000" />
     </task>
     <servers />
   </component>

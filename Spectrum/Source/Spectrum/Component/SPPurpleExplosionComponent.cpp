@@ -31,7 +31,7 @@ void USPPurpleExplosionComponent::Explode()
 	float DrawTime = 5.0f;
 	bool Success = UKismetSystemLibrary::SphereTraceMultiForObjects(GetWorld(), SphereTracePoint, SphereTracePoint,
 																	Radius, ObjectTypes, false, ActorsToIgnore,
-																	EDrawDebugTrace::ForDuration, OutHits, true,
+																	EDrawDebugTrace::None, OutHits, true,
 																	GreenColor, RedColor, DrawTime);
 	if (Success)
 	{
@@ -41,7 +41,7 @@ void USPPurpleExplosionComponent::Explode()
 
 void USPPurpleExplosionComponent::MultiRPCPrupleExplosion_Implementation(const TArray<FHitResult>& Array)
 {
-	//for each loop ±¸Çö
+	//for each loop ï¿½ï¿½ï¿½ï¿½
 	for (const FHitResult& HitResult : Array)
 	{
 		AActor* HitActor = HitResult.GetActor();
