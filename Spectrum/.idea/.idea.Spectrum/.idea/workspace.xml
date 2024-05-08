@@ -10,18 +10,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5274e0fd-482c-47e5-9b65-262769908011" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Ingyeong.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Ingyeong.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Room/Map/Building.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Room/Map/Building.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/StartUI/LobbyMenuWidget.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/StartUI/LobbyMenuWidget.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/Make/SPMakePotion.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/Make/SPMakePotion.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/Make/SPMakePotion.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/Make/SPMakePotion.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPPickup.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPPickup.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/UI/Interaction/SPManual.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/UI/Interaction/SPManual.cpp" afterDir="false" />
-    </list>
+    <list default="true" id="5274e0fd-482c-47e5-9b65-262769908011" name="변경" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -55,7 +44,7 @@
   "keyToString": {
     "C++ 프로젝트.Spectrum.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "IngyeongSeok",
+    "git-widget-placeholder": "YunsooKim",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -201,6 +190,7 @@
       <updated>1715104745484</updated>
       <workItem from="1715104746857" duration="754000" />
       <workItem from="1715137249836" duration="7356000" />
+      <workItem from="1715150427173" duration="14000" />
     </task>
     <servers />
   </component>
