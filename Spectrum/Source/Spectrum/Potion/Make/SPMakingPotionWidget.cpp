@@ -58,7 +58,7 @@ bool USPMakingPotionWidget::NativeOnDrop(const FGeometry& InGeometry, const FDra
 {
 	const USPItemDragDropOperation* ItemDragDrop = Cast<USPItemDragDropOperation>(InOperation);
     
-	if (ItemDragDrop && PlayerCharacter && ItemDragDrop->SourceItem->Quantity != 0)
+	if ((ItemDragDrop && PlayerCharacter && ItemDragDrop->SourceItem->Quantity != 0) || (ItemDragDrop && PlayerCharacter && PlayerCharacter->bIsSeven == true))
 	{
 		FVector2D DropLocation = InDragDropEvent.GetScreenSpacePosition();
 
