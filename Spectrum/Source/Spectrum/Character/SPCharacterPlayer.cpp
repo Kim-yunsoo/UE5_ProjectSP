@@ -780,6 +780,7 @@ void ASPCharacterPlayer::ServerRPCStopAiming_Implementation()
 
 void ASPCharacterPlayer::StopGraping(const FInputActionValue& Value)
 {
+	ShowTargetUI(false);
 	ServerRPCStopGraping();
 }
 
@@ -1670,6 +1671,8 @@ void ASPCharacterPlayer::SetupHUDWidget(USPHUDWidget* InUserWidget)
 	IceSkillComponent->OnIceCDChange.AddUObject(InUserWidget, &USPHUDWidget::UpdateIceCDTime);
 	TeleSkillComponent->OnTeleCDChange.AddUObject(InUserWidget, &USPHUDWidget::UpdateTeleCDTime);
 	//AGameStateBase* State = player->GetController()->GetWorld()->GetGameState();
+
+	OnAimChanged.AddUObject(InUserWidget, &USPHUDWidget::UpdateTarget);
 	AGameStateBase* State = GetController()->GetWorld()->GetGameState();
 	if (State)
 	{
@@ -1678,6 +1681,8 @@ void ASPCharacterPlayer::SetupHUDWidget(USPHUDWidget* InUserWidget)
 		{
 			SPGameState->OnScore.AddUObject(InUserWidget, &USPHUDWidget::UpdateScore);
 			SPGameState->OnTime.AddUObject(InUserWidget, &USPHUDWidget::UpdateTime);
+			
+			
 		}
 	}
 }
@@ -2107,6 +2112,7 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 {
 	// if (bIsActiveGraping)
 	// {
+	ShowTargetUI(true);
 	ServerRPCGraping();
 	// }
 	// GetCharacterMovement()->bOrientRotationToMovement = true;
@@ -2421,8 +2427,12 @@ void ASPCharacterPlayer::SevenKey(const FInputActionValue& Value)
 	UE_LOG(LogTemp, Warning, TEXT("SEVEN"));
 }
 
+
 void ASPCharacterPlayer::ServerRPCSeven_Implementation()
 {
 	bIsSeven = true;
 }
-/////////////////////////////////////////////
+void ASPCharacterPlayer::ShowTargetUI(bool ShowUI)
+{
+	OnAimChanged.Broadcast(ShowUI);
+}
