@@ -27,8 +27,10 @@ void ASPMakePotion::BeginPlay()
 	Super::BeginPlay();
 	InteractableData = InstanceInteractableDate;
 	FVector ActorLocation = GetActorLocation();
-	Trigger->SetRelativeLocation(ActorLocation);
-	Trigger->SetRelativeScale3D(FVector(6,5,15));
+	FRotator AcotrRotation = GetActorRotation();
+	Trigger->SetRelativeLocation(ActorLocation + TriggerOffset);
+	Trigger->SetRelativeRotation(AcotrRotation);
+	Trigger->SetRelativeScale3D(FVector(2,7,8));
 	
 	Trigger->OnComponentBeginOverlap.AddDynamic(this, &ASPMakePotion::OnTriggerEnter);
 	Trigger->OnComponentEndOverlap.AddDynamic(this, &ASPMakePotion::OnTriggerExit);

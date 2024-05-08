@@ -2186,6 +2186,7 @@ GetCharacterMovement()->bOrientRotationToMovement = true;
 					{
 						MultiChangeCollision(TEXT("BlackItemCollision"));
 					}
+					
 
 					FVector SphereTracePoint = HitComponent->K2_GetComponentLocation();
 					float Radius = 150.f;

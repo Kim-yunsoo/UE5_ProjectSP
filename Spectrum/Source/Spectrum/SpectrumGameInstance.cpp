@@ -13,6 +13,7 @@
 #include "Character/SPCharacterPlayer.h"
 #include "UI/SPLobbyWidget.h"
 
+FString IpAddress;
 
 void USpectrumGameInstance::ConnectToGameServer()
 {
@@ -206,6 +207,10 @@ void USpectrumGameInstance::HandleRoom(const Protocol::S_ENTER_ROOM& RoomPkt)
 	// �� ���� ���� ����(�濡 �ִ� ����� ����)
 }
 
+//void USpectrumGameInstance::SetIpAddress(const FString& InIpAddress)
+//{
+//	IpAddress = InIpAddress;
+//}
 
 
 //void USpectrumGameInstance::HandleMove(const Protocol::S_MOVE& MovePkt)
