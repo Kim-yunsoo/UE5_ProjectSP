@@ -78,8 +78,6 @@ void ASPMakePotion::OnTriggerEnter(UPrimitiveComponent* OverlappedComp, AActor* 
 	if (PlayerCharacter)
 	{
 		PlayerCharacter->PerformInteractionCheck();
-		UE_LOG(LogTemp,Warning, TEXT("make In!!!"));
-		
 	}
 }
 
@@ -90,7 +88,6 @@ void ASPMakePotion::OnTriggerExit(UPrimitiveComponent* OverlappedComp, AActor* O
 	if (PlayerCharacter)
 	{
 		PlayerCharacter->NoInteractableFound();
-		UE_LOG(LogTemp,Warning, TEXT("make OUT!!!"));
 	}
 }
 

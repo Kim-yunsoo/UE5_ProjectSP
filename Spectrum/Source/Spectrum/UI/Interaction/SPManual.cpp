@@ -41,7 +41,6 @@ void ASPManual::OnTriggerEnter(UPrimitiveComponent* OverlappedComp, AActor* Othe
 	if (PlayerCharacter)
 	{
 		PlayerCharacter->PerformInteractionCheck();
-			UE_LOG(LogTemp,Warning, TEXT("ASPManual In!!!"));
 	}
 }
 
@@ -52,7 +51,6 @@ void ASPManual::OnTriggerExit(UPrimitiveComponent* OverlappedComp, AActor* Other
 	if (PlayerCharacter)
 	{
 		PlayerCharacter->NoInteractableFound();
-			UE_LOG(LogTemp,Warning, TEXT("ASPManual OUT!!!"));
 	}
 }
 
