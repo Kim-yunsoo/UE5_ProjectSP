@@ -5,15 +5,7 @@
 #include "Components/Image.h"
 // #include "Character/SP"
 
-void USPTargetUI::UpdateTargetUI(bool IsAim)
-{
-	if(IsAim)
-		this->SetVisibility(ESlateVisibility::Visible);
-	else
-	{
-		this->SetVisibility(ESlateVisibility::Hidden);
-	}
-}
+
 
 void USPTargetUI::NativeConstruct() //������ ���õ� UI ��ҵ��� ��� �غ� �Ϸ� �Ǹ�
 {
@@ -22,6 +14,15 @@ void USPTargetUI::NativeConstruct() //������ ���õ� UI ��
 	TargetUIImage = Cast<UImage>(GetWidgetFromName(TEXT("Target")));
 	ensure(TargetUIImage);
 	this->SetVisibility(ESlateVisibility::Hidden);
+}
 
 
+void USPTargetUI::UpdateTargetUI(bool IsAim)
+{
+	if(IsAim)
+		this->SetVisibility(ESlateVisibility::Visible);
+	else
+	{
+		this->SetVisibility(ESlateVisibility::Hidden);
+	}
 }

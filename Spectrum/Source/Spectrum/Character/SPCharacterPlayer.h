@@ -614,6 +614,8 @@ public:
 	UFUNCTION(Server, Unreliable)
 	void ServerRPCSeven();
 	void SevenKey(const FInputActionValue& Value);
+
+	void ShowTargetUI(bool ShowUI);
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> SevenKeyAction;
