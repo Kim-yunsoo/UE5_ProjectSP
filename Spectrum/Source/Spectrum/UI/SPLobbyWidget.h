@@ -7,7 +7,6 @@
 #include "SpectrumGameInstance.h"
 #include <array>
 #include <string>
-#include "Kismet/GameplayStatics.h"
 #include "SPLobbyWidget.generated.h"
 
 
@@ -42,10 +41,10 @@ public:
 class LobbyInfomation
 {
 public:
-	// ÆÛºí¸¯ °Ô½ÃÆÇ Á¤º¸
+	// ï¿½Ûºï¿½ ï¿½Ô½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	std::array <publicchatInfo, 8> publicBoard;
 
-	// ÇÁ¶óÀÌºø °Ô½ÃÆÇ Á¤º¸
+	// ï¿½ï¿½ï¿½ï¿½ï¿½Ìºï¿½ ï¿½Ô½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	std::array<std::array<privatechatInfo, 7>, 3> privateBoard;
 
 	//std::array <privatechatInfo, 7> privateBoard_G;
@@ -83,14 +82,14 @@ public:
 	bool ready = false;
 
 
-	// ½ÃÀÛ ·Î±×ÀÎ À§Á¬
-	UFUNCTION(BlueprintCallable, Category = "ID Verification")	// ¾ÆÀÌµð ¹Þ´Â ÇÔ¼ö
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½Î±ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	UFUNCTION(BlueprintCallable, Category = "ID Verification")	// ï¿½ï¿½ï¿½Ìµï¿½ ï¿½Þ´ï¿½ ï¿½Ô¼ï¿½
 	void ValidateID(const FString& ID);
 
-	UFUNCTION(BlueprintCallable, Category = "ID Verification")	// ¾ÆÀÌµð ¹Þ´Â ÇÔ¼ö
+	UFUNCTION(BlueprintCallable, Category = "ID Verification")	// ï¿½ï¿½ï¿½Ìµï¿½ ï¿½Þ´ï¿½ ï¿½Ô¼ï¿½
 	bool LoginSuccess();
 	
-	// È¸¿ø°¡ÀÔ À§Á¬
+	// È¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	UFUNCTION(BlueprintCallable, Category = "membership")
 	void Membership(const FString& ID, const int& SCHOOL, const int& GENDER);
 
@@ -100,7 +99,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "membership")
 	int Gender;
 
-	// ¸ÅÄª À§Á¬
+	// ï¿½ï¿½Äª ï¿½ï¿½ï¿½ï¿½
 	UFUNCTION(BlueprintCallable, Category = "Matching")
 	void CreateRoom();
 
@@ -116,7 +115,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Matching")
 	bool MatchingSuccess_C();
 
-	// ÀüÃ¼ °Ô½ÃÆÇ À§Á¬
+	// ï¿½ï¿½Ã¼ ï¿½Ô½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	UFUNCTION(BlueprintCallable, Category = "PublicChat")
 	void PublicChat(const FString& num, const FString& chat);
 
@@ -145,7 +144,7 @@ public:
 	FString PublicChatUpdate_7();
 
 
-	//UFUNCTION(BlueprintCallable, Category = "PublicChat")	// ÇØ´ç °Ô½ÃÆÇÀÌ ¸Â´ÂÁö
+	//UFUNCTION(BlueprintCallable, Category = "PublicChat")	// ï¿½Ø´ï¿½ ï¿½Ô½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Â´ï¿½ï¿½ï¿½
 	//bool ChatSuccess(const FString& num);
 
 	UPROPERTY(BlueprintReadWrite, Category = "PublicChat")
@@ -167,7 +166,7 @@ public:
 	FString Pre_chat_7;
 
 
-	// ÇÐ±³ °Ô½ÃÆÇ À§Á¬
+	// ï¿½Ð±ï¿½ ï¿½Ô½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	UFUNCTION(BlueprintCallable, Category = "PrivateChat")
 	void PrivateChat(const int& school_num, const FString& chat);
 
@@ -241,19 +240,19 @@ public:
 	//UFUNCTION(BlueprintCallable, Category = "PrivateChat")
 	//FString PrivateChatUpdate_O();
 
-	//UFUNCTION(BlueprintCallable, Category = "PrivateChat")	// ÇØ´ç °Ô½ÃÆÇÀÌ ¸Â´ÂÁö
+	//UFUNCTION(BlueprintCallable, Category = "PrivateChat")	// ï¿½Ø´ï¿½ ï¿½Ô½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Â´ï¿½ï¿½ï¿½
 	//bool SchoolSuccess(const int& num);
 
 
-	// Ä£±¸ Ãß°¡ À§Á¬
+	// Ä£ï¿½ï¿½ ï¿½ß°ï¿½ ï¿½ï¿½ï¿½ï¿½
 	UFUNCTION(BlueprintCallable, Category = "Friend")
 	void AddFriend(const FString& ID);
 
 
 };
 
-extern PlayerInfomation MyPlayerInfo;	// ÀÚ½ÅÀÇ Á¤º¸ ÀúÀåÇÏ´Â ±¸Á¶Ã¼
-extern LobbyInfomation MyLobbyInfo;	// ·Îºñ Á¤º¸ ÀúÀåÇÏ´Â ±¸Á¶Ã¼
+extern PlayerInfomation MyPlayerInfo;	// ï¿½Ú½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½Ã¼
+extern LobbyInfomation MyLobbyInfo;	// ï¿½Îºï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½Ã¼
 extern bool matching_H;
 extern bool matching_C;
 extern int pir_num_G;

@@ -2,8 +2,6 @@
 
 
 #include "Component/SPInventoryComponent.h"
-
-#include "IDetailTreeNode.h"
 #include "SpectrumLog.h"
 #include "Potion/SPItemBase.h"
 
