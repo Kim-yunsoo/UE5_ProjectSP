@@ -42,6 +42,9 @@ protected:
 	
 	UPROPERTY()
 	uint8 bIsVisible : 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVector TriggerOffset;
 	
 	UPROPERTY(VisibleAnywhere, Category = "MakePotion | Components")
 	TObjectPtr<UStaticMeshComponent> Mesh;

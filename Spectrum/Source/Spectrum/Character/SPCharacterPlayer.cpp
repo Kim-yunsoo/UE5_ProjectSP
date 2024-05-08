@@ -2182,7 +2182,11 @@ GetCharacterMovement()->bOrientRotationToMovement = true;
 					outHitResult.GetActor()->SetOwner(this);
 					HitComponent = outHitResult.GetComponent();
 					HitMyActor=outHitResult.GetActor();
-					MultiChangeCollision(TEXT("BlackItemCollision"));
+					if(Cast<ASPObject>(HitMyActor))
+					{
+						MultiChangeCollision(TEXT("BlackItemCollision"));
+					}
+					
 
 					FVector SphereTracePoint = HitComponent->K2_GetComponentLocation();
 					float Radius = 150.f;
@@ -2277,7 +2281,10 @@ GetCharacterMovement()->bOrientRotationToMovement = true;
 		{
 			PhysicsHandleComponent->ReleaseComponent();
 			HitComponent->AddImpulse(FollowCamera->GetForwardVector() * HitDistance, NAME_None, true);
-			MultiChangeCollision(TEXT("PropCollision"));
+			if(Cast<ASPObject>(HitMyActor))
+			{
+				MultiChangeCollision(TEXT("PropCollision"));
+			}
 			HitComponent = nullptr;
 		}
 	}
