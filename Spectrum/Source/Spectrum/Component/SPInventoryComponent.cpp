@@ -69,15 +69,15 @@ USPItemBase* USPInventoryComponent::MakingPotion()
 	for(USPItemBase* Item : InventoryMakeContents)
 	{
 		FString ItemName = Item->ItemTextData.Name.ToString();
-		if (ItemName == TEXT("BP"))
+		if (ItemName == TEXT("Blue Potion"))
 		{
 			Blue++;
 		}
-		else if (ItemName == TEXT("YP"))
+		else if (ItemName == TEXT("Yellow Potion"))
 		{
 			Yellow++;
 		}
-		else if (ItemName == TEXT("RP"))
+		else if (ItemName == TEXT("Red Potion"))
 		{
 			Red++;
 		}
