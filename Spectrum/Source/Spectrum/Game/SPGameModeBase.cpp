@@ -2,6 +2,8 @@
 
 
 #include "Game/SPGameModeBase.h"
+
+#include "Game/SPGameState.h"
 #include "UI/SPLobbyWidget.h"
 #include "GameFramework/GameStateBase.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
@@ -13,6 +15,9 @@ extern std::array<Protocol::PlayerType, 3> school_type;
 
 ASPGameModeBase::ASPGameModeBase()
 {
+   
+   GameStateClass=ASPGameState::StaticClass();
+   bUseSeamlessTravel=true;
    
 }
 
@@ -49,7 +54,7 @@ void ASPGameModeBase::PostLogin(APlayerController* NewPlayer)
       auto CastPlayer = Cast<ASPPlayerController>(NewPlayer);
       if (CastPlayer)
       {
-         USpectrumGameInstance* pawn_PlayerType = Cast<USpectrumGameInstance>(NewPlayer->PlayerState);
+         //USpectrumGameInstance* pawn_PlayerType = Cast<USpectrumGameInstance>(NewPlayer->PlayerState);
 
          //pawn_PlayerType->PlayerType = 0;
 

@@ -12,7 +12,7 @@ DECLARE_MULTICAST_DELEGATE_TwoParams(FOnScore, const ColorType& /*MyColor*/,cons
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnTime,float /*Time*/);
 
 UCLASS()
-class SPECTRUM_API ASPGameState : public AGameState, public ISPScoreInterface
+class SPECTRUM_API ASPGameState : public AGameStateBase, public ISPScoreInterface
 {
 	
 	GENERATED_BODY()
