@@ -24,8 +24,6 @@ void USPMakingPotionWidget::ClearWidget()
 	Make->ClearChildren();
 	
 	UE_LOG(LogTemp, Log, TEXT("SpectrumLocationCallBack!!!"));
-
-	
 }
 
 void USPMakingPotionWidget::MakingPotion(USPItemBase* Item)
@@ -36,7 +34,6 @@ void USPMakingPotionWidget::MakingPotion(USPItemBase* Item)
 	else
 	{
 		ItemSlot->SetItemReference(Item);
-		//ItemSlot->ItemReference->Quantity = 1;
 		ItemSlot->HideText();
 	}
 	UE_LOG(LogTemp, Warning, TEXT("MakingPotion"))
