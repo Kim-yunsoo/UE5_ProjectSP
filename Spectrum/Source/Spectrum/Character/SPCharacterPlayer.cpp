@@ -1413,6 +1413,8 @@ void ASPCharacterPlayer::ClientRPCUpdateMakingPotion_Implementation(int Num)
 	USPItemBase* ItemBase = PlayerInventory->FindMatchingItem(Num);
 
 	HUDWidget->MakingPotionWieget(ItemBase);
+	int MakeNum = PlayerInventory->IsPotion(ItemBase->ID);
+	UE_LOG(LogTemp, Warning, TEXT("ITEMBASE %d") , MakeNum);
 }
 
 void ASPCharacterPlayer::ServerRPCBackItem_Implementation(int Num, const int32 QuantityToDrop)
@@ -1426,7 +1428,6 @@ void ASPCharacterPlayer::ServerRPCAddItemClick_Implementation(int Num)
 {
 	USPItemBase* ItemBase = PlayerInventory->FindMatchingItem(Num);
 	PlayerInventory->HandleAddItem(ItemBase, 1);
-
 }
 
 

@@ -35,7 +35,7 @@ void USPInventoryItemSlot::NativeConstruct()
 	{
 		ItemQuantity->SetVisibility(ESlateVisibility::Collapsed);
 	}
-
+	ClickOn = LoadObject<USoundBase>(nullptr, TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/ClickOn.ClickOn'"));
 }
 
 FReply USPInventoryItemSlot::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
@@ -69,13 +69,14 @@ void USPInventoryItemSlot::HideText()
 FReply USPInventoryItemSlot::NativeOnMouseButtonUp(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
 {
 	FReply Reply = Super::NativeOnMouseButtonUp(InGeometry, InMouseEvent);
-	if(!PlayerCharacter->GetInventory()->IsPotion(ItemReference->ID))
+	if(PlayerCharacter->GetInventory()->IsPotion(ItemReference->ID) != -1)
 	{
 		ASPCharacterPlayer* Player = Cast<ASPCharacterPlayer>(GetOwningPlayerPawn());
 		int num = Player->GetInventory()->IsPotion(ItemReference->ID);
 		Player->AddItemClick(num);
 		SetVisibility(ESlateVisibility::Hidden);
 		Player->HUDWidget->ClearMakingWieget();
+		PlaySound(ClickOn);
 		return Reply.Handled(); 
 	}
 	return Reply.Unhandled();
