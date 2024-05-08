@@ -66,7 +66,7 @@ void ASPPickup::InitializePickup(const TSubclassOf<USPItemBase> BaseClass, const
 	{
 		if (RowNames.Num() > 0)
 		{
-			int32 RandomIndex = FMath::RandRange(0, RowNames.Num() - 1);
+			int32 RandomIndex = FMath::RandRange(0, RowNames.Num() - 2);
 			if(RandomIndex>=0 && RandomIndex<=2) //0~3의 범위
 			{
 				int32 Adjustment=  FMath::RandRange(0, 1);
@@ -74,7 +74,7 @@ void ASPPickup::InitializePickup(const TSubclassOf<USPItemBase> BaseClass, const
 				{
 					//PotionRange
 					RandomIndex+=PotionRange;
-					RandomIndex=FMath::Clamp(RandomIndex,0,RowNames.Num()-1);
+					RandomIndex=FMath::Clamp(RandomIndex,0,RowNames.Num()-2);
 					
 				}
 				// else if(Adjustment &&RandomIndex==3)

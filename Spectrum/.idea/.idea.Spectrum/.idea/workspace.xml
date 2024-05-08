@@ -10,10 +10,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ab6a9577-ab31-4769-9903-db18d4b1d06f" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Room/Map/Building.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Room/Map/Building.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Yunsoo/BP_SPPotionSpawner.uasset" beforeDir="false" />
+    <list default="true" id="d8a48f79-26b6-4e65-86e6-55fcd7b34699" name="변경" comment="">
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPPickup.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPPickup.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,7 +37,7 @@
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 8
 }</component>
-  <component name="ProjectId" id="2gApvpasdGpLpLWthMEEUmR5CUk" />
+  <component name="ProjectId" id="2gAkte8DgD5ml2AJsnjhiMpKH7H" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -48,7 +46,7 @@
   &quot;keyToString&quot;: {
     &quot;C++ 프로젝트.Spectrum.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;IngyeongSeok&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;YunsooKim&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -187,13 +185,14 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="애플리케이션 수준" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="디폴트 작업">
-      <changelist id="ab6a9577-ab31-4769-9903-db18d4b1d06f" name="변경" comment="" />
-      <created>1715150471290</created>
+      <changelist id="d8a48f79-26b6-4e65-86e6-55fcd7b34699" name="변경" comment="" />
+      <created>1715147986348</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1715150471290</updated>
-      <workItem from="1715150473072" duration="1179000" />
-      <workItem from="1715152530329" duration="1336000" />
+      <updated>1715147986348</updated>
+      <workItem from="1715147988006" duration="1291000" />
+      <workItem from="1715149309880" duration="803000" />
+      <workItem from="1715150734193" duration="787000" />
     </task>
     <servers />
   </component>
