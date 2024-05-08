@@ -10,13 +10,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d8a48f79-26b6-4e65-86e6-55fcd7b34699" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/ItemData/Item.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/ItemData/Item.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Room/Map/Building.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Room/Map/Building.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Component/SPInventoryComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Component/SPInventoryComponent.cpp" afterDir="false" />
-    </list>
+    <list default="true" id="d8a48f79-26b6-4e65-86e6-55fcd7b34699" name="변경" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -195,6 +189,7 @@
       <option name="presentableId" value="Default" />
       <updated>1715147986348</updated>
       <workItem from="1715147988006" duration="1291000" />
+      <workItem from="1715149309880" duration="803000" />
     </task>
     <servers />
   </component>
