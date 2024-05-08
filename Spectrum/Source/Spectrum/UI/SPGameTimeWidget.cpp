@@ -2,7 +2,6 @@
 
 
 #include "UI/SPGameTimeWidget.h"
-
 #include "Components/TextBlock.h"
 
 USPGameTimeWidget::USPGameTimeWidget(const FObjectInitializer& ObjectInitializer): Super(ObjectInitializer)
@@ -18,7 +17,7 @@ void USPGameTimeWidget::NativeConstruct()
 
 void USPGameTimeWidget::UpdateTime(const float Time)
 {
-	int32 Minutes = FMath::FloorToInt(Time / 60.f); //ºÐÀ» °è»ê
+	int32 Minutes = FMath::FloorToInt(Time / 60.f); //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 	int32 Seconds = Time - Minutes *60;
 
 	FString CountdownText = FString::Printf(TEXT("%02d:%02d"),Minutes,Seconds);

@@ -2,8 +2,7 @@
 
 
 #include "Interface/SPInteractionInterface.h"
-#include "Character/SPCharacterPlayer.h"
-#include "UI/SPHUDWidget.h"
+
 
 // Add default functionality here for any ISPInteractionInterface functions that are not pure virtual.
 void ISPInteractionInterface::BeginFocus()

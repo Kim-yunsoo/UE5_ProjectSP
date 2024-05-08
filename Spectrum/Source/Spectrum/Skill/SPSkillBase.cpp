@@ -4,10 +4,6 @@
 #include "Skill/SPSkillBase.h"
 //D:\UE_5.3\Engine\Source\Runtime\Engine\Classes\GameFramework\ProjectileMovementComponent.h
 #include "Character/SPCharacterPlayer.h"
-#include "Components/BoxComponent.h"
-#include "GameFramework\ProjectileMovementComponent.h"
-#include "Kismet/KismetMathLibrary.h"
-#include "Particles/ParticleSystemComponent.h"
 
 class ISPSkillInterface;
 

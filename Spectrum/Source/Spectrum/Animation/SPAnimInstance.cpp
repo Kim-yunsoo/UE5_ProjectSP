@@ -7,7 +7,6 @@
 #include "Character/SPCharacterPlayer.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Net/UnrealNetwork.h"
-#include "SpectrumLog.h"
 
 USPAnimInstance::USPAnimInstance()
 {

@@ -3,16 +3,12 @@
 
 #include "Network/PacketSession.h"
 #include "NetworkWorker.h"
-#include "Sockets.h"
-#include "Common/TcpSocketBuilder.h"
-#include "Serialization/ArrayWriter.h"
-#include "SocketSubsystem.h"
 #include "ClientPacketHandler.h"
 
 
 PacketSession::PacketSession(class FSocket* Socket) : Socket(Socket)
 {
-	ClientPacketHandler::Init();	// ÇÔ¼ö Æ÷ÀÎÅÍ Ã¤¿ì´Â ÀÛ¾÷ ¿©±â¼­(ÆÐÅ¶ ÇÔ¼ö ÃÊ±âÈ­)
+	ClientPacketHandler::Init();	// ï¿½Ô¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã¤ï¿½ï¿½ï¿½ ï¿½Û¾ï¿½ ï¿½ï¿½ï¿½â¼­(ï¿½ï¿½Å¶ ï¿½Ô¼ï¿½ ï¿½Ê±ï¿½È­)
 }
 
 PacketSession::~PacketSession()
@@ -22,31 +18,31 @@ PacketSession::~PacketSession()
 
 void PacketSession::Run()
 {
-	// RecvWorkerThread »ý¼º
-	RecvWorkerThread = MakeShared<RecvWorker>(Socket, AsShared());	// ÀÚ±â ÀÚ½Å¿¡ ´ëÇÑ SharedRef¸¦ ³Ñ°ÜÁÜ.
+	// RecvWorkerThread ï¿½ï¿½ï¿½ï¿½
+	RecvWorkerThread = MakeShared<RecvWorker>(Socket, AsShared());	// ï¿½Ú±ï¿½ ï¿½Ú½Å¿ï¿½ ï¿½ï¿½ï¿½ï¿½ SharedRefï¿½ï¿½ ï¿½Ñ°ï¿½ï¿½ï¿½.
 	SendWorkerThread = MakeShared<SendWorker>(Socket, AsShared());
 
 }
 
 void PacketSession::HandleRecvPackets()
 {
-	// RecvWorkerThread°¡ ¹ÞÀº ÆÐÅ¶À» Ã³¸®ÇÑ´Ù.
+	// RecvWorkerThreadï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¶ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ñ´ï¿½.
 	while (true)
 	{
-		// ÆÐÅ¶À» ÇÏ³ª¾¿ Ã³¸®ÇÑ´Ù.
+		// ï¿½ï¿½Å¶ï¿½ï¿½ ï¿½Ï³ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ñ´ï¿½.
 		TArray<uint8> Packet;
 		if (RecvPacketQueue.Dequeue(OUT Packet) == false)
 			break;
 
 		PacketSessionRef ThisPtr = AsShared();
 		ClientPacketHandler::HandlePacket(ThisPtr, Packet.GetData(), Packet.Num());
-		// ¿©±â¿¡ case¹® µ¹·Á¼­ ÆÐÅ¶ ±¸ºÐ ÈÄ Ã³¸®ÇØµÇÁö¸¸ ¹ø°Å·Î¿ì´Ï±î HandlePacketÇÔ¼ö·Î µû·Î Ã³¸®
+		// ï¿½ï¿½ï¿½â¿¡ caseï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¶ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Å·Î¿ï¿½Ï±ï¿½ HandlePacketï¿½Ô¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½
 	}
 }
 
 void PacketSession::SendPacket(SendBufferRef SendBuffer)
 {
-	// send Packet Queue¿¡ ³ÖÀ½
+	// send Packet Queueï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	SendPacketQueue.Enqueue(SendBuffer);
 }
 

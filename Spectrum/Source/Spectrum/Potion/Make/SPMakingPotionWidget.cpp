@@ -2,11 +2,9 @@
 
 
 #include "Potion/Make/SPMakingPotionWidget.h"
-
 #include "Blueprint/WidgetTree.h"
 #include "UI/Inventory/SPInventoryItemSlot.h"
 #include "Character/SPCharacterPlayer.h"
-#include "Component/SPInventoryComponent.h"
 #include "Components/Button.h"
 #include "Components/SizeBox.h"
 #include "Components/WrapBox.h"

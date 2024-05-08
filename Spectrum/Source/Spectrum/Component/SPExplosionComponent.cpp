@@ -2,8 +2,6 @@
 
 
 #include "Component/SPExplosionComponent.h"
-
-#include "SpectrumLog.h"
 #include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Interface/SPDamageInterface.h"

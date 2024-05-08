@@ -2,9 +2,7 @@
 
 
 #include "UI/SPTargetUI.h"
-#include "Interface/SPDamageInterface.h"
 #include "Components/Image.h"
-#include "Interface/SPCharacterHUDInterface.h"
 // #include "Character/SP"
 
 void USPTargetUI::UpdateTargetUI(bool IsAim)
@@ -17,7 +15,7 @@ void USPTargetUI::UpdateTargetUI(bool IsAim)
 	}
 }
 
-void USPTargetUI::NativeConstruct() //À§Á¬¿¡ °ü·ÃµÈ UI ¿ä¼ÒµéÀÌ ¸ðµÎ ÁØºñ ¿Ï·á µÇ¸é
+void USPTargetUI::NativeConstruct() //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ãµï¿½ UI ï¿½ï¿½Òµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Øºï¿½ ï¿½Ï·ï¿½ ï¿½Ç¸ï¿½
 {
 	Super::NativeConstruct();
 	

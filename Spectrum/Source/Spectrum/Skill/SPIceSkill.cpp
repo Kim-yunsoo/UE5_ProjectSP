@@ -2,8 +2,6 @@
 
 
 #include "Skill/SPIceSkill.h"
-
-#include "SpectrumLog.h"
 #include "Character/SPCharacterPlayer.h"
 #include "SkillActor/SPIceSkillActor.h"
 

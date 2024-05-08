@@ -21,9 +21,9 @@ public:
 	// Sets default values for this actor's properties
 	ASPPickup();
 	
-	void InitializePickup(const TSubclassOf<USPItemBase>BaseClass, const int32 InQuantity); //µ¥ÀÌÅÍº£ÀÌ½º¿¡¼­ °¡Áö°í ¿À±â
+	void InitializePickup(const TSubclassOf<USPItemBase>BaseClass, const int32 InQuantity); //ë°ì´í„°ë² ì´ìŠ¤ì—ì„œ ê°€ì§€ê³  ì˜¤ê¸°
 
-	void InitializeDrop(USPItemBase* ItemToDrop,  const int32 InQuantity); //ÀÌ¹Ì Á¸ÀçÇÏ´Â Ç×¸ñ ÂüÁ¶ÇØ¼­ °¡Áö°í ¿À±â
+	void InitializeDrop(USPItemBase* ItemToDrop,  const int32 InQuantity); //ì´ë¯¸ ì¡´ì¬í•˜ëŠ” í•­ëª© ì°¸ì¡°í•´ì„œ ê°€ì§€ê³  ì˜¤ê¸°
 
 	FORCEINLINE USPItemBase* GetItemData(){return ItemReference;};
 	
@@ -45,7 +45,7 @@ public:
 	FName DesiredItemID;
 
 	UPROPERTY(VisibleAnywhere, Category = "Pickup | Item Reference")
-	TObjectPtr<USPItemBase> ItemReference; //pick up °¡¸®Å°±â
+	TObjectPtr<USPItemBase> ItemReference; //pick up ê°€ë¦¬í‚¤ê¸°
 
 	UPROPERTY(EditInstanceOnly, Category = "Pickup | Item Initialization")
 	int32 ItemQuantity;
@@ -71,9 +71,7 @@ protected:
 	virtual void Interact2(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget) override;
 	void UpdateInteractableData();
 	void TakePickup(ASPCharacterPlayer* Taker);
-#if WITH_EDITOR
-	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override; //¿¡µğÅÍÀÖÀ¸¸é ½ÇÇà
-#endif
+
 
 protected:
 	UFUNCTION(Client, Unreliable)

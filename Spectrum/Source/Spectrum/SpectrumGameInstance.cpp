@@ -4,14 +4,10 @@
 #include "SpectrumGameInstance.h"
 #include "Sockets.h"
 #include "Common/TcpSocketBuilder.h"
-#include "Serialization/ArrayWriter.h"
 #include "SocketSubsystem.h"
 #include "PacketSession.h"
 #include "Protocol.pb.h"
-#include "ClientPacketHandler.h"
-#include "Object/SPObject.h"
 #include "Character/SPCharacterPlayer.h"
-#include "UI/SPLobbyWidget.h"
 
 FString IpAddress;
 

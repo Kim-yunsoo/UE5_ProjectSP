@@ -2,11 +2,8 @@
 
 
 #include "Potion/SPPotionBase.h"
-
-#include "SpectrumLog.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "GameFramework/HUD.h"
 
 // Sets default values
 ASPPotionBase::ASPPotionBase()
