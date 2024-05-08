@@ -10,7 +10,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="36dc07cf-1872-45e0-88ab-9aa66971cb17" name="변경" comment="" />
+    <list default="true" id="36dc07cf-1872-45e0-88ab-9aa66971cb17" name="변경" comment="">
+      <change beforePath="$PROJECT_DIR$/Content/MagicProjectilesVol2/Particles/Hits/P_Hit_Waterball01_Spectrum.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPSpectrumPotion.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPSpectrumPotion.cpp" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -202,6 +205,7 @@
       <workItem from="1715172951424" duration="6574000" />
       <workItem from="1715180583525" duration="1849000" />
       <workItem from="1715186972496" duration="1273000" />
+      <workItem from="1715188640516" duration="299000" />
     </task>
     <servers />
   </component>

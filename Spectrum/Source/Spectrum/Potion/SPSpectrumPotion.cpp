@@ -2,7 +2,7 @@
 
 
 #include "Potion/SPSpectrumPotion.h"
-
+#include "Particles/ParticleSystem.h"
 #include "Kismet/GameplayStatics.h"
 
 ASPSpectrumPotion::ASPSpectrumPotion()
@@ -19,6 +19,15 @@ ASPSpectrumPotion::ASPSpectrumPotion()
 		PotionMesh->SetCollisionProfileName(TEXT("NoCollision"));
 	}
 	WaterSound = LoadObject<USoundWave>(nullptr, TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/Water2.Water2'"));
+
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> HitRef(
+TEXT("/Script/Engine.ParticleSystem'/Game/MagicProjectilesVol2/Particles/Hits/CP_SpectrumPotion.CP_SpectrumPotion'"));
+
+	if (HitRef.Succeeded())
+	{
+		EmitterHit = HitRef.Object;
+	}
+	
 }
 
 void ASPSpectrumPotion::BeginPlay()
@@ -39,5 +48,8 @@ void ASPSpectrumPotion::HandleActorHit(AActor* SelfActor, AActor* OtherActor, FV
 	const FHitResult& Hit)
 {
 	UGameplayStatics::PlaySound2D(GetWorld(), WaterSound);
+	FVector HitLocation = Hit.ImpactPoint;
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), EmitterHit, HitLocation, FRotator::ZeroRotator,
+												 FVector(1.0f), true, EPSCPoolMethod::None, true);
 	this->SetLifeSpan(0.1f);
 }
