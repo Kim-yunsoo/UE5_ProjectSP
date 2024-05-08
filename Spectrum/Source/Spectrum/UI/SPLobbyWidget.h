@@ -74,6 +74,15 @@ public:
 //	void JoinServer();
 
 public:
+	UFUNCTION(BlueprintCallable, Category = "SetIOCP")
+	void SetIpAddress(const FString& InIpAddress);
+
+	UFUNCTION(BlueprintCallable, Category = "SetIOCP")
+	bool readyIOCP();
+
+	bool ready = false;
+
+
 	// 시작 로그인 위젯
 	UFUNCTION(BlueprintCallable, Category = "ID Verification")	// 아이디 받는 함수
 	void ValidateID(const FString& ID);

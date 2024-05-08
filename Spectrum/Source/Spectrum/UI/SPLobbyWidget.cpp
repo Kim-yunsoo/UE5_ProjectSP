@@ -22,6 +22,7 @@
  int pir_num_G = -1;
  int pir_num_P = -1;
  int pir_num_O = -1;
+ extern FString IpAddress;
 
 USPLobbyWidget::USPLobbyWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -81,6 +82,17 @@ std::string USPLobbyWidget::GetMyIP()
 //{
 //	UGameplayStatics::OpenLevel(GetWorld(), FName("127.0.0.1")); // Level 이름 대신 IP 주소.
 //}
+
+void USPLobbyWidget::SetIpAddress(const FString& InIpAddress)
+{
+	IpAddress = InIpAddress;
+	ready = true;
+}
+
+bool USPLobbyWidget::readyIOCP()
+{
+	return ready;
+}
 
 /*************************
 *     로그인 함수들      *

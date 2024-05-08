@@ -52,14 +52,20 @@ public:
 	void HandleRoom(const Protocol::S_ENTER_ROOM& RoomPkt);			// 방 입장
 	//void HandleMove(const Protocol::S_MOVE& MovePkt);					// 이동
 
+
 public:
 	// 서버 소켓, ip
 	class FSocket* Socket;
-	FString IpAddress = TEXT("127.0.0.1");
+	//FString IpAddress = TEXT("127.0.0.1");
 	//FString IpAddress = TEXT("192.168.45.25");
 	//FString IpAddress = TEXT("192.168.1.27");
+	//FString IpAddress;
 	int16 Port = 7777;
 	TSharedPtr<class PacketSession> GameServerSession;	// 게임 서버 만듬
+
+public:
+	//UFUNCTION(BlueprintCallable, Category = "SetIOCP")
+	//void SetIpAddress(const FString& InIpAddress);
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
