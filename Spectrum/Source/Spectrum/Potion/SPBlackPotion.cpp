@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "Potion/SPBlackPotion.h"
 #include "Component/SPExplosionComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 
 // Sets default values
@@ -18,6 +19,7 @@ ASPBlackPotion::ASPBlackPotion()
 		PotionMesh->SetCollisionProfileName(TEXT("NoCollision"));
 	}
 	ExplosionComponent = CreateDefaultSubobject<USPExplosionComponent>(TEXT("ExplosionComponent"));
+	WaterSound = LoadObject<USoundWave>(nullptr, TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/Water2.Water2'"));
 
 }
 
@@ -32,6 +34,7 @@ void ASPBlackPotion::BeginPlay()
 		this->AActor::SetReplicateMovement(true);
 		ExplosionComponent->SetIsReplicated(true);
 	}
+
 }
 
 void ASPBlackPotion::HandleActorHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
@@ -39,6 +42,7 @@ void ASPBlackPotion::HandleActorHit(AActor* SelfActor, AActor* OtherActor, FVect
 	//������ ����.. 
 	// ServerRPCStopAiming();
 	// MultiRPCExplosion();
+	UGameplayStatics::PlaySound2D(GetWorld(), WaterSound);
 	ExplosionComponent->Explode();
 	this->SetLifeSpan(0.1f);
 }

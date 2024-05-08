@@ -606,7 +606,7 @@ public:
 	// ESchoolColor SchoolAffiliation;
 
 
-
+	//사운드
 	//Todo 치트키 7번
 	UPROPERTY()
 	uint8 bIsSeven : 1;
@@ -619,6 +619,4 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> SevenKeyAction;
-
-	
 };

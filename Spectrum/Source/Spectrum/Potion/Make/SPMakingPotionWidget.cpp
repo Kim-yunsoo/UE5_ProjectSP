@@ -48,6 +48,7 @@ void USPMakingPotionWidget::NativeConstruct()
 	Back->OnClicked.AddDynamic(this, &USPMakingPotionWidget::BackCallBack);
 
 	ClickOn = LoadObject<USoundBase>(nullptr, TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/ClickOn.ClickOn'"));
+	DropSound = LoadObject<USoundBase>(nullptr, TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/Drop.Drop'"));
 }
 
 bool USPMakingPotionWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent,
@@ -96,6 +97,7 @@ bool USPMakingPotionWidget::NativeOnDrop(const FGeometry& InGeometry, const FDra
 			//여기서 서버로 가야함!
 			UE_LOG(LogTemp, Warning, TEXT("%s"), *GetOwningPlayer()->GetName());
 			PlayerCharacter->DragItem(ItemDragDrop->SourceItem,1);
+			PlaySound(DropSound);
 			return true;
 		}
 	}
