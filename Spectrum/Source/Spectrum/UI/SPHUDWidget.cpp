@@ -28,7 +28,7 @@ void USPHUDWidget::NativeConstruct()
 	IceSkillWidget = Cast<USPSkillWidget>(GetWidgetFromName("WB_Skill"));
 	TeleSkillWidget = Cast<USPSkillWidget>(GetWidgetFromName("WB_Skill"));
 	ScoreWidget = Cast<USPScoreWidget>(GetWidgetFromName("WB_SPScoreWidget"));
-	TargetUI = Cast<USPTargetUI>(GetWidgetFromName(TEXT("WBTargetUI")));
+	TargetUI = Cast<USPTargetUI>(GetWidgetFromName(TEXT("WB_TargetUI")));
 	MakingPotionWidget = Cast<USPMakingPotionWidget>(GetWidgetFromName(TEXT("WBPSPMakingPotionWidget")));
 	ManualWidget = Cast<USPManualWidget>(GetWidgetFromName(TEXT("WBPManual")));
 	//ensure(TargetUI);
@@ -77,6 +77,11 @@ void USPHUDWidget::ToggleMouse(bool bIsShowMouse)
 		GetOwningPlayer()->SetShowMouseCursor(false);
 		PlayerCharacter->GetCharacterMovement()->MovementMode = EMovementMode::MOVE_Walking;
 	}
+}
+
+void USPHUDWidget::UpdateTarget(bool bIsShowUI)
+{
+	TargetUI->UpdateTargetUI(bIsShowUI);
 }
 
 void USPHUDWidget::UpdateTime(float CountdownTime)

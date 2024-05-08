@@ -66,7 +66,7 @@ public:
 	/////////////////
 
 	void ToggleMouse(bool bIsShowMouse);
-
+	void UpdateTarget(bool bIsShowUI);
 	void UpdateTime(float CountdownTime);
 	void UpdateSlowCDTime(float NewCurrentTime);
 	void UpdateMakingPotionWidget(bool bIsVisible);
