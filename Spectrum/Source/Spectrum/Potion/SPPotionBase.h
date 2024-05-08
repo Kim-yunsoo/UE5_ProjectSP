@@ -39,6 +39,9 @@ public:
 
 	virtual  void GetPotion() override;
 
+
+	UPROPERTY()
+	TObjectPtr<UParticleSystem> EmitterHit;
 ///////////////////////////////////////////////////////////////////////////////////////////
 
 public:
