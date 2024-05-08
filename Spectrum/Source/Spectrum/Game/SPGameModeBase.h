@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 #include "Blueprint/UserWidget.h"
+#include "GameFramework/GameMode.h"
 #include "UI/SPLobbyWidget.h"
 #include "SPGameModeBase.generated.h"
 

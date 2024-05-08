@@ -24,8 +24,11 @@ void ASPManual::BeginPlay()
 	Super::BeginPlay();
 	InteractableData = InstanceInteractableDate;
 	FVector ActorLocation = GetActorLocation();
-	Trigger->SetRelativeLocation(ActorLocation);
-	Trigger->SetRelativeScale3D(FVector(3,5,15));
+	FVector TriggerOffset(-10, -10, 10);
+	Trigger->SetRelativeLocation(ActorLocation + TriggerOffset);
+	FRotator AcotrRotation = GetActorRotation();
+	Trigger->SetRelativeRotation(AcotrRotation);
+	Trigger->SetRelativeScale3D(FVector(2,2,3));
 	
 	Trigger->OnComponentBeginOverlap.AddDynamic(this, &ASPManual::OnTriggerEnter);
 	Trigger->OnComponentEndOverlap.AddDynamic(this, &ASPManual::OnTriggerExit);
