@@ -85,6 +85,9 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	USoundBase* ClickOn;
+
+	UPROPERTY(EditAnywhere)
+	USoundBase* DropSound;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	class UButton* Back;
@@ -94,5 +97,7 @@ protected:
 
 	UFUNCTION()
 	void BackCallBack();
+
+	
 	
 };

@@ -31,6 +31,8 @@ public:
 		FVector NormalImpulse,
 		const FHitResult& Hit
 	);
-
+	
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Default")
+	TObjectPtr<USoundWave> WaterSound;
 	
 };

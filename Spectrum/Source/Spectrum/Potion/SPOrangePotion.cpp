@@ -3,6 +3,7 @@
 
 #include "Potion/SPOrangePotion.h"
 #include "Component/SPOrangeExplosionComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 ASPOrangePotion::ASPOrangePotion()
 {
@@ -18,7 +19,8 @@ ASPOrangePotion::ASPOrangePotion()
 		PotionMesh->SetCollisionProfileName(TEXT("NoCollision"));
 	}
 	OrangeExplosionComponent = CreateDefaultSubobject<USPOrangeExplosionComponent>(TEXT("ExplosionComponent"));
-	
+	WaterSound = LoadObject<USoundWave>(nullptr, TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/Water2.Water2'"));
+
 }
 
 void ASPOrangePotion::BeginPlay()
@@ -37,6 +39,7 @@ void ASPOrangePotion::BeginPlay()
 void ASPOrangePotion::HandleActorHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse,
 	const FHitResult& Hit)
 {
+	UGameplayStatics::PlaySound2D(GetWorld(), WaterSound);
 	OrangeExplosionComponent->Explode();
 	this->SetLifeSpan(0.1f);
 }

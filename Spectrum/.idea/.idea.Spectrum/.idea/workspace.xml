@@ -10,23 +10,23 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="36dc07cf-1872-45e0-88ab-9aa66971cb17" name="변경" comment="">
+    <list default="true" id="bd1d1612-ce09-4aae-b125-0fe1e7d1e824" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Spectrum/Room/Map/Building.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Room/Map/Building.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/UMG/Overlay/G_Score.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/UMG/Overlay/O_Socre.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/UMG/Overlay/P_Score.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/UMG/Overlay/Score.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/UMG/Overlay/WB_SPScoreWidget.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/UMG/Overlay/WB_SPScoreWidget.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/UMG/Overlay/WB_TargetUI.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/UMG/Overlay/WB_TargetUI.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/UMG/WBP_SPHUD.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/UMG/WBP_SPHUD.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/UMG/target.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/target.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/UI/SPHUDWidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/UI/SPHUDWidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/UI/SPHUDWidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/UI/SPHUDWidget.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/UI/SPTargetUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/UI/SPTargetUI.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/Make/SPMakingPotionWidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/Make/SPMakingPotionWidget.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/Make/SPMakingPotionWidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/Make/SPMakingPotionWidget.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPBlackPotion.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPBlackPotion.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPBlackPotion.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPBlackPotion.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPGreenPotion.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPGreenPotion.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPGreenPotion.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPGreenPotion.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPItemBase.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPItemBase.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPOrangePotion.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPOrangePotion.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPOrangePotion.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPOrangePotion.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPPurplePotion.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPPurplePotion.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPPurplePotion.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPPurplePotion.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPSpectrumPotion.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPSpectrumPotion.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPSpectrumPotion.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPSpectrumPotion.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,23 +36,25 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="GitHubPullRequestSearchHistory">{
-  &quot;lastFilter&quot;: {
-    &quot;state&quot;: &quot;OPEN&quot;,
-    &quot;assignee&quot;: &quot;InGyeongSeok&quot;
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "InGyeongSeok"
   }
-}</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/Kim-yunsoo/UE5_Spectrum.git&quot;,
-    &quot;accountId&quot;: &quot;9c8f9718-d4dc-45e8-b91c-a772cc3bcf80&quot;
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/Kim-yunsoo/UE5_Spectrum.git",
+    "accountId": "9c8f9718-d4dc-45e8-b91c-a772cc3bcf80"
   }
-}</component>
-  <component name="ProjectColorInfo">{
-  &quot;customColor&quot;: &quot;&quot;,
-  &quot;associatedIndex&quot;: 8
-}</component>
-  <component name="ProjectId" id="2gBBBAeWQKPRwYmeZvp9zq0NmZW" />
+}]]></component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://C:/Program Files (x86)/Windows Kits/10/Include/10.0.22621.0/um/playsoundapi.h" root0="SKIP_HIGHLIGHTING" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 1
+}]]></component>
+  <component name="ProjectId" id="2gBZbhhEC0UKs2pIQsJvS8TxoN3" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -61,7 +63,7 @@
   "keyToString": {
     "C++ 프로젝트.Spectrum.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "YunsooKim",
+    "git-widget-placeholder": "IngyeongSeok",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -71,12 +73,12 @@
   },
   "keyToStringList": {
     "rider.external.source.directories": [
-      "C:\\Users\\yunsoo\\AppData\\Roaming\\JetBrains\\Rider2024.1\\resharper-host\\DecompilerCache",
-      "C:\\Users\\yunsoo\\AppData\\Roaming\\JetBrains\\Rider2024.1\\resharper-host\\SourcesCache",
-      "C:\\Users\\yunsoo\\AppData\\Local\\Symbols\\src"
+      "C:\\Users\\ingyeong\\AppData\\Roaming\\JetBrains\\Rider2024.1\\resharper-host\\DecompilerCache",
+      "C:\\Users\\ingyeong\\AppData\\Roaming\\JetBrains\\Rider2024.1\\resharper-host\\SourcesCache",
+      "C:\\Users\\ingyeong\\AppData\\Local\\Symbols\\src"
     ]
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected="C++ 프로젝트.Spectrum">
     <configuration name="Spectrum" type="CppProject" factoryName="C++ Project">
       <configuration_1>
@@ -200,13 +202,12 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="애플리케이션 수준" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="디폴트 작업">
-      <changelist id="36dc07cf-1872-45e0-88ab-9aa66971cb17" name="변경" comment="" />
-      <created>1715160954094</created>
+      <changelist id="bd1d1612-ce09-4aae-b125-0fe1e7d1e824" name="변경" comment="" />
+      <created>1715173005771</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1715160954094</updated>
-      <workItem from="1715160955891" duration="1990000" />
-      <workItem from="1715164328766" duration="3291000" />
+      <updated>1715173005771</updated>
+      <workItem from="1715173007983" duration="4934000" />
     </task>
     <servers />
   </component>

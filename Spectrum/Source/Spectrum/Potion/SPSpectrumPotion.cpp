@@ -3,6 +3,8 @@
 
 #include "Potion/SPSpectrumPotion.h"
 
+#include "Kismet/GameplayStatics.h"
+
 ASPSpectrumPotion::ASPSpectrumPotion()
 {
 	SphereComponent->SetSphereRadius(35.46f);
@@ -16,6 +18,7 @@ ASPSpectrumPotion::ASPSpectrumPotion()
 		//PotionMesh->SetRelativeScale3D(FVector(2.5f, 2.5f, 2.5f));
 		PotionMesh->SetCollisionProfileName(TEXT("NoCollision"));
 	}
+	WaterSound = LoadObject<USoundWave>(nullptr, TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/Water2.Water2'"));
 }
 
 void ASPSpectrumPotion::BeginPlay()
@@ -35,5 +38,6 @@ void ASPSpectrumPotion::BeginPlay()
 void ASPSpectrumPotion::HandleActorHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse,
 	const FHitResult& Hit)
 {
+	UGameplayStatics::PlaySound2D(GetWorld(), WaterSound);
 	this->SetLifeSpan(0.1f);
 }

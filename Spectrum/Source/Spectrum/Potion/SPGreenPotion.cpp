@@ -3,6 +3,7 @@
 
 #include "Potion/SPGreenPotion.h"
 #include "Component/SPGreenExplosionComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 
 ASPGreenPotion::ASPGreenPotion()
@@ -19,7 +20,7 @@ ASPGreenPotion::ASPGreenPotion()
 		PotionMesh->SetCollisionProfileName(TEXT("NoCollision"));
 	}
 	GreenExplosionComponent = CreateDefaultSubobject<USPGreenExplosionComponent>(TEXT("ExplosionComponent"));
-	
+	WaterSound = LoadObject<USoundWave>(nullptr, TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/Water2.Water2'"));
 }
 
 void ASPGreenPotion::BeginPlay()
@@ -36,6 +37,7 @@ void ASPGreenPotion::BeginPlay()
 
 void ASPGreenPotion::HandleActorHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
 {
+	UGameplayStatics::PlaySound2D(GetWorld(), WaterSound);
 	GreenExplosionComponent->Explode();
 	this->SetLifeSpan(0.1f);
 }

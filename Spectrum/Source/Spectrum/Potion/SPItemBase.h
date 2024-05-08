@@ -59,4 +59,5 @@ protected: //항목 검색할 때 사용
 	{
 		return this->ID == OtherID;
 	}
+	
 };

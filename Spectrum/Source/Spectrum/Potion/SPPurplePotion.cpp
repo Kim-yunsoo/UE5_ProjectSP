@@ -4,6 +4,7 @@
 #include "Potion/SPPurplePotion.h"
 
 #include "Component/SPPurpleExplosionComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 ASPPurplePotion::ASPPurplePotion()
 {
@@ -22,6 +23,7 @@ ASPPurplePotion::ASPPurplePotion()
 	this->SetReplicates(true);
 	this->AActor::SetReplicateMovement(true);
 	PurpleExplosionComponent->SetIsReplicated(true);
+	WaterSound = LoadObject<USoundWave>(nullptr, TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/Water2.Water2'"));
 }
 
 void ASPPurplePotion::BeginPlay()
@@ -33,6 +35,7 @@ void ASPPurplePotion::BeginPlay()
 void ASPPurplePotion::HandleActorHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse,
 	const FHitResult& Hit)
 {
+	UGameplayStatics::PlaySound2D(GetWorld(), WaterSound);
 	PurpleExplosionComponent->Explode();
 	this->SetLifeSpan(0.1f);
 	
