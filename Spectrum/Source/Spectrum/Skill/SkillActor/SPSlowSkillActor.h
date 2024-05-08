@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "SPSkillActorBase.h"
-#include "Character/SPCharacterPlayer.h"
 #include "GameFramework/Actor.h"
 #include "SPSlowSkillActor.generated.h"
 

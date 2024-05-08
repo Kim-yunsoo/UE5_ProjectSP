@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "Data/ItemDataStructs.h"
-#include "UObject/NoExportTypes.h"
 #include "SPItemBase.generated.h"
 
 class USPInventoryComponent;

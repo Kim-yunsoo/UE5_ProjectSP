@@ -4,7 +4,6 @@
 
 
 #include "CoreMinimal.h"
-#include "Component/SPExplosionComponent.h"
 #include "Potion/SPPotionBase.h"
 #include "SPGreenPotion.generated.h"
 

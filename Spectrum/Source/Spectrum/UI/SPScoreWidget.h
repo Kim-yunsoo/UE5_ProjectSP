@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "SceneRenderTargetParameters.h"
 #include "SPGlobalEnum.h"
 #include "Blueprint/UserWidget.h"
 #include "SPScoreWidget.generated.h"
