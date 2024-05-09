@@ -8,12 +8,12 @@ GameSessionManager GSessionManager;
 void GameSessionManager::Add(GameSessionRef session)
 {
 	WRITE_LOCK;
-	//if (count < 3) {
+	if (count < 3) {
 
 		_sessions.insert(session);
 		cout << "add session" << count << endl;
 		count++;
-	//}
+	}
 
 }
 

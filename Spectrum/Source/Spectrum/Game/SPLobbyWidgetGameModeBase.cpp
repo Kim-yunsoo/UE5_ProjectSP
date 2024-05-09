@@ -25,3 +25,10 @@ void ASPLobbyWidgetGameModeBase::DefaultGameTimer()
 		//okok = true;
 	}
 }
+
+void ASPLobbyWidgetGameModeBase::goServer()
+{
+	UWorld* World = GetWorld();
+	World->ServerTravel("192.168.41.20");
+
+}

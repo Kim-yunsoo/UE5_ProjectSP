@@ -29,6 +29,8 @@ public:
 
 	int mynum = 0;
 
+	//void goServer();
+
 	//void PostInitializeComponents() override;
 protected:
 	virtual void PostLogin(APlayerController* NewPlayer) override;
