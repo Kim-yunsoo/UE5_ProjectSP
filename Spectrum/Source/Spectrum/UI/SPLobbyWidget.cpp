@@ -9,6 +9,9 @@
 #include <ws2tcpip.h>
 #include <iphlpapi.h>
 #include <stdio.h>
+#include "Character/SPCharacterPlayer.h"
+#include <SPGameModeBase.h>
+#include <SPLobbyWidgetGameModeBase.h>
 
 #pragma comment(lib, "Ws2_32.lib")
 #pragma comment(lib, "iphlpapi.lib")
@@ -224,6 +227,27 @@ bool USPLobbyWidget::MatchingSuccess_C()
 {
 	//if (matching_C)
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("0000000000000000")));
+	//GetWorld()->ServerTravel("/Game/Spectrum/Room/Map/Building.Building?listen");
+	//GetWorld()->ServerTravel("192.168.41.20");
+	//if (UWorld* World = GetWorld())
+	//{
+	//	//FString TravelURL = FString::Printf(TEXT("%s"), *IPAddress);
+	//	FString ip = FString(UTF8_TO_TCHAR(ServerIP.c_str()));
+	//	World->ServerTravel(ip);
+	//}
+
+
+
+	//ACharacter* PlayerCharacter = Cast<ACharacter>(GetOwningPlayer()->GetPawn());
+	///PlayerCharacter->Getcontroller()->GetGameMode();
+	//if (matching_C == true)
+	//{
+	//	ACharacter* Character = Cast<ACharacter>(GetOwningPlayerPawn());
+	//	AGameModeBase* GameModeBase = Character->GetWorld()->GetAuthGameMode();
+	//	ASPLobbyWidgetGameModeBase* MyGameMode = Cast<ASPLobbyWidgetGameModeBase>(GameModeBase);
+	//	MyGameMode->goServer();
+	//}
+
 
 	return matching_C;
 }

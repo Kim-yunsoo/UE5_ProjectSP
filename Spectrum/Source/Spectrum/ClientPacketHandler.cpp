@@ -3,6 +3,7 @@
 #include "SpectrumGameInstance.h"
 #include "UI/SPLobbyWidget.h"
 #include "Protocol.pb.h"
+#include "Engine/World.h"
 //#include <array>
 //#include <string>
 
@@ -125,7 +126,7 @@ bool Handle_S_ENTER_GAME(PacketSessionRef& session, Protocol::S_ENTER_GAME& pkt)
 	ServerIP = pkt.server_ip();
 	std::string pktip = pkt.server_ip();
 	FString ip = FString(UTF8_TO_TCHAR(pktip.c_str()));
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("%s"), *ip));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("%s"), *ip));
 
 	school_type[0] = pkt.membership_type_0();
 	school_type[1] = pkt.membership_type_1();
@@ -135,6 +136,9 @@ bool Handle_S_ENTER_GAME(PacketSessionRef& session, Protocol::S_ENTER_GAME& pkt)
 		matching_H = true;
 	//else
 		matching_C = true;
+
+		//GetWorld()->ServerTravel("/Game/Maps/SPMap?listen");
+		//ServerTravel();
 
 	return true;
 }

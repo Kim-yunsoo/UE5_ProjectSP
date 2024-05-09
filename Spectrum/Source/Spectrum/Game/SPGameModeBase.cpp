@@ -8,10 +8,12 @@
 #include "GameFramework/GameStateBase.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "../Spectrum/Player/SPPlayerController.h"
+
 //extern Protocol::PlayerType player_type;
 extern Protocol::PlayerType school_num_type;
 extern int32 NumPlayers;
 extern std::array<Protocol::PlayerType, 3> school_type;
+//extern FString IPAddress;
 
 ASPGameModeBase::ASPGameModeBase()
 {
@@ -45,10 +47,20 @@ void ASPGameModeBase::BeginPlay()
 
 }
 
+//void ASPGameModeBase::goServer()
+//{
+//    UWorld* World = GetWorld();
+//    World->ServerTravel("192.168.41.20");
+//
+//}
+
 
 void ASPGameModeBase::PostLogin(APlayerController* NewPlayer)
 {
       Super::PostLogin(NewPlayer);
+
+      GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("0000000000000000")));
+
 
       // 정보 받아서 폰 설정 
       auto CastPlayer = Cast<ASPPlayerController>(NewPlayer);
