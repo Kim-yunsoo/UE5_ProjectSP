@@ -226,7 +226,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UAnimMontage> SkillTeleMontage;
 
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UAnimMontage> ImpactMontage;
 	
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, Meta = (AllowPrivateAccess = "ture"))
@@ -633,5 +634,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> SevenKeyAction;
 
-	UFUNCTION()
+	UPROPERTY()
+	TObjectPtr<USoundWave> GrapSound;
+
+	UPROPERTY()
+	TObjectPtr<USoundWave> StopGrapSound;
+
+	UFUNCTION(Client,Unreliable)
+	void ClientRPCSound(USoundWave* Sound);
 };

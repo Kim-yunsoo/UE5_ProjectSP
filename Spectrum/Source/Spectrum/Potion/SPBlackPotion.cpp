@@ -51,8 +51,11 @@ void ASPBlackPotion::HandleActorHit(AActor* SelfActor, AActor* OtherActor, FVect
 	FVector HitLocation = Hit.ImpactPoint;
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), EmitterHit, HitLocation, FRotator::ZeroRotator,
 												 FVector(1.0f), true, EPSCPoolMethod::None, true);
+	// if(HasAuthority())
+	// {
 	ExplosionComponent->Explode();
 	this->SetLifeSpan(0.1f);
+	// }
 }
 
 

@@ -12,6 +12,7 @@ ASPPotionSpawner::ASPPotionSpawner()
 	SpawnTimeRate = 5.f;
 	//SetReplicates(true);
 	bReplicates = true;
+	//GetRootComponent()->SetMobility(EComponentMobility::Static);
 }
 
 // Called when the game starts or when spawned

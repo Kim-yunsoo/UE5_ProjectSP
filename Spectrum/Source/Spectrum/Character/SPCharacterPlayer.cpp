@@ -433,6 +433,20 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 
 	//GravityArrow->SetIsReplicated(true);
 	//PhysicsHandleComponent->SetIsReplicated(true);
+
+	GrapSound= CreateDefaultSubobject<USoundWave>(TEXT("GrapSound"));
+	static ConstructorHelpers::FObjectFinder<USoundWave>GrapSoundRef(TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/GrapSound.GrapSound'"));
+	if(GrapSoundRef.Object)
+	{
+		GrapSound = GrapSoundRef.Object;
+	}
+
+	StopGrapSound= CreateDefaultSubobject<USoundWave>(TEXT("StopGrapSound"));
+	static ConstructorHelpers::FObjectFinder<USoundWave>StopGrapSoundRef(TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/StopGrapingSound.StopGrapingSound'"));
+	if(StopGrapSoundRef.Object)
+	{
+		StopGrapSound = StopGrapSoundRef.Object;
+	}
 	
 }
 
@@ -704,7 +718,6 @@ void ASPCharacterPlayer::HandleMontageAnimNotify(FName NotifyName,
 		if (HasAuthority())
 		{
 			IceSkillComponent->SkillAction();
-			// SlowSkillComponent->SkillAction();
 		}
 	}
 
@@ -785,6 +798,7 @@ void ASPCharacterPlayer::ServerRPCStopAiming_Implementation()
 void ASPCharacterPlayer::StopGraping(const FInputActionValue& Value)
 {
 	//ShowTargetUI(false);
+	UE_LOG(LogTemp,Log,TEXT("StopGraping!"));
 	ServerRPCStopGraping();
 }
 
@@ -1453,7 +1467,6 @@ void ASPCharacterPlayer::OnRep_PotionSpawn()
 void ASPCharacterPlayer::PlayTurnAnimation()
 {
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-	UAnimInstance* TorsoAnimInstance = Torso->GetAnimInstance();
 	AnimInstance->Montage_Play(ThrowMontage, 1.0f);
 	// TorsoAnimInstance->Montage_Play(ThrowMontage, 1.0f);
 	GetCharacterMovement()->bOrientRotationToMovement = false;
@@ -1463,7 +1476,6 @@ void ASPCharacterPlayer::PlayTurnAnimation()
 void ASPCharacterPlayer::PlayThrowAnimation()
 {
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-	UAnimInstance* TorsoAnimInstance = GetMesh()->GetAnimInstance();
 	AnimInstance->Montage_JumpToSection(FName("End"), ThrowMontage);
 }
 
@@ -1687,8 +1699,6 @@ void ASPCharacterPlayer::SetupHUDWidget(USPHUDWidget* InUserWidget)
 		{
 			SPGameState->OnScore.AddUObject(InUserWidget, &USPHUDWidget::UpdateScore);
 			SPGameState->OnTime.AddUObject(InUserWidget, &USPHUDWidget::UpdateTime);
-			
-			
 		}
 	}
 }
@@ -1734,7 +1744,6 @@ void ASPCharacterPlayer::FoundInteractable(AActor* NewInteractable)
 	InteractionData.CurrentInteractable = NewInteractable;
 	TargetInteractable = NewInteractable;
 
-	//Todo 좀 더 효율적이게 바꾸기
 	if (HUDWidget)
 	{
 		HUDWidget->UpdateInteractionWidget(&TargetInteractable->InteractableData);
@@ -1974,6 +1983,10 @@ void ASPCharacterPlayer::HitSlowSkillResult()
 	// Cast<USPCharacterMovementComponent>(GetMovementComponent());
 	// NetTESTRPCSlowSkill();
 	bIsDamage = true;
+	if(false==IsMontagePlaying())
+	{
+		GetMesh()->GetAnimInstance()->Montage_Play(ImpactMontage,1.0f);
+	}
 	GetCharacterMovement()->MaxWalkSpeed = 100.f;
 	FTimerHandle Handle;
 	GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([&]
@@ -1986,8 +1999,13 @@ void ASPCharacterPlayer::HitSlowSkillResult()
 
 void ASPCharacterPlayer::HitIceSkillResult()
 {
+	//TODO
 	bIsDamage = true;
 	// GetCharacterMovement()->MaxWalkSpeed = 0.0f;
+	if(false==IsMontagePlaying())
+	{
+		GetMesh()->GetAnimInstance()->Montage_Play(ImpactMontage,1.0f);
+	}
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 	FTimerHandle Handle;
 	GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([&]
@@ -2000,20 +2018,13 @@ void ASPCharacterPlayer::HitIceSkillResult()
 
 void ASPCharacterPlayer::HitTeleSkillResult(const FVector TeleportLocation)
 {
-	// FVector(((2620.000000,-60.000000,5220.000000)));
-	// FVector TPPoint = FVector(16270.000000,2720.000000,3560.000000);
+	
+	if(false==IsMontagePlaying())
+	{
+		GetMesh()->GetAnimInstance()->Montage_Play(ImpactMontage,1.0f);
+	}
 	this->TeleportTo(TeleportLocation, this->GetActorRotation(), false, true);
-	// this-(FVector(((2620.000000,-60.000000,5220.000000))));
-	// this->SetActorRelativeLocation(FVector((16000.0,-1160.000000,3960.000000)));
-	// this->GetActorLocation();
-	// GetCharacterMovement()->MaxWalkSpeed = 0.0f;
-	// GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
-	// FTimerHandle Handle;
-	// GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([&]
-	// 										   {
-	// 											   GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
-	// 										   }
-	// 									   ), 5, false, -1.0f);
+	
 }
 
 void ASPCharacterPlayer::OverlapPortal(const FVector& Location)
@@ -2021,14 +2032,14 @@ void ASPCharacterPlayer::OverlapPortal(const FVector& Location)
 	// GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 	// this->TeleportTo(Location, this->GetActorRotation(), false, true);
 	// this->SetActorRelativeLocation(Location);
-
+	//ClientRPCSound();
 
 	FTimerHandle Handle;
 	GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([&]
 		                                       {
 			                                       this->SetActorRelativeLocation(Location);
 		                                       }
-	                                       ), 1.5f, false);
+	                                       ), 5.0f, false);
 }
 
 void ASPCharacterPlayer::ActiveGrapping(const bool Active)
@@ -2041,7 +2052,8 @@ bool ASPCharacterPlayer::IsMontagePlaying()
 	if (GetMesh()->GetAnimInstance()->Montage_IsPlaying(ThrowMontage) ||
 		GetMesh()->GetAnimInstance()->Montage_IsPlaying(SkillMontage) ||
 		GetMesh()->GetAnimInstance()->Montage_IsPlaying(SkillIceMontage) ||
-		GetMesh()->GetAnimInstance()->Montage_IsPlaying(SkillTeleMontage))
+		GetMesh()->GetAnimInstance()->Montage_IsPlaying(SkillTeleMontage)||
+		GetMesh()->GetAnimInstance()->Montage_IsPlaying(ImpactMontage))
 
 	{
 		return true; //어떤 애니메이션 하나라도 플레이 중이면 트루 
@@ -2141,7 +2153,6 @@ void ASPCharacterPlayer::MultiChangeCollision_Implementation(const FName& Collis
 {
 	if (HitMyActor) //내가 들고 있는 액터가 있는 것이면 ? 
 	{
-		SP_LOG(LogSPNetwork,Log,TEXT("MultiChangeCollision"));
 		ASPObject* MyObject = Cast<ASPObject>(HitMyActor);
 		MyObject->SetObjectCollisionType(CollisionName);
 	}
@@ -2153,6 +2164,7 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 	// if (bIsActiveGraping)
 	// {
 	//ShowTargetUI(true);
+	
 	ServerRPCGraping();
 	// }
 	// GetCharacterMovement()->bOrientRotationToMovement = true;
@@ -2206,7 +2218,7 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 {
-GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->bUseControllerDesiredRotation = false;
 	if (false == bIsHolding)
 	{
@@ -2251,10 +2263,9 @@ GetCharacterMovement()->bOrientRotationToMovement = true;
 			bool HitSuccess = GetWorld()->LineTraceSingleByChannel(outHitResult, SphereLocationStart, SphereLocationEnd,
 			                                                       ECC_GameTraceChannel1, Params);
 
-			if (HitSuccess && outHitResult.Component->Mobility == EComponentMobility::Movable)
+			if (HitSuccess && outHitResult.Component->Mobility == EComponentMobility::Movable )
 			{
-				if(bIsActiveGraping)
-				{
+				
 					outHitResult.Component->SetSimulatePhysics(true);
 					outHitResult.GetActor()->SetOwner(this);
 					HitComponent = outHitResult.GetComponent();
@@ -2304,7 +2315,6 @@ GetCharacterMovement()->bOrientRotationToMovement = true;
 							}
 						}
 					}
-				}
 				if (HitComponent && HitComponent->IsSimulatingPhysics())
 				{
 					PhysicsHandleComponent->GrabComponentAtLocation(
@@ -2312,50 +2322,49 @@ GetCharacterMovement()->bOrientRotationToMovement = true;
 						NAME_None,
 						HitComponent->K2_GetComponentLocation()
 					);
-					if(bIsActiveGraping)
-					{
+				
 						bIsHolding = true;
+						ClientRPCSound(GrapSound);
 
-						FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld,
-																  EAttachmentRule::KeepWorld, true);
-						FollowCamera->AttachToComponent(CameraBoom, AttachmentRules, NAME_None);
-						CameraMove();
+
+						
 					}
 				
-				}
 			}
 
-			// const FColor LineColor = HitSuccess ? FColor::Green : FColor::Red;
-			//
-			// DrawDebugLine(
-			// 	GetWorld(),
-			// 	SphereLocationStart,
-			// 	SphereLocationEnd,
-			// 	LineColor,
-			// 	false,
-			// 	5.0f,
-			// 	0,
-			// 	1.0f
-			// );
-			// if (HitSuccess)
-			// {
-			// 	DrawDebugPoint(
-			// 		GetWorld(),
-			// 		outHitResult.ImpactPoint,
-			// 		10.0f,
-			// 		FColor::Blue,
-			// 		false,
-			// 		5.0f
-			// 	);
-			// }
+			const FColor LineColor = HitSuccess ? FColor::Green : FColor::Red;
+			
+			DrawDebugLine(
+				GetWorld(),
+				SphereLocationStart,
+				SphereLocationEnd,
+				LineColor,
+				false,
+				5.0f,
+				0,
+				1.0f
+			);
+			if (HitSuccess)
+			{
+				DrawDebugPoint(
+					GetWorld(),
+					outHitResult.ImpactPoint,
+					10.0f,
+					FColor::Blue,
+					false,
+					5.0f
+				);
+			}
 				
 		}
 	}
 	else
 	{
+		UE_LOG(LogTemp,Log,TEXT("HI"));
 		bIsHolding = false;
 		if (HitComponent && HitComponent->IsSimulatingPhysics())
 		{
+			ClientRPCSound(StopGrapSound);
 			PhysicsHandleComponent->ReleaseComponent();
 			HitComponent->AddImpulse(FollowCamera->GetForwardVector() * HitDistance, NAME_None, true);
 			if(Cast<ASPObject>(HitMyActor))
@@ -2372,6 +2381,7 @@ void ASPCharacterPlayer::ServerRPCStopGraping_Implementation()
 	if (bIsHolding && HitComponent->IsSimulatingPhysics())
 	{
 		bIsHolding = false;
+		ClientRPCSound(StopGrapSound);
 		PhysicsHandleComponent->ReleaseComponent();
 		HitComponent->AddImpulse(FollowCamera->GetForwardVector() * HitDistance, NAME_None, true);
 		if (Cast<ASPObject>(HitMyActor))
@@ -2477,4 +2487,16 @@ void ASPCharacterPlayer::ServerRPCSeven_Implementation()
 void ASPCharacterPlayer::ShowTargetUI(bool ShowUI)
 {
 	OnAimChanged.Broadcast(ShowUI);
+}
+
+void ASPCharacterPlayer::ClientRPCSound_Implementation(USoundWave* Sound)
+{
+	if(Sound==GrapSound)
+	{
+		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld,
+		                                          EAttachmentRule::KeepWorld, true);
+		FollowCamera->AttachToComponent(CameraBoom, AttachmentRules, NAME_None);
+		CameraMove();
+	}
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, GetActorLocation(),GetActorRotation());
 }
