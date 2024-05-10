@@ -150,20 +150,6 @@ void ASPObject::SetObjectCollisionType(const FName& CollisionType)
 	ObjectMesh->SetCollisionProfileName(CollisionType);
 }
 
-bool ASPObject::IsNetRelevantFor(const AActor* RealViewer, const AActor* ViewTarget, const FVector& SrcLocation) const
-{
-	bool NetRelevantResult= Super::IsNetRelevantFor(RealViewer, ViewTarget, SrcLocation);
-	if(!NetRelevantResult )
-	{
-		SP_LOG(LogSPNetwork,Log,TEXT("Not Relevant : [%s] %s "), *RealViewer->GetName(),*SrcLocation.ToCompactString());
-	}
-	else
-	{
-		//SP_LOG(LogSPNetwork,Log,TEXT("Pass"));
-		
-	}
-	return NetRelevantResult;
-}
 
 
 // Called every frame

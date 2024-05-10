@@ -12,21 +12,11 @@
   <component name="ChangeListManager">
     <list default="true" id="f720f1ff-cada-489c-94f3-ca2cdcbc28a5" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Sound/Crush.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Sound/Crush.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Sound/Water2.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Sound/Water2.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Component/SPExplosionComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Component/SPExplosionComponent.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Component/SPExplosionComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Component/SPExplosionComponent.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Component/SPGreenExplosionComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Component/SPGreenExplosionComponent.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Component/SPGreenExplosionComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Component/SPGreenExplosionComponent.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Component/SPOrangeExplosionComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Component/SPOrangeExplosionComponent.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Component/SPOrangeExplosionComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Component/SPOrangeExplosionComponent.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Component/SPPurpleExplosionComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Component/SPPurpleExplosionComponent.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Component/SPPurpleExplosionComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Component/SPPurpleExplosionComponent.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPBlackPotion.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPBlackPotion.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPBlackPotion.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPBlackPotion.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPGreenPotion.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPGreenPotion.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Animation/Man/BS_SP_Man.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Animation/Man/BS_SP_Man.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Animation/Man/FastRun.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Animation/Man/FastRun.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Animation/Man/Running.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Animation/Man/Running.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Object/SPObject.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Object/SPObject.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Object/SPObject.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Object/SPObject.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -209,6 +199,8 @@
       <workItem from="1715306896846" duration="6970000" />
       <workItem from="1715316339357" duration="8448000" />
       <workItem from="1715325000162" duration="4249000" />
+      <workItem from="1715329445665" duration="1763000" />
+      <workItem from="1715332343189" duration="908000" />
     </task>
     <servers />
   </component>
