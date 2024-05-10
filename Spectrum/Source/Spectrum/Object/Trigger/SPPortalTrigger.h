@@ -39,6 +39,13 @@ public:
 	UFUNCTION(Server,Unreliable)
 	void ServerRPC(AActor* OverlapActor,const FVector& Location);
 
+	UPROPERTY()
+	TObjectPtr<USoundWave> PortalSound;
+
+	UFUNCTION(Client,Unreliable)
+	void ClientRPCSound(USoundWave* Sound);
+	
+
 	// UFUNCTION(NetMulticast,Unreliable)
 	// void MultiRPC(AActor* OverlapActor,const FVector& Location);
 

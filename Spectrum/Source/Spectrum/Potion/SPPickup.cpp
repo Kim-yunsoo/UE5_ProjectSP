@@ -16,7 +16,7 @@ ASPPickup::ASPPickup()
 	
 
 	PickupMesh = CreateDefaultSubobject<UStaticMeshComponent>("PickupMesh");
-	
+	//PickupMesh->SetMobility(EComponentMobility::Static);
 	//PickupMesh->SetSimulatePhysics(true);
 	SetRootComponent(PickupMesh);
 	
@@ -27,6 +27,10 @@ ASPPickup::ASPPickup()
 	{
 		ItemDataTable = DataTableFinder.Object;
 	}
+
+	//Trigger->SetMobility(EComponentMobility::Static);
+
+	
 	PotionRange=4;
 	//PickupMesh->SetSimulatePhysics(false);
 	//Trigger->SetSimulatePhysics(false);
@@ -100,6 +104,7 @@ void ASPPickup::InitializePickup(const TSubclassOf<USPItemBase> BaseClass, const
 		InQuantity <= 0 ? ItemReference->SetQuantity(1) : ItemReference->SetQuantity(InQuantity);
 
 		PickupMesh->SetStaticMesh(ItemData->ItemAssetData.Mesh);
+		PickupMesh->SetMobility(EComponentMobility::Static);
 
 
 		UpdateInteractableData();

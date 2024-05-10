@@ -39,9 +39,9 @@ void ASPBlackPotion::BeginPlay()
 
 void ASPBlackPotion::HandleActorHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
 {
-
 	ExplosionComponent->Explode();
 	this->SetLifeSpan(0.1f);
+	// }
 }
 
 
