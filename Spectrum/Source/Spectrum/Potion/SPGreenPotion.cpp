@@ -23,7 +23,6 @@ ASPGreenPotion::ASPGreenPotion()
 
 
 	GreenExplosionComponent = CreateDefaultSubobject<USPGreenExplosionComponent>(TEXT("ExplosionComponent"));
-	WaterSound = LoadObject<USoundWave>(nullptr, TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/Water2.Water2'"));
 
 
 	static ConstructorHelpers::FObjectFinder<UParticleSystem> HitRef(

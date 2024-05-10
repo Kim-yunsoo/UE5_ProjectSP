@@ -123,10 +123,12 @@ protected:
 
 public:
 	const uint8 GetIsAiming() { return bIsAiming; };
+	const uint8 GetIsPicking() { return bIsPicking; };
 	const uint8 GetIsHolding() { return bIsHolding; };
 	const uint8 GetIsThrowReady() { return bIsThrowReady; };
 	const uint8 GetIsSpawn() { return bIsSpawn; };
-
+	void SetIsPicking() { bIsPicking = false; };
+	
 	void SetIsThrowReady(bool throwready) { bIsThrowReady = throwready; };
 	void SetIsSpawn(bool spawn) { bIsSpawn = spawn; };
 
@@ -203,6 +205,8 @@ protected:
 	UPROPERTY(Replicated, BlueprintReadWrite, Category = "Character")
 	uint8 bIsThrowReady : 1; //Throw Ready?
 	
+
+	
 	// UPROPERTY(Replicated, BlueprintReadWrite, Category = "Character")
 	// uint8 bIsActiveSlowSkill : 1; //Throw Ready?
 
@@ -210,6 +214,9 @@ protected:
 	TObjectPtr<class UAnimMontage> ThrowMontage;
 
 public:
+	UPROPERTY(Replicated, BlueprintReadWrite, Category = "Character")
+	uint8 bIsPicking : 1;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UAnimMontage> SkillMontage;
 
@@ -318,7 +325,8 @@ public:
 	UPROPERTY()
 	TObjectPtr<ASPPickup> PickupItem;
 	
-
+	UPROPERTY()
+	TObjectPtr<USoundWave> PickupSound;
 protected:
 	 UPROPERTY()
 	UPrimitiveComponent* HitComponent;
@@ -506,6 +514,7 @@ public:
 	UFUNCTION(Client, Unreliable)
 	void ClientRPCIceAnimation(ASPCharacterPlayer* CharacterToPlay);
 
+
 	UFUNCTION(Client, Unreliable)
 	void ClientRPCUpdateMakingPotion(int Num);
 
@@ -563,7 +572,6 @@ public:
 	void PlaySkillAnimation();
 	void PlayIceSkillAnimation();
 	void PlayTeleSkillAnimation();
-
 	// void SlowAction();
 public:
 	// void SetIsActiveSlowSkill(bool isskill){ bIsActiveSlowSkill=isskill ;}
@@ -611,6 +619,8 @@ public:
 
 
 	//사운드
+
+	
 	//Todo 치트키 7번
 	UPROPERTY()
 	uint8 bIsSeven : 1;

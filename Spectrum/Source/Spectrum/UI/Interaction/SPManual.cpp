@@ -87,22 +87,12 @@ void ASPManual::EndInteract()
 	ISPInteractionInterface::EndInteract();
 }
 
-void ASPManual::Interact(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget)
-{
-	ISPInteractionInterface::Interact(PlayerCharacter, HUDWidget);
-}
 
-void ASPManual::Interact2(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget)
+
+bool ASPManual::Interact2(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget)
 {
-	// if(bIsVisible)
-	// {
-	// 	bIsVisible = false;
-	// 	HUDWidget->UpdateManualWidget(false);
-	// }
-	// else
-	{
-		HUDWidget->UpdateManualWidget(true);
-		HUDWidget->ToggleMouse(true);
-	}
+	HUDWidget->UpdateManualWidget(true);
+	HUDWidget->ToggleMouse(true);
+	return true;
 }
 

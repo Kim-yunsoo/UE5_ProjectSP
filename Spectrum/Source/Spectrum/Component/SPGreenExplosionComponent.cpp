@@ -7,6 +7,7 @@
 // Sets default values for this component's properties
 USPGreenExplosionComponent::USPGreenExplosionComponent()
 {
+	WaterSound = LoadObject<USoundWave>(nullptr, TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/Water2.Water2'"));
 }
 
 
@@ -64,6 +65,7 @@ void USPGreenExplosionComponent::MultiRPCGreenExplosion_Implementation(const TAr
 			}
 		}
 	}
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), WaterSound, GetOwner()->GetActorLocation());
 }
 
 

@@ -40,18 +40,11 @@ void ASPMakePotion::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void ASPMakePotion::Interact2(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget)
+bool ASPMakePotion::Interact2(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget)
 {
-	// if(bIsVisible)
-	// {
-	// 	bIsVisible = false;
-	// 	HUDWidget->UpdateMakingPotionWidget(false);
-	// }
-	// else
-	{
-		HUDWidget->UpdateMakingPotionWidget(true);
-		HUDWidget->ToggleMouse(true);
-	}
+	HUDWidget->UpdateMakingPotionWidget(true);
+	HUDWidget->ToggleMouse(true);
+	return true;
 }
 
 void ASPMakePotion::EndInteract()
@@ -60,7 +53,6 @@ void ASPMakePotion::EndInteract()
 	//bIsVisible = false;
 	//HUDWidgetTest->UpdateMakingPotionWidget(false);
 
-	//Todo �� ������ ���� ��������
 }
 
 void ASPMakePotion::ClientRPCInteract_Implementation(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget)

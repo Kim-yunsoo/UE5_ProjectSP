@@ -17,6 +17,8 @@ class SPECTRUM_API ASPLobbyWidgetGameModeBase : public AGameModeBase
 
 public:
 	bool bAlreadyTraveled;
+	void goServer();
+
 
 public:
 	virtual void PostInitializeComponents() override; //여기서 타이머 가동한다. 

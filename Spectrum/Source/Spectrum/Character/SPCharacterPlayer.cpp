@@ -379,7 +379,8 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 	{
 		SevenKeyAction = SevenKeyActionRef.Object;
 	}
-	
+
+	PickupSound = LoadObject<USoundWave>(nullptr, TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/Pickup.Pickup'"));
 	//Effect
 
 	// static ConstructorHelpers::FObjectFinder<UParticleSystem> SlowEffectRef(
@@ -397,6 +398,7 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 
 	//Widget
 	//Target = CreateDefaultSubobject<USPWidgetComponent>(TEXT("Widget"));
+	
 
 
 	CurrentCharacterControlType = ECharacterControlType::Shoulder;
@@ -415,7 +417,7 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 	bIsActiveTeleSkill = true;
 	bIsActiveGraping = true;
 	SphereRange = 10000000;
-
+	bIsPicking = false;
 	KeyToggle = true;
 	bIsSeven = false;
 	// bIsActiveSlowSkill = true;
@@ -846,6 +848,7 @@ void ASPCharacterPlayer::ThrowPotion(const FInputActionValue& Value)
 			if (!HasAuthority())
 			{
 				PlayThrowAnimation();
+
 				bIsThrowReady = false;
 				GetCharacterMovement()->bOrientRotationToMovement = true;
 				GetCharacterMovement()->bUseControllerDesiredRotation = false;
@@ -861,7 +864,7 @@ void ASPCharacterPlayer::ThrowPotion(const FInputActionValue& Value)
 			{
 				PlayStopAnimation();
 			}
-			ServerRPCThrowPotion(bIsThrowReady);
+			//ServerRPCThrowPotion(bIsThrowReady);
 		}
 	}
 }
@@ -1455,6 +1458,7 @@ void ASPCharacterPlayer::ClientRPCTeleAnimation_Implementation(ASPCharacterPlaye
 }
 
 
+
 void ASPCharacterPlayer::OnRep_PotionSpawn()
 {
 }
@@ -1817,9 +1821,23 @@ void ASPCharacterPlayer::Interact()
 	GetWorldTimerManager().ClearTimer(TimerHandle_Interaction);
 	if (IsValid(TargetInteractable.GetObject()))
 	{
-		TargetInteractable->Interact2(this, HUDWidget);
+		if(TargetInteractable->Interact2(this, HUDWidget))
+		{
+			
+		}
+		else
+		{
+			if(IsMontagePlaying() == false)
+			{
+				FTimerHandle TimerHandle;
+				GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this]()
+				{
+					UGameplayStatics::PlaySoundAtLocation(GetWorld(), PickupSound, GetActorLocation(),GetActorRotation());
+				}, 0.8f, false);
+				ServerRPCInteract();
+			}
+		}
 	}
-	ServerRPCInteract();
 }
 
 void ASPCharacterPlayer::ServerRPCInteract_Implementation()
@@ -1828,7 +1846,18 @@ void ASPCharacterPlayer::ServerRPCInteract_Implementation()
 	if (IsValid(TargetInteractable.GetObject()))
 	{
 		TargetInteractable->Interact(this, HUDWidget);
+		
 	}
+	// if(HasAuthority())
+	// {
+		bIsPicking = true;
+		FTimerHandle TimerHandle;
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]()
+		{
+			bIsPicking = false;
+		}, 1.5f, false);
+	// }
+	//여기서 다른 사람들 애니메이션 보내기
 }
 
 void ASPCharacterPlayer::UpdateInteractionWidget() const
@@ -1904,6 +1933,7 @@ void ASPCharacterPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 	DOREPLIFETIME(ASPCharacterPlayer, bIsTurnReady);
 	DOREPLIFETIME(ASPCharacterPlayer, bIsThrowReady);
 	DOREPLIFETIME(ASPCharacterPlayer, bIsHolding);
+	DOREPLIFETIME(ASPCharacterPlayer, bIsPicking);
 	DOREPLIFETIME(ASPCharacterPlayer, InteractionCheck);
 	DOREPLIFETIME(ASPCharacterPlayer, bIsActiveGraping);
 	DOREPLIFETIME(ASPCharacterPlayer, HitMyActor);
@@ -1928,6 +1958,7 @@ void ASPCharacterPlayer::PlaySkillAnimation()
 	//void UGameplayStatics::PlaySoundAtLocation();
 	UGameplayStatics::PlaySoundAtLocation(GetWorld(), SlowSkillComponent->SkillSound, GetActorLocation(),GetActorRotation());
 }
+
 
 void ASPCharacterPlayer::PlayIceSkillAnimation()
 {

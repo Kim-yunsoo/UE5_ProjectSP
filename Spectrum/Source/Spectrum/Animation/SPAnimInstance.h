@@ -55,6 +55,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character)
 	uint8 bIsHolding : 1; //무언가를 들고있는지
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character)
+	uint8 bIsPicking : 1;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character)
 	float DeltaY;

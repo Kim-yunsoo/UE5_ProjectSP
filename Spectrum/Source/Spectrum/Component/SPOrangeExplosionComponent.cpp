@@ -4,10 +4,12 @@
 #include "Component/SPOrangeExplosionComponent.h"
 
 #include "Interface/SPDamageInterface.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 USPOrangeExplosionComponent::USPOrangeExplosionComponent()
 {
+	WaterSound = LoadObject<USoundWave>(nullptr, TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/Water2.Water2'"));
 }
 
 void USPOrangeExplosionComponent::BeginPlay()
@@ -61,4 +63,5 @@ void USPOrangeExplosionComponent::MultiRPCOrangeExplosion_Implementation(const T
 			}
 		}
 	}
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), WaterSound, GetOwner()->GetActorLocation());
 }

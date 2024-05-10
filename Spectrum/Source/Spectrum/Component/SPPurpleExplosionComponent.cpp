@@ -4,10 +4,12 @@
 #include "Component/SPPurpleExplosionComponent.h"
 
 #include "Interface/SPDamageInterface.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 USPPurpleExplosionComponent::USPPurpleExplosionComponent()
 {
+	WaterSound = LoadObject<USoundWave>(nullptr, TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/Water2.Water2'"));
 }
 
 void USPPurpleExplosionComponent::BeginPlay()
@@ -62,4 +64,5 @@ void USPPurpleExplosionComponent::MultiRPCPrupleExplosion_Implementation(const T
 			}
 		}
 	}
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), WaterSound, GetOwner()->GetActorLocation());
 }
