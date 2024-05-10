@@ -797,7 +797,6 @@ void ASPCharacterPlayer::ServerRPCStopAiming_Implementation()
 void ASPCharacterPlayer::StopGraping(const FInputActionValue& Value)
 {
 	//ShowTargetUI(false);
-	UE_LOG(LogTemp,Log,TEXT("StopGraping!"));
 	ServerRPCStopGraping();
 }
 
@@ -2230,6 +2229,11 @@ void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 		FVector SphereLocationStart = FollowCamera->K2_GetComponentLocation();
 		//FVector SphereLocationEnd = SphereLocationStart + (1500 * FollowCamera->GetForwardVector());
 		APlayerController* PlayerController = GetController<APlayerController>();
+		FVector Location;
+		FRotator Rotation;
+		//PlayerController(Location);
+		PlayerController->GetPlayerViewPoint(Location,Rotation);
+		
 		if (PlayerController != nullptr)
 		{
 			// if(bIsActiveGraping)
@@ -2244,8 +2248,9 @@ void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 			bool TransSuccess = PlayerController->DeprojectScreenPositionToWorld(
 				0.5, 0.5, WorldLocation, WorldDirection);
 
-			FVector SphereLocationEnd = ReseltFoward * SphereRange + SphereLocationStart;
-
+			//FVector SphereLocationEnd = ReseltFoward * SphereRange + SphereLocationStart;
+			FVector SphereLocationEnd = Location + Rotation.Vector()  * SphereRange ;
+			// Location + Rotation.Vector() * MaxRange; 
 			TArray<TEnumAsByte<EObjectTypeQuery>> EmptyObjectTypes;
 			EDrawDebugTrace::Type drawDebugType = EDrawDebugTrace::None;
 			TArray<AActor*> HitActorsToIgnore;
@@ -2263,7 +2268,7 @@ void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 			//Params.bDebugQuery= false; 
 			float DrawTime = 5.0f;
 
-			bool HitSuccess = GetWorld()->LineTraceSingleByChannel(outHitResult, SphereLocationStart, SphereLocationEnd,
+			bool HitSuccess = GetWorld()->LineTraceSingleByChannel(outHitResult, Location, SphereLocationEnd,
 			                                                       ECC_GameTraceChannel1, Params);
 
 			if (HitSuccess && outHitResult.Component->Mobility == EComponentMobility::Movable )

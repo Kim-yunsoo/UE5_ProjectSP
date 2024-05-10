@@ -42,6 +42,18 @@
     &quot;accountId&quot;: &quot;9c8f9718-d4dc-45e8-b91c-a772cc3bcf80&quot;
   }
 }</component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Spectrum/Object/SPObject.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Spectrum/Object/Trigger/SPPortalTrigger.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Spectrum/Potion/SPGreenPotion.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Spectrum/Potion/SPPickup.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Spectrum/Potion/SPPotionSpawner.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../UE_5.3/Engine/Source/Runtime/CoreUObject/Public/Templates/Casts.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../UE_5.3/Engine/Source/Runtime/Engine/Classes/Components/SceneComponent.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../UE_5.3/Engine/Source/Runtime/Engine/Classes/Components/StaticMeshComponent.h" root0="FORCE_HIGHLIGHTING" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 8
@@ -201,6 +213,20 @@
       <updated>1715339649869</updated>
       <workItem from="1715339651422" duration="404000" />
       <workItem from="1715354245710" duration="3126000" />
+      <updated>1715160954094</updated>
+      <workItem from="1715160955891" duration="1990000" />
+      <workItem from="1715164328766" duration="3643000" />
+      <workItem from="1715171066199" duration="1632000" />
+      <workItem from="1715172951424" duration="6574000" />
+      <workItem from="1715180583525" duration="1849000" />
+      <workItem from="1715186972496" duration="1273000" />
+      <workItem from="1715188640516" duration="299000" />
+      <workItem from="1715189058578" duration="3457000" />
+      <workItem from="1715250002442" duration="1467000" />
+      <workItem from="1715313733047" duration="3983000" />
+      <workItem from="1715319280328" duration="7060000" />
+      <workItem from="1715329854310" duration="6681000" />
+      <workItem from="1715353608140" duration="3635000" />
     </task>
     <servers />
   </component>
