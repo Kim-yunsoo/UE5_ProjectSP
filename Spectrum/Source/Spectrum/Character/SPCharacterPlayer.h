@@ -642,4 +642,7 @@ public:
 
 	UFUNCTION(Client,Unreliable)
 	void ClientRPCSound(USoundWave* Sound);
+
+	UFUNCTION(NetMulticast,Unreliable)
+	void MultiRPCAimRotation(bool IsAim);
 };

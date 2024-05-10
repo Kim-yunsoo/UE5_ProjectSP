@@ -766,31 +766,30 @@ void ASPCharacterPlayer::Aiming(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::ServerRPCAiming_Implementation()
 {
-	
+	//Test();
 	bIsAiming = true;
+	MultiRPCAimRotation(true);
 }
 
 void ASPCharacterPlayer::StopAiming(const FInputActionValue& Value)
 {
-	bIsAiming = false;
+	//bIsAiming = false;
 
 	OnAimChanged.Broadcast(false);
-	GetCharacterMovement()->bOrientRotationToMovement = true;
-	GetCharacterMovement()->bUseControllerDesiredRotation = false;
+	// GetCharacterMovement()->bOrientRotationToMovement = true;
+	// GetCharacterMovement()->bUseControllerDesiredRotation = false;
 	FollowCamera->K2_AttachToComponent(CameraBoom, NAME_None, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld,
 	                                   EAttachmentRule::KeepWorld, true);
 	FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld,
 	                                          EAttachmentRule::KeepWorld, true);
 	FollowCamera->AttachToComponent(CameraBoom, AttachmentRules, NAME_None);
 	CameraMove();
-	if (!HasAuthority())
-	{
-		ServerRPCStopAiming();
-	}
+	ServerRPCStopAiming();
 }
 
 void ASPCharacterPlayer::ServerRPCStopAiming_Implementation()
 {
+	MultiRPCAimRotation(false);
 	bIsAiming = false;
 }
 
@@ -1505,8 +1504,9 @@ void ASPCharacterPlayer::ServerRPCThrowPotion_Implementation(bool IsThrowReady)
 			Potion->Throw((ForwardVector + FVector{0.0f, 0.0f, 0.4f}) * Mul);
 		}
 		bIsThrowReady = false;
-		GetCharacterMovement()->bOrientRotationToMovement = true;
-		GetCharacterMovement()->bUseControllerDesiredRotation = false;
+		MultiRPCAimRotation(false);
+		//GetCharacterMovement()->bOrientRotationToMovement = true;
+		//GetCharacterMovement()->bUseControllerDesiredRotation = false;
 		bIsTurnReady = false;
 		bIsSpawn = false;
 		Potion = nullptr;
@@ -1999,7 +1999,6 @@ void ASPCharacterPlayer::HitSlowSkillResult()
 
 void ASPCharacterPlayer::HitIceSkillResult()
 {
-	//TODO
 	bIsDamage = true;
 	// GetCharacterMovement()->MaxWalkSpeed = 0.0f;
 	if(false==IsMontagePlaying())
@@ -2164,7 +2163,9 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 	// if (bIsActiveGraping)
 	// {
 	//ShowTargetUI(true);
-	
+	//SP_LOG(LogSPNetwork,Log,TEXT("TEST"));
+
+	//Test();
 	ServerRPCGraping();
 	// }
 	// GetCharacterMovement()->bOrientRotationToMovement = true;
@@ -2218,8 +2219,10 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 {
-	GetCharacterMovement()->bOrientRotationToMovement = true;
-	GetCharacterMovement()->bUseControllerDesiredRotation = false;
+	MultiRPCAimRotation(false);
+	//GetCharacterMovement()->bOrientRotationToMovement = true;
+	//GetCharacterMovement()->bUseControllerDesiredRotation = false;
+	
 	if (false == bIsHolding)
 	{
 
@@ -2396,8 +2399,9 @@ void ASPCharacterPlayer::Aiming_CameraMove()
 {
 	if (false == bIsHolding)
 	{
-		GetCharacterMovement()->bOrientRotationToMovement = false;
-		GetCharacterMovement()->bUseControllerDesiredRotation = true;
+		//todo
+		//GetCharacterMovement()->bOrientRotationToMovement = false;
+		//GetCharacterMovement()->bUseControllerDesiredRotation = true;
 		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld,
 		                                          EAttachmentRule::KeepWorld, true);
 		FollowCamera->AttachToComponent(SpringArm, AttachmentRules, NAME_None);
@@ -2405,8 +2409,8 @@ void ASPCharacterPlayer::Aiming_CameraMove()
 	}
 	else
 	{
-		GetCharacterMovement()->bOrientRotationToMovement = true;
-		GetCharacterMovement()->bUseControllerDesiredRotation = false;
+		//GetCharacterMovement()->bOrientRotationToMovement = true;
+		//GetCharacterMovement()->bUseControllerDesiredRotation = false;
 		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld,
 		                                          EAttachmentRule::KeepWorld, true);
 		FollowCamera->AttachToComponent(CameraBoom, AttachmentRules, NAME_None);
@@ -2487,6 +2491,21 @@ void ASPCharacterPlayer::ServerRPCSeven_Implementation()
 void ASPCharacterPlayer::ShowTargetUI(bool ShowUI)
 {
 	OnAimChanged.Broadcast(ShowUI);
+}
+
+void ASPCharacterPlayer::MultiRPCAimRotation_Implementation(bool IsAim)
+{
+	SP_LOG(LogSPNetwork,Log,TEXT("TEST"));
+	if(IsAim)
+	{
+	GetCharacterMovement()->bOrientRotationToMovement = false;
+	GetCharacterMovement()->bUseControllerDesiredRotation = true;
+	}
+	else
+	{
+		GetCharacterMovement()->bOrientRotationToMovement = true;
+		GetCharacterMovement()->bUseControllerDesiredRotation = false;
+	}
 }
 
 void ASPCharacterPlayer::ClientRPCSound_Implementation(USoundWave* Sound)
