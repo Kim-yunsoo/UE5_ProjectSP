@@ -12,23 +12,10 @@
   <component name="ChangeListManager">
     <list default="true" id="36dc07cf-1872-45e0-88ab-9aa66971cb17" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Animation/AB_SP_Anim_Man.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Animation/AB_SP_Anim_Man.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Animation/AB_SP_Anim_Woman.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Animation/AB_SP_Anim_Woman.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Animation/SwordAndShieldCasting_UE.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Animation/Woman/AM_AttackIceW.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Animation/Woman/AM_AttackIceW.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Animation/Woman/AM_AttackW.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Animation/Woman/AM_AttackW.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Assets/Hair/Hair06.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Assets/Hair/Hair06.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/BluePrint/BP_SPCharacterMan1.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/BluePrint/BP_SPCharacterMan1.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/BluePrint/BP_SPCharacterMan2.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/BluePrint/BP_SPCharacterMan2.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/BluePrint/BP_SPCharacterMan3.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/BluePrint/BP_SPCharacterMan3.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/BluePrint/BP_SPCharaterPlayer_W1.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/BluePrint/BP_SPCharaterPlayer_W1.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Room/Map/Building.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Room/Map/Building.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Room/bedroom/Crystalball/MagicTomeEffect.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Room/bedroom/Crystalball/MagicTomeEffect.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Room/bedroom/Crystalball/MagicTomePedestal.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Room/bedroom/Crystalball/MagicTomePedestal.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPBlackPotion.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPBlackPotion.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPGreenPotion.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPGreenPotion.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Object/Trigger/SPPortalTrigger.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Object/Trigger/SPPortalTrigger.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Object/Trigger/SPPortalTrigger.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Object/Trigger/SPPortalTrigger.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -225,7 +212,7 @@
       <workItem from="1715189058578" duration="3457000" />
       <workItem from="1715250002442" duration="1467000" />
       <workItem from="1715313733047" duration="3983000" />
-      <workItem from="1715319280328" duration="3915000" />
+      <workItem from="1715319280328" duration="6638000" />
     </task>
     <servers />
   </component>

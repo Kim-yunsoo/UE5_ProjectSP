@@ -4,6 +4,7 @@
 #include "Object/Trigger/SPPortalTrigger.h"
 #include "Components/BoxComponent.h"
 #include "Interface/SPTriggerInterface.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ASPPortal::ASPPortal()
@@ -20,6 +21,13 @@ ASPPortal::ASPPortal()
 	if(DataRef.Object)
 	{
 		PortalData=DataRef.Object;
+	}
+
+	PortalSound = CreateDefaultSubobject<USoundWave>(TEXT("PortalSound"));
+	static ConstructorHelpers::FObjectFinder<USoundWave> SoundRef(TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/PortalSound.PortalSound'"));
+	if(SoundRef.Object)
+	{
+		PortalSound=SoundRef.Object;
 	}
 }
 
@@ -46,11 +54,17 @@ void ASPPortal::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* Othe
 	}
 }
 
+void ASPPortal::ClientRPCSound_Implementation(USoundWave* Sound)
+{
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, GetActorLocation(),GetActorRotation());
+}
+
 void ASPPortal::ServerRPC_Implementation(AActor* OverlapActor, const FVector& Location)
 {
 	ISPTriggerInterface* PortalInterface = Cast<ISPTriggerInterface>(OverlapActor);
 	if(PortalInterface)
 	{
+		ClientRPCSound(PortalSound);
 		PortalInterface->OverlapPortal(LocationResult);
 	}
 }

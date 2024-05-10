@@ -431,6 +431,20 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 
 	//GravityArrow->SetIsReplicated(true);
 	//PhysicsHandleComponent->SetIsReplicated(true);
+
+	GrapSound= CreateDefaultSubobject<USoundWave>(TEXT("GrapSound"));
+	static ConstructorHelpers::FObjectFinder<USoundWave>GrapSoundRef(TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/GrapSound.GrapSound'"));
+	if(GrapSoundRef.Object)
+	{
+		GrapSound = GrapSoundRef.Object;
+	}
+
+	StopGrapSound= CreateDefaultSubobject<USoundWave>(TEXT("StopGrapSound"));
+	static ConstructorHelpers::FObjectFinder<USoundWave>StopGrapSoundRef(TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/StopGrapingSound.StopGrapingSound'"));
+	if(StopGrapSoundRef.Object)
+	{
+		StopGrapSound = StopGrapSoundRef.Object;
+	}
 	
 }
 
@@ -1986,14 +2000,14 @@ void ASPCharacterPlayer::OverlapPortal(const FVector& Location)
 	// GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 	// this->TeleportTo(Location, this->GetActorRotation(), false, true);
 	// this->SetActorRelativeLocation(Location);
-
+	//ClientRPCSound();
 
 	FTimerHandle Handle;
 	GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([&]
 		                                       {
 			                                       this->SetActorRelativeLocation(Location);
 		                                       }
-	                                       ), 1.5f, false);
+	                                       ), 5.0f, false);
 }
 
 void ASPCharacterPlayer::ActiveGrapping(const bool Active)
@@ -2119,6 +2133,7 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 	// if (bIsActiveGraping)
 	// {
 	//ShowTargetUI(true);
+	
 	ServerRPCGraping();
 	// }
 	// GetCharacterMovement()->bOrientRotationToMovement = true;
@@ -2219,6 +2234,8 @@ GetCharacterMovement()->bOrientRotationToMovement = true;
 
 			if (HitSuccess && outHitResult.Component->Mobility == EComponentMobility::Movable)
 			{
+				
+				ClientRPCSound(GrapSound);
 				if(bIsActiveGraping)
 				{
 					outHitResult.Component->SetSimulatePhysics(true);
@@ -2322,6 +2339,7 @@ GetCharacterMovement()->bOrientRotationToMovement = true;
 		bIsHolding = false;
 		if (HitComponent && HitComponent->IsSimulatingPhysics())
 		{
+			ClientRPCSound(StopGrapSound);
 			PhysicsHandleComponent->ReleaseComponent();
 			HitComponent->AddImpulse(FollowCamera->GetForwardVector() * HitDistance, NAME_None, true);
 			if(Cast<ASPObject>(HitMyActor))
@@ -2338,6 +2356,7 @@ void ASPCharacterPlayer::ServerRPCStopGraping_Implementation()
 	if (bIsHolding && HitComponent->IsSimulatingPhysics())
 	{
 		bIsHolding = false;
+		ClientRPCSound(StopGrapSound);
 		PhysicsHandleComponent->ReleaseComponent();
 		HitComponent->AddImpulse(FollowCamera->GetForwardVector() * HitDistance, NAME_None, true);
 		if (Cast<ASPObject>(HitMyActor))
@@ -2443,4 +2462,9 @@ void ASPCharacterPlayer::ServerRPCSeven_Implementation()
 void ASPCharacterPlayer::ShowTargetUI(bool ShowUI)
 {
 	OnAimChanged.Broadcast(ShowUI);
+}
+
+void ASPCharacterPlayer::ClientRPCSound_Implementation(USoundWave* Sound)
+{
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, GetActorLocation(),GetActorRotation());
 }
