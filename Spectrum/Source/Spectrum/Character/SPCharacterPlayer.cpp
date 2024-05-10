@@ -1457,6 +1457,22 @@ void ASPCharacterPlayer::ClientRPCTeleAnimation_Implementation(ASPCharacterPlaye
 }
 
 
+void ASPCharacterPlayer::ServerRPCWidgetMove_Implementation(bool Move)
+{
+	MultiRPCWidgetMove(Move);
+}
+
+void ASPCharacterPlayer::MultiRPCWidgetMove_Implementation(bool move)
+{
+	if(move)
+	{
+		GetCharacterMovement()->MovementMode = EMovementMode::MOVE_Walking;
+	}
+	else
+	{
+		GetCharacterMovement()->MovementMode = EMovementMode::MOVE_None;
+	}
+}
 
 void ASPCharacterPlayer::OnRep_PotionSpawn()
 {

@@ -68,14 +68,14 @@ void USPHUDWidget::ToggleMouse(bool bIsShowMouse)
 		const FInputModeGameAndUI InputMode;
 		GetOwningPlayer()->SetInputMode(InputMode);
 		GetOwningPlayer()->SetShowMouseCursor(true);
-		PlayerCharacter->GetCharacterMovement()->MovementMode = EMovementMode::MOVE_None;
+		PlayerCharacter->ServerRPCWidgetMove(false);
 	}
 	else
 	{
 		const FInputModeGameOnly InputMode;
 		GetOwningPlayer()->SetInputMode(InputMode);
 		GetOwningPlayer()->SetShowMouseCursor(false);
-		PlayerCharacter->GetCharacterMovement()->MovementMode = EMovementMode::MOVE_Walking;
+		PlayerCharacter->ServerRPCWidgetMove(true);
 	}
 }
 

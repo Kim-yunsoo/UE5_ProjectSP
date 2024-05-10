@@ -497,6 +497,9 @@ public:
 
 	UFUNCTION(Server, Unreliable)
 	void ServerRPCAddItemClick(int Num);
+
+	UFUNCTION(Server, Unreliable)
+	void ServerRPCWidgetMove(bool Move);
 	
 	//ClientRPC
 	UFUNCTION(Client, Unreliable)
@@ -522,8 +525,8 @@ public:
 	void ClientRPCTeleAnimation(ASPCharacterPlayer* CharacterToPlay);
 	//AABCharacterPlayer* CharacterToPlay
 	//MultiRPC
-	
-
+	UFUNCTION(NetMulticast, Unreliable)
+	void MultiRPCWidgetMove(bool move);
 	
 	
 	//OnRep

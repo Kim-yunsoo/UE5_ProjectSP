@@ -51,6 +51,7 @@ void ASPManual::OnTriggerExit(UPrimitiveComponent* OverlappedComp, AActor* Other
 	if (PlayerCharacter)
 	{
 		PlayerCharacter->NoInteractableFound();
+		//PlayerCharacter->HUDWidget->ToggleMouse(false);
 	}
 }
 

@@ -99,5 +99,5 @@ void ASPGameModeBase::PostLogin(APlayerController* NewPlayer)
       //       break;
       //    }
       // }
-   CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharaterPlayer_W2"));
+   CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharacterMan2"));
 }
