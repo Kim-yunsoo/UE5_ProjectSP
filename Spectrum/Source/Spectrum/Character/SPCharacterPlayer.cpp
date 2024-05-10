@@ -797,7 +797,6 @@ void ASPCharacterPlayer::ServerRPCStopAiming_Implementation()
 void ASPCharacterPlayer::StopGraping(const FInputActionValue& Value)
 {
 	//ShowTargetUI(false);
-	UE_LOG(LogTemp,Log,TEXT("StopGraping!"));
 	ServerRPCStopGraping();
 }
 
