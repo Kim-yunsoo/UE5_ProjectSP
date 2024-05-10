@@ -798,6 +798,7 @@ void ASPCharacterPlayer::ServerRPCStopAiming_Implementation()
 void ASPCharacterPlayer::StopGraping(const FInputActionValue& Value)
 {
 	//ShowTargetUI(false);
+	UE_LOG(LogTemp,Log,TEXT("StopGraping!"));
 	ServerRPCStopGraping();
 }
 
@@ -2152,7 +2153,6 @@ void ASPCharacterPlayer::MultiChangeCollision_Implementation(const FName& Collis
 {
 	if (HitMyActor) //내가 들고 있는 액터가 있는 것이면 ? 
 	{
-		SP_LOG(LogSPNetwork,Log,TEXT("MultiChangeCollision"));
 		ASPObject* MyObject = Cast<ASPObject>(HitMyActor);
 		MyObject->SetObjectCollisionType(CollisionName);
 	}
@@ -2218,7 +2218,7 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 {
-GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->bUseControllerDesiredRotation = false;
 	if (false == bIsHolding)
 	{
@@ -2263,12 +2263,9 @@ GetCharacterMovement()->bOrientRotationToMovement = true;
 			bool HitSuccess = GetWorld()->LineTraceSingleByChannel(outHitResult, SphereLocationStart, SphereLocationEnd,
 			                                                       ECC_GameTraceChannel1, Params);
 
-			if (HitSuccess && outHitResult.Component->Mobility == EComponentMobility::Movable)
+			if (HitSuccess && outHitResult.Component->Mobility == EComponentMobility::Movable )
 			{
 				
-				ClientRPCSound(GrapSound);
-				if(bIsActiveGraping)
-				{
 					outHitResult.Component->SetSimulatePhysics(true);
 					outHitResult.GetActor()->SetOwner(this);
 					HitComponent = outHitResult.GetComponent();
@@ -2318,7 +2315,6 @@ GetCharacterMovement()->bOrientRotationToMovement = true;
 							}
 						}
 					}
-				}
 				if (HitComponent && HitComponent->IsSimulatingPhysics())
 				{
 					PhysicsHandleComponent->GrabComponentAtLocation(
@@ -2326,47 +2322,45 @@ GetCharacterMovement()->bOrientRotationToMovement = true;
 						NAME_None,
 						HitComponent->K2_GetComponentLocation()
 					);
-					if(bIsActiveGraping)
-					{
+				
 						bIsHolding = true;
+						ClientRPCSound(GrapSound);
 
-						FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld,
-																  EAttachmentRule::KeepWorld, true);
-						FollowCamera->AttachToComponent(CameraBoom, AttachmentRules, NAME_None);
-						CameraMove();
+
+						
 					}
 				
-				}
 			}
 
-			// const FColor LineColor = HitSuccess ? FColor::Green : FColor::Red;
-			//
-			// DrawDebugLine(
-			// 	GetWorld(),
-			// 	SphereLocationStart,
-			// 	SphereLocationEnd,
-			// 	LineColor,
-			// 	false,
-			// 	5.0f,
-			// 	0,
-			// 	1.0f
-			// );
-			// if (HitSuccess)
-			// {
-			// 	DrawDebugPoint(
-			// 		GetWorld(),
-			// 		outHitResult.ImpactPoint,
-			// 		10.0f,
-			// 		FColor::Blue,
-			// 		false,
-			// 		5.0f
-			// 	);
-			// }
+			const FColor LineColor = HitSuccess ? FColor::Green : FColor::Red;
+			
+			DrawDebugLine(
+				GetWorld(),
+				SphereLocationStart,
+				SphereLocationEnd,
+				LineColor,
+				false,
+				5.0f,
+				0,
+				1.0f
+			);
+			if (HitSuccess)
+			{
+				DrawDebugPoint(
+					GetWorld(),
+					outHitResult.ImpactPoint,
+					10.0f,
+					FColor::Blue,
+					false,
+					5.0f
+				);
+			}
 				
 		}
 	}
 	else
 	{
+		UE_LOG(LogTemp,Log,TEXT("HI"));
 		bIsHolding = false;
 		if (HitComponent && HitComponent->IsSimulatingPhysics())
 		{
@@ -2497,5 +2491,12 @@ void ASPCharacterPlayer::ShowTargetUI(bool ShowUI)
 
 void ASPCharacterPlayer::ClientRPCSound_Implementation(USoundWave* Sound)
 {
+	if(Sound==GrapSound)
+	{
+		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld,
+		                                          EAttachmentRule::KeepWorld, true);
+		FollowCamera->AttachToComponent(CameraBoom, AttachmentRules, NAME_None);
+		CameraMove();
+	}
 	UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, GetActorLocation(),GetActorRotation());
 }
