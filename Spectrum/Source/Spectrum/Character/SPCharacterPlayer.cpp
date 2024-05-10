@@ -1833,6 +1833,8 @@ void ASPCharacterPlayer::EndInteract()
 
 void ASPCharacterPlayer::Interact()
 {
+	//todo
+	//	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 	//타이머 끝났다고 가정하고 지운다.
 	GetWorldTimerManager().ClearTimer(TimerHandle_Interaction);
 	if (IsValid(TargetInteractable.GetObject()))
@@ -1867,10 +1869,14 @@ void ASPCharacterPlayer::ServerRPCInteract_Implementation()
 	// if(HasAuthority())
 	// {
 		bIsPicking = true;
+		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 		FTimerHandle TimerHandle;
+
 		GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]()
 		{
+			GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
 			bIsPicking = false;
+			
 		}, 1.5f, false);
 	// }
 	//여기서 다른 사람들 애니메이션 보내기
@@ -2512,6 +2518,11 @@ void ASPCharacterPlayer::ServerRPCSeven_Implementation()
 void ASPCharacterPlayer::ShowTargetUI(bool ShowUI)
 {
 	OnAimChanged.Broadcast(ShowUI);
+}
+
+void ASPCharacterPlayer::MultiRPCStopMove_Implementation(bool IsStop)
+{
+	
 }
 
 void ASPCharacterPlayer::MultiRPCAimRotation_Implementation(bool IsAim)

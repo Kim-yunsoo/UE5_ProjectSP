@@ -11,6 +11,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4526395d-2fe7-48f6-969b-39e21e8f1db8" name="변경" comment="">
+    <list default="true" id="a94084f7-dd10-4873-8d85-e55e7c9272c2" name="변경" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Room/Map/Building.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Room/Map/Building.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.h" afterDir="false" />
+    </list>
+    <list default="true" id="12255de0-62d9-408a-bad5-79f8e0f42cf8" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.h" afterDir="false" />
@@ -51,6 +58,7 @@
   "keyToString": {
     "C++ 프로젝트.Spectrum.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "YunsooKim",
     "git-widget-placeholder": "IngyeongSeok",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -64,6 +72,9 @@
       "C:\\Users\\ingyeong\\AppData\\Roaming\\JetBrains\\Rider2024.1\\resharper-host\\DecompilerCache",
       "C:\\Users\\ingyeong\\AppData\\Roaming\\JetBrains\\Rider2024.1\\resharper-host\\SourcesCache",
       "C:\\Users\\ingyeong\\AppData\\Local\\Symbols\\src"
+      "C:\\Users\\yunsoo\\AppData\\Roaming\\JetBrains\\Rider2024.1\\resharper-host\\DecompilerCache",
+      "C:\\Users\\yunsoo\\AppData\\Roaming\\JetBrains\\Rider2024.1\\resharper-host\\SourcesCache",
+      "C:\\Users\\yunsoo\\AppData\\Local\\Symbols\\src"
     ]
   }
 }]]></component>
@@ -196,6 +207,25 @@
       <option name="presentableId" value="Default" />
       <updated>1715362929791</updated>
       <workItem from="1715362931164" duration="845000" />
+      <updated>1715358596302</updated>
+      <workItem from="1715358597832" duration="720000" />
+      <updated>1715160954094</updated>
+      <workItem from="1715339651422" duration="404000" />
+      <workItem from="1715354245710" duration="3126000" />
+      <workItem from="1715160955891" duration="1990000" />
+      <workItem from="1715164328766" duration="3643000" />
+      <workItem from="1715171066199" duration="1632000" />
+      <workItem from="1715172951424" duration="6574000" />
+      <workItem from="1715180583525" duration="1849000" />
+      <workItem from="1715186972496" duration="1273000" />
+      <workItem from="1715188640516" duration="299000" />
+      <workItem from="1715189058578" duration="3457000" />
+      <workItem from="1715250002442" duration="1467000" />
+      <workItem from="1715313733047" duration="3983000" />
+      <workItem from="1715319280328" duration="7060000" />
+      <workItem from="1715329854310" duration="6681000" />
+      <workItem from="1715353608140" duration="3635000" />
+      <workItem from="1715358623624" duration="2260000" />
     </task>
     <servers />
   </component>

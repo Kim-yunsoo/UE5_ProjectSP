@@ -648,4 +648,10 @@ public:
 
 	UFUNCTION(NetMulticast,Unreliable)
 	void MultiRPCAimRotation(bool IsAim);
+
+	UFUNCTION(NetMulticast,Unreliable)
+	void MultiRPCStopMove(bool IsStop);
+
+
+	
 };
