@@ -47,9 +47,14 @@ void ASPSpectrumPotion::BeginPlay()
 void ASPSpectrumPotion::HandleActorHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse,
 	const FHitResult& Hit)
 {
-	UGameplayStatics::PlaySound2D(GetWorld(), WaterSound);
-	FVector HitLocation = Hit.ImpactPoint;
-	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), EmitterHit, HitLocation, FRotator::ZeroRotator,
-												 FVector(1.0f), true, EPSCPoolMethod::None, true);
+
+	MultiRPCSpectrum(Hit.ImpactPoint);
 	this->SetLifeSpan(0.1f);
+}
+
+void ASPSpectrumPotion::MultiRPCSpectrum_Implementation(FVector Loccation)
+{
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), WaterSound, Loccation);
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), EmitterHit, Loccation, FRotator::ZeroRotator,
+												 FVector(1.0f), true, EPSCPoolMethod::None, true);
 }

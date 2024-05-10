@@ -28,4 +28,10 @@ protected:
 	);
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Default")
 	TObjectPtr<USoundWave> WaterSound;
+
+	UFUNCTION(NetMulticast, Unreliable)
+	void MultiRPCSpectrum(FVector Loccation);
+	
+	UPROPERTY()
+	TObjectPtr<UParticleSystem> EmitterHit;
 };

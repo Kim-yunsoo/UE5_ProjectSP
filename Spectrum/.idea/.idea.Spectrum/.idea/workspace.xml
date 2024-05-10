@@ -12,11 +12,20 @@
   <component name="ChangeListManager">
     <list default="true" id="f720f1ff-cada-489c-94f3-ca2cdcbc28a5" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Animation/Man/BS_SP_Man.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Animation/Man/BS_SP_Man.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Animation/Man/FastRun.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Animation/Man/FastRun.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Animation/Man/Running.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Animation/Man/Running.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Object/SPObject.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Object/SPObject.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Object/SPObject.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Object/SPObject.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Component/SPComponentBase.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Component/SPComponentBase.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Component/SPExplosionComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Component/SPExplosionComponent.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Component/SPGreenExplosionComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Component/SPGreenExplosionComponent.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Component/SPGreenExplosionComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Component/SPGreenExplosionComponent.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Component/SPOrangeExplosionComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Component/SPOrangeExplosionComponent.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Component/SPPurpleExplosionComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Component/SPPurpleExplosionComponent.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPBlackPotion.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPBlackPotion.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPGreenPotion.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPGreenPotion.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPOrangePotion.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPOrangePotion.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPPotionBase.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPPotionBase.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPPotionBase.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPPotionBase.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPPurplePotion.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPPurplePotion.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPSpectrumPotion.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPSpectrumPotion.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPSpectrumPotion.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPSpectrumPotion.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -201,6 +210,7 @@
       <workItem from="1715325000162" duration="4249000" />
       <workItem from="1715329445665" duration="1763000" />
       <workItem from="1715332343189" duration="908000" />
+      <workItem from="1715333300378" duration="2738000" />
     </task>
     <servers />
   </component>

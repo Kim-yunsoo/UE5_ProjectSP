@@ -3,11 +3,9 @@
 
 #include "Component/SPExplosionComponent.h"
 
-#include "SpectrumLog.h"
 #include "Kismet/GameplayStatics.h"
-#include "Particles/ParticleSystemComponent.h"
 #include "Interface/SPDamageInterface.h"
-
+#include "Particles/ParticleSystem.h"
 
 // Sets default values for this component's properties
 USPExplosionComponent::USPExplosionComponent()
@@ -18,6 +16,14 @@ USPExplosionComponent::USPExplosionComponent()
 	if (EffectRef.Object)
 	{
 		Effect = EffectRef.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> HitRef(
+TEXT("/Script/Engine.ParticleSystem'/Game/MagicProjectilesVol2/Particles/Hits/CP_BlackPotion.CP_BlackPotion'"));
+
+	if (HitRef.Succeeded())
+	{
+		EmitterHit = HitRef.Object;
 	}
 
 	WaterSound = LoadObject<USoundWave>(nullptr, TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/Water2.Water2'"));
@@ -81,6 +87,8 @@ void USPExplosionComponent::MultiRPCExplosion_Implementation(const TArray<FHitRe
 			}
 		}
 	}
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), EmitterHit, GetOwner()->GetActorLocation(), FRotator::ZeroRotator,
+												 FVector(1.0f), true, EPSCPoolMethod::None, true);
 	UGameplayStatics::PlaySoundAtLocation(GetWorld(), WaterSound, GetOwner()->GetActorLocation());
 	UGameplayStatics::PlaySoundAtLocation(GetWorld(), CrushSound, GetOwner()->GetActorLocation());
 

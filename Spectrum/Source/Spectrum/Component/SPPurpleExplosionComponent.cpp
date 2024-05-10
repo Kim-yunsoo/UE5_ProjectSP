@@ -2,14 +2,22 @@
 
 
 #include "Component/SPPurpleExplosionComponent.h"
-
 #include "Interface/SPDamageInterface.h"
 #include "Kismet/GameplayStatics.h"
+#include "Particles/ParticleSystem.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 USPPurpleExplosionComponent::USPPurpleExplosionComponent()
 {
 	WaterSound = LoadObject<USoundWave>(nullptr, TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/Water2.Water2'"));
+
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> HitRef(
+TEXT("/Script/Engine.ParticleSystem'/Game/MagicProjectilesVol2/Particles/Hits/CP_PurplePotion.CP_PurplePotion'"));
+
+	if (HitRef.Succeeded())
+	{
+		EmitterHit = HitRef.Object;
+	}
 }
 
 void USPPurpleExplosionComponent::BeginPlay()
@@ -64,5 +72,7 @@ void USPPurpleExplosionComponent::MultiRPCPrupleExplosion_Implementation(const T
 			}
 		}
 	}
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), EmitterHit, GetOwner()->GetActorLocation(), FRotator::ZeroRotator,
+												 FVector(1.0f), true, EPSCPoolMethod::None, true);
 	UGameplayStatics::PlaySoundAtLocation(GetWorld(), WaterSound, GetOwner()->GetActorLocation());
 }
