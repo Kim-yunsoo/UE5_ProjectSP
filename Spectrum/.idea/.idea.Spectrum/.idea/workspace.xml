@@ -10,17 +10,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a94084f7-dd10-4873-8d85-e55e7c9272c2" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/../Server/GameServer/GameServer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/GameServer/GameServer.cpp" afterDir="false" />
+    <list default="true" id="12255de0-62d9-408a-bad5-79f8e0f42cf8" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Animation/AB_SP_Anim_Woman.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Animation/AB_SP_Anim_Woman.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Animation/Man/BS_SP_Man.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Animation/Man/BS_SP_Man.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Animation/Man/FastRun.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Animation/Man/FastRun.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Animation/Man/Running.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Animation/Man/Running.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Animation/Woman/FastRun.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Animation/Woman/FastRun.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Animation/Woman/Running.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Animation/Woman/Running.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/BluePrint/BP_SPCharacterMan.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/BluePrint/BP_SPCharacterMan.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Game/SPGameModeBase.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Game/SPGameModeBase.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Assets/Outside/Teleport2.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Assets/Outside/Teleport2.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Assets/Outside/Teleport3.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Assets/Outside/Teleport3.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Room/Map/Building.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Room/Map/Building.umap" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,35 +24,23 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="GitHubPullRequestSearchHistory">{
-  &quot;lastFilter&quot;: {
-    &quot;state&quot;: &quot;OPEN&quot;,
-    &quot;assignee&quot;: &quot;InGyeongSeok&quot;
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "InGyeongSeok"
   }
-}</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/Kim-yunsoo/UE5_Spectrum.git&quot;,
-    &quot;accountId&quot;: &quot;9c8f9718-d4dc-45e8-b91c-a772cc3bcf80&quot;
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/Kim-yunsoo/UE5_Spectrum.git",
+    "accountId": "9c8f9718-d4dc-45e8-b91c-a772cc3bcf80"
   }
-}</component>
-  <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Spectrum/Object/SPObject.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Spectrum/Object/Trigger/SPPortalTrigger.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Spectrum/Potion/SPGreenPotion.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Spectrum/Potion/SPPickup.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Spectrum/Potion/SPPotionSpawner.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/../../../UE_5.3/Engine/Source/Runtime/CoreUObject/Public/Templates/Casts.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/../../../UE_5.3/Engine/Source/Runtime/Engine/Classes/Components/SceneComponent.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/../../../UE_5.3/Engine/Source/Runtime/Engine/Classes/Components/StaticMeshComponent.h" root0="FORCE_HIGHLIGHTING" />
-  </component>
-  <component name="ProjectColorInfo">{
-  &quot;customColor&quot;: &quot;&quot;,
-  &quot;associatedIndex&quot;: 8
-}</component>
-  <component name="ProjectId" id="2gH1NVxvvxpRbDuSnZMVFvAeLOi" />
+}]]></component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "customColor": "",
+  "associatedIndex": 8
+}]]></component>
+  <component name="ProjectId" id="2gHdmSGO7CdfeOk7QMYXVv3Zca0" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -74,13 +56,6 @@
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "vue.rearranger.settings.migration": "true"
-  },
-  "keyToStringList": {
-    "rider.external.source.directories": [
-      "C:\\Users\\ingyeong\\AppData\\Roaming\\JetBrains\\Rider2024.1\\resharper-host\\DecompilerCache",
-      "C:\\Users\\ingyeong\\AppData\\Roaming\\JetBrains\\Rider2024.1\\resharper-host\\SourcesCache",
-      "C:\\Users\\ingyeong\\AppData\\Local\\Symbols\\src"
-    ]
   }
 }]]></component>
   <component name="RunManager" selected="C++ 프로젝트.Spectrum">
@@ -206,27 +181,12 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="애플리케이션 수준" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="디폴트 작업">
-      <changelist id="a94084f7-dd10-4873-8d85-e55e7c9272c2" name="변경" comment="" />
-      <created>1715339649869</created>
+      <changelist id="12255de0-62d9-408a-bad5-79f8e0f42cf8" name="변경" comment="" />
+      <created>1715358596302</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1715339649869</updated>
-      <workItem from="1715339651422" duration="404000" />
-      <workItem from="1715354245710" duration="3126000" />
-      <updated>1715160954094</updated>
-      <workItem from="1715160955891" duration="1990000" />
-      <workItem from="1715164328766" duration="3643000" />
-      <workItem from="1715171066199" duration="1632000" />
-      <workItem from="1715172951424" duration="6574000" />
-      <workItem from="1715180583525" duration="1849000" />
-      <workItem from="1715186972496" duration="1273000" />
-      <workItem from="1715188640516" duration="299000" />
-      <workItem from="1715189058578" duration="3457000" />
-      <workItem from="1715250002442" duration="1467000" />
-      <workItem from="1715313733047" duration="3983000" />
-      <workItem from="1715319280328" duration="7060000" />
-      <workItem from="1715329854310" duration="6681000" />
-      <workItem from="1715353608140" duration="3635000" />
+      <updated>1715358596302</updated>
+      <workItem from="1715358597832" duration="720000" />
     </task>
     <servers />
   </component>
