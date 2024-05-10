@@ -1,10 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "Potion/SPBlackPotion.h"
 
-#include "SpectrumLog.h"
 #include "Component/SPExplosionComponent.h"
-#include "Kismet/GameplayStatics.h"
-#include "Particles/ParticleSystem.h"
+
 
 
 // Sets default values
@@ -23,13 +21,7 @@ ASPBlackPotion::ASPBlackPotion()
 	}
 	ExplosionComponent = CreateDefaultSubobject<USPExplosionComponent>(TEXT("ExplosionComponent"));
 	
-	static ConstructorHelpers::FObjectFinder<UParticleSystem> HitRef(
-TEXT("/Script/Engine.ParticleSystem'/Game/MagicProjectilesVol2/Particles/Hits/CP_BlackPotion.CP_BlackPotion'"));
 
-	if (HitRef.Succeeded())
-	{
-		EmitterHit = HitRef.Object;
-	}
 }
 
 // Called when the game starts or when spawned
@@ -47,12 +39,6 @@ void ASPBlackPotion::BeginPlay()
 
 void ASPBlackPotion::HandleActorHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
 {
-	//ClientRPCSound();
-	FVector HitLocation = Hit.ImpactPoint;
-	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), EmitterHit, HitLocation, FRotator::ZeroRotator,
-												 FVector(1.0f), true, EPSCPoolMethod::None, true);
-	// if(HasAuthority())
-	// {
 	ExplosionComponent->Explode();
 	this->SetLifeSpan(0.1f);
 	// }

@@ -112,5 +112,6 @@ public:
 	void SetObjectCollisionType(const FName& CollisionType);
 
 
+	
 
 };

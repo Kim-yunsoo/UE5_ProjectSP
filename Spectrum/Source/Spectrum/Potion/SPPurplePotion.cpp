@@ -4,8 +4,6 @@
 #include "Potion/SPPurplePotion.h"
 
 #include "Component/SPPurpleExplosionComponent.h"
-#include "Kismet/GameplayStatics.h"
-#include "Particles/ParticleSystem.h"
 
 
 ASPPurplePotion::ASPPurplePotion()
@@ -26,13 +24,7 @@ ASPPurplePotion::ASPPurplePotion()
 	this->AActor::SetReplicateMovement(true);
 	PurpleExplosionComponent->SetIsReplicated(true);
 
-	static ConstructorHelpers::FObjectFinder<UParticleSystem> HitRef(
-TEXT("/Script/Engine.ParticleSystem'/Game/MagicProjectilesVol2/Particles/Hits/CP_PurplePotion.CP_PurplePotion'"));
 
-	if (HitRef.Succeeded())
-	{
-		EmitterHit = HitRef.Object;
-	}
 }
 
 void ASPPurplePotion::BeginPlay()
@@ -44,9 +36,7 @@ void ASPPurplePotion::BeginPlay()
 void ASPPurplePotion::HandleActorHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse,
 	const FHitResult& Hit)
 {
-	FVector HitLocation = Hit.ImpactPoint;
-	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), EmitterHit, HitLocation, FRotator::ZeroRotator,
-												 FVector(1.0f), true, EPSCPoolMethod::None, true);
+
 	
 	PurpleExplosionComponent->Explode();
 	this->SetLifeSpan(0.1f);
