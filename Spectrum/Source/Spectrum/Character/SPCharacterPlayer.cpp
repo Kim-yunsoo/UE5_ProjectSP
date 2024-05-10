@@ -2229,6 +2229,11 @@ void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 		FVector SphereLocationStart = FollowCamera->K2_GetComponentLocation();
 		//FVector SphereLocationEnd = SphereLocationStart + (1500 * FollowCamera->GetForwardVector());
 		APlayerController* PlayerController = GetController<APlayerController>();
+		FVector Location;
+		FRotator Rotator;
+		//PlayerController(Location);
+		PlayerController->GetPlayerViewPoint(Location,Rotator);
+		
 		if (PlayerController != nullptr)
 		{
 			// if(bIsActiveGraping)
@@ -2262,7 +2267,7 @@ void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 			//Params.bDebugQuery= false; 
 			float DrawTime = 5.0f;
 
-			bool HitSuccess = GetWorld()->LineTraceSingleByChannel(outHitResult, SphereLocationStart, SphereLocationEnd,
+			bool HitSuccess = GetWorld()->LineTraceSingleByChannel(outHitResult, Location, SphereLocationEnd,
 			                                                       ECC_GameTraceChannel1, Params);
 
 			if (HitSuccess && outHitResult.Component->Mobility == EComponentMobility::Movable )
