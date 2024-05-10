@@ -21,10 +21,12 @@ void ISPInteractionInterface::EndInteract()
 {
 }
 
-void ISPInteractionInterface::Interact(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget)
+bool ISPInteractionInterface::Interact(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget)
 {
+	return false;
 }
 
-void ISPInteractionInterface::Interact2(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget)
+bool ISPInteractionInterface::Interact2(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget)
 {
+	return false;
 }

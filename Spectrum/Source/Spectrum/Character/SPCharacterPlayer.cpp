@@ -379,7 +379,8 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 	{
 		SevenKeyAction = SevenKeyActionRef.Object;
 	}
-	
+
+	PickupSound = LoadObject<USoundWave>(nullptr, TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/Pickup.Pickup'"));
 	//Effect
 
 	// static ConstructorHelpers::FObjectFinder<UParticleSystem> SlowEffectRef(
@@ -1442,6 +1443,14 @@ void ASPCharacterPlayer::ClientRPCTeleAnimation_Implementation(ASPCharacterPlaye
 }
 
 
+void ASPCharacterPlayer::ClientRPCPickupAnimation_Implementation(ASPCharacterPlayer* CharacterToPlay)
+{
+	if (CharacterToPlay)
+	{
+		CharacterToPlay->PlayPickupAnimation();
+	}
+}
+
 void ASPCharacterPlayer::OnRep_PotionSpawn()
 {
 }
@@ -1809,18 +1818,41 @@ void ASPCharacterPlayer::Interact()
 	GetWorldTimerManager().ClearTimer(TimerHandle_Interaction);
 	if (IsValid(TargetInteractable.GetObject()))
 	{
-		TargetInteractable->Interact2(this, HUDWidget);
+		if(TargetInteractable->Interact2(this, HUDWidget))
+		{
+			
+		}
+		else
+		{
+			PlayPickupAnimation();
+			FTimerHandle TimerHandle;
+			GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this]()
+			{
+				UGameplayStatics::PlaySoundAtLocation(GetWorld(), PickupSound, GetActorLocation(),GetActorRotation());
+			}, 0.8f, false);
+			ServerRPCInteract();
+		}
 	}
-	ServerRPCInteract();
 }
 
 void ASPCharacterPlayer::ServerRPCInteract_Implementation()
 {
+	PlayPickupAnimation();
+
+	for (APlayerController* PlayerController : TActorRange<APlayerController>(GetWorld()))
+	{
+		ASPCharacterPlayer* OtherPlayer = Cast<ASPCharacterPlayer>(PlayerController->GetPawn());
+		if (OtherPlayer)
+		{
+			OtherPlayer->ClientRPCPickupAnimation(this);
+		}
+	}
 	GetWorldTimerManager().ClearTimer(TimerHandle_Interaction);
 	if (IsValid(TargetInteractable.GetObject()))
 	{
 		TargetInteractable->Interact(this, HUDWidget);
 	}
+	//여기서 다른 사람들 애니메이션 보내기
 }
 
 void ASPCharacterPlayer::UpdateInteractionWidget() const
@@ -1920,6 +1952,15 @@ void ASPCharacterPlayer::PlaySkillAnimation()
 	//void UGameplayStatics::PlaySoundAtLocation();
 	UGameplayStatics::PlaySoundAtLocation(GetWorld(), SlowSkillComponent->SkillSound, GetActorLocation(),GetActorRotation());
 }
+
+void ASPCharacterPlayer::PlayPickupAnimation()
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	AnimInstance->StopAllMontages(0.0f);
+	AnimInstance->Montage_Play(PickupMontage);
+
+}
+
 
 void ASPCharacterPlayer::PlayIceSkillAnimation()
 {

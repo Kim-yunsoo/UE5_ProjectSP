@@ -73,7 +73,7 @@ public:
 	virtual void EndFocus();
 	virtual void BeginInteract();
 	virtual void EndInteract();
-	virtual void Interact(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget);
-	virtual void Interact2(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget);
+	virtual bool Interact(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget);
+	virtual bool Interact2(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget);
 	FInteractableData InteractableData;
 };

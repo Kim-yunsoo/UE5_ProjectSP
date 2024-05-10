@@ -218,6 +218,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UAnimMontage> SkillTeleMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UAnimMontage> PickupMontage;
+	
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, Meta = (AllowPrivateAccess = "ture"))
 	TObjectPtr<class USpringArmComponent> SpringArm;
@@ -314,7 +318,8 @@ public:
 	UPROPERTY()
 	TObjectPtr<ASPPickup> PickupItem;
 	
-
+	UPROPERTY()
+	TObjectPtr<USoundWave> PickupSound;
 protected:
 	 UPROPERTY()
 	UPrimitiveComponent* HitComponent;
@@ -503,6 +508,9 @@ public:
 	void ClientRPCIceAnimation(ASPCharacterPlayer* CharacterToPlay);
 
 	UFUNCTION(Client, Unreliable)
+	void ClientRPCPickupAnimation(ASPCharacterPlayer* CharacterToPlay);
+
+	UFUNCTION(Client, Unreliable)
 	void ClientRPCUpdateMakingPotion(int Num);
 
 	UFUNCTION(Client, Unreliable)
@@ -559,7 +567,7 @@ public:
 	void PlaySkillAnimation();
 	void PlayIceSkillAnimation();
 	void PlayTeleSkillAnimation();
-
+	void PlayPickupAnimation();
 	// void SlowAction();
 public:
 	// void SetIsActiveSlowSkill(bool isskill){ bIsActiveSlowSkill=isskill ;}

@@ -58,9 +58,9 @@ void AInterfaceTestActor::EndInteract()
 
 }
 
-void AInterfaceTestActor::Interact(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget)
+bool AInterfaceTestActor::Interact(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget)
 {
 	UE_LOG(LogTemp, Log, TEXT("Interact"));
-
+	return true;
 }
 

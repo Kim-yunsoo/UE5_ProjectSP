@@ -6,6 +6,7 @@
 #include "Character/SPCharacterPlayer.h"
 #include "Components/Button.h"
 #include "Components/Image.h"
+#include "Kismet/GameplayStatics.h"
 
 
 void USPManualWidget::NativeConstruct()
@@ -29,8 +30,7 @@ void USPManualWidget::SpectrumLocationCallBack()
 	MainImage->SetVisibility(ESlateVisibility::Hidden);
 	ManualImage->SetVisibility(ESlateVisibility::Hidden);
 	
-	PlaySound(ClickOn);
-
+	UGameplayStatics::PlaySound2D(GetWorld(), ClickOn);
 }
 
 void USPManualWidget::ManualCallBack()
@@ -38,7 +38,7 @@ void USPManualWidget::ManualCallBack()
 	SpectrumLocationImage->SetVisibility(ESlateVisibility::Hidden);
 	MainImage->SetVisibility(ESlateVisibility::Hidden);
 	ManualImage->SetVisibility(ESlateVisibility::Visible);
-	PlaySound(ClickOn);
+	UGameplayStatics::PlaySound2D(GetWorld(), ClickOn);
 
 }
 
@@ -54,6 +54,5 @@ void USPManualWidget::BackCallBack()
 	{
 		MainImage->SetVisibility(ESlateVisibility::Visible);
 	}
-	PlaySound(ClickOn);
-
+	UGameplayStatics::PlaySound2D(GetWorld(), ClickOn);
 }
