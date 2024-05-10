@@ -218,6 +218,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UAnimMontage> SkillTeleMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UAnimMontage> ImpactMontage;
+	
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, Meta = (AllowPrivateAccess = "ture"))
 	TObjectPtr<class USpringArmComponent> SpringArm;

@@ -12,6 +12,23 @@
   <component name="ChangeListManager">
     <list default="true" id="36dc07cf-1872-45e0-88ab-9aa66971cb17" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Animation/AB_SP_Anim_Man.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Animation/AB_SP_Anim_Man.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Animation/AB_SP_Anim_Woman.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Animation/AB_SP_Anim_Woman.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Animation/SwordAndShieldCasting_UE.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Animation/Woman/AM_AttackIceW.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Animation/Woman/AM_AttackIceW.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Animation/Woman/AM_AttackW.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Animation/Woman/AM_AttackW.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Assets/Hair/Hair06.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Assets/Hair/Hair06.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Spectrum/BluePrint/BP_SPCharacterMan1.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/BluePrint/BP_SPCharacterMan1.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Spectrum/BluePrint/BP_SPCharacterMan2.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/BluePrint/BP_SPCharacterMan2.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Spectrum/BluePrint/BP_SPCharacterMan3.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/BluePrint/BP_SPCharacterMan3.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Spectrum/BluePrint/BP_SPCharaterPlayer_W1.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/BluePrint/BP_SPCharaterPlayer_W1.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Room/Map/Building.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Room/Map/Building.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Room/bedroom/Crystalball/MagicTomeEffect.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Room/bedroom/Crystalball/MagicTomeEffect.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Room/bedroom/Crystalball/MagicTomePedestal.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Room/bedroom/Crystalball/MagicTomePedestal.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPBlackPotion.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPBlackPotion.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPGreenPotion.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPGreenPotion.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,26 +67,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "C++ 프로젝트.Spectrum.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "YunsooKim",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;C++ 프로젝트.Spectrum.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;YunsooKim&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "rider.external.source.directories": [
-      "C:\\Users\\yunsoo\\AppData\\Roaming\\JetBrains\\Rider2024.1\\resharper-host\\DecompilerCache",
-      "C:\\Users\\yunsoo\\AppData\\Roaming\\JetBrains\\Rider2024.1\\resharper-host\\SourcesCache",
-      "C:\\Users\\yunsoo\\AppData\\Local\\Symbols\\src"
+  &quot;keyToStringList&quot;: {
+    &quot;rider.external.source.directories&quot;: [
+      &quot;C:\\Users\\yunsoo\\AppData\\Roaming\\JetBrains\\Rider2024.1\\resharper-host\\DecompilerCache&quot;,
+      &quot;C:\\Users\\yunsoo\\AppData\\Roaming\\JetBrains\\Rider2024.1\\resharper-host\\SourcesCache&quot;,
+      &quot;C:\\Users\\yunsoo\\AppData\\Local\\Symbols\\src&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="C++ 프로젝트.Spectrum">
     <configuration name="Spectrum" type="CppProject" factoryName="C++ Project">
       <configuration_1>
@@ -205,7 +222,10 @@
       <workItem from="1715180583525" duration="1849000" />
       <workItem from="1715186972496" duration="1273000" />
       <workItem from="1715188640516" duration="299000" />
-      <workItem from="1715189058578" duration="1368000" />
+      <workItem from="1715189058578" duration="3457000" />
+      <workItem from="1715250002442" duration="1467000" />
+      <workItem from="1715313733047" duration="3983000" />
+      <workItem from="1715319280328" duration="3915000" />
     </task>
     <servers />
   </component>

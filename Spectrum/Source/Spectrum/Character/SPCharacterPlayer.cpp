@@ -702,7 +702,6 @@ void ASPCharacterPlayer::HandleMontageAnimNotify(FName NotifyName,
 		if (HasAuthority())
 		{
 			IceSkillComponent->SkillAction();
-			// SlowSkillComponent->SkillAction();
 		}
 	}
 
@@ -1449,7 +1448,6 @@ void ASPCharacterPlayer::OnRep_PotionSpawn()
 void ASPCharacterPlayer::PlayTurnAnimation()
 {
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-	UAnimInstance* TorsoAnimInstance = Torso->GetAnimInstance();
 	AnimInstance->Montage_Play(ThrowMontage, 1.0f);
 	// TorsoAnimInstance->Montage_Play(ThrowMontage, 1.0f);
 	GetCharacterMovement()->bOrientRotationToMovement = false;
@@ -1459,7 +1457,6 @@ void ASPCharacterPlayer::PlayTurnAnimation()
 void ASPCharacterPlayer::PlayThrowAnimation()
 {
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-	UAnimInstance* TorsoAnimInstance = GetMesh()->GetAnimInstance();
 	AnimInstance->Montage_JumpToSection(FName("End"), ThrowMontage);
 }
 
@@ -1683,8 +1680,6 @@ void ASPCharacterPlayer::SetupHUDWidget(USPHUDWidget* InUserWidget)
 		{
 			SPGameState->OnScore.AddUObject(InUserWidget, &USPHUDWidget::UpdateScore);
 			SPGameState->OnTime.AddUObject(InUserWidget, &USPHUDWidget::UpdateTime);
-			
-			
 		}
 	}
 }
@@ -1730,7 +1725,6 @@ void ASPCharacterPlayer::FoundInteractable(AActor* NewInteractable)
 	InteractionData.CurrentInteractable = NewInteractable;
 	TargetInteractable = NewInteractable;
 
-	//Todo 좀 더 효율적이게 바꾸기
 	if (HUDWidget)
 	{
 		HUDWidget->UpdateInteractionWidget(&TargetInteractable->InteractableData);
@@ -1943,6 +1937,10 @@ void ASPCharacterPlayer::HitSlowSkillResult()
 	// Cast<USPCharacterMovementComponent>(GetMovementComponent());
 	// NetTESTRPCSlowSkill();
 	bIsDamage = true;
+	if(false==IsMontagePlaying())
+	{
+		GetMesh()->GetAnimInstance()->Montage_Play(ImpactMontage,1.0f);
+	}
 	GetCharacterMovement()->MaxWalkSpeed = 100.f;
 	FTimerHandle Handle;
 	GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([&]
@@ -1955,8 +1953,13 @@ void ASPCharacterPlayer::HitSlowSkillResult()
 
 void ASPCharacterPlayer::HitIceSkillResult()
 {
+	//TODO
 	bIsDamage = true;
 	// GetCharacterMovement()->MaxWalkSpeed = 0.0f;
+	if(false==IsMontagePlaying())
+	{
+		GetMesh()->GetAnimInstance()->Montage_Play(ImpactMontage,1.0f);
+	}
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 	FTimerHandle Handle;
 	GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([&]
@@ -1969,20 +1972,13 @@ void ASPCharacterPlayer::HitIceSkillResult()
 
 void ASPCharacterPlayer::HitTeleSkillResult(const FVector TeleportLocation)
 {
-	// FVector(((2620.000000,-60.000000,5220.000000)));
-	// FVector TPPoint = FVector(16270.000000,2720.000000,3560.000000);
+	
+	if(false==IsMontagePlaying())
+	{
+		GetMesh()->GetAnimInstance()->Montage_Play(ImpactMontage,1.0f);
+	}
 	this->TeleportTo(TeleportLocation, this->GetActorRotation(), false, true);
-	// this-(FVector(((2620.000000,-60.000000,5220.000000))));
-	// this->SetActorRelativeLocation(FVector((16000.0,-1160.000000,3960.000000)));
-	// this->GetActorLocation();
-	// GetCharacterMovement()->MaxWalkSpeed = 0.0f;
-	// GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
-	// FTimerHandle Handle;
-	// GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([&]
-	// 										   {
-	// 											   GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
-	// 										   }
-	// 									   ), 5, false, -1.0f);
+	
 }
 
 void ASPCharacterPlayer::OverlapPortal(const FVector& Location)
@@ -2010,7 +2006,8 @@ bool ASPCharacterPlayer::IsMontagePlaying()
 	if (GetMesh()->GetAnimInstance()->Montage_IsPlaying(ThrowMontage) ||
 		GetMesh()->GetAnimInstance()->Montage_IsPlaying(SkillMontage) ||
 		GetMesh()->GetAnimInstance()->Montage_IsPlaying(SkillIceMontage) ||
-		GetMesh()->GetAnimInstance()->Montage_IsPlaying(SkillTeleMontage))
+		GetMesh()->GetAnimInstance()->Montage_IsPlaying(SkillTeleMontage)||
+		GetMesh()->GetAnimInstance()->Montage_IsPlaying(ImpactMontage))
 
 	{
 		return true; //어떤 애니메이션 하나라도 플레이 중이면 트루 
