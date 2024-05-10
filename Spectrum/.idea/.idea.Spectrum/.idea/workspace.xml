@@ -10,13 +10,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="36dc07cf-1872-45e0-88ab-9aa66971cb17" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Object/Trigger/SPPortalTrigger.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Object/Trigger/SPPortalTrigger.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Object/Trigger/SPPortalTrigger.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Object/Trigger/SPPortalTrigger.h" afterDir="false" />
-    </list>
+    <list default="true" id="36dc07cf-1872-45e0-88ab-9aa66971cb17" name="변경" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -212,7 +206,7 @@
       <workItem from="1715189058578" duration="3457000" />
       <workItem from="1715250002442" duration="1467000" />
       <workItem from="1715313733047" duration="3983000" />
-      <workItem from="1715319280328" duration="6638000" />
+      <workItem from="1715319280328" duration="7060000" />
     </task>
     <servers />
   </component>
