@@ -59,7 +59,7 @@ void ASPGameModeBase::PostLogin(APlayerController* NewPlayer)
 {
       Super::PostLogin(NewPlayer);
 
-      GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("0000000000000000")));
+      //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("0000000000000000")));
 
 
       // 정보 받아서 폰 설정 

@@ -11,9 +11,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="36dc07cf-1872-45e0-88ab-9aa66971cb17" name="변경" comment="">
+      <change beforePath="$PROJECT_DIR$/../Server/GameServer/GameServer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/GameServer/GameServer.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Animation/Woman/BS_IdleWalkRun.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Animation/Woman/BS_IdleWalkRun.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Animation/Woman/FastRun.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Animation/Woman/FastRun.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Animation/Woman/Running.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Animation/Woman/Running.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Spectrum/BluePrint/BP_SPCharacterMan2.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/BluePrint/BP_SPCharacterMan2.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Spectrum/BluePrint/BP_SPCharaterPlayer_W1.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/BluePrint/BP_SPCharaterPlayer_W1.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Spectrum/BluePrint/BP_SPCharaterPlayer_W2.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/BluePrint/BP_SPCharaterPlayer_W2.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Room/Map/Building.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Room/Map/Building.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Spectrum/UMG/WBP_SPHUD.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/UMG/WBP_SPHUD.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Skill/SPIceSkill.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Skill/SPIceSkill.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Game/SPGameModeBase.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Game/SPGameModeBase.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -216,7 +225,7 @@
       <workItem from="1715313733047" duration="3983000" />
       <workItem from="1715319280328" duration="7060000" />
       <workItem from="1715329854310" duration="6681000" />
-      <workItem from="1715353608140" duration="1406000" />
+      <workItem from="1715353608140" duration="3381000" />
     </task>
     <servers />
   </component>

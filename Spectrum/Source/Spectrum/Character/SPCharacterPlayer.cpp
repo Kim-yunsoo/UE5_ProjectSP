@@ -2230,9 +2230,9 @@ void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 		//FVector SphereLocationEnd = SphereLocationStart + (1500 * FollowCamera->GetForwardVector());
 		APlayerController* PlayerController = GetController<APlayerController>();
 		FVector Location;
-		FRotator Rotator;
+		FRotator Rotation;
 		//PlayerController(Location);
-		PlayerController->GetPlayerViewPoint(Location,Rotator);
+		PlayerController->GetPlayerViewPoint(Location,Rotation);
 		
 		if (PlayerController != nullptr)
 		{
@@ -2248,8 +2248,9 @@ void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 			bool TransSuccess = PlayerController->DeprojectScreenPositionToWorld(
 				0.5, 0.5, WorldLocation, WorldDirection);
 
-			FVector SphereLocationEnd = ReseltFoward * SphereRange + SphereLocationStart;
-
+			//FVector SphereLocationEnd = ReseltFoward * SphereRange + SphereLocationStart;
+			FVector SphereLocationEnd = Location + Rotation.Vector()  * SphereRange ;
+			// Location + Rotation.Vector() * MaxRange; 
 			TArray<TEnumAsByte<EObjectTypeQuery>> EmptyObjectTypes;
 			EDrawDebugTrace::Type drawDebugType = EDrawDebugTrace::None;
 			TArray<AActor*> HitActorsToIgnore;
