@@ -161,7 +161,7 @@ void ASPPickup::TakePickup(ASPCharacterPlayer* Taker) //서버
 			{
 				FTimerHandle TimerHandle;
 				PlayerInvetory->HandleAddItem(ItemReference,1);
-				GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this]()
+				GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]()
 				{
 					//여기서 스포너한테 신호 보내야겠다.
 					ASPPotionSpawner* PotionSpawner = Cast<ASPPotionSpawner>(GetOwner());

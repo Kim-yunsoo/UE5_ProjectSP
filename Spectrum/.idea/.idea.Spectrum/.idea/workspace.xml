@@ -12,24 +12,23 @@
   <component name="ChangeListManager">
     <list default="true" id="f720f1ff-cada-489c-94f3-ca2cdcbc28a5" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Spectrum/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Gamemode/BP_SPGameModeBase.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Gamemode/BP_SPGameModeBase.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Animation/Retargeter/RTG_UE4toUE5.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Animation/Retargeter/RTG_UE4toUE5.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/BluePrint/BP_SPCharacterMan1.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/BluePrint/BP_SPCharacterMan1.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/BluePrint/BP_SPCharacterMan2.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/BluePrint/BP_SPCharacterMan2.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Spectrum/BluePrint/BP_SPCharacterMan3.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/BluePrint/BP_SPCharacterMan3.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Animation/AB_SP_Anim_Man.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Animation/AB_SP_Anim_Man.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Animation/Man/AM_PickupMan.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Animation/Man/AM_PickupMan.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Animation/Man/A_ItemPickup_fromIdle_LH_25cm.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Animation/Man/A_ItemPickup_fromIdle_LH_25cm.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Spectrum/Room/Map/Building.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Spectrum/Room/Map/Building.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Animation/SPAnimInstance.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Animation/SPAnimInstance.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Animation/SPAnimInstance.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Animation/SPAnimInstance.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Character/SPCharacterPlayer.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Interface/SPInteractionInterface.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Interface/SPInteractionInterface.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Interface/SPInteractionInterface.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Interface/SPInteractionInterface.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/Make/SPMakePotion.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/Make/SPMakePotion.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/Make/SPMakePotion.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/Make/SPMakePotion.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPBlackPotion.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPBlackPotion.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPBlackPotion.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPBlackPotion.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPGreenPotion.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPGreenPotion.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPGreenPotion.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPGreenPotion.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPOrangePotion.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPOrangePotion.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPOrangePotion.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPOrangePotion.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPPickup.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPPickup.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPPickup.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPPickup.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/TEST/InterfaceTestActor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/TEST/InterfaceTestActor.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/TEST/InterfaceTestActor.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/TEST/InterfaceTestActor.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/UI/Interaction/SPManual.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/UI/Interaction/SPManual.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/UI/Interaction/SPManual.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/UI/Interaction/SPManual.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Spectrum/UI/SPManualWidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/UI/SPManualWidget.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPPurplePotion.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPPurplePotion.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Spectrum/Potion/SPPurplePotion.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Spectrum/Potion/SPPurplePotion.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -210,6 +209,7 @@
       <updated>1715258132473</updated>
       <workItem from="1715258134451" duration="839000" />
       <workItem from="1715306896846" duration="6970000" />
+      <workItem from="1715316339357" duration="8448000" />
     </task>
     <servers />
   </component>

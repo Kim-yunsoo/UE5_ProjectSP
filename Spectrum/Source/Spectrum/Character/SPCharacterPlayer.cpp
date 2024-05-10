@@ -398,7 +398,9 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 
 	//Widget
 	//Target = CreateDefaultSubobject<USPWidgetComponent>(TEXT("Widget"));
-
+	
+	WaterSound = LoadObject<USoundWave>(nullptr, TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/Water2.Water2'"));
+	CrushSound = LoadObject<USoundWave>(nullptr, TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/Crush.Crush'"));
 
 	CurrentCharacterControlType = ECharacterControlType::Shoulder;
 	LastInput = FVector2D::ZeroVector;
@@ -416,7 +418,7 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 	bIsActiveTeleSkill = true;
 	bIsActiveGraping = true;
 	SphereRange = 10000000;
-
+	bIsPicking = false;
 	KeyToggle = true;
 	bIsSeven = false;
 	// bIsActiveSlowSkill = true;
@@ -834,6 +836,11 @@ void ASPCharacterPlayer::ThrowPotion(const FInputActionValue& Value)
 			if (!HasAuthority())
 			{
 				PlayThrowAnimation();
+				// FTimerHandle TimerHandle;
+				// GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this]()
+				// {
+				// 	UGameplayStatics::PlaySound2D(GetWorld(), WaterSound);
+				// }, 0.8f, false);
 				bIsThrowReady = false;
 				GetCharacterMovement()->bOrientRotationToMovement = true;
 				GetCharacterMovement()->bUseControllerDesiredRotation = false;
@@ -849,7 +856,7 @@ void ASPCharacterPlayer::ThrowPotion(const FInputActionValue& Value)
 			{
 				PlayStopAnimation();
 			}
-			ServerRPCThrowPotion(bIsThrowReady);
+			//ServerRPCThrowPotion(bIsThrowReady);
 		}
 	}
 }
@@ -1443,13 +1450,6 @@ void ASPCharacterPlayer::ClientRPCTeleAnimation_Implementation(ASPCharacterPlaye
 }
 
 
-void ASPCharacterPlayer::ClientRPCPickupAnimation_Implementation(ASPCharacterPlayer* CharacterToPlay)
-{
-	if (CharacterToPlay)
-	{
-		CharacterToPlay->PlayPickupAnimation();
-	}
-}
 
 void ASPCharacterPlayer::OnRep_PotionSpawn()
 {
@@ -1490,6 +1490,11 @@ void ASPCharacterPlayer::ServerRPCThrowPotion_Implementation(bool IsThrowReady)
 	if (IsThrowReady)
 	{
 		PlayThrowAnimation();
+		// FTimerHandle TimerHandle;
+		// GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this]()
+		// {
+		// 	UGameplayStatics::PlaySound2D(GetWorld(), WaterSound);
+		// }, 0.8f, false);
 		if (Potion)
 		{
 			GetController()->GetControlRotation();
@@ -1824,34 +1829,36 @@ void ASPCharacterPlayer::Interact()
 		}
 		else
 		{
-			PlayPickupAnimation();
-			FTimerHandle TimerHandle;
-			GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this]()
+			if(IsMontagePlaying() == false)
 			{
-				UGameplayStatics::PlaySoundAtLocation(GetWorld(), PickupSound, GetActorLocation(),GetActorRotation());
-			}, 0.8f, false);
-			ServerRPCInteract();
+				FTimerHandle TimerHandle;
+				GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this]()
+				{
+					UGameplayStatics::PlaySoundAtLocation(GetWorld(), PickupSound, GetActorLocation(),GetActorRotation());
+				}, 0.8f, false);
+				ServerRPCInteract();
+			}
 		}
 	}
 }
 
 void ASPCharacterPlayer::ServerRPCInteract_Implementation()
 {
-	PlayPickupAnimation();
-
-	for (APlayerController* PlayerController : TActorRange<APlayerController>(GetWorld()))
-	{
-		ASPCharacterPlayer* OtherPlayer = Cast<ASPCharacterPlayer>(PlayerController->GetPawn());
-		if (OtherPlayer)
-		{
-			OtherPlayer->ClientRPCPickupAnimation(this);
-		}
-	}
 	GetWorldTimerManager().ClearTimer(TimerHandle_Interaction);
 	if (IsValid(TargetInteractable.GetObject()))
 	{
 		TargetInteractable->Interact(this, HUDWidget);
+		
 	}
+	// if(HasAuthority())
+	// {
+		bIsPicking = true;
+		FTimerHandle TimerHandle;
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]()
+		{
+			bIsPicking = false;
+		}, 1.5f, false);
+	// }
 	//여기서 다른 사람들 애니메이션 보내기
 }
 
@@ -1928,6 +1935,7 @@ void ASPCharacterPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 	DOREPLIFETIME(ASPCharacterPlayer, bIsTurnReady);
 	DOREPLIFETIME(ASPCharacterPlayer, bIsThrowReady);
 	DOREPLIFETIME(ASPCharacterPlayer, bIsHolding);
+	DOREPLIFETIME(ASPCharacterPlayer, bIsPicking);
 	DOREPLIFETIME(ASPCharacterPlayer, InteractionCheck);
 	DOREPLIFETIME(ASPCharacterPlayer, bIsActiveGraping);
 	DOREPLIFETIME(ASPCharacterPlayer, HitMyActor);
@@ -1951,14 +1959,6 @@ void ASPCharacterPlayer::PlaySkillAnimation()
 	//사운드 여기서
 	//void UGameplayStatics::PlaySoundAtLocation();
 	UGameplayStatics::PlaySoundAtLocation(GetWorld(), SlowSkillComponent->SkillSound, GetActorLocation(),GetActorRotation());
-}
-
-void ASPCharacterPlayer::PlayPickupAnimation()
-{
-	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-	AnimInstance->StopAllMontages(0.0f);
-	AnimInstance->Montage_Play(PickupMontage);
-
 }
 
 

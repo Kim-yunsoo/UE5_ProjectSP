@@ -23,7 +23,6 @@ ASPGreenPotion::ASPGreenPotion()
 
 
 	GreenExplosionComponent = CreateDefaultSubobject<USPGreenExplosionComponent>(TEXT("ExplosionComponent"));
-	WaterSound = LoadObject<USoundWave>(nullptr, TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/Water2.Water2'"));
 
 
 	static ConstructorHelpers::FObjectFinder<UParticleSystem> HitRef(
@@ -51,7 +50,6 @@ void ASPGreenPotion::BeginPlay()
 
 void ASPGreenPotion::HandleActorHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
 {
-	UGameplayStatics::PlaySound2D(GetWorld(), WaterSound);
 	FVector HitLocation = Hit.ImpactPoint;
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), EmitterHit, HitLocation, FRotator::ZeroRotator,
 												 FVector(1.0f), true, EPSCPoolMethod::None, true);

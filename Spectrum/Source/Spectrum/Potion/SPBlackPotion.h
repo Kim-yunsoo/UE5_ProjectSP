@@ -39,5 +39,11 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Default")
 	TObjectPtr<USoundWave> WaterSound;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Default")
+	TObjectPtr<USoundWave> CrushSound;
+
+	UFUNCTION(Client, Unreliable)
+	void ClientRPCSound();
 	
 };
