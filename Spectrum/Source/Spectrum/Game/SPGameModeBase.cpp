@@ -21,6 +21,8 @@ ASPGameModeBase::ASPGameModeBase()
    GameStateClass=ASPGameState::StaticClass();
    bUseSeamlessTravel=true;
    
+   // 디폴트 폰 클래스 /Game/Spectrum/BluePrint/BP_SPCharacterMan2로 설정
+
 }
 
 bool ASPGameModeBase::TryChangePawn(APlayerController* pCon, FVector location, TSubclassOf<APawn> PAWN_C)
@@ -61,42 +63,107 @@ void ASPGameModeBase::PostLogin(APlayerController* NewPlayer)
 
       GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("0000000000000000")));
 
+      //// 정보 받아서 폰 설정 
+      //auto CastPlayer = Cast<ASPPlayerController>(NewPlayer);
+      //if (CastPlayer)
+      //{
+      //   //USpectrumGameInstance* pawn_PlayerType = Cast<USpectrumGameInstance>(NewPlayer->PlayerState);
 
-      // 정보 받아서 폰 설정 
-      auto CastPlayer = Cast<ASPPlayerController>(NewPlayer);
-      if (CastPlayer)
-      {
-         //USpectrumGameInstance* pawn_PlayerType = Cast<USpectrumGameInstance>(NewPlayer->PlayerState);
-
-         //pawn_PlayerType->PlayerType = 0;
+      //   //pawn_PlayerType->PlayerType = 0;
 
          // 정보에 따라 폰 설정
-         if (mynum < 3)
-         {
-            school_num_type = school_type[mynum];
-            mynum++;
-         }
+         //if (mynum < 3)
+         //{
+         //   school_num_type = school_type[mynum];
+         //   mynum++;
+         //}
 
-         switch (school_num_type)
-         {
-         case Protocol::PLAYER_TYPE_GREEN_MAN:
-            CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharacterMan2"));
-            break;
-         case Protocol::PLAYER_TYPE_GREEN_WOMAN:
-            CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharaterPlayer_W2"));
-            break;
-         case Protocol::PLAYER_TYPE_PURPLE_MAN:
-            CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharacterMan1"));
-            break;
-         case Protocol::PLAYER_TYPE_PURPLE_WOMAN:
-            CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharaterPlayer_W1"));
-            break;
-         case Protocol::PLAYER_TYPE_ORANGE_MAN:
-            CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharacterMan3"));
-            break;
-         case Protocol::PLAYER_TYPE_ORANGE_WOMAN:
-            CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharaterPlayer_W3"));
-            break;
-         }
+         //switch (school_num_type)
+         //{
+         //case Protocol::PLAYER_TYPE_GREEN_MAN:
+         //   CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharacterMan2"));
+         //   break;
+         //case Protocol::PLAYER_TYPE_GREEN_WOMAN:
+         //   CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharaterPlayer_W2"));
+         //   break;
+         //case Protocol::PLAYER_TYPE_PURPLE_MAN:
+         //   CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharacterMan1"));
+         //   break;
+         //case Protocol::PLAYER_TYPE_PURPLE_WOMAN:
+         //   CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharaterPlayer_W1"));
+         //   break;
+         //case Protocol::PLAYER_TYPE_ORANGE_MAN:
+         //   CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharacterMan3"));
+         //   break;
+         //case Protocol::PLAYER_TYPE_ORANGE_WOMAN:
+         //   CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharaterPlayer_W3"));
+         //   break;
+         //}
+      //}
+
+	  FString BlueprintPath = TEXT("/Game/Spectrum/BluePrint/BP_SPCharaterPlayer_W3.BP_SPCharaterPlayer_W3_C"); // 경로 수정 필요
+
+      // 정보에 따라 폰 설정
+      if (mynum < 3)
+      {
+          school_num_type = school_type[mynum];
+          mynum++;
       }
+
+      switch (school_num_type)
+      {
+      case Protocol::PLAYER_TYPE_GREEN_MAN:
+          BlueprintPath = TEXT("/Game/Spectrum/BluePrint/BP_SPCharacterMan1.BP_SPCharacterMan1_C"); // 경로 수정 필요
+          break;
+      //case Protocol::PLAYER_TYPE_GREEN_WOMAN:
+      //    CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharaterPlayer_W2"));
+      //    break;
+      case Protocol::PLAYER_TYPE_PURPLE_MAN:
+          BlueprintPath = TEXT("/Game/Spectrum/BluePrint/BP_SPCharacterMan2.BP_SPCharacterMan2_C"); // 경로 수정 필요
+          break;
+      //case Protocol::PLAYER_TYPE_PURPLE_WOMAN:
+      //    CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharaterPlayer_W1"));
+      //    break;
+      case Protocol::PLAYER_TYPE_ORANGE_MAN:
+          BlueprintPath = TEXT("/Game/Spectrum/BluePrint/BP_SPCharacterMan3.BP_SPCharacterMan3_C"); // 경로 수정 필요
+          break;
+      //case Protocol::PLAYER_TYPE_ORANGE_WOMAN:
+      //    CastPlayer->ChangePawnName(TEXT("/Game/Spectrum/BluePrint/BP_SPCharaterPlayer_W3"));
+      //    break;
+      }
+
+   //   if (mynum == 0) {
+   //    BlueprintPath = TEXT("/Game/Spectrum/BluePrint/BP_SPCharacterMan1.BP_SPCharacterMan1_C"); // 경로 수정 필요
+	  //mynum++;
+
+	  //}
+   //   else if (mynum == 1) {
+
+		 //  BlueprintPath = TEXT("/Game/Spectrum/BluePrint/BP_SPCharacterMan2.BP_SPCharacterMan2_C"); // 경로 수정 필요
+		 // mynum++;
+	  //}
+   //   else if (mynum == 2) {
+
+   //        BlueprintPath = TEXT("/Game/Spectrum/BluePrint/BP_SPCharacterMan3.BP_SPCharacterMan3_C"); // 경로 수정 필요
+   //       mynum++;
+   //   }
+      // 블루프린트 클래스를 로드
+      UClass* DesiredPawnClass = StaticLoadClass(UObject::StaticClass(), nullptr, *BlueprintPath);
+
+      if (DesiredPawnClass)
+      {
+          // 기존 폰이 있으면 제거
+          if (APawn* OldPawn = NewPlayer->GetPawn())
+          {
+              OldPawn->Destroy();
+          }
+
+          FVector SpawnLocation = FVector(1970.0f, 140.0f, 5192.0f);
+          // 새 폰을 스폰하고 플레이어에게 할당
+          FActorSpawnParameters SpawnParams;
+          SpawnParams.Owner = NewPlayer;
+          APawn* NewPawn = GetWorld()->SpawnActor<APawn>(DesiredPawnClass, SpawnLocation, FRotator::ZeroRotator, SpawnParams);
+          NewPlayer->Possess(NewPawn);
+      }
+
 }

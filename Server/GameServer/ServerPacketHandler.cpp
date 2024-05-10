@@ -250,7 +250,7 @@ bool Handle_C_ENTER_ROOM(PacketSessionRef& session, Protocol::C_ENTER_ROOM& pkt)
 
 	// RoomList 중 memberCount가 2인 방을 찾아서 방의 모든 클라이언트에게 게임 시작 패킷 전송
 	for (int i = 0; i < RoomList.size(); i++) {
-		if (RoomList[i].memberCount == 2) {
+		if (RoomList[i].memberCount == 1) {
 			// 게임 시작 패킷 전송
 			Protocol::S_ENTER_GAME enterGamePkt;
 			enterGamePkt.set_success(true);
