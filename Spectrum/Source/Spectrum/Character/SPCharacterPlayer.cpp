@@ -399,8 +399,7 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 	//Widget
 	//Target = CreateDefaultSubobject<USPWidgetComponent>(TEXT("Widget"));
 	
-	WaterSound = LoadObject<USoundWave>(nullptr, TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/Water2.Water2'"));
-	CrushSound = LoadObject<USoundWave>(nullptr, TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/Crush.Crush'"));
+
 
 	CurrentCharacterControlType = ECharacterControlType::Shoulder;
 	LastInput = FVector2D::ZeroVector;
@@ -836,11 +835,7 @@ void ASPCharacterPlayer::ThrowPotion(const FInputActionValue& Value)
 			if (!HasAuthority())
 			{
 				PlayThrowAnimation();
-				// FTimerHandle TimerHandle;
-				// GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this]()
-				// {
-				// 	UGameplayStatics::PlaySound2D(GetWorld(), WaterSound);
-				// }, 0.8f, false);
+
 				bIsThrowReady = false;
 				GetCharacterMovement()->bOrientRotationToMovement = true;
 				GetCharacterMovement()->bUseControllerDesiredRotation = false;
@@ -1490,11 +1485,6 @@ void ASPCharacterPlayer::ServerRPCThrowPotion_Implementation(bool IsThrowReady)
 	if (IsThrowReady)
 	{
 		PlayThrowAnimation();
-		// FTimerHandle TimerHandle;
-		// GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this]()
-		// {
-		// 	UGameplayStatics::PlaySound2D(GetWorld(), WaterSound);
-		// }, 0.8f, false);
 		if (Potion)
 		{
 			GetController()->GetControlRotation();

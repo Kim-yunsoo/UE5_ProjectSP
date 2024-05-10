@@ -26,8 +26,7 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USPExplosionComponent> ExplosionComponent ;
 	//RPC
-	UFUNCTION(NetMulticast, Unreliable)
-	void MultiRPCExplosion();
+
 
 	UFUNCTION()
 	void HandleActorHit(AActor* SelfActor,
@@ -42,8 +41,4 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Default")
 	TObjectPtr<USoundWave> CrushSound;
-
-	UFUNCTION(Client, Unreliable)
-	void ClientRPCSound();
-	
 };

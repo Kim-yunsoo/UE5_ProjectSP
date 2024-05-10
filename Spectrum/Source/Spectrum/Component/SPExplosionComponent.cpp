@@ -2,6 +2,8 @@
 
 
 #include "Component/SPExplosionComponent.h"
+
+#include "SpectrumLog.h"
 #include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Interface/SPDamageInterface.h"
@@ -17,6 +19,9 @@ USPExplosionComponent::USPExplosionComponent()
 	{
 		Effect = EffectRef.Object;
 	}
+
+	WaterSound = LoadObject<USoundWave>(nullptr, TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/Water2.Water2'"));
+	CrushSound = LoadObject<USoundWave>(nullptr, TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/Crush.Crush'"));
 }
 
 
@@ -51,27 +56,34 @@ void USPExplosionComponent::Explode()
 	}
 }
 
+
+
 void USPExplosionComponent::MultiRPCExplosion_Implementation(const TArray<FHitResult>& OutHits)
 {
 	for (const FHitResult& HitResult : OutHits)
 	{
 		AActor* HitActor = HitResult.GetActor();
+		//UE_LOG(LogTemp, Warning, TEXT("hit! owne?? %s"), *GetOwner()->GetName());
+		
 		if (HitActor)
 		{
 			ActorArray.AddUnique(HitActor);
 		}
 	}
-		if (ActorArray.Num() > 0)
+	if (ActorArray.Num() > 0)
+	{
+		for (AActor*& HitActor : ActorArray)
 		{
-			for (AActor*& HitActor : ActorArray)
+			ISPDamageInterface* DamageInterface = Cast<ISPDamageInterface>(HitActor);
+			if (DamageInterface)
 			{
-				ISPDamageInterface* DamageInterface = Cast<ISPDamageInterface>(HitActor);
-				if (DamageInterface)
-				{
-					DamageInterface->OnExplosionHit();
-				}
+				DamageInterface->OnExplosionHit();
 			}
 		}
+	}
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), WaterSound, GetOwner()->GetActorLocation());
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), CrushSound, GetOwner()->GetActorLocation());
+
 }
 
 

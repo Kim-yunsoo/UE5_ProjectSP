@@ -22,8 +22,7 @@ ASPBlackPotion::ASPBlackPotion()
 		PotionMesh->SetCollisionProfileName(TEXT("NoCollision"));
 	}
 	ExplosionComponent = CreateDefaultSubobject<USPExplosionComponent>(TEXT("ExplosionComponent"));
-	WaterSound = LoadObject<USoundWave>(nullptr, TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/Water2.Water2'"));
-	CrushSound = LoadObject<USoundWave>(nullptr, TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/Crush.Crush'"));
+	
 	static ConstructorHelpers::FObjectFinder<UParticleSystem> HitRef(
 TEXT("/Script/Engine.ParticleSystem'/Game/MagicProjectilesVol2/Particles/Hits/CP_BlackPotion.CP_BlackPotion'"));
 
@@ -48,32 +47,18 @@ void ASPBlackPotion::BeginPlay()
 
 void ASPBlackPotion::HandleActorHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
 {
-	ClientRPCSound();
+	//ClientRPCSound();
 	FVector HitLocation = Hit.ImpactPoint;
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), EmitterHit, HitLocation, FRotator::ZeroRotator,
 												 FVector(1.0f), true, EPSCPoolMethod::None, true);
 	ExplosionComponent->Explode();
 	this->SetLifeSpan(0.1f);
-	
 }
 
-void ASPBlackPotion::MultiRPCExplosion_Implementation()
-{
-	ExplosionComponent->Explode();
-	this->SetLifeSpan(0.1f);
-}
+
 
 void ASPBlackPotion::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 }
-
-void ASPBlackPotion::ClientRPCSound_Implementation()
-{
-	//SP_SUBLOG(LogTemp, Warning, TEXT("ClientRPCSound_Implementation"));
-	UGameplayStatics::PlaySound2D(GetWorld(), WaterSound);
-	UGameplayStatics::PlaySound2D(GetWorld(), CrushSound);
-}
-
-
 

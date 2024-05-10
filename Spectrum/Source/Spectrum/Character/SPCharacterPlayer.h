@@ -618,11 +618,7 @@ public:
 
 
 	//사운드
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Default")
-	TObjectPtr<USoundWave> WaterSound;
 
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Default")
-	TObjectPtr<USoundWave> CrushSound;
 	
 	//Todo 치트키 7번
 	UPROPERTY()

@@ -33,5 +33,4 @@ public:
 		const FHitResult& Hit
 	);
 
-
 };
