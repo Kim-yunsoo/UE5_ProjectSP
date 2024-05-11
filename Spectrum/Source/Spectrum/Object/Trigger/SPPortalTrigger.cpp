@@ -26,7 +26,7 @@ ASPPortal::ASPPortal()
 		PortalData = DataRef.Object;
 	}
 
-	PortalSound = CreateDefaultSubobject<USoundWave>(TEXT("PortalSound"));
+	// PortalSound = CreateDefaultSubobject<USoundWave>(TEXT("PortalSound"));
 	static ConstructorHelpers::FObjectFinder<USoundWave> SoundRef(
 		TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/PortalSound.PortalSound'"));
 	if (SoundRef.Object)

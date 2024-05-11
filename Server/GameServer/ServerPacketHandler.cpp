@@ -23,8 +23,8 @@ bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len)
 
 bool Handle_C_LOGIN(PacketSessionRef& session, Protocol::C_LOGIN& pkt)
 {
-	// DB¿¡¼­ Á¤º¸È®ÀÎ ÈÄ ÀÖÀ¸¸é °¡Á®¿À°í Å¬¶ó¿¡ Á¤º¸ º¸³»±â
-	// ¾øÀ¸¸é »ý¼ºÇÏ¶ó´Â ÆÐÅ¶ º¸³»±â
+	// DBï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È®ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½ï¿½ ï¿½ï¿½Å¶ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	bool isThere = false;
 
 	Protocol::S_LOGIN loginPkt;
@@ -32,24 +32,24 @@ bool Handle_C_LOGIN(PacketSessionRef& session, Protocol::C_LOGIN& pkt)
 	cout << "Login : " << pkt.membership_id() << endl;
 
 
-	std::ifstream file("DB.txt"); // ÆÄÀÏÀ» ¿±´Ï´Ù.
+	std::ifstream file("DB.txt"); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½.
 	std::string line;
 
 	if (!file.is_open()) {
-		std::cerr << "ÆÄÀÏÀ» ¿­ ¼ö ¾ø½À´Ï´Ù!" << std::endl;
+		std::cerr << "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½!" << std::endl;
 		return -1;
 	}else
-		std::cout << "ÆÄÀÏÀ» ¿­¾ú½À´Ï´Ù." << std::endl;
+		std::cout << "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½." << std::endl;
 
 	while (getline(file, line)) {
 		std::istringstream iss(line);
 		std::string firstWord, secondWord;
 		
 
-		getline(iss, firstWord, ','); // Ã¹ ¹øÂ° ´Ü¾î¸¦ ÀÐÀ½
-		if (firstWord == pkt.membership_id()) { // Ã¹ ¹øÂ° ´Ü¾î°¡ ¹ÞÀº ¾ÆÀÌµð¿Í °°À¸¸é
-			if (getline(iss, secondWord, ',')) { // µÎ ¹øÂ° ´Ü¾î¸¦ ÀÐÀº ÈÄ
-				std::cout << secondWord << std::endl; // ÀÖÀ¸¸é µÎ ¹øÂ° ´Ü¾î¸¦ Ãâ·Â
+		getline(iss, firstWord, ','); // Ã¹ ï¿½ï¿½Â° ï¿½Ü¾î¸¦ ï¿½ï¿½ï¿½ï¿½
+		if (firstWord == pkt.membership_id()) { // Ã¹ ï¿½ï¿½Â° ï¿½Ü¾î°¡ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			if (getline(iss, secondWord, ',')) { // ï¿½ï¿½ ï¿½ï¿½Â° ï¿½Ü¾î¸¦ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+				std::cout << secondWord << std::endl; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½Â° ï¿½Ü¾î¸¦ ï¿½ï¿½ï¿½
 
 				/*PLAYER_TYPE_GREEN_MAN = 00;
 				PLAYER_TYPE_GREEN_WOMAN = 01;
@@ -82,7 +82,7 @@ bool Handle_C_LOGIN(PacketSessionRef& session, Protocol::C_LOGIN& pkt)
 				loginPkt.set_membership_id(pkt.membership_id());
 			}
 			isThere = true;
-			// ÇÃ·¹ÀÌ¾î »ý¼º
+			// ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½
 			PlayerRef player = ObjectUtils::CreatePlayer(static_pointer_cast<GameSession>(session));
 			//player->objectInfo->set_player_id(loginPkt.membership_id());
 			//player->objectInfo->set_membership_type(loginPkt.membership_type());
@@ -92,7 +92,7 @@ bool Handle_C_LOGIN(PacketSessionRef& session, Protocol::C_LOGIN& pkt)
 
 			//cout << *player->player_id << endl;
 
-			// ·Îºñ¿¡ ÀÔÀå
+			// ï¿½Îºï¿½ ï¿½ï¿½ï¿½ï¿½
 			GLobby->EnterLobbyLocked(player);
 			//GLobby->RoomSend(nullptr, player->player_id);
 
@@ -105,11 +105,11 @@ bool Handle_C_LOGIN(PacketSessionRef& session, Protocol::C_LOGIN& pkt)
 
 		}
 	}
-	file.close(); // ÆÄÀÏÀ» ´Ý½À´Ï´Ù.
+	file.close(); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ý½ï¿½ï¿½Ï´ï¿½.
 	loginPkt.set_success(isThere);
 	SEND_PACKET(loginPkt);
 	
-	// ·Îºñ¿¡ Á¢¼ÓÇÑ Å¬¶óÀÌ¾ðÆ®¸¦ Ãß°¡
+	// ï¿½Îºï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½ß°ï¿½
 	//Lobby->HandleEnterPlayerLocked(static_pointer_cast<GameSession>(session));
 
 	isThere = false;
@@ -123,15 +123,15 @@ bool Handle_C_MEMBERSHIP(PacketSessionRef& session, Protocol::C_MEMBERSHIP& pkt)
 
 	bool found = false;
 
-	std::ifstream file("DB.txt"); // ÀÐ±â¸ðµå
+	std::ifstream file("DB.txt"); // ï¿½Ð±ï¿½ï¿½ï¿½
 	std::string line;
 
 	if (!file.is_open()) {
-		std::cerr << "ÆÄÀÏÀ» ¿­ ¼ö ¾ø½À´Ï´Ù!" << std::endl;
+		std::cerr << "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½!" << std::endl;
 		return -1;
 	}
 
-	// id ÀÖ´ÂÁö È®ÀÎ
+	// id ï¿½Ö´ï¿½ï¿½ï¿½ È®ï¿½ï¿½
 	while (getline(file, line)) {
 		std::istringstream iss(line);
 		std::string firstWord;
@@ -144,25 +144,25 @@ bool Handle_C_MEMBERSHIP(PacketSessionRef& session, Protocol::C_MEMBERSHIP& pkt)
 
 	file.close();
 
-	// id°¡ ÆÄÀÏ¿¡ ¾ø´Â °æ¿ì, ÆÄÀÏ ³¡¿¡ membership_id, membership_typeÃß°¡
+	// idï¿½ï¿½ ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ membership_id, membership_typeï¿½ß°ï¿½
 	if (!found) {
-		std::ofstream outFile("DB.txt", std::ios::app); // ¾²±â ¸ðµå·Î ÆÄÀÏÀ» ¿±´Ï´Ù. append ¸ðµå.
+		std::ofstream outFile("DB.txt", std::ios::app); // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½. append ï¿½ï¿½ï¿½.
 		if (!outFile.is_open()) {
 			std::cerr << "fail open file" << std::endl;
 			return -1;
 		}
-		outFile << pkt.membership_id() << "," << pkt.membership_type() << std::endl; // "id,state"¸¦ ÆÄÀÏ ³¡¿¡ Ãß°¡ÇÕ´Ï´Ù.
-		outFile.close(); // ¾²±â ÀÛ¾÷À» ¸¶Ä£ ÈÄ ÆÄÀÏÀ» ´Ý½À´Ï´Ù.
+		outFile << pkt.membership_id() << "," << pkt.membership_type() << std::endl; // "id,state"ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Õ´Ï´ï¿½.
+		outFile.close(); // ï¿½ï¿½ï¿½ï¿½ ï¿½Û¾ï¿½ï¿½ï¿½ ï¿½ï¿½Ä£ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ý½ï¿½ï¿½Ï´ï¿½.
 	}
 
-	// Å¬¶óÀÌ¾ðÆ®¿¡°Ô È¸¿ø°¡ÀÔ ¼º°ø ÆÐÅ¶ Àü¼Û
+	// Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¶ ï¿½ï¿½ï¿½ï¿½
 	Protocol::S_LOGIN membershipPkt;
 	membershipPkt.set_success(true);
 	membershipPkt.set_membership_id(pkt.membership_id());
 	membershipPkt.set_membership_type(pkt.membership_type());
 	SEND_PACKET(membershipPkt);
 
-	// ÇÃ·¹ÀÌ¾î »ý¼º
+	// ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½
 	PlayerRef player = ObjectUtils::CreatePlayer(static_pointer_cast<GameSession>(session));
 	//player->objectInfo->set_player_id(loginPkt.membership_id());
 	//player->objectInfo->set_membership_type(loginPkt.membership_type());
@@ -171,7 +171,7 @@ bool Handle_C_MEMBERSHIP(PacketSessionRef& session, Protocol::C_MEMBERSHIP& pkt)
 	player->membership_type = membershipPkt.membership_type();
 	
 
-	// ·Îºñ¿¡ ÀÔÀå
+	// ï¿½Îºï¿½ ï¿½ï¿½ï¿½ï¿½
 	GLobby->EnterLobbyLocked(player);
 
 	return true;
@@ -179,10 +179,10 @@ bool Handle_C_MEMBERSHIP(PacketSessionRef& session, Protocol::C_MEMBERSHIP& pkt)
 
 bool Handle_C_CREATE_ROOM(PacketSessionRef& session, Protocol::C_CREATE_ROOM& pkt)
 {
-	// ¹æ »ý¼º
+	// ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	//cout << "Create Room:" << pkt.membership_id() << ", ip:" << pkt.ip_address() << endl;
 
-	// ¹æ »ý¼º
+	// ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	if (pkt.school_type() == Protocol::SCHOOL_TYPE_GREEN) {
 		RoomList.emplace_back(pkt.ip_address(), 0, 0, pkt.membership_id(), pkt.membership_type());
 		cout << "Create Room GREEN, " << pkt.membership_id() << ", ip:" << pkt.ip_address() << endl;
@@ -206,7 +206,7 @@ bool Handle_C_ENTER_ROOM(PacketSessionRef& session, Protocol::C_ENTER_ROOM& pkt)
 {
 	switch (pkt.school_type()) {
 	case Protocol::SCHOOL_TYPE_GREEN:
-		// RoomList Áß Index_GÀÌ -1ÀÎ ¹æÀ» Ã£¾Æ¼­ ÇØ´ç ¹æ¿¡ ÀÔÀå
+		// RoomList ï¿½ï¿½ Index_Gï¿½ï¿½ -1ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½Æ¼ï¿½ ï¿½Ø´ï¿½ ï¿½æ¿¡ ï¿½ï¿½ï¿½ï¿½
 		for (int i = 0; i < RoomList.size(); i++) {
 			if (RoomList[i].Index_G == -1) {
 				RoomList[i].Index_G = 0;
@@ -220,7 +220,7 @@ bool Handle_C_ENTER_ROOM(PacketSessionRef& session, Protocol::C_ENTER_ROOM& pkt)
 		break;
 
 	case Protocol::SCHOOL_TYPE_PURPLE:
-		// RoomList Áß Index_PÀÌ -1ÀÎ ¹æÀ» Ã£¾Æ¼­ ÇØ´ç ¹æ¿¡ ÀÔÀå
+		// RoomList ï¿½ï¿½ Index_Pï¿½ï¿½ -1ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½Æ¼ï¿½ ï¿½Ø´ï¿½ ï¿½æ¿¡ ï¿½ï¿½ï¿½ï¿½
 		for (int i = 0; i < RoomList.size(); i++) {
 			if (RoomList[i].Index_P == -1) {
 				RoomList[i].Index_P = 0;
@@ -234,7 +234,7 @@ bool Handle_C_ENTER_ROOM(PacketSessionRef& session, Protocol::C_ENTER_ROOM& pkt)
 		break;
 
 	case Protocol::SCHOOL_TYPE_ORANGE:
-		// RoomList Áß Index_OÀÌ -1ÀÎ ¹æÀ» Ã£¾Æ¼­ ÇØ´ç ¹æ¿¡ ÀÔÀå
+		// RoomList ï¿½ï¿½ Index_Oï¿½ï¿½ -1ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½Æ¼ï¿½ ï¿½Ø´ï¿½ ï¿½æ¿¡ ï¿½ï¿½ï¿½ï¿½
 		for (int i = 0; i < RoomList.size(); i++) {
 			if (RoomList[i].Index_O == -1) {
 				RoomList[i].Index_O = 0;
@@ -248,10 +248,10 @@ bool Handle_C_ENTER_ROOM(PacketSessionRef& session, Protocol::C_ENTER_ROOM& pkt)
 		break;
 	}
 
-	// RoomList Áß memberCount°¡ 2ÀÎ ¹æÀ» Ã£¾Æ¼­ ¹æÀÇ ¸ðµç Å¬¶óÀÌ¾ðÆ®¿¡°Ô °ÔÀÓ ½ÃÀÛ ÆÐÅ¶ Àü¼Û
+	// RoomList ï¿½ï¿½ memberCountï¿½ï¿½ 2ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½Æ¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¶ ï¿½ï¿½ï¿½ï¿½
 	for (int i = 0; i < RoomList.size(); i++) {
-		if (RoomList[i].memberCount == 2) {
-			// °ÔÀÓ ½ÃÀÛ ÆÐÅ¶ Àü¼Û
+		if (RoomList[i].memberCount == 1) {
+			// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¶ ï¿½ï¿½ï¿½ï¿½
 			Protocol::S_ENTER_GAME enterGamePkt;
 			enterGamePkt.set_success(true);
 			enterGamePkt.set_membership_id_0(RoomList[i].membership_id_G);
@@ -266,7 +266,7 @@ bool Handle_C_ENTER_ROOM(PacketSessionRef& session, Protocol::C_ENTER_ROOM& pkt)
 			//SEND_PACKET(enterGamePkt);
 
 			{
-				// ·ë¿¡ ÀÖ´Â Å¬¶óÀÌ¾ðÆ®¿¡°Ô °ÔÀÓ ½ÃÀÛ ÆÐÅ¶ Àü¼Û
+				// ï¿½ë¿¡ ï¿½Ö´ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¶ ï¿½ï¿½ï¿½ï¿½
 				SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(enterGamePkt);
 				GSessionManager.RoomBroadcast(sendBuffer, RoomList[i].membership_id_G);
 				GSessionManager.RoomBroadcast(sendBuffer, RoomList[i].membership_id_P);
@@ -276,7 +276,7 @@ bool Handle_C_ENTER_ROOM(PacketSessionRef& session, Protocol::C_ENTER_ROOM& pkt)
 			}
 
 
-			// ³ªÁß¿¡ °ÔÀÓ Á¾·á ÆÐÅ¶ ¹ÞÀ¸¸é RoomList¿¡¼­ ÇØ´ç ¹æ »èÁ¦
+			// ï¿½ï¿½ï¿½ß¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¶ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ RoomListï¿½ï¿½ï¿½ï¿½ ï¿½Ø´ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			//RoomList.erase(RoomList.begin() + i);
 			break;
 		}
@@ -341,7 +341,7 @@ bool Handle_C_PUBLIC_CHAT(PacketSessionRef& session, Protocol::C_PUBLIC_CHAT& pk
 
 bool Handle_C_PRIVATE_CHAT(PacketSessionRef& session, Protocol::C_PRIVATE_CHAT& pkt)
 {
-	// ¾ÆÀÌµð·Î ÇÐ±³ °Ë»ö ÈÄ ÇÐ±³°¡ °°À» °æ¿ì¿¡¸¸ Àü¼Û
+	// ï¿½ï¿½ï¿½Ìµï¿½ï¿½ ï¿½Ð±ï¿½ ï¿½Ë»ï¿½ ï¿½ï¿½ ï¿½Ð±ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ì¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	Protocol::S_PRIVATE_CHAT privateChatPkt;
 
 	cout << "Provate Chat : " << pkt.membership_id() << " : " << pkt.msg() << endl;
@@ -350,7 +350,7 @@ bool Handle_C_PRIVATE_CHAT(PacketSessionRef& session, Protocol::C_PRIVATE_CHAT& 
 	privateChatPkt.set_msg(pkt.msg());
 	privateChatPkt.set_membership_type(pkt.membership_type());
 
-	//SEND_PACKET(privateChatPkt);		// ¿¡µðÅÍ ÇÏ³ª¸¸ ÇÒ°Å¸é ÀÌ°É·Î
+	//SEND_PACKET(privateChatPkt);		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï³ï¿½ï¿½ï¿½ ï¿½Ò°Å¸ï¿½ ï¿½Ì°É·ï¿½
 
 	auto send_Buffer = ServerPacketHandler::MakeSendBuffer(privateChatPkt);
 	GSessionManager.Broadcast(send_Buffer);
