@@ -206,7 +206,6 @@ void USPLobbyWidget::JoinRoom()
 FString USPLobbyWidget::MatchingServer()
 {
 	// ��Ī�� ����
-	//return TEXT("Open 192.168.45.163");
 	FString ip = FString(UTF8_TO_TCHAR(ServerIP.c_str()));
 	FString return_ip = TEXT("Open ") + ip;
 	//if(matching_C == true)
@@ -218,37 +217,10 @@ FString USPLobbyWidget::MatchingServer()
 }
 bool USPLobbyWidget::MatchingSuccess_H()
 {
-	//if(matching_H)
-	//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("0000000000000000")));
-
 	return matching_H;
 }
 bool USPLobbyWidget::MatchingSuccess_C()
 {
-	//if (matching_C)
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("0000000000000000")));
-	//GetWorld()->ServerTravel("/Game/Spectrum/Room/Map/Building.Building?listen");
-	//GetWorld()->ServerTravel("192.168.41.20");
-	//if (UWorld* World = GetWorld())
-	//{
-	//	//FString TravelURL = FString::Printf(TEXT("%s"), *IPAddress);
-	//	FString ip = FString(UTF8_TO_TCHAR(ServerIP.c_str()));
-	//	World->ServerTravel(ip);
-	//}
-
-
-
-	//ACharacter* PlayerCharacter = Cast<ACharacter>(GetOwningPlayer()->GetPawn());
-	///PlayerCharacter->Getcontroller()->GetGameMode();
-	//if (matching_C == true)
-	//{
-	//	ACharacter* Character = Cast<ACharacter>(GetOwningPlayerPawn());
-	//	AGameModeBase* GameModeBase = Character->GetWorld()->GetAuthGameMode();
-	//	ASPLobbyWidgetGameModeBase* MyGameMode = Cast<ASPLobbyWidgetGameModeBase>(GameModeBase);
-	//	MyGameMode->goServer();
-	//}
-
-
 	return matching_C;
 }
 /*************************
