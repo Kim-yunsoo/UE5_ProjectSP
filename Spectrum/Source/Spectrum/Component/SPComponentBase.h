@@ -28,4 +28,7 @@ protected:
 	TArray<AActor*>ActorArray ;
 protected:
 	virtual void Explode();
+
+	UPROPERTY()
+	TObjectPtr<UParticleSystem> EmitterHit;
 };

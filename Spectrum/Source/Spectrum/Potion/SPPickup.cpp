@@ -16,7 +16,7 @@ ASPPickup::ASPPickup()
 	
 
 	PickupMesh = CreateDefaultSubobject<UStaticMeshComponent>("PickupMesh");
-	
+	//PickupMesh->SetMobility(EComponentMobility::Static);
 	//PickupMesh->SetSimulatePhysics(true);
 	SetRootComponent(PickupMesh);
 	
@@ -27,6 +27,10 @@ ASPPickup::ASPPickup()
 	{
 		ItemDataTable = DataTableFinder.Object;
 	}
+
+	//Trigger->SetMobility(EComponentMobility::Static);
+
+	
 	PotionRange=4;
 	//PickupMesh->SetSimulatePhysics(false);
 	//Trigger->SetSimulatePhysics(false);
@@ -100,6 +104,7 @@ void ASPPickup::InitializePickup(const TSubclassOf<USPItemBase> BaseClass, const
 		InQuantity <= 0 ? ItemReference->SetQuantity(1) : ItemReference->SetQuantity(InQuantity);
 
 		PickupMesh->SetStaticMesh(ItemData->ItemAssetData.Mesh);
+		PickupMesh->SetMobility(EComponentMobility::Static);
 
 
 		UpdateInteractableData();
@@ -130,22 +135,17 @@ void ASPPickup::EndFocus()
 	}
 }
 
-void ASPPickup::Interact(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget) //서버에서 
+bool ASPPickup::Interact(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget) //서버에서 
 {
-	//SetOwner(PlayerCharacter);
-	//ServerRPCInteract(PlayerCharacter, HUDWidget);
 	if (PlayerCharacter)
 	{
 		MyPlayerOwner=PlayerCharacter;
-		//this->SetOwner(PlayerCharacter);
 		TakePickup(PlayerCharacter);
+		return true;
 	}
+	return false;
 }
-void ASPPickup::Interact2(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget) //클라에서 ,인터페이스라서 구현만 해놓은 것이다.
-{
-	//쓰이는 곳 : 제작대랑 설명서 볼 때 UI -> 클라이언트의 UI여야하니까! 
-	ISPInteractionInterface::Interact2(PlayerCharacter, HUDWidget);
-}
+
 
 void ASPPickup::UpdateInteractableData()
 {
@@ -166,7 +166,7 @@ void ASPPickup::TakePickup(ASPCharacterPlayer* Taker) //서버
 			{
 				FTimerHandle TimerHandle;
 				PlayerInvetory->HandleAddItem(ItemReference,1);
-				GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this]()
+				GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]()
 				{
 					//여기서 스포너한테 신호 보내야겠다.
 					ASPPotionSpawner* PotionSpawner = Cast<ASPPotionSpawner>(GetOwner());
@@ -176,7 +176,7 @@ void ASPPickup::TakePickup(ASPCharacterPlayer* Taker) //서버
 					}
 					this->SetOwner(MyPlayerOwner);
 					this->Destroy();
-				}, 0.1f, false);
+				}, 0.8f, false);
 			}
 			else
 			{
@@ -211,6 +211,10 @@ void ASPPickup::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetim
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(ASPPickup, DesiredItemID);
+}
+
+void ASPPickup::MultiRPCPlayAnimation_Implementation()
+{
 }
 
 // void ASPPickup::OnRepItemID()

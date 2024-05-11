@@ -24,4 +24,7 @@ public:
 	//RPC
 	UFUNCTION(NetMulticast, Unreliable)
 	void MultiRPCPrupleExplosion(const TArray<FHitResult>& Array);
+	
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Default")
+	TObjectPtr<USoundWave> WaterSound;
 };

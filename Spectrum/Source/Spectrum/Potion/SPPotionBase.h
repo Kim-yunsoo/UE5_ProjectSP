@@ -40,8 +40,8 @@ public:
 	virtual  void GetPotion() override;
 
 
-	UPROPERTY()
-	TObjectPtr<UParticleSystem> EmitterHit;
+	// UPROPERTY()
+	// TObjectPtr<UParticleSystem> EmitterHit;
 ///////////////////////////////////////////////////////////////////////////////////////////
 
 public:

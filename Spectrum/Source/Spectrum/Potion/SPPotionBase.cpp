@@ -22,7 +22,7 @@ ASPPotionBase::ASPPotionBase()
 	PotionMesh->SetupAttachment(SphereComponent);
 	PotionMesh->SetCollisionProfileName(TEXT("NoCollision"));
 
-	EmitterHit = CreateDefaultSubobject<UParticleSystem>(TEXT("EmitterHit"));
+	//EmitterHit = CreateDefaultSubobject<UParticleSystem>(TEXT("EmitterHit"));
 
 }
 

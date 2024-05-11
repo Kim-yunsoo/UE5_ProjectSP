@@ -379,7 +379,8 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 	{
 		SevenKeyAction = SevenKeyActionRef.Object;
 	}
-	
+
+	PickupSound = LoadObject<USoundWave>(nullptr, TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/Pickup.Pickup'"));
 	//Effect
 
 	// static ConstructorHelpers::FObjectFinder<UParticleSystem> SlowEffectRef(
@@ -397,6 +398,7 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 
 	//Widget
 	//Target = CreateDefaultSubobject<USPWidgetComponent>(TEXT("Widget"));
+	
 
 
 	CurrentCharacterControlType = ECharacterControlType::Shoulder;
@@ -415,7 +417,7 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 	bIsActiveTeleSkill = true;
 	bIsActiveGraping = true;
 	SphereRange = 10000000;
-
+	bIsPicking = false;
 	KeyToggle = true;
 	bIsSeven = false;
 	// bIsActiveSlowSkill = true;
@@ -431,6 +433,20 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 
 	//GravityArrow->SetIsReplicated(true);
 	//PhysicsHandleComponent->SetIsReplicated(true);
+
+	//GrapSound= CreateDefaultSubobject<USoundWave>(TEXT("GrapSound"));
+	static ConstructorHelpers::FObjectFinder<USoundWave>GrapSoundRef(TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/GrapSound.GrapSound'"));
+	if(GrapSoundRef.Object)
+	{
+		GrapSound = GrapSoundRef.Object;
+	}
+
+	// StopGrapSound= CreateDefaultSubobject<USoundWave>(TEXT("StopGrapSound"));
+	static ConstructorHelpers::FObjectFinder<USoundWave>StopGrapSoundRef(TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/StopGrapingSound.StopGrapingSound'"));
+	if(StopGrapSoundRef.Object)
+	{
+		StopGrapSound = StopGrapSoundRef.Object;
+	}
 	
 }
 
@@ -702,7 +718,6 @@ void ASPCharacterPlayer::HandleMontageAnimNotify(FName NotifyName,
 		if (HasAuthority())
 		{
 			IceSkillComponent->SkillAction();
-			// SlowSkillComponent->SkillAction();
 		}
 	}
 
@@ -751,31 +766,30 @@ void ASPCharacterPlayer::Aiming(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::ServerRPCAiming_Implementation()
 {
-	
+	//Test();
 	bIsAiming = true;
+	MultiRPCAimRotation(true);
 }
 
 void ASPCharacterPlayer::StopAiming(const FInputActionValue& Value)
 {
-	bIsAiming = false;
+	//bIsAiming = false;
 
 	OnAimChanged.Broadcast(false);
-	GetCharacterMovement()->bOrientRotationToMovement = true;
-	GetCharacterMovement()->bUseControllerDesiredRotation = false;
+	// GetCharacterMovement()->bOrientRotationToMovement = true;
+	// GetCharacterMovement()->bUseControllerDesiredRotation = false;
 	FollowCamera->K2_AttachToComponent(CameraBoom, NAME_None, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld,
 	                                   EAttachmentRule::KeepWorld, true);
 	FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld,
 	                                          EAttachmentRule::KeepWorld, true);
 	FollowCamera->AttachToComponent(CameraBoom, AttachmentRules, NAME_None);
 	CameraMove();
-	if (!HasAuthority())
-	{
-		ServerRPCStopAiming();
-	}
+	ServerRPCStopAiming();
 }
 
 void ASPCharacterPlayer::ServerRPCStopAiming_Implementation()
 {
+	MultiRPCAimRotation(false);
 	bIsAiming = false;
 }
 
@@ -833,6 +847,7 @@ void ASPCharacterPlayer::ThrowPotion(const FInputActionValue& Value)
 			if (!HasAuthority())
 			{
 				PlayThrowAnimation();
+
 				bIsThrowReady = false;
 				GetCharacterMovement()->bOrientRotationToMovement = true;
 				GetCharacterMovement()->bUseControllerDesiredRotation = false;
@@ -848,7 +863,7 @@ void ASPCharacterPlayer::ThrowPotion(const FInputActionValue& Value)
 			{
 				PlayStopAnimation();
 			}
-			ServerRPCThrowPotion(bIsThrowReady);
+			//ServerRPCThrowPotion(bIsThrowReady);
 		}
 	}
 }
@@ -1442,6 +1457,23 @@ void ASPCharacterPlayer::ClientRPCTeleAnimation_Implementation(ASPCharacterPlaye
 }
 
 
+void ASPCharacterPlayer::ServerRPCWidgetMove_Implementation(bool Move)
+{
+	MultiRPCWidgetMove(Move);
+}
+
+void ASPCharacterPlayer::MultiRPCWidgetMove_Implementation(bool move)
+{
+	if(move)
+	{
+		GetCharacterMovement()->MovementMode = EMovementMode::MOVE_Walking;
+	}
+	else
+	{
+		GetCharacterMovement()->MovementMode = EMovementMode::MOVE_None;
+	}
+}
+
 void ASPCharacterPlayer::OnRep_PotionSpawn()
 {
 }
@@ -1449,7 +1481,6 @@ void ASPCharacterPlayer::OnRep_PotionSpawn()
 void ASPCharacterPlayer::PlayTurnAnimation()
 {
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-	UAnimInstance* TorsoAnimInstance = Torso->GetAnimInstance();
 	AnimInstance->Montage_Play(ThrowMontage, 1.0f);
 	// TorsoAnimInstance->Montage_Play(ThrowMontage, 1.0f);
 	GetCharacterMovement()->bOrientRotationToMovement = false;
@@ -1459,7 +1490,6 @@ void ASPCharacterPlayer::PlayTurnAnimation()
 void ASPCharacterPlayer::PlayThrowAnimation()
 {
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-	UAnimInstance* TorsoAnimInstance = GetMesh()->GetAnimInstance();
 	AnimInstance->Montage_JumpToSection(FName("End"), ThrowMontage);
 }
 
@@ -1489,8 +1519,9 @@ void ASPCharacterPlayer::ServerRPCThrowPotion_Implementation(bool IsThrowReady)
 			Potion->Throw((ForwardVector + FVector{0.0f, 0.0f, 0.4f}) * Mul);
 		}
 		bIsThrowReady = false;
-		GetCharacterMovement()->bOrientRotationToMovement = true;
-		GetCharacterMovement()->bUseControllerDesiredRotation = false;
+		MultiRPCAimRotation(false);
+		//GetCharacterMovement()->bOrientRotationToMovement = true;
+		//GetCharacterMovement()->bUseControllerDesiredRotation = false;
 		bIsTurnReady = false;
 		bIsSpawn = false;
 		Potion = nullptr;
@@ -1683,8 +1714,6 @@ void ASPCharacterPlayer::SetupHUDWidget(USPHUDWidget* InUserWidget)
 		{
 			SPGameState->OnScore.AddUObject(InUserWidget, &USPHUDWidget::UpdateScore);
 			SPGameState->OnTime.AddUObject(InUserWidget, &USPHUDWidget::UpdateTime);
-			
-			
 		}
 	}
 }
@@ -1730,7 +1759,6 @@ void ASPCharacterPlayer::FoundInteractable(AActor* NewInteractable)
 	InteractionData.CurrentInteractable = NewInteractable;
 	TargetInteractable = NewInteractable;
 
-	//Todo 좀 더 효율적이게 바꾸기
 	if (HUDWidget)
 	{
 		HUDWidget->UpdateInteractionWidget(&TargetInteractable->InteractableData);
@@ -1805,13 +1833,29 @@ void ASPCharacterPlayer::EndInteract()
 
 void ASPCharacterPlayer::Interact()
 {
+	//todo
+	//	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 	//타이머 끝났다고 가정하고 지운다.
 	GetWorldTimerManager().ClearTimer(TimerHandle_Interaction);
 	if (IsValid(TargetInteractable.GetObject()))
 	{
-		TargetInteractable->Interact2(this, HUDWidget);
+		if(TargetInteractable->Interact2(this, HUDWidget))
+		{
+			
+		}
+		else
+		{
+			if(IsMontagePlaying() == false)
+			{
+				FTimerHandle TimerHandle;
+				GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this]()
+				{
+					UGameplayStatics::PlaySoundAtLocation(GetWorld(), PickupSound, GetActorLocation(),GetActorRotation());
+				}, 0.8f, false);
+				ServerRPCInteract();
+			}
+		}
 	}
-	ServerRPCInteract();
 }
 
 void ASPCharacterPlayer::ServerRPCInteract_Implementation()
@@ -1820,7 +1864,22 @@ void ASPCharacterPlayer::ServerRPCInteract_Implementation()
 	if (IsValid(TargetInteractable.GetObject()))
 	{
 		TargetInteractable->Interact(this, HUDWidget);
+		
 	}
+	// if(HasAuthority())
+	// {
+		bIsPicking = true;
+		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+		FTimerHandle TimerHandle;
+
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]()
+		{
+			GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+			bIsPicking = false;
+			
+		}, 1.5f, false);
+	// }
+	//여기서 다른 사람들 애니메이션 보내기
 }
 
 void ASPCharacterPlayer::UpdateInteractionWidget() const
@@ -1896,6 +1955,7 @@ void ASPCharacterPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 	DOREPLIFETIME(ASPCharacterPlayer, bIsTurnReady);
 	DOREPLIFETIME(ASPCharacterPlayer, bIsThrowReady);
 	DOREPLIFETIME(ASPCharacterPlayer, bIsHolding);
+	DOREPLIFETIME(ASPCharacterPlayer, bIsPicking);
 	DOREPLIFETIME(ASPCharacterPlayer, InteractionCheck);
 	DOREPLIFETIME(ASPCharacterPlayer, bIsActiveGraping);
 	DOREPLIFETIME(ASPCharacterPlayer, HitMyActor);
@@ -1921,6 +1981,7 @@ void ASPCharacterPlayer::PlaySkillAnimation()
 	UGameplayStatics::PlaySoundAtLocation(GetWorld(), SlowSkillComponent->SkillSound, GetActorLocation(),GetActorRotation());
 }
 
+
 void ASPCharacterPlayer::PlayIceSkillAnimation()
 {
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
@@ -1943,6 +2004,10 @@ void ASPCharacterPlayer::HitSlowSkillResult()
 	// Cast<USPCharacterMovementComponent>(GetMovementComponent());
 	// NetTESTRPCSlowSkill();
 	bIsDamage = true;
+	if(false==IsMontagePlaying())
+	{
+		GetMesh()->GetAnimInstance()->Montage_Play(ImpactMontage,1.0f);
+	}
 	GetCharacterMovement()->MaxWalkSpeed = 100.f;
 	FTimerHandle Handle;
 	GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([&]
@@ -1957,6 +2022,10 @@ void ASPCharacterPlayer::HitIceSkillResult()
 {
 	bIsDamage = true;
 	// GetCharacterMovement()->MaxWalkSpeed = 0.0f;
+	if(false==IsMontagePlaying())
+	{
+		GetMesh()->GetAnimInstance()->Montage_Play(ImpactMontage,1.0f);
+	}
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 	FTimerHandle Handle;
 	GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([&]
@@ -1969,20 +2038,13 @@ void ASPCharacterPlayer::HitIceSkillResult()
 
 void ASPCharacterPlayer::HitTeleSkillResult(const FVector TeleportLocation)
 {
-	// FVector(((2620.000000,-60.000000,5220.000000)));
-	// FVector TPPoint = FVector(16270.000000,2720.000000,3560.000000);
+	
+	if(false==IsMontagePlaying())
+	{
+		GetMesh()->GetAnimInstance()->Montage_Play(ImpactMontage,1.0f);
+	}
 	this->TeleportTo(TeleportLocation, this->GetActorRotation(), false, true);
-	// this-(FVector(((2620.000000,-60.000000,5220.000000))));
-	// this->SetActorRelativeLocation(FVector((16000.0,-1160.000000,3960.000000)));
-	// this->GetActorLocation();
-	// GetCharacterMovement()->MaxWalkSpeed = 0.0f;
-	// GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
-	// FTimerHandle Handle;
-	// GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([&]
-	// 										   {
-	// 											   GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
-	// 										   }
-	// 									   ), 5, false, -1.0f);
+	
 }
 
 void ASPCharacterPlayer::OverlapPortal(const FVector& Location)
@@ -1990,14 +2052,14 @@ void ASPCharacterPlayer::OverlapPortal(const FVector& Location)
 	// GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 	// this->TeleportTo(Location, this->GetActorRotation(), false, true);
 	// this->SetActorRelativeLocation(Location);
-
+	//ClientRPCSound();
 
 	FTimerHandle Handle;
 	GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([&]
 		                                       {
 			                                       this->SetActorRelativeLocation(Location);
 		                                       }
-	                                       ), 1.5f, false);
+	                                       ), 5.0f, false);
 }
 
 void ASPCharacterPlayer::ActiveGrapping(const bool Active)
@@ -2010,7 +2072,8 @@ bool ASPCharacterPlayer::IsMontagePlaying()
 	if (GetMesh()->GetAnimInstance()->Montage_IsPlaying(ThrowMontage) ||
 		GetMesh()->GetAnimInstance()->Montage_IsPlaying(SkillMontage) ||
 		GetMesh()->GetAnimInstance()->Montage_IsPlaying(SkillIceMontage) ||
-		GetMesh()->GetAnimInstance()->Montage_IsPlaying(SkillTeleMontage))
+		GetMesh()->GetAnimInstance()->Montage_IsPlaying(SkillTeleMontage)||
+		GetMesh()->GetAnimInstance()->Montage_IsPlaying(ImpactMontage))
 
 	{
 		return true; //어떤 애니메이션 하나라도 플레이 중이면 트루 
@@ -2110,7 +2173,6 @@ void ASPCharacterPlayer::MultiChangeCollision_Implementation(const FName& Collis
 {
 	if (HitMyActor) //내가 들고 있는 액터가 있는 것이면 ? 
 	{
-		SP_LOG(LogSPNetwork,Log,TEXT("MultiChangeCollision"));
 		ASPObject* MyObject = Cast<ASPObject>(HitMyActor);
 		MyObject->SetObjectCollisionType(CollisionName);
 	}
@@ -2122,6 +2184,9 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 	// if (bIsActiveGraping)
 	// {
 	//ShowTargetUI(true);
+	//SP_LOG(LogSPNetwork,Log,TEXT("TEST"));
+
+	//Test();
 	ServerRPCGraping();
 	// }
 	// GetCharacterMovement()->bOrientRotationToMovement = true;
@@ -2175,8 +2240,10 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 {
-GetCharacterMovement()->bOrientRotationToMovement = true;
-	GetCharacterMovement()->bUseControllerDesiredRotation = false;
+	MultiRPCAimRotation(false);
+	//GetCharacterMovement()->bOrientRotationToMovement = true;
+	//GetCharacterMovement()->bUseControllerDesiredRotation = false;
+	
 	if (false == bIsHolding)
 	{
 
@@ -2184,6 +2251,11 @@ GetCharacterMovement()->bOrientRotationToMovement = true;
 		FVector SphereLocationStart = FollowCamera->K2_GetComponentLocation();
 		//FVector SphereLocationEnd = SphereLocationStart + (1500 * FollowCamera->GetForwardVector());
 		APlayerController* PlayerController = GetController<APlayerController>();
+		FVector Location;
+		FRotator Rotation;
+		//PlayerController(Location);
+		PlayerController->GetPlayerViewPoint(Location,Rotation);
+		
 		if (PlayerController != nullptr)
 		{
 			// if(bIsActiveGraping)
@@ -2198,8 +2270,9 @@ GetCharacterMovement()->bOrientRotationToMovement = true;
 			bool TransSuccess = PlayerController->DeprojectScreenPositionToWorld(
 				0.5, 0.5, WorldLocation, WorldDirection);
 
-			FVector SphereLocationEnd = ReseltFoward * SphereRange + SphereLocationStart;
-
+			//FVector SphereLocationEnd = ReseltFoward * SphereRange + SphereLocationStart;
+			FVector SphereLocationEnd = Location + Rotation.Vector()  * SphereRange ;
+			// Location + Rotation.Vector() * MaxRange; 
 			TArray<TEnumAsByte<EObjectTypeQuery>> EmptyObjectTypes;
 			EDrawDebugTrace::Type drawDebugType = EDrawDebugTrace::None;
 			TArray<AActor*> HitActorsToIgnore;
@@ -2217,13 +2290,12 @@ GetCharacterMovement()->bOrientRotationToMovement = true;
 			//Params.bDebugQuery= false; 
 			float DrawTime = 5.0f;
 
-			bool HitSuccess = GetWorld()->LineTraceSingleByChannel(outHitResult, SphereLocationStart, SphereLocationEnd,
+			bool HitSuccess = GetWorld()->LineTraceSingleByChannel(outHitResult, Location, SphereLocationEnd,
 			                                                       ECC_GameTraceChannel1, Params);
 
-			if (HitSuccess && outHitResult.Component->Mobility == EComponentMobility::Movable)
+			if (HitSuccess && outHitResult.Component->Mobility == EComponentMobility::Movable )
 			{
-				if(bIsActiveGraping)
-				{
+				
 					outHitResult.Component->SetSimulatePhysics(true);
 					outHitResult.GetActor()->SetOwner(this);
 					HitComponent = outHitResult.GetComponent();
@@ -2273,7 +2345,6 @@ GetCharacterMovement()->bOrientRotationToMovement = true;
 							}
 						}
 					}
-				}
 				if (HitComponent && HitComponent->IsSimulatingPhysics())
 				{
 					PhysicsHandleComponent->GrabComponentAtLocation(
@@ -2281,50 +2352,49 @@ GetCharacterMovement()->bOrientRotationToMovement = true;
 						NAME_None,
 						HitComponent->K2_GetComponentLocation()
 					);
-					if(bIsActiveGraping)
-					{
+				
 						bIsHolding = true;
+						ClientRPCSound(GrapSound);
 
-						FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld,
-																  EAttachmentRule::KeepWorld, true);
-						FollowCamera->AttachToComponent(CameraBoom, AttachmentRules, NAME_None);
-						CameraMove();
+
+						
 					}
 				
-				}
 			}
 
-			// const FColor LineColor = HitSuccess ? FColor::Green : FColor::Red;
-			//
-			// DrawDebugLine(
-			// 	GetWorld(),
-			// 	SphereLocationStart,
-			// 	SphereLocationEnd,
-			// 	LineColor,
-			// 	false,
-			// 	5.0f,
-			// 	0,
-			// 	1.0f
-			// );
-			// if (HitSuccess)
-			// {
-			// 	DrawDebugPoint(
-			// 		GetWorld(),
-			// 		outHitResult.ImpactPoint,
-			// 		10.0f,
-			// 		FColor::Blue,
-			// 		false,
-			// 		5.0f
-			// 	);
-			// }
+			const FColor LineColor = HitSuccess ? FColor::Green : FColor::Red;
+			
+			DrawDebugLine(
+				GetWorld(),
+				SphereLocationStart,
+				SphereLocationEnd,
+				LineColor,
+				false,
+				5.0f,
+				0,
+				1.0f
+			);
+			if (HitSuccess)
+			{
+				DrawDebugPoint(
+					GetWorld(),
+					outHitResult.ImpactPoint,
+					10.0f,
+					FColor::Blue,
+					false,
+					5.0f
+				);
+			}
 				
 		}
 	}
 	else
 	{
+		UE_LOG(LogTemp,Log,TEXT("HI"));
 		bIsHolding = false;
 		if (HitComponent && HitComponent->IsSimulatingPhysics())
 		{
+			ClientRPCSound(StopGrapSound);
 			PhysicsHandleComponent->ReleaseComponent();
 			HitComponent->AddImpulse(FollowCamera->GetForwardVector() * HitDistance, NAME_None, true);
 			if(Cast<ASPObject>(HitMyActor))
@@ -2341,6 +2411,7 @@ void ASPCharacterPlayer::ServerRPCStopGraping_Implementation()
 	if (bIsHolding && HitComponent->IsSimulatingPhysics())
 	{
 		bIsHolding = false;
+		ClientRPCSound(StopGrapSound);
 		PhysicsHandleComponent->ReleaseComponent();
 		HitComponent->AddImpulse(FollowCamera->GetForwardVector() * HitDistance, NAME_None, true);
 		if (Cast<ASPObject>(HitMyActor))
@@ -2355,8 +2426,9 @@ void ASPCharacterPlayer::Aiming_CameraMove()
 {
 	if (false == bIsHolding)
 	{
-		GetCharacterMovement()->bOrientRotationToMovement = false;
-		GetCharacterMovement()->bUseControllerDesiredRotation = true;
+		//todo
+		//GetCharacterMovement()->bOrientRotationToMovement = false;
+		//GetCharacterMovement()->bUseControllerDesiredRotation = true;
 		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld,
 		                                          EAttachmentRule::KeepWorld, true);
 		FollowCamera->AttachToComponent(SpringArm, AttachmentRules, NAME_None);
@@ -2364,8 +2436,8 @@ void ASPCharacterPlayer::Aiming_CameraMove()
 	}
 	else
 	{
-		GetCharacterMovement()->bOrientRotationToMovement = true;
-		GetCharacterMovement()->bUseControllerDesiredRotation = false;
+		//GetCharacterMovement()->bOrientRotationToMovement = true;
+		//GetCharacterMovement()->bUseControllerDesiredRotation = false;
 		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld,
 		                                          EAttachmentRule::KeepWorld, true);
 		FollowCamera->AttachToComponent(CameraBoom, AttachmentRules, NAME_None);
@@ -2446,4 +2518,36 @@ void ASPCharacterPlayer::ServerRPCSeven_Implementation()
 void ASPCharacterPlayer::ShowTargetUI(bool ShowUI)
 {
 	OnAimChanged.Broadcast(ShowUI);
+}
+
+void ASPCharacterPlayer::MultiRPCStopMove_Implementation(bool IsStop)
+{
+	
+}
+
+void ASPCharacterPlayer::MultiRPCAimRotation_Implementation(bool IsAim)
+{
+	SP_LOG(LogSPNetwork,Log,TEXT("TEST"));
+	if(IsAim)
+	{
+	GetCharacterMovement()->bOrientRotationToMovement = false;
+	GetCharacterMovement()->bUseControllerDesiredRotation = true;
+	}
+	else
+	{
+		GetCharacterMovement()->bOrientRotationToMovement = true;
+		GetCharacterMovement()->bUseControllerDesiredRotation = false;
+	}
+}
+
+void ASPCharacterPlayer::ClientRPCSound_Implementation(USoundWave* Sound)
+{
+	if(Sound==GrapSound)
+	{
+		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld,
+		                                          EAttachmentRule::KeepWorld, true);
+		FollowCamera->AttachToComponent(CameraBoom, AttachmentRules, NAME_None);
+		CameraMove();
+	}
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, GetActorLocation(),GetActorRotation());
 }

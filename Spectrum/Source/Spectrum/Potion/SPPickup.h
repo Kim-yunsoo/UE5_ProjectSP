@@ -27,6 +27,7 @@ public:
 
 	FORCEINLINE USPItemBase* GetItemData(){return ItemReference;};
 	
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -56,6 +57,7 @@ public:
 	UPROPERTY()
 	TObjectPtr<AActor> MyPlayerOwner;
 
+	
 	UPROPERTY()
 	TArray<FName> RowNames ;
 
@@ -66,9 +68,7 @@ protected:
 
 	virtual void BeginFocus() override;
 	virtual void EndFocus() override;
-	
-	virtual void Interact(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget) override;
-	virtual void Interact2(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget) override;
+	virtual bool Interact(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget) override;
 	void UpdateInteractableData();
 	void TakePickup(ASPCharacterPlayer* Taker);
 
@@ -89,5 +89,6 @@ protected:
 	
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const;
 	
-
+	UFUNCTION(NetMulticast, Unreliable)
+	void MultiRPCPlayAnimation();
 };

@@ -2,7 +2,6 @@
 
 
 #include "UI/SPManualWidget.h"
-
 #include "SPHUDWidget.h"
 #include "Character/SPCharacterPlayer.h"
 #include "Components/Button.h"
@@ -31,9 +30,7 @@ void USPManualWidget::SpectrumLocationCallBack()
 	MainImage->SetVisibility(ESlateVisibility::Hidden);
 	ManualImage->SetVisibility(ESlateVisibility::Hidden);
 	
-	//PlaySound(ClickOn);
 	UGameplayStatics::PlaySound2D(GetWorld(), ClickOn);
-
 }
 
 void USPManualWidget::ManualCallBack()
@@ -41,7 +38,6 @@ void USPManualWidget::ManualCallBack()
 	SpectrumLocationImage->SetVisibility(ESlateVisibility::Hidden);
 	MainImage->SetVisibility(ESlateVisibility::Hidden);
 	ManualImage->SetVisibility(ESlateVisibility::Visible);
-	//PlaySound(ClickOn);
 	UGameplayStatics::PlaySound2D(GetWorld(), ClickOn);
 
 }
@@ -58,7 +54,5 @@ void USPManualWidget::BackCallBack()
 	{
 		MainImage->SetVisibility(ESlateVisibility::Visible);
 	}
-	//PlaySound(ClickOn);
 	UGameplayStatics::PlaySound2D(GetWorld(), ClickOn);
-
 }

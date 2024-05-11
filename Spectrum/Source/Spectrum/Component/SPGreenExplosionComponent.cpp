@@ -3,10 +3,19 @@
 #include "Component/SPGreenExplosionComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Interface/SPDamageInterface.h"
+#include "Particles/ParticleSystem.h"
 
 // Sets default values for this component's properties
 USPGreenExplosionComponent::USPGreenExplosionComponent()
 {
+	WaterSound = LoadObject<USoundWave>(nullptr, TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/Water2.Water2'"));
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> HitRef(
+TEXT("/Script/Engine.ParticleSystem'/Game/MagicProjectilesVol2/Particles/Hits/CP_GreenPotion.CP_GreenPotion'"));
+
+	if (HitRef.Succeeded())
+	{
+		EmitterHit = HitRef.Object;
+	}
 }
 
 
@@ -64,6 +73,9 @@ void USPGreenExplosionComponent::MultiRPCGreenExplosion_Implementation(const TAr
 			}
 		}
 	}
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), WaterSound, GetOwner()->GetActorLocation());
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), EmitterHit, GetOwner()->GetActorLocation(), FRotator::ZeroRotator,
+											 FVector(1.0f), true, EPSCPoolMethod::None, true);
 }
 
 

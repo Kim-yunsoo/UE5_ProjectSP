@@ -2,12 +2,22 @@
 
 
 #include "Component/SPOrangeExplosionComponent.h"
-
+#include "Particles/ParticleSystem.h"
 #include "Interface/SPDamageInterface.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 USPOrangeExplosionComponent::USPOrangeExplosionComponent()
 {
+	WaterSound = LoadObject<USoundWave>(nullptr, TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/Water2.Water2'"));
+	
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> HitRef(
+TEXT("/Script/Engine.ParticleSystem'/Game/MagicProjectilesVol2/Particles/Hits/CP_OrangePotion.CP_OrangePotion'"));
+
+	if (HitRef.Succeeded())
+	{
+		EmitterHit = HitRef.Object;
+	}
 }
 
 void USPOrangeExplosionComponent::BeginPlay()
@@ -61,4 +71,7 @@ void USPOrangeExplosionComponent::MultiRPCOrangeExplosion_Implementation(const T
 			}
 		}
 	}
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), EmitterHit, GetOwner()->GetActorLocation(), FRotator::ZeroRotator,
+												 FVector(1.0f), true, EPSCPoolMethod::None, true);
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), WaterSound, GetOwner()->GetActorLocation());
 }
