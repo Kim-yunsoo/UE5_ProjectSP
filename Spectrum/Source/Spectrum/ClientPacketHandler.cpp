@@ -23,21 +23,8 @@ bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len)
 
 bool Handle_S_LOGIN(PacketSessionRef& session, Protocol::S_LOGIN& pkt)
 {
-	//for (auto& Player : pkt.players())
-	//{
-	//}
-
-	//for (int32 i = 0; i < pkt.players_size(); i++)
-	//{
-	//	const Protocol::PlayerInfo& Player = pkt.players(i);
-	//}
-
 	MyPlayerInfo.issuccess = pkt.success();
-
-	//Protocol::C_ENTER_GAME EnterGamePkt;
-	//EnterGamePkt.set_playerindex(0);
-	//SEND_PACKET(EnterGamePkt);
-	
+		
 	if (MyPlayerInfo.issuccess) {
 		auto myid = pkt.membership_id();
 		auto mytype = pkt.membership_type();

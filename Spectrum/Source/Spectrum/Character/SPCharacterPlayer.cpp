@@ -434,14 +434,14 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 	//GravityArrow->SetIsReplicated(true);
 	//PhysicsHandleComponent->SetIsReplicated(true);
 
-	GrapSound= CreateDefaultSubobject<USoundWave>(TEXT("GrapSound"));
+	//GrapSound= CreateDefaultSubobject<USoundWave>(TEXT("GrapSound"));
 	static ConstructorHelpers::FObjectFinder<USoundWave>GrapSoundRef(TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/GrapSound.GrapSound'"));
 	if(GrapSoundRef.Object)
 	{
 		GrapSound = GrapSoundRef.Object;
 	}
 
-	StopGrapSound= CreateDefaultSubobject<USoundWave>(TEXT("StopGrapSound"));
+	// StopGrapSound= CreateDefaultSubobject<USoundWave>(TEXT("StopGrapSound"));
 	static ConstructorHelpers::FObjectFinder<USoundWave>StopGrapSoundRef(TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/StopGrapingSound.StopGrapingSound'"));
 	if(StopGrapSoundRef.Object)
 	{
