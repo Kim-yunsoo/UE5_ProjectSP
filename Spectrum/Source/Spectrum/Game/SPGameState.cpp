@@ -25,18 +25,27 @@ void ASPGameState::AddScore(const ColorType& MyColor)
 {
 	if (MyColor == ColorType::Green)
 	{
+		if(HasAuthority())
+		{
 		++GreenScore;
 		On_RapGreenScore();
+		}
 	}
 	else if (MyColor == ColorType::Orange)
 	{
-		++OrangeScore;
-		On_RapOrangeScore();
+		if(HasAuthority())
+		{
+			++OrangeScore;
+			On_RapOrangeScore();
+		}
 	}
 	else if (MyColor == ColorType::Purple)
 	{
-		++PurpleScore;
-		On_RapPurpleScore();
+		if(HasAuthority())
+		{
+			++PurpleScore;
+			On_RapPurpleScore();
+		}
 	}
 }
 

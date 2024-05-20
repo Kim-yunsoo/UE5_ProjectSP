@@ -9,5 +9,6 @@ enum class ColorType : uint8
 	Green = 0,
 	Orange = 1,
 	Purple = 2,
+	Black,
 	None
 };

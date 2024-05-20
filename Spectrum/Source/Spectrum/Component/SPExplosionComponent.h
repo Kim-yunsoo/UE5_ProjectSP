@@ -25,7 +25,7 @@ public:
 	virtual void Explode() override;
 	//RPC
 	UFUNCTION(NetMulticast, Unreliable)
-	void MultiRPCExplosion(const TArray<FHitResult>& Array);
+	void MultiRPCExplosion(const TArray<AActor*>& Array);
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Default")
 	TObjectPtr<USoundWave> WaterSound;

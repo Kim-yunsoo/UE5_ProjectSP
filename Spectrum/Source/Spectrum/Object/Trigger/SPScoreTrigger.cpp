@@ -16,7 +16,7 @@ ASPScoreTrigger::ASPScoreTrigger()
 {
 	Trigger = CreateDefaultSubobject<UBoxComponent>(TEXT("Trigger"));
 	//SetReplicates(true);
-	bReplicates = true; 
+	bReplicates = true;
 }
 
 // Called when the game starts or when spawned
@@ -36,7 +36,10 @@ void ASPScoreTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor
 		SetOwner(OtherActor->GetOwner());
 		if (Object->MyColorType == Color && Object->bIsScoreReflected == false)
 		{
-			ServerRPC(Object);
+			if (HasAuthority())
+			{
+				ServerRPC(Object);
+			}
 		}
 	}
 

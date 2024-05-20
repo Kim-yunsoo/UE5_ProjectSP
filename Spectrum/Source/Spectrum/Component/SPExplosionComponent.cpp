@@ -11,12 +11,12 @@
 USPExplosionComponent::USPExplosionComponent()
 {
 	
-	static ConstructorHelpers::FObjectFinder<UParticleSystem> EffectRef(
-		TEXT("/Script/Engine.ParticleSystem'/Game/Box/MagicStaff/Demo/Particles/P_Explosion.P_Explosion'"));
-	if (EffectRef.Object)
-	{
-		Effect = EffectRef.Object;
-	}
+	// static ConstructorHelpers::FObjectFinder<UParticleSystem> EffectRef(
+	// 	TEXT("/Script/Engine.ParticleSystem'/Game/Box/MagicStaff/Demo/Particles/P_Explosion.P_Explosion'"));
+	// if (EffectRef.Object)
+	// {
+	// 	Effect = EffectRef.Object;
+	// }
 
 	static ConstructorHelpers::FObjectFinder<UParticleSystem> HitRef(
 TEXT("/Script/Engine.ParticleSystem'/Game/MagicProjectilesVol2/Particles/Hits/CP_BlackPotion.CP_BlackPotion'"));
@@ -56,29 +56,36 @@ void USPExplosionComponent::Explode()
 																	Radius, ObjectTypes, false, ActorsToIgnore,
 																	EDrawDebugTrace::None, OutHits, true,
 																	GreenColor, RedColor, DrawTime);
+
+	TArray<AActor*>MyArray;
+	for(FHitResult& Hits : OutHits)
+	{
+		MyArray.AddUnique(Hits.GetActor());
+	}
+
 	if (Success)
 	{
-		MultiRPCExplosion(OutHits);
+		MultiRPCExplosion(MyArray);
 	}
 }
 
 
 
-void USPExplosionComponent::MultiRPCExplosion_Implementation(const TArray<FHitResult>& OutHits)
+void USPExplosionComponent::MultiRPCExplosion_Implementation(const TArray<AActor*>& MyArray)
 {
-	for (const FHitResult& HitResult : OutHits)
+	// for (const FHitResult& HitResult : OutHits)
+	// {
+	// 	AActor* HitActor = HitResult.GetActor();
+	// 	//UE_LOG(LogTemp, Warning, TEXT("hit! owne?? %s"), *GetOwner()->GetName());
+	// 	
+	// 	if (HitActor)
+	// 	{
+	// 		ActorArray.AddUnique(HitActor);
+	// 	}
+	// }
+	if (MyArray.Num() > 0)
 	{
-		AActor* HitActor = HitResult.GetActor();
-		//UE_LOG(LogTemp, Warning, TEXT("hit! owne?? %s"), *GetOwner()->GetName());
-		
-		if (HitActor)
-		{
-			ActorArray.AddUnique(HitActor);
-		}
-	}
-	if (ActorArray.Num() > 0)
-	{
-		for (AActor*& HitActor : ActorArray)
+		for (AActor* HitActor : MyArray)
 		{
 			ISPDamageInterface* DamageInterface = Cast<ISPDamageInterface>(HitActor);
 			if (DamageInterface)
