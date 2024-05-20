@@ -222,5 +222,9 @@ void USPHUDWidget::UpdateChatting(const FString& Sender, const FString& Message)
 void USPHUDWidget::ShowChat()
 {
 	UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(GetOwningPlayer(),ChatWidget);
-	GetOwningPlayer()->SetShowMouseCursor(true);
+	// 딜레이 0.1초
+	FTimerDelegate TimerDelegate;
+	GetWorld()->GetTimerManager().SetTimer(TimerDelegate,FTimerDelegate::CreateLambda([&]{}) )
+	ChatWidget->SetFousOnChat(true);
+	//GetOwningPlayer()->SetShowMouseCursor(true);
 }

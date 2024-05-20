@@ -27,6 +27,8 @@ class SPECTRUM_API USPChatWidget : public UUserWidget
 
 public:
 	void AddMessageOntoMessagesList(const FString& Sender, const FString& Message);
+
+	void SetFousOnChat(bool IsFocus);
 	
 
 };
