@@ -41,5 +41,8 @@ private:
 
 	TMap<APlayerController*, bool> alreadyChange;
 
+public:
+	void SendMessagesToEveryOne(const FString& Sender, const FString& Message);
+
 
 };

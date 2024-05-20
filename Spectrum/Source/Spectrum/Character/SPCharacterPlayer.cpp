@@ -34,6 +34,7 @@
 #include "Skill/SPSkillCastComponent.h"
 #include "Skill/SPSlowSkill.h"
 #include "DrawDebugHelpers.h"
+#include "SPGameModeBase.h"
 #include "SPGameState.h"
 #include "Component/SPInventoryComponent.h"
 #include "Player/SPPlayerController.h"
@@ -380,6 +381,13 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 		SevenKeyAction = SevenKeyActionRef.Object;
 	}
 
+	static ConstructorHelpers::FObjectFinder<UInputAction> ChatEnterRef(
+TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_Chat.IA_SP_Chat'"));
+	if (nullptr != ChatEnterRef.Object)
+	{
+		ChatEnter = ChatEnterRef.Object;
+	}
+
 	PickupSound = LoadObject<USoundWave>(nullptr, TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/Pickup.Pickup'"));
 	//Effect
 
@@ -546,6 +554,10 @@ void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Player
 		                                   &ASPCharacterPlayer::TeleSKill);
 		EnhancedInputComponent->BindAction(SevenKeyAction, ETriggerEvent::Triggered, this,
 								   &ASPCharacterPlayer::SevenKey);
+
+		EnhancedInputComponent->BindAction(ChatEnter, ETriggerEvent::Triggered, this,
+								   &ASPCharacterPlayer::Chatting);
+
 	}
 }
 
@@ -1027,6 +1039,7 @@ void ASPCharacterPlayer::TeleSKill(const FInputActionValue& Value)
 		ServerRPCTeleSkill(GetWorld()->GetGameState()->GetServerWorldTimeSeconds());
 	}
 }
+
 
 void ASPCharacterPlayer::ServerRPCTeleSkill_Implementation(float AttackStartTime)
 {
@@ -2520,6 +2533,8 @@ void ASPCharacterPlayer::ShowTargetUI(bool ShowUI)
 	OnAimChanged.Broadcast(ShowUI);
 }
 
+
+
 void ASPCharacterPlayer::MultiRPCStopMove_Implementation(bool IsStop)
 {
 	
@@ -2551,3 +2566,26 @@ void ASPCharacterPlayer::ClientRPCSound_Implementation(USoundWave* Sound)
 	}
 	UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, GetActorLocation(),GetActorRotation());
 }
+void ASPCharacterPlayer::Chatting(const FInputActionValue& Value)
+{ //todo
+	HUDWidget->ShowChat();
+}
+
+void ASPCharacterPlayer::ServerRPCSendMessage_Implementation(const FString& Sender, const FString& Message)
+{
+	AGameModeBase* GameMode  =GetWorld()->GetAuthGameMode();
+	if(GameMode)
+	{
+		ASPGameModeBase* MyGameMode = Cast<ASPGameModeBase>(GameMode);
+		if(MyGameMode)
+		{
+			MyGameMode->SendMessagesToEveryOne(Sender,Message);
+		}
+	}
+}
+void ASPCharacterPlayer::ClientRPCAddMessageToChat_Implementation(const FString& Sender, const FString& Message)
+{
+	HUDWidget->UpdateChatting(Sender,Message);
+}
+
+

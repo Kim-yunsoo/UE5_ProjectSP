@@ -7,7 +7,9 @@
 #include "SPManualWidget.h"
 #include "SPScoreWidget.h"
 #include "SPSkillWidget.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Character/SPCharacterPlayer.h"
+#include "Chat/SPChatWidget.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Interface/SPCharacterHUDInterface.h"
 #include "Potion/Make/SPMakingPotionWidget.h"
@@ -33,6 +35,11 @@ void USPHUDWidget::NativeConstruct()
 	ManualWidget = Cast<USPManualWidget>(GetWidgetFromName(TEXT("WBPManual")));
 	//ensure(TargetUI);
 	GameTimeWidget= Cast<USPGameTimeWidget>(GetWidgetFromName(TEXT("WB_GameTimeWidget")));
+	ChatWidget =Cast<USPChatWidget>(GetWidgetFromName(TEXT("WBP_Chat")));
+	if(ChatWidget)
+	{
+		//ChatWidget->SetVisibility(ESlateVisibility::Collapsed); 
+	}
 	
 	//ensure(TargetUI);
 
@@ -205,4 +212,15 @@ void USPHUDWidget::ClearMakingWieget()
 void USPHUDWidget::MakingPotionWieget(USPItemBase* Item)
 {
 	MakingPotionWidget->MakingPotion(Item);
+}
+
+void USPHUDWidget::UpdateChatting(const FString& Sender, const FString& Message)
+{
+	ChatWidget->AddMessageOntoMessagesList( Sender,  Message);
+}
+
+void USPHUDWidget::ShowChat()
+{
+	UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(GetOwningPlayer(),ChatWidget);
+	GetOwningPlayer()->SetShowMouseCursor(true);
 }

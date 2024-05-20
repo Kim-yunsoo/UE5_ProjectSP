@@ -8,6 +8,7 @@
 #include "GameFramework/GameStateBase.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "../Spectrum/Player/SPPlayerController.h"
+#include "Character/SPCharacterPlayer.h"
 
 //extern Protocol::PlayerType player_type;
 extern Protocol::PlayerType school_num_type;
@@ -119,4 +120,22 @@ void ASPGameModeBase::PostLogin(APlayerController* NewPlayer)
           NewPlayer->Possess(NewPawn);
       }
 
+}
+
+void ASPGameModeBase::SendMessagesToEveryOne(const FString& Sender, const FString& Message)
+{
+    for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
+    {
+        APlayerController* PlayerController = Iterator->Get();
+        if(PlayerController)
+        {
+            //APawn* Pawn =PlayerController->GetPawn();
+            //체크
+            ASPCharacterPlayer* MyPlayer = Cast<ASPCharacterPlayer>(PlayerController->GetPawn());
+            if(MyPlayer)
+            {
+                MyPlayer->ClientRPCAddMessageToChat(Sender,Message);
+            }
+        }
+    }
 }

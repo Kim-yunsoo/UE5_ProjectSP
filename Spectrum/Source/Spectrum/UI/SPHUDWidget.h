@@ -57,6 +57,9 @@ protected:
 	UPROPERTY()
 	TObjectPtr<class USPGameTimeWidget> GameTimeWidget;
 	
+	UPROPERTY()
+	TObjectPtr<class USPChatWidget> ChatWidget;
+	
 public:
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	TSubclassOf<USPInteractionWidget> InteractionWidgetClass;
@@ -80,5 +83,11 @@ public:
 	void ToggleKeyWidget(bool bIsVisible);
 	void ClearMakingWieget();
 	void MakingPotionWieget(USPItemBase* Item);
+
+	void UpdateChatting(const FString& Sender, const FString& Message);
+
+
+	void ShowChat();
+
 protected:
 };

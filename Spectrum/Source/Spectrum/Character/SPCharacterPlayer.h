@@ -114,6 +114,8 @@ protected:
 	void IceSKill(const FInputActionValue& Value);
 	void TeleSKill(const FInputActionValue& Value);
 
+	void Chatting(const FInputActionValue& Value) ;
+
 	void Interaction(const FInputActionValue& Value);
 	void ToggleKeyWidget(const FInputActionValue& Value);
 	
@@ -296,6 +298,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> SpectrumFive;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> ChatEnter;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputMappingContext* DefaultMappingContext;
@@ -652,6 +657,11 @@ public:
 	UFUNCTION(NetMulticast,Unreliable)
 	void MultiRPCStopMove(bool IsStop);
 
+	//chatting
+	UFUNCTION(Server,Unreliable)
+	void ServerRPCSendMessage(const FString& Sender, const FString& Message );
+	UFUNCTION(Client,Unreliable)
+	void ClientRPCAddMessageToChat(const FString& Sender, const FString& Message );
 
 	
 };
