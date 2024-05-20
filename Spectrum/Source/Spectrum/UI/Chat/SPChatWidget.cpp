@@ -3,11 +3,13 @@
 
 #include "UI/Chat/SPChatWidget.h"
 
+#include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Character/SPCharacterPlayer.h"
 #include "Components/EditableTextBox.h"
 #include "Components/ScrollBox.h"
 #include "Components/TextBlock.h"
 #include "GameFramework/PlayerState.h"
+#include "UI/SPHUDWidget.h"
 
 void USPChatWidget::NativeConstruct()
 {
@@ -18,6 +20,8 @@ void USPChatWidget::NativeConstruct()
 
 	//델리게이트 연결 
 	MessageBox->OnTextCommitted.AddDynamic(this, &USPChatWidget::OnChatTextCommitted);
+	MessageBox->SetClearKeyboardFocusOnCommit(false);
+
 }
 
 void USPChatWidget::OnChatTextCommitted(const FText& Text, ETextCommit::Type CommitMethod)
@@ -36,6 +40,24 @@ void USPChatWidget::OnChatTextCommitted(const FText& Text, ETextCommit::Type Com
 				MessageBox->SetText(FText::GetEmpty());
 			}
 		}
+		else
+		{
+			ActiveChat(false);
+			UWidgetBlueprintLibrary::SetInputMode_GameOnly(GetOwningPlayer());
+			
+		}
+		// else
+		// {
+		// 	ASPPlayerController* PlayerController = Cast<ASPPlayerController>(GetOwningPlayer());
+		// 	if(PlayerController)
+		// 	{
+		// 		USPHUDWidget* MyHUD = PlayerController->GetSPHUDWidget();
+		// 		if(MyHUD)
+		// 		{
+		// 			MyHUD->ShowChat(false);
+		// 		}
+		// 	}
+		// }
 		
 	}
 }
@@ -43,17 +65,39 @@ void USPChatWidget::OnChatTextCommitted(const FText& Text, ETextCommit::Type Com
 void USPChatWidget::AddMessageOntoMessagesList(const FString& Sender, const FString& Message)
 {
 	UTextBlock* NewTextBlock = NewObject<UTextBlock>(MessagesList);
+	NewTextBlock->SetAutoWrapText(true);
+	FSlateFontInfo FontInfo = NewTextBlock->GetFont();
+	FontInfo.Size = 17;
+	NewTextBlock->SetFont(FontInfo);
 	FString SenderMessageString = FString::Printf(TEXT("%s: %s"),*Sender,*Message);
+	
 	NewTextBlock->SetText(FText::FromString(SenderMessageString));
+	
 	MessagesList->AddChild(NewTextBlock);
 	MessagesList->ScrollToEnd();
 }
 
-void USPChatWidget::SetFousOnChat(bool IsFocus)
+void USPChatWidget::SetFousOnChat()
 {
-	if(IsFocus)
+	// bIsFocused= IsFocus;
+	// if(bIsFocused)
+	// {
+	//FInputModeUIOnly InputMode;
+	//InputMode.SetWidgetToFocus(MessageBox);
+	ActiveChat(true);
+	MessageBox->SetKeyboardFocus();
+	// }
+}
+
+void USPChatWidget::ActiveChat(bool bIsActiveChat)
+{
+	if(bIsActiveChat)
 	{
-		MessageBox->SetKeyboardFocus();
+		MessageBox->SetVisibility(ESlateVisibility::Visible);
+	}
+	else
+	{
+		MessageBox->SetVisibility(ESlateVisibility::Collapsed);
 	}
 }
 

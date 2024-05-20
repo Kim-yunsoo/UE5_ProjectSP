@@ -10,7 +10,6 @@
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Character/SPCharacterPlayer.h"
 #include "Chat/SPChatWidget.h"
-#include "GameFramework/CharacterMovementComponent.h"
 #include "Interface/SPCharacterHUDInterface.h"
 #include "Potion/Make/SPMakingPotionWidget.h"
 #include "UI/SPTargetUI.h"
@@ -22,6 +21,7 @@ class ISPCharacterHUDInterface;
 USPHUDWidget::USPHUDWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 }
+
 void USPHUDWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
@@ -34,13 +34,16 @@ void USPHUDWidget::NativeConstruct()
 	MakingPotionWidget = Cast<USPMakingPotionWidget>(GetWidgetFromName(TEXT("WBPSPMakingPotionWidget")));
 	ManualWidget = Cast<USPManualWidget>(GetWidgetFromName(TEXT("WBPManual")));
 	//ensure(TargetUI);
-	GameTimeWidget= Cast<USPGameTimeWidget>(GetWidgetFromName(TEXT("WB_GameTimeWidget")));
-	ChatWidget =Cast<USPChatWidget>(GetWidgetFromName(TEXT("WBP_Chat")));
-	if(ChatWidget)
+	GameTimeWidget = Cast<USPGameTimeWidget>(GetWidgetFromName(TEXT("WB_GameTimeWidget")));
+	ChatWidget = Cast<USPChatWidget>(GetWidgetFromName(TEXT("WBP_Chat")));
+	//			MessageBox->SetVisibility(ESlateVisibility::Collapsed);
+
+	if (ChatWidget)
 	{
+		ChatWidget->ActiveChat(false);
 		//ChatWidget->SetVisibility(ESlateVisibility::Collapsed); 
 	}
-	
+
 	//ensure(TargetUI);
 
 	// MainMenuWidget = Cast<USPMainMenu>(GetWidgetFromName(TEXT("WBTargetUI")));
@@ -51,26 +54,25 @@ void USPHUDWidget::NativeConstruct()
 	//  	MainMenuWidget->SetVisibility(ESlateVisibility::Collapsed); 
 	//  }
 	KeyWidget = Cast<USPKeyWidget>(GetWidgetFromName("WBPKey"));
-	
-	 if(InteractionWidgetClass)
-	 {
-	 	InteractionWidget = CreateWidget<USPInteractionWidget>(GetWorld(), InteractionWidgetClass);
-	 	InteractionWidget->AddToViewport(-1);
-	 	InteractionWidget->SetVisibility(ESlateVisibility::Collapsed); 
-	 }
+
+	if (InteractionWidgetClass)
+	{
+		InteractionWidget = CreateWidget<USPInteractionWidget>(GetWorld(), InteractionWidgetClass);
+		InteractionWidget->AddToViewport(-1);
+		InteractionWidget->SetVisibility(ESlateVisibility::Collapsed);
+	}
 	ISPCharacterHUDInterface* CharacterWidget = Cast<ISPCharacterHUDInterface>(GetOwningPlayerPawn());
-	if(CharacterWidget)
+	if (CharacterWidget)
 	{
 		CharacterWidget->SetupHUDWidget(this);
 	}
 }
 
 
-
 void USPHUDWidget::ToggleMouse(bool bIsShowMouse)
 {
-	ASPCharacterPlayer *PlayerCharacter = Cast<ASPCharacterPlayer>(GetOwningPlayerPawn());
-	if(bIsShowMouse)
+	ASPCharacterPlayer* PlayerCharacter = Cast<ASPCharacterPlayer>(GetOwningPlayerPawn());
+	if (bIsShowMouse)
 	{
 		const FInputModeGameAndUI InputMode;
 		GetOwningPlayer()->SetInputMode(InputMode);
@@ -103,9 +105,9 @@ void USPHUDWidget::UpdateSlowCDTime(float NewCurrentTime)
 
 void USPHUDWidget::UpdateMakingPotionWidget(bool bIsVisible)
 {
-	if(bIsVisible)
+	if (bIsVisible)
 	{
-		if(MakingPotionWidget)
+		if (MakingPotionWidget)
 		{
 			MakingPotionWidget->SetVisibility(ESlateVisibility::Visible);
 		}
@@ -113,7 +115,7 @@ void USPHUDWidget::UpdateMakingPotionWidget(bool bIsVisible)
 	}
 	else
 	{
-		if(MakingPotionWidget)
+		if (MakingPotionWidget)
 		{
 			MakingPotionWidget->SetVisibility(ESlateVisibility::Hidden);
 		}
@@ -123,9 +125,9 @@ void USPHUDWidget::UpdateMakingPotionWidget(bool bIsVisible)
 
 void USPHUDWidget::UpdateManualWidget(bool bIsVisible)
 {
-	if(bIsVisible)
+	if (bIsVisible)
 	{
-		if(ManualWidget)
+		if (ManualWidget)
 		{
 			ManualWidget->SetVisibility(ESlateVisibility::Visible);
 		}
@@ -133,7 +135,7 @@ void USPHUDWidget::UpdateManualWidget(bool bIsVisible)
 	}
 	else
 	{
-		if(ManualWidget)
+		if (ManualWidget)
 		{
 			ManualWidget->SetVisibility(ESlateVisibility::Hidden);
 		}
@@ -153,12 +155,12 @@ void USPHUDWidget::UpdateTeleCDTime(float NewCurrentTime)
 
 void USPHUDWidget::UpdateScore(const ColorType& Mycolor, const int32 Score)
 {
-	ScoreWidget->UpdateScore(Mycolor,Score);
+	ScoreWidget->UpdateScore(Mycolor, Score);
 }
 
 void USPHUDWidget::ShowInteractionWidget()
 {
-	if(InteractionWidget)
+	if (InteractionWidget)
 	{
 		InteractionWidget->SetVisibility(ESlateVisibility::Visible);
 	}
@@ -166,7 +168,7 @@ void USPHUDWidget::ShowInteractionWidget()
 
 void USPHUDWidget::HideInteractionWidget()
 {
-	if(InteractionWidget)
+	if (InteractionWidget)
 	{
 		InteractionWidget->SetVisibility(ESlateVisibility::Collapsed);
 	}
@@ -174,9 +176,9 @@ void USPHUDWidget::HideInteractionWidget()
 
 void USPHUDWidget::UpdateInteractionWidget(const FInteractableData* InteractableData)
 {
-	if(InteractionWidget)
+	if (InteractionWidget)
 	{
-		if(InteractionWidget->GetVisibility() == ESlateVisibility::Collapsed)
+		if (InteractionWidget->GetVisibility() == ESlateVisibility::Collapsed)
 		{
 			InteractionWidget->SetVisibility(ESlateVisibility::Visible);
 		}
@@ -187,16 +189,16 @@ void USPHUDWidget::UpdateInteractionWidget(const FInteractableData* Interactable
 
 void USPHUDWidget::ToggleKeyWidget(bool bIsVisible)
 {
-	if(bIsVisible)
+	if (bIsVisible)
 	{
-		if(KeyWidget)
+		if (KeyWidget)
 		{
 			KeyWidget->SetVisibility(ESlateVisibility::Visible);
 		}
 	}
 	else
 	{
-		if(KeyWidget)
+		if (KeyWidget)
 		{
 			KeyWidget->SetVisibility(ESlateVisibility::Hidden);
 		}
@@ -207,7 +209,7 @@ void USPHUDWidget::ClearMakingWieget()
 {
 	MakingPotionWidget->ClearWidget();
 }
-	
+
 
 void USPHUDWidget::MakingPotionWieget(USPItemBase* Item)
 {
@@ -216,15 +218,11 @@ void USPHUDWidget::MakingPotionWieget(USPItemBase* Item)
 
 void USPHUDWidget::UpdateChatting(const FString& Sender, const FString& Message)
 {
-	ChatWidget->AddMessageOntoMessagesList( Sender,  Message);
+	ChatWidget->AddMessageOntoMessagesList(Sender, Message);
 }
 
 void USPHUDWidget::ShowChat()
 {
-	UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(GetOwningPlayer(),ChatWidget);
-	// 딜레이 0.1초
-	FTimerDelegate TimerDelegate;
-	GetWorld()->GetTimerManager().SetTimer(TimerDelegate,FTimerDelegate::CreateLambda([&]{}) )
-	ChatWidget->SetFousOnChat(true);
-	//GetOwningPlayer()->SetShowMouseCursor(true);
+	ChatWidget->SetFousOnChat();
+	ChatWidget->ActiveChat(true);
 }
