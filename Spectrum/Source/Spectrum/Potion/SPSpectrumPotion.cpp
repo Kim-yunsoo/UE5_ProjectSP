@@ -2,6 +2,8 @@
 
 
 #include "Potion/SPSpectrumPotion.h"
+
+#include "SPGlobalEnum.h"
 #include "Particles/ParticleSystem.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -27,7 +29,9 @@ TEXT("/Script/Engine.ParticleSystem'/Game/MagicProjectilesVol2/Particles/Hits/CP
 	{
 		EmitterHit = HitRef.Object;
 	}
+
 	
+	//MyColor = ColorType::Spectrum;
 }
 
 void ASPSpectrumPotion::BeginPlay()

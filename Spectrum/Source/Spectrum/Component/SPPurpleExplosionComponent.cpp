@@ -25,9 +25,9 @@ void USPPurpleExplosionComponent::BeginPlay()
 	Super::BeginPlay();
 }
 
-void USPPurpleExplosionComponent::Explode()
+void USPPurpleExplosionComponent::Explode(ColorType& MyColor)
 {
-	Super::Explode();
+	Super::Explode(MyColor);
 	//Multi Sphere Trace For Object
 	//Start & End
 	FVector SphereTracePoint = GetOwner()->GetRootComponent()->GetComponentLocation();

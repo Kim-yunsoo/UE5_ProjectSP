@@ -8,6 +8,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Interface/SPGetInterface.h"
 #include "SPPotionBase.generated.h"
+enum class ColorType : uint8;
 
 UCLASS()
 class SPECTRUM_API ASPPotionBase : public AActor, public ISPGetInterface
@@ -39,14 +40,5 @@ public:
 
 	virtual  void GetPotion() override;
 
-
-	// UPROPERTY()
-	// TObjectPtr<UParticleSystem> EmitterHit;
-///////////////////////////////////////////////////////////////////////////////////////////
-
-public:
-	// UPROPERTY()
-	// UInventoryComponent* OwningInventory;
-	
-	
+	ColorType MyColor;
 };

@@ -3,6 +3,7 @@
 
 #include "Component/SPExplosionComponent.h"
 
+#include "SpectrumLog.h"
 #include "Kismet/GameplayStatics.h"
 #include "Interface/SPDamageInterface.h"
 #include "Particles/ParticleSystem.h"
@@ -18,16 +19,16 @@ USPExplosionComponent::USPExplosionComponent()
 	// 	Effect = EffectRef.Object;
 	// }
 
-	static ConstructorHelpers::FObjectFinder<UParticleSystem> HitRef(
-TEXT("/Script/Engine.ParticleSystem'/Game/MagicProjectilesVol2/Particles/Hits/CP_BlackPotion.CP_BlackPotion'"));
+// 	static ConstructorHelpers::FObjectFinder<UParticleSystem> HitRef(
+// TEXT("/Script/Engine.ParticleSystem'/Game/MagicProjectilesVol2/Particles/Hits/CP_BlackPotion.CP_BlackPotion'"));
+//
+// 	if (HitRef.Succeeded())
+// 	{
+// 		EmitterHit = HitRef.Object;
+// 	}
 
-	if (HitRef.Succeeded())
-	{
-		EmitterHit = HitRef.Object;
-	}
-
-	WaterSound = LoadObject<USoundWave>(nullptr, TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/Water2.Water2'"));
-	CrushSound = LoadObject<USoundWave>(nullptr, TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/Crush.Crush'"));
+	//WaterSound = LoadObject<USoundWave>(nullptr, TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/Water2.Water2'"));
+	//CrushSound = LoadObject<USoundWave>(nullptr, TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/Crush.Crush'"));
 }
 
 
@@ -38,9 +39,10 @@ void USPExplosionComponent::BeginPlay()
 	//this->SetAutoActivate(false);
 }
 
-void USPExplosionComponent::Explode()
+void USPExplosionComponent::Explode(ColorType& MyColor)
 {
-	Super::Explode();
+	Super::Explode(MyColor);
+	SP_SUBLOG(LogSPNetwork,Log,TEXT("EXplode!")); //서버만 들어옴  
 	//Multi Sphere Trace For Object
 	//Start & End
 	FVector SphereTracePoint = GetOwner()->GetRootComponent()->GetComponentLocation();

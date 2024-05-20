@@ -32,5 +32,4 @@ public:
 		FVector NormalImpulse,
 		const FHitResult& Hit
 	);
-
 };

@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "SPComponentBase.generated.h"
 
+enum class ColorType : uint8;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SPECTRUM_API USPComponentBase : public UActorComponent
@@ -27,8 +28,22 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	TArray<AActor*>ActorArray ;
 protected:
-	virtual void Explode();
+	virtual void Explode(ColorType& MyColor);
+
+	UPROPERTY(Replicated)
+	TObjectPtr<UParticleSystem> EmitterHit;
 
 	UPROPERTY()
-	TObjectPtr<UParticleSystem> EmitterHit;
+	TObjectPtr<UDataTable> DataAsset;
+	
+	UPROPERTY(Replicated)
+	TObjectPtr<USoundWave> WaterSound;
+
+	UPROPERTY(Replicated)
+	TObjectPtr<USoundWave> CrushSound;
+
+	void RoadAsset(ColorType& MyColor);
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 };

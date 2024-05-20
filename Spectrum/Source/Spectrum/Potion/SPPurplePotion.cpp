@@ -3,6 +3,7 @@
 
 #include "Potion/SPPurplePotion.h"
 
+#include "SPGlobalEnum.h"
 #include "Component/SPPurpleExplosionComponent.h"
 
 
@@ -24,7 +25,7 @@ ASPPurplePotion::ASPPurplePotion()
 	this->AActor::SetReplicateMovement(true);
 	PurpleExplosionComponent->SetIsReplicated(true);
 
-
+	MyColor = ColorType::Purple;
 }
 
 void ASPPurplePotion::BeginPlay()
@@ -38,7 +39,7 @@ void ASPPurplePotion::HandleActorHit(AActor* SelfActor, AActor* OtherActor, FVec
 {
 
 	
-	PurpleExplosionComponent->Explode();
+	PurpleExplosionComponent->Explode(MyColor);
 	this->SetLifeSpan(0.1f);
 	
 }

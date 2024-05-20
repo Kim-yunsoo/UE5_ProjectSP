@@ -7,6 +7,8 @@
 #include "Component/SPExplosionComponent.h"
 #include "Potion/SPPotionBase.h"
 #include "SPBlackPotion.generated.h"
+//enum class EColorType;
+
 
 UCLASS()
 class SPECTRUM_API ASPBlackPotion : public ASPPotionBase
@@ -41,4 +43,5 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Default")
 	TObjectPtr<USoundWave> CrushSound;
+
 };

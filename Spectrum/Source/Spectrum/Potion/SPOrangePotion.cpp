@@ -2,6 +2,8 @@
 
 
 #include "Potion/SPOrangePotion.h"
+
+#include "SPGlobalEnum.h"
 #include "Component/SPOrangeExplosionComponent.h"
 
 
@@ -19,7 +21,7 @@ ASPOrangePotion::ASPOrangePotion()
 		PotionMesh->SetCollisionProfileName(TEXT("NoCollision"));
 	}
 	OrangeExplosionComponent = CreateDefaultSubobject<USPOrangeExplosionComponent>(TEXT("ExplosionComponent"));
-
+	MyColor = ColorType::Orange;
 
 }
 
@@ -40,6 +42,6 @@ void ASPOrangePotion::HandleActorHit(AActor* SelfActor, AActor* OtherActor, FVec
 	const FHitResult& Hit)
 {
 
-	OrangeExplosionComponent->Explode();
+	OrangeExplosionComponent->Explode(MyColor);
 	this->SetLifeSpan(0.1f);
 }

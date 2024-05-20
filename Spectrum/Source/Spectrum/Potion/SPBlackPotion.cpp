@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "Potion/SPBlackPotion.h"
 
+#include "SPGlobalEnum.h"
 #include "Component/SPExplosionComponent.h"
 
 
@@ -20,8 +21,7 @@ ASPBlackPotion::ASPBlackPotion()
 		PotionMesh->SetCollisionProfileName(TEXT("NoCollision"));
 	}
 	ExplosionComponent = CreateDefaultSubobject<USPExplosionComponent>(TEXT("ExplosionComponent"));
-	
-
+	MyColor = ColorType::Black;
 }
 
 // Called when the game starts or when spawned
@@ -39,9 +39,8 @@ void ASPBlackPotion::BeginPlay()
 
 void ASPBlackPotion::HandleActorHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
 {
-	ExplosionComponent->Explode();
+	ExplosionComponent->Explode(MyColor);
 	this->SetLifeSpan(0.1f);
-	// }
 }
 
 

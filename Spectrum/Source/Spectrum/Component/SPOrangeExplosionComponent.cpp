@@ -25,9 +25,9 @@ void USPOrangeExplosionComponent::BeginPlay()
 	Super::BeginPlay();
 }
 
-void USPOrangeExplosionComponent::Explode()
+void USPOrangeExplosionComponent::Explode(ColorType& MyColor)
 {
-	Super::Explode();
+	Super::Explode(MyColor);
 	//Multi Sphere Trace For Object
 	//Start & End
 	FVector SphereTracePoint = GetOwner()->GetRootComponent()->GetComponentLocation();

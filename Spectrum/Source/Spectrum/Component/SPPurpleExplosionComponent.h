@@ -19,12 +19,12 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	virtual void Explode() override;
+	virtual void Explode(ColorType& MyColor) override;
 	
 	//RPC
 	UFUNCTION(NetMulticast, Unreliable)
 	void MultiRPCPrupleExplosion(const TArray<FHitResult>& Array);
 	
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Default")
-	TObjectPtr<USoundWave> WaterSound;
+	// UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Default")
+	// TObjectPtr<USoundWave> WaterSound;
 };

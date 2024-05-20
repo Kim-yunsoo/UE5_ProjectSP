@@ -2,6 +2,8 @@
 
 
 #include "Potion/SPGreenPotion.h"
+
+#include "SPGlobalEnum.h"
 #include "Component/SPGreenExplosionComponent.h"
 
 
@@ -22,6 +24,7 @@ ASPGreenPotion::ASPGreenPotion()
 
 
 	GreenExplosionComponent = CreateDefaultSubobject<USPGreenExplosionComponent>(TEXT("ExplosionComponent"));
+	MyColor = ColorType::Green;
 
 }
 
@@ -40,6 +43,6 @@ void ASPGreenPotion::BeginPlay()
 void ASPGreenPotion::HandleActorHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
 {
 
-	GreenExplosionComponent->Explode();
+	GreenExplosionComponent->Explode(MyColor);
 	this->SetLifeSpan(0.1f);
 }
