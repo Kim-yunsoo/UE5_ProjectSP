@@ -76,7 +76,7 @@ void ASPGameModeBase::PostLogin(APlayerController* NewPlayer)
       switch (school_num_type)
       {
       case Protocol::PLAYER_TYPE_GREEN_MAN:
-          BlueprintPath = TEXT("/Game/Spectrum/BluePrint/BP_SPCharacterMan1.BP_SPCharacterMan1_C"); 
+          BlueprintPath = TEXT("/Game/Spectrum/BluePrint/BP_SPCharacterMan2.BP_SPCharacterMan2_C"); 
           mynum++;
           break;
       case Protocol::PLAYER_TYPE_GREEN_WOMAN:
@@ -84,7 +84,7 @@ void ASPGameModeBase::PostLogin(APlayerController* NewPlayer)
           mynum++;
           break;
       case Protocol::PLAYER_TYPE_PURPLE_MAN:
-          BlueprintPath = TEXT("/Game/Spectrum/BluePrint/BP_SPCharacterMan2.BP_SPCharacterMan2_C"); 
+          BlueprintPath = TEXT("/Game/Spectrum/BluePrint/BP_SPCharacterMan1.BP_SPCharacterMan1_C"); 
           mynum++;
           break;
       case Protocol::PLAYER_TYPE_PURPLE_WOMAN:
@@ -111,8 +111,8 @@ void ASPGameModeBase::PostLogin(APlayerController* NewPlayer)
           {
               OldPawn->Destroy();
           }
-
-          FVector SpawnLocation = FVector(1970.0f, 140.0f, 5192.0f);
+          
+          FVector SpawnLocation = FVector(2547.0f, 247.0f, 2894.0f);
           // 새 폰을 스폰하고 플레이어에게 할당
           FActorSpawnParameters SpawnParams;
           SpawnParams.Owner = NewPlayer;
