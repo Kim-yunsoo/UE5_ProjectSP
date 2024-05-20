@@ -29,12 +29,12 @@ void ASPBlackPotion::BeginPlay()
 {
 	Super::BeginPlay();
 	OnActorHit.AddDynamic(this, &ASPBlackPotion::HandleActorHit);
-	if(HasAuthority())
-	{
-		this->SetReplicates(true);
-		this->AActor::SetReplicateMovement(true);
-		ExplosionComponent->SetIsReplicated(true);
-	}
+	// if(HasAuthority())
+	// {
+	// 	this->SetReplicates(true);
+	// 	this->AActor::SetReplicateMovement(true);
+	// 	ExplosionComponent->SetIsReplicated(true);
+	// }
 }
 
 void ASPBlackPotion::HandleActorHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)

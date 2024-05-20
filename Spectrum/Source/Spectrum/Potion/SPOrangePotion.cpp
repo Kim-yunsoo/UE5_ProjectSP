@@ -5,7 +5,6 @@
 
 #include "SPGlobalEnum.h"
 #include "Component/SPExplosionComponent.h"
-#include "Component/SPOrangeExplosionComponent.h"
 
 
 ASPOrangePotion::ASPOrangePotion()
@@ -31,12 +30,12 @@ void ASPOrangePotion::BeginPlay()
 	Super::BeginPlay();
 	OnActorHit.AddDynamic(this, &ASPOrangePotion::HandleActorHit);
 
-	if(HasAuthority())
-	{
-		this->SetReplicates(true);
-		this->AActor::SetReplicateMovement(true);
-		ExplosionComponent->SetIsReplicated(true);
-	}
+	// if(HasAuthority())
+	// {
+	// 	this->SetReplicates(true);
+	// 	this->AActor::SetReplicateMovement(true);
+	// 	ExplosionComponent->SetIsReplicated(true);
+	// }
 }
 
 void ASPOrangePotion::HandleActorHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse,

@@ -40,12 +40,12 @@ void ASPSpectrumPotion::BeginPlay()
 
 	OnActorHit.AddDynamic(this, &ASPSpectrumPotion::HandleActorHit);
 
-	if(HasAuthority())
-	{
-		this->SetReplicates(true);
-		this->AActor::SetReplicateMovement(true);
-		//OrangeExplosionComponent->SetIsReplicated(true);
-	}
+	// if(HasAuthority())
+	// {
+	// 	this->SetReplicates(true);
+	// 	this->AActor::SetReplicateMovement(true);
+	// 	//OrangeExplosionComponent->SetIsReplicated(true);
+	// }
 }
 
 void ASPSpectrumPotion::HandleActorHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse,

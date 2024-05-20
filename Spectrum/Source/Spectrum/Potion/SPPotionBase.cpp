@@ -34,6 +34,12 @@ ASPPotionBase::ASPPotionBase()
 void ASPPotionBase::BeginPlay()
 {
 	Super::BeginPlay();
+	if(HasAuthority())
+	{
+		this->SetReplicates(true);
+		this->AActor::SetReplicateMovement(true);
+		ExplosionComponent->SetIsReplicated(true);
+	}
 }
 
 void ASPPotionBase::Throw(const FVector& PotionDirection)

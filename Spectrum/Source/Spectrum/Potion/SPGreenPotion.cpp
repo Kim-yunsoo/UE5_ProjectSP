@@ -5,7 +5,6 @@
 
 #include "SPGlobalEnum.h"
 #include "Component/SPExplosionComponent.h"
-#include "Component/SPGreenExplosionComponent.h"
 
 
 
@@ -33,12 +32,12 @@ void ASPGreenPotion::BeginPlay()
 {
 	Super::BeginPlay();
 	OnActorHit.AddDynamic(this, &ASPGreenPotion::HandleActorHit);
-	if(HasAuthority())
-	{
-		this->SetReplicates(true);
-		this->AActor::SetReplicateMovement(true);
-		ExplosionComponent->SetIsReplicated(true);
-	}
+	// if(HasAuthority())
+	// {
+	// 	this->SetReplicates(true);
+	// 	this->AActor::SetReplicateMovement(true);
+	// 	ExplosionComponent->SetIsReplicated(true);
+	// }
 }
 
 void ASPGreenPotion::HandleActorHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)

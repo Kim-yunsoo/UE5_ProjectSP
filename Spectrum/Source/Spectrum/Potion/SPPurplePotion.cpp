@@ -5,7 +5,6 @@
 
 #include "SPGlobalEnum.h"
 #include "Component/SPExplosionComponent.h"
-#include "Component/SPPurpleExplosionComponent.h"
 
 
 ASPPurplePotion::ASPPurplePotion()
@@ -34,12 +33,12 @@ void ASPPurplePotion::BeginPlay()
 	Super::BeginPlay();
 	OnActorHit.AddDynamic(this, &ASPPurplePotion::HandleActorHit);
 
-	if(HasAuthority())
-	{
-		this->SetReplicates(true);
-		this->AActor::SetReplicateMovement(true);
-		ExplosionComponent->SetIsReplicated(true);
-	}
+	// if(HasAuthority())
+	// {
+	// 	this->SetReplicates(true);
+	// 	this->AActor::SetReplicateMovement(true);
+	// 	ExplosionComponent->SetIsReplicated(true);
+	// }
 }
 
 void ASPPurplePotion::HandleActorHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse,
