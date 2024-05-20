@@ -23,8 +23,8 @@ protected:
 
 public:
 
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<class USPGreenExplosionComponent> GreenExplosionComponent;
+	// UPROPERTY(VisibleAnywhere)
+	// TObjectPtr<class USPGreenExplosionComponent> GreenExplosionComponent;
 
 	UFUNCTION()
 	void HandleActorHit(AActor* SelfActor,

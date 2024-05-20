@@ -20,7 +20,7 @@ ASPBlackPotion::ASPBlackPotion()
 		PotionMesh->SetRelativeScale3D(FVector(1.84f, 1.18f, 1.74f));
 		PotionMesh->SetCollisionProfileName(TEXT("NoCollision"));
 	}
-	ExplosionComponent = CreateDefaultSubobject<USPExplosionComponent>(TEXT("ExplosionComponent"));
+	
 	MyColor = ColorType::Black;
 }
 

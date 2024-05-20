@@ -4,6 +4,7 @@
 #include "Potion/SPOrangePotion.h"
 
 #include "SPGlobalEnum.h"
+#include "Component/SPExplosionComponent.h"
 #include "Component/SPOrangeExplosionComponent.h"
 
 
@@ -20,7 +21,7 @@ ASPOrangePotion::ASPOrangePotion()
 		PotionMesh->SetRelativeScale3D(FVector(2.5f, 2.5f, 2.5f));
 		PotionMesh->SetCollisionProfileName(TEXT("NoCollision"));
 	}
-	OrangeExplosionComponent = CreateDefaultSubobject<USPOrangeExplosionComponent>(TEXT("ExplosionComponent"));
+	//OrangeExplosionComponent = CreateDefaultSubobject<USPOrangeExplosionComponent>(TEXT("ExplosionComponent"));
 	MyColor = ColorType::Orange;
 
 }
@@ -34,7 +35,7 @@ void ASPOrangePotion::BeginPlay()
 	{
 		this->SetReplicates(true);
 		this->AActor::SetReplicateMovement(true);
-		OrangeExplosionComponent->SetIsReplicated(true);
+		ExplosionComponent->SetIsReplicated(true);
 	}
 }
 
@@ -42,6 +43,6 @@ void ASPOrangePotion::HandleActorHit(AActor* SelfActor, AActor* OtherActor, FVec
 	const FHitResult& Hit)
 {
 
-	OrangeExplosionComponent->Explode(MyColor);
+	ExplosionComponent->Explode(MyColor);
 	this->SetLifeSpan(0.1f);
 }

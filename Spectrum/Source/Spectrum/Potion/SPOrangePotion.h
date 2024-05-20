@@ -22,8 +22,8 @@ protected:
 
 public:
 
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<class USPOrangeExplosionComponent> OrangeExplosionComponent;
+	// UPROPERTY(VisibleAnywhere)
+	// TObjectPtr<class USPOrangeExplosionComponent> OrangeExplosionComponent;
 
 	UFUNCTION()
 	void HandleActorHit(AActor* SelfActor,

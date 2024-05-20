@@ -2,6 +2,8 @@
 
 
 #include "Potion/SPPotionBase.h"
+
+#include "Component/SPExplosionComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Particles/ParticleSystem.h"
@@ -21,6 +23,8 @@ ASPPotionBase::ASPPotionBase()
 	PotionMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PotionMesh"));
 	PotionMesh->SetupAttachment(SphereComponent);
 	PotionMesh->SetCollisionProfileName(TEXT("NoCollision"));
+
+	ExplosionComponent = CreateDefaultSubobject<USPExplosionComponent>(TEXT("ExplosionComponent"));
 
 	//EmitterHit = CreateDefaultSubobject<UParticleSystem>(TEXT("EmitterHit"));
 

@@ -25,8 +25,8 @@ protected:
 	//virtual void Hit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) override;
 
 public:	
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<USPExplosionComponent> ExplosionComponent ;
+	// UPROPERTY(VisibleAnywhere)
+	// TObjectPtr<USPExplosionComponent> ExplosionComponent ;
 	//RPC
 
 

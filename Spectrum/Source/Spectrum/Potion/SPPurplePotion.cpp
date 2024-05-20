@@ -4,6 +4,7 @@
 #include "Potion/SPPurplePotion.h"
 
 #include "SPGlobalEnum.h"
+#include "Component/SPExplosionComponent.h"
 #include "Component/SPPurpleExplosionComponent.h"
 
 
@@ -20,10 +21,10 @@ ASPPurplePotion::ASPPurplePotion()
 		PotionMesh->SetRelativeScale3D(FVector(0.023f, 0.023f, 0.023f));
 		PotionMesh->SetCollisionProfileName(TEXT("NoCollision"));
 	}
-	PurpleExplosionComponent = CreateDefaultSubobject<USPPurpleExplosionComponent>(TEXT("ExplosionComponent"));
-	this->SetReplicates(true);
-	this->AActor::SetReplicateMovement(true);
-	PurpleExplosionComponent->SetIsReplicated(true);
+	//PurpleExplosionComponent = CreateDefaultSubobject<USPPurpleExplosionComponent>(TEXT("ExplosionComponent"));
+	// this->SetReplicates(true);
+	// this->AActor::SetReplicateMovement(true);
+	// PurpleExplosionComponent->SetIsReplicated(true);
 
 	MyColor = ColorType::Purple;
 }
@@ -32,14 +33,18 @@ void ASPPurplePotion::BeginPlay()
 {
 	Super::BeginPlay();
 	OnActorHit.AddDynamic(this, &ASPPurplePotion::HandleActorHit);
+
+	if(HasAuthority())
+	{
+		this->SetReplicates(true);
+		this->AActor::SetReplicateMovement(true);
+		ExplosionComponent->SetIsReplicated(true);
+	}
 }
 
 void ASPPurplePotion::HandleActorHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse,
 	const FHitResult& Hit)
 {
-
-	
-	PurpleExplosionComponent->Explode(MyColor);
+	ExplosionComponent->Explode(MyColor);
 	this->SetLifeSpan(0.1f);
-	
 }

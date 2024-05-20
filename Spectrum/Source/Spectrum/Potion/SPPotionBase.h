@@ -32,6 +32,9 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UStaticMeshComponent> PotionMesh;
 
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class USPExplosionComponent> ExplosionComponent ;
+
 	bool bHasExecutedOnce;
 public:
 	void Throw(const FVector& PotionDirection);

@@ -4,9 +4,9 @@
 #include "Component/SPExplosionComponent.h"
 
 #include "SpectrumLog.h"
+#include "SPGlobalEnum.h"
 #include "Kismet/GameplayStatics.h"
 #include "Interface/SPDamageInterface.h"
-#include "Particles/ParticleSystem.h"
 
 // Sets default values for this component's properties
 USPExplosionComponent::USPExplosionComponent()
@@ -67,39 +67,57 @@ void USPExplosionComponent::Explode(ColorType& MyColor)
 
 	if (Success)
 	{
-		MultiRPCExplosion(MyArray);
+		MultiRPCExplosion(MyArray,MyColor);
 	}
 }
-
-
-
-void USPExplosionComponent::MultiRPCExplosion_Implementation(const TArray<AActor*>& MyArray)
+void USPExplosionComponent::MultiRPCExplosion_Implementation(const TArray<AActor*>& MyArray, const ColorType& MyColor)
 {
-	// for (const FHitResult& HitResult : OutHits)
-	// {
-	// 	AActor* HitActor = HitResult.GetActor();
-	// 	//UE_LOG(LogTemp, Warning, TEXT("hit! owne?? %s"), *GetOwner()->GetName());
-	// 	
-	// 	if (HitActor)
-	// 	{
-	// 		ActorArray.AddUnique(HitActor);
-	// 	}
-	// }
 	if (MyArray.Num() > 0)
 	{
 		for (AActor* HitActor : MyArray)
 		{
-			ISPDamageInterface* DamageInterface = Cast<ISPDamageInterface>(HitActor);
-			if (DamageInterface)
+			if(MyColor == ColorType::Black)
 			{
-				DamageInterface->OnExplosionHit();
+				ISPDamageInterface* DamageInterface = Cast<ISPDamageInterface>(HitActor);
+				if (DamageInterface)
+				{
+					DamageInterface->OnExplosionHit();
+				}
+			}
+			else if(MyColor == ColorType::Green)
+			{
+				ISPDamageInterface* DamageInterface = Cast<ISPDamageInterface>(HitActor);
+				if (DamageInterface)
+				{
+					DamageInterface->OnChangeColorGreen();
+				}
+			}
+			else if(MyColor == ColorType::Orange)
+			{
+				ISPDamageInterface* DamageInterface = Cast<ISPDamageInterface>(HitActor);
+				if (DamageInterface)
+				{
+					DamageInterface->OnChangeColorOrange();
+				}
+			}
+			else if(MyColor == ColorType::Purple)
+			{
+				ISPDamageInterface* DamageInterface = Cast<ISPDamageInterface>(HitActor);
+				if (DamageInterface)
+				{
+					DamageInterface->OnChangeColorPurple();
+				}
 			}
 		}
 	}
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), EmitterHit, GetOwner()->GetActorLocation(), FRotator::ZeroRotator,
 												 FVector(1.0f), true, EPSCPoolMethod::None, true);
 	UGameplayStatics::PlaySoundAtLocation(GetWorld(), WaterSound, GetOwner()->GetActorLocation());
-	UGameplayStatics::PlaySoundAtLocation(GetWorld(), CrushSound, GetOwner()->GetActorLocation());
+
+	if(CrushSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), CrushSound, GetOwner()->GetActorLocation());
+	}
 
 }
 

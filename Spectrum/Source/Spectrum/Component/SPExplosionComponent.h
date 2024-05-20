@@ -26,5 +26,5 @@ public:
 	virtual void Explode(ColorType& MyColor) override;
 	//RPC
 	UFUNCTION(NetMulticast, Unreliable)
-	void MultiRPCExplosion(const TArray<AActor*>& Array);
+	void MultiRPCExplosion(const TArray<AActor*>& Array,const ColorType& MyColor);
 };

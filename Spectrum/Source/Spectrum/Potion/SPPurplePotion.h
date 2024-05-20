@@ -20,8 +20,8 @@ protected:
 
 public:
 
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<class USPPurpleExplosionComponent> PurpleExplosionComponent;
+	// UPROPERTY(VisibleAnywhere)
+	// TObjectPtr<class USPPurpleExplosionComponent> PurpleExplosionComponent;
 
 	UFUNCTION()
 	void HandleActorHit(AActor* SelfActor,

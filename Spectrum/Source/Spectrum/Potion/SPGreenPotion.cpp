@@ -4,6 +4,7 @@
 #include "Potion/SPGreenPotion.h"
 
 #include "SPGlobalEnum.h"
+#include "Component/SPExplosionComponent.h"
 #include "Component/SPGreenExplosionComponent.h"
 
 
@@ -23,7 +24,7 @@ ASPGreenPotion::ASPGreenPotion()
 	}
 
 
-	GreenExplosionComponent = CreateDefaultSubobject<USPGreenExplosionComponent>(TEXT("ExplosionComponent"));
+	//ExplosionComponent = CreateDefaultSubobject<USPGreenExplosionComponent>(TEXT("ExplosionComponent"));
 	MyColor = ColorType::Green;
 
 }
@@ -36,13 +37,13 @@ void ASPGreenPotion::BeginPlay()
 	{
 		this->SetReplicates(true);
 		this->AActor::SetReplicateMovement(true);
-		GreenExplosionComponent->SetIsReplicated(true);
+		ExplosionComponent->SetIsReplicated(true);
 	}
 }
 
 void ASPGreenPotion::HandleActorHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
 {
 
-	GreenExplosionComponent->Explode(MyColor);
+	ExplosionComponent->Explode(MyColor);
 	this->SetLifeSpan(0.1f);
 }
