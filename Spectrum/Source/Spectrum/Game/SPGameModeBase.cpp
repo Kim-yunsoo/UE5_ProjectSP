@@ -2,8 +2,6 @@
 
 
 #include "Game/SPGameModeBase.h"
-
-#include "SpectrumLog.h"
 #include "SPPlayerState.h"
 #include "Game/SPGameState.h"
 #include "UI/SPLobbyWidget.h"
@@ -54,6 +52,7 @@ void ASPGameModeBase::BeginPlay()
 void ASPGameModeBase::HandleSeamlessTravelPlayer(AController*& C)
 {
 	Super::HandleSeamlessTravelPlayer(C);
+	UE_LOG(LogTemp,Log,TEXT("HandleSeamlessTravelPlayer"));
 
 	if(!C)
 	{
@@ -121,6 +120,14 @@ void ASPGameModeBase::SpawnPlayerCharacter(APlayerController* MyController, cons
 		MyController->Possess(NewPawn);
 	}
 }
+
+void ASPGameModeBase::PostLogin(APlayerController* NewPlayer)
+{
+	Super::PostLogin(NewPlayer);
+	UE_LOG(LogTemp,Log,TEXT("PostLogin"));
+
+}
+
 void ASPGameModeBase::PostSeamlessTravel()
 {
 	Super::PostSeamlessTravel();

@@ -23,6 +23,8 @@ public:
 	virtual void BeginPlay() override;
 	virtual void HandleSeamlessTravelPlayer(AController*& C) override;
 	void SpawnPlayerCharacter(APlayerController* MyController,const ColorType& MyColor,const GenderType& MyGender);
+	virtual void PostLogin(APlayerController* NewPlayer) override;
+
 
 private:
 	TSubclassOf<UUserWidget> SPLobbyWidgetClass;

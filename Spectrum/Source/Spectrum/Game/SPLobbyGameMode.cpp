@@ -14,7 +14,8 @@ ASPLobbyGameMode::ASPLobbyGameMode()
 	PlayerControllerClass = ASPLobbyPlayerController::StaticClass();
 	PlayerStateClass = ASPPlayerState::StaticClass();
 	GameStateClass = ASPGameState::StaticClass();
-	
+	bUseSeamlessTravel = true;
+
 	ReadyCount=0;
 }
 
@@ -40,8 +41,8 @@ void ASPLobbyGameMode::Ready()
 	SP_LOG(LogSPNetwork,Log,TEXT("ReadCount! %d"), ReadyCount);
 	if(ReadyCount==2)
 	{
-		bUseSeamlessTravel = true;
 		GetWorld()->ServerTravel(TEXT("/Game/Spectrum/Room/Map/Building?listen"));
+		///Script/Engine.World'/Game/Spectrum/Room/Map/Building.Building'
 		///Script/Engine.World'/Game/Spectrum/Room/Map/Building.Building'
 
 		//UE_LOG(LogTemp,Log,TEXT("%s"),*(GetWorld()->GetAuthGameMode())->GetName())
