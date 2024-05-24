@@ -21,8 +21,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void ChangePawnName(FString path);
-	UFUNCTION(Server, Reliable)
-	void CallServerDuetoChangePawn(FVector location, TSubclassOf<APawn> PAWN_C, APawn* OLDpAWN);
+	// UFUNCTION(Server, Reliable)
+	// void CallServerDuetoChangePawn(FVector location, TSubclassOf<APawn> PAWN_C, APawn* OLDpAWN);
 
 protected:
 	virtual void BeginPlay() override;

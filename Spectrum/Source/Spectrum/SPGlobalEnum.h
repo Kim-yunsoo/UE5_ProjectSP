@@ -12,3 +12,10 @@ enum class ColorType : uint8
 	Black,
 	None
 };
+
+UENUM(BlueprintType)
+enum class GenderType : uint8
+{
+	Man,
+	Woman
+};

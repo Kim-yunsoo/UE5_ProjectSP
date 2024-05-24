@@ -3,46 +3,31 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/GameModeBase.h"
 #include "Blueprint/UserWidget.h"
-#include "UI/SPLobbyWidget.h"
+#include "GameFramework/GameMode.h"
 #include "SPGameModeBase.generated.h"
 
+class ASPPlayerController;
+enum class GenderType : uint8;
+enum class ColorType : uint8;
 /**
  *
  */
 UCLASS()
-class SPECTRUM_API ASPGameModeBase : public AGameModeBase
+class SPECTRUM_API ASPGameModeBase : public AGameMode
 {
 	GENERATED_BODY()
 
 public:
 	ASPGameModeBase();
-
-	UFUNCTION(BlueprintCallable, BlueprintPure)
-	bool TryChangePawn(APlayerController* pCon, FVector location, TSubclassOf<APawn> PAWN_C);
-
-	UFUNCTION(NetMulticast, Reliable)
-	void TryDestroyOldpawn(APawn* pawn);
-
 	virtual void BeginPlay() override;
-
-	int mynum = 0;
-
-	//void goServer();
-
-	//void PostInitializeComponents() override;
-protected:
-	virtual void PostLogin(APlayerController* NewPlayer) override;
+	virtual void HandleSeamlessTravelPlayer(AController*& C) override;
+	void SpawnPlayerCharacter(APlayerController* MyController,const ColorType& MyColor,const GenderType& MyGender);
 
 private:
 	TSubclassOf<UUserWidget> SPLobbyWidgetClass;
-	class USPLobbyWidget* LobbyWidget;
-
-	TMap<APlayerController*, bool> alreadyChange;
-
 public:
 	void SendMessagesToEveryOne(const FString& Sender, const FString& Message);
-
+	virtual void PostSeamlessTravel() override;
 
 };

@@ -19,41 +19,41 @@ void ASPPlayerController::OnPossess(APawn* aPawn)
 {
    Super::OnPossess(aPawn);
 
-   //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("OnPossess"));
-   auto Instance = Cast<USpectrumGameInstance>(GetWorld()->GetGameInstance());
-   if (!Instance) return;
-   if (Instance->ClientPawnClass == nullptr) return;
-
-   GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, 
-      UKismetSystemLibrary::GetClassDisplayName(Instance->ClientPawnClass));
-   if (Instance->bAlreadyChangePawn) return;
-
-   Instance->bAlreadyChangePawn = true;
-   CallServerDuetoChangePawn(aPawn->GetActorLocation(), Instance->ClientPawnClass, aPawn);
+   // //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("OnPossess"));
+   // auto Instance = Cast<USpectrumGameInstance>(GetWorld()->GetGameInstance());
+   // if (!Instance) return;
+   // if (Instance->ClientPawnClass == nullptr) return;
+   //
+   // GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, 
+   //    UKismetSystemLibrary::GetClassDisplayName(Instance->ClientPawnClass));
+   // if (Instance->bAlreadyChangePawn) return;
+   //
+   // Instance->bAlreadyChangePawn = true;
+   // CallServerDuetoChangePawn(aPawn->GetActorLocation(), Instance->ClientPawnClass, aPawn);
 }
 
 void ASPPlayerController::ChangePawnName(FString path)
 {
-   FString BPPath = path;
-   UBlueprint* BPClass = Cast<UBlueprint>(StaticLoadObject(UBlueprint::StaticClass(), nullptr, *BPPath));
-   if (!BPClass) return;
-
-   UClass* PawnClass = BPClass->GeneratedClass;
-   if (!PawnClass) return;
-
-   TSubclassOf<APawn> PAWN_C = PawnClass;
-   CallServerDuetoChangePawn(GetPawn()->GetActorLocation(), PAWN_C, GetPawn());
+   // FString BPPath = path;
+   // UBlueprint* BPClass = Cast<UBlueprint>(StaticLoadObject(UBlueprint::StaticClass(), nullptr, *BPPath));
+   // if (!BPClass) return;
+   //
+   // UClass* PawnClass = BPClass->GeneratedClass;
+   // if (!PawnClass) return;
+   //
+   // TSubclassOf<APawn> PAWN_C = PawnClass;
+  // CallServerDuetoChangePawn(GetPawn()->GetActorLocation(), PAWN_C, GetPawn());
 }
 
 
-void ASPPlayerController::CallServerDuetoChangePawn_Implementation(FVector location, TSubclassOf<APawn> PAWN_C, APawn* OLDpAWN)
-{
-   auto mode = Cast<ASPGameModeBase>(GetWorld()->GetAuthGameMode());
-   if (!mode) return;
-
-   if (mode->TryChangePawn(this, location, PAWN_C))
-      mode->TryDestroyOldpawn(OLDpAWN);
-}
+// void ASPPlayerController::CallServerDuetoChangePawn_Implementation(FVector location, TSubclassOf<APawn> PAWN_C, APawn* OLDpAWN)
+// {
+//    auto mode = Cast<ASPGameModeBase>(GetWorld()->GetAuthGameMode());
+//    if (!mode) return;
+//
+//    if (mode->TryChangePawn(this, location, PAWN_C))
+//       mode->TryDestroyOldpawn(OLDpAWN);
+// }
 
 void ASPPlayerController::BeginPlay()
 {

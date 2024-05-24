@@ -13,10 +13,26 @@ UCLASS()
 class SPECTRUM_API ASPLobbyGameMode : public AGameMode
 {
 	GENERATED_BODY()
+public:
+	
+	ASPLobbyGameMode();
+	virtual void PostLogin(APlayerController* NewPlayer) override;
 
-protected:
-	virtual void PostInitializeComponents() override; //¿©±â¼­ Å¸ÀÌ¸Ó °¡µ¿ÇÑ´Ù. 
-	virtual void DefaultGameTimer(); //Å¸ÀÌ¸Ó·Î »ç¿ëÇÒ ÇÔ¼ö 
-	FTimerHandle GameTimerHandle;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	
+	
+
+	UPROPERTY(Replicated)
+	uint32 ReadyCount;
+	
+public:
+	void Ready();
+
+	UFUNCTION()
+	void MoveToInGame();
+
+	// virtual void PostInitializeComponents() override; //ì—¬ê¸°ì„œ íƒ€ì´ë¨¸ ê°€ë™í•œë‹¤. 
+	// virtual void DefaultGameTimer(); //íƒ€ì´ë¨¸ë¡œ ì‚¬ìš©í•  í•¨ìˆ˜ 
+	// FTimerHandle GameTimerHandle;
 	
 };

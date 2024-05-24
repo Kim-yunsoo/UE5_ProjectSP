@@ -1,16 +1,61 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Game/SPLobbyGameMode.h"
+#include "SPLobbyGameMode.h"
 
-void ASPLobbyGameMode::PostInitializeComponents()
+#include "SpectrumLog.h"
+#include "SPGameState.h"
+#include "SPPlayerState.h"
+#include "Net/UnrealNetwork.h"
+#include "Player/SPLobbyPlayerController.h"
+
+ASPLobbyGameMode::ASPLobbyGameMode()
 {
-	Super::PostInitializeComponents();
-	GetWorldTimerManager().SetTimer(GameTimerHandle, this, &ASPLobbyGameMode::DefaultGameTimer, 5.0f,false);
+	PlayerControllerClass = ASPLobbyPlayerController::StaticClass();
+	PlayerStateClass = ASPPlayerState::StaticClass();
+	GameStateClass = ASPGameState::StaticClass();
+	
+	ReadyCount=0;
+}
+
+void ASPLobbyGameMode::PostLogin(APlayerController* NewPlayer)
+{
+	Super::PostLogin(NewPlayer);
+
 	
 }
 
-void ASPLobbyGameMode::DefaultGameTimer()
+void ASPLobbyGameMode::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
-	GetWorld()->ServerTravel(TEXT("/Game/Spectrum/Room/Map/Building?listen")); //다른 월드로 이동한다.
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(ASPLobbyGameMode, ReadyCount);
+
 }
+
+void ASPLobbyGameMode::Ready()
+{
+	SP_LOG(LogSPNetwork,Log,TEXT("Ready!"));
+	
+	++ReadyCount;
+	SP_LOG(LogSPNetwork,Log,TEXT("ReadCount! %d"), ReadyCount);
+	if(ReadyCount==2)
+	{
+		bUseSeamlessTravel = true;
+		GetWorld()->ServerTravel(TEXT("/Game/Spectrum/Room/Map/Building?listen"));
+		///Script/Engine.World'/Game/Spectrum/Room/Map/Building.Building'
+
+		//UE_LOG(LogTemp,Log,TEXT("%s"),*(GetWorld()->GetAuthGameMode())->GetName())
+		//ServerRPC();
+		//FTimerHandle TimerHandle;
+		
+		//GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ASPGameState::MoveToInGame, 5.0f, false);
+	}
+}
+
+void ASPLobbyGameMode::MoveToInGame()
+{
+}
+
+
+
+

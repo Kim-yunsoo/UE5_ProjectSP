@@ -12,7 +12,7 @@ DECLARE_MULTICAST_DELEGATE_TwoParams(FOnScore, const ColorType& /*MyColor*/,cons
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnTime,float /*Time*/);
 
 UCLASS()
-class SPECTRUM_API ASPGameState : public AGameStateBase, public ISPScoreInterface
+class SPECTRUM_API ASPGameState : public AGameState, public ISPScoreInterface
 {
 	
 	GENERATED_BODY()
@@ -21,6 +21,7 @@ public:
 	FOnScore OnScore;
 	FOnTime OnTime;
 	ASPGameState();
+
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	virtual void BeginPlay() override;
@@ -41,13 +42,13 @@ protected:
 
 	
 public:
-	UPROPERTY(Transient, ReplicatedUsing= OnRapTime) //∞‘¿” Ω√∞£ 
+	UPROPERTY(Transient, ReplicatedUsing= OnRapTime) //Í≤åÏûÑ ÏãúÍ∞Ñ 
 	int32 RemainingTime;
-	int32 MatchPlayTime = 600.f; // 10∫–
+	int32 MatchPlayTime = 600.f; // 10Î∂Ñ
 	
 protected: //Timer
 
-	virtual void DefaultGameTimer(); //≈∏¿Ã∏”∑Œ ªÁøÎ«“ «‘ºˆ 
+	virtual void DefaultGameTimer(); //ÌÉÄÏù¥Î®∏Î°ú ÏÇ¨Ïö©Ìï† Ìï®Ïàò 
 	FTimerHandle GameTimerHandle;
 	UFUNCTION()
 	void On_RapGreenScore();
@@ -60,4 +61,17 @@ protected: //Timer
 	
 	UFUNCTION()
 	void OnRapTime();
+
+	UPROPERTY(Replicated)
+	uint32 ReadyCount;
+	
+public:
+	void Ready();
+
+	UFUNCTION()
+	void MoveToInGame();
+
+	UFUNCTION(Server,Unreliable)
+	void ServerRPC();
+
 };
