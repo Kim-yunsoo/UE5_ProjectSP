@@ -62,7 +62,7 @@ void ASPScoreTrigger::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 }
 
-void ASPScoreTrigger::MultiSpectrumRPC_Implementation(const TArray<AActor*>& ObjectArray)
+void ASPScoreTrigger::MultiSpectrumRPC_Implementation(const TArray<AActor*>& ObjectArray) //스펙트럼 물약들 .. 
 {
 	for (AActor* Actor : ObjectArray)
 	{
@@ -93,10 +93,11 @@ void ASPScoreTrigger::MultiSpectrumRPC_Implementation(const TArray<AActor*>& Obj
 				if (MyObject->bIsScoreReflected == false)
 				{
 					MyObject->bIsScoreReflected = true;
-					ACharacter* player = Cast<ACharacter>(GetOwner());
-					if (player)
-					{
-						AGameStateBase* State = player->GetController()->GetWorld()->GetGameState();
+					// ACharacter* player = Cast<ACharacter>(GetOwner());
+					// if (player)
+					// {
+						AGameStateBase* State  = GetWorld()->GetGameState();
+						//AGameStateBase* State = player->GetController()->GetWorld()->GetGameState();
 
 						ISPScoreInterface* ScoreFuntion = Cast<ISPScoreInterface>(State);
 
@@ -104,7 +105,7 @@ void ASPScoreTrigger::MultiSpectrumRPC_Implementation(const TArray<AActor*>& Obj
 						{
 							ScoreFuntion->AddScore(Color); //State에서 점수를 올려준다. 
 						}
-					}
+					// }
 				}
 			}
 		}
