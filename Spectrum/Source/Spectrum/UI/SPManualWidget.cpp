@@ -10,6 +10,15 @@
 #include "Kismet/GameplayStatics.h"
 
 
+USPManualWidget::USPManualWidget(const FObjectInitializer& ObjectInitializer) :Super(ObjectInitializer)
+{
+	static ConstructorHelpers::FObjectFinder<UTexture> TextureRef(TEXT("/Game/Spectrum/Yunsoo/Assets/T_Potion2"));
+	if(TextureRef.Object)
+	{
+		SpectrumTexture = TextureRef.Object;
+	}
+}
+
 void USPManualWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
@@ -26,12 +35,6 @@ void USPManualWidget::NativeConstruct()
 
 	SizeBoxArray={SizeBox0,SizeBox1,SizeBox2,SizeBox3};
 
-	static ConstructorHelpers::FObjectFinder<UTexture> TextureRef(TEXT("/Script/Engine.Texture2D'/Game/Spectrum/Yunsoo/Assets/T_SpectrumPotion2.T_SpectrumPotion2'"));
-
-	if(TextureRef.Object)
-	{
-		SpectrumTexture = TextureRef.Object;
-	}
 }
 
 void USPManualWidget::SpectrumLocationCallBack()
@@ -72,7 +75,7 @@ void USPManualWidget::UpdatePotionUI(const int32 Index)
 	UImage* PotionUI = NewObject<UImage>(this);
 	FSlateBrush MyBrush;
 	MyBrush = PotionUI->GetBrush();
-	MyBrush.SetResourceObject(SpectrumTexture); //이미지 바꾸기 
+	//MyBrush.SetResourceObject(SpectrumTexture); //이미지 바꾸기 
 	PotionUI->SetBrush(MyBrush);
 	
 	SizeBoxArray[Index]->AddChild(PotionUI);

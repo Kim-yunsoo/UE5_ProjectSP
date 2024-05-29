@@ -15,7 +15,7 @@ UCLASS()
 class SPECTRUM_API USPManualWidget : public UUserWidget
 {
 	GENERATED_BODY()
-	
+	// USPManualWidget(const FObjectInitializer& ObjectInitializer);
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	class UButton* SpectrumLocation;
 
@@ -51,7 +51,7 @@ class SPECTRUM_API USPManualWidget : public UUserWidget
 
 	UPROPERTY()
 	TArray<USizeBox*> SizeBoxArray;
-
+public:
 	UPROPERTY()
 	TObjectPtr<UTexture> SpectrumTexture;
 	
