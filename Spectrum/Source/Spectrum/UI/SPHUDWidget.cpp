@@ -10,6 +10,7 @@
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Character/SPCharacterPlayer.h"
 #include "Chat/SPChatWidget.h"
+#include "Components/TextBlock.h"
 #include "Interface/SPCharacterHUDInterface.h"
 #include "Potion/Make/SPMakingPotionWidget.h"
 #include "UI/SPTargetUI.h"
@@ -65,6 +66,10 @@ void USPHUDWidget::NativeConstruct()
 	if (CharacterWidget)
 	{
 		CharacterWidget->SetupHUDWidget(this);
+	}
+	if(SpectrumText)
+	{
+		SpectrumText->SetVisibility(ESlateVisibility::Collapsed);
 	}
 }
 
@@ -224,10 +229,21 @@ void USPHUDWidget::UpdateChatting(const FString& Sender, const FString& Message)
 void USPHUDWidget::UpdatePotionUI(const int32 Index)
 {
 	ManualWidget->UpdatePotionUI(Index);
+	UpdateShowUIText();
 }
 
 void USPHUDWidget::ShowChat()
 {
 	ChatWidget->SetFousOnChat();
 	ChatWidget->ActiveChat(true);
+}
+
+void USPHUDWidget::UpdateShowUIText()
+{
+	SpectrumText->SetVisibility(ESlateVisibility::Visible);
+	FTimerHandle TimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle,FTimerDelegate::CreateLambda([&]
+	{
+		SpectrumText->SetVisibility(ESlateVisibility::Collapsed);
+	}),10.0f,false);
 }

@@ -8,6 +8,7 @@
 #include "SPHUDWidget.generated.h"
 
 
+class UTextBlock;
 class USPItemBase;
 struct FInteractableData;
 class USPInteractionWidget;
@@ -59,6 +60,10 @@ protected:
 	
 	UPROPERTY()
 	TObjectPtr<class USPChatWidget> ChatWidget;
+
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<UTextBlock> SpectrumText;
+	
 	
 public:
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
@@ -90,6 +95,7 @@ public:
 
 
 	void ShowChat();
+	void UpdateShowUIText();
 
 protected:
 };
