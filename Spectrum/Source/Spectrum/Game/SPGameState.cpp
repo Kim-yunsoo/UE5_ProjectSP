@@ -5,6 +5,7 @@
 
 #include "SpectrumLog.h"
 #include "Net/UnrealNetwork.h"
+#include "Potion/SPPickup.h"
 
 class ASPScoreTrigger;
 
@@ -61,6 +62,10 @@ void ASPGameState::DefaultGameTimer()
 		{
 			RemainingTime--;
 			OnRapTime();
+			if(RemainingTime == SpectrumPotionSpawnTime) //현재 3분이라면? 
+			{
+				SpectrumPotionSpawn(); //물약 스폰 
+			}
 		}
 	}
 }
@@ -95,6 +100,11 @@ void ASPGameState::Ready()
 void ASPGameState::MoveToInGame()
 {
 	GetWorld()->ServerTravel(TEXT("/Game/Spectrum/Room/Map/Building?listen"));
+}
+
+void ASPGameState::SpectrumPotionSpawn()
+{
+	//GetWorld()->SpawnActorDeferred<ASPPickup>()
 }
 
 void ASPGameState::ServerRPC_Implementation()

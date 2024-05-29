@@ -13,16 +13,17 @@ ASPPickup::ASPPickup()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
-	
+
 
 	PickupMesh = CreateDefaultSubobject<UStaticMeshComponent>("PickupMesh");
 	//PickupMesh->SetMobility(EComponentMobility::Static);
 	//PickupMesh->SetSimulatePhysics(true);
 	SetRootComponent(PickupMesh);
-	
-	
+
+
 	Trigger = CreateDefaultSubobject<UBoxComponent>(TEXT("PickupTriggerComponent"));
-	static ConstructorHelpers::FObjectFinder<UDataTable> DataTableFinder(TEXT("/Script/Engine.DataTable'/Game/Spectrum/ItemData/Item.Item'"));
+	static ConstructorHelpers::FObjectFinder<UDataTable> DataTableFinder(
+		TEXT("/Script/Engine.DataTable'/Game/Spectrum/ItemData/Item.Item'"));
 	if (DataTableFinder.Succeeded())
 	{
 		ItemDataTable = DataTableFinder.Object;
@@ -30,8 +31,9 @@ ASPPickup::ASPPickup()
 
 	//Trigger->SetMobility(EComponentMobility::Static);
 
-	
-	PotionRange=4;
+
+	PotionRange = 4;
+	bIsSpectrumPotion = false;
 	//PickupMesh->SetSimulatePhysics(false);
 	//Trigger->SetSimulatePhysics(false);
 }
@@ -58,35 +60,39 @@ void ASPPickup::BeginPlay()
 
 	//여기서 데이터 테이블 ID 배열 데이터를 넣자
 	// for(int i=0; i<ItemDataTable.Row)
-
-	
 }
 
 void ASPPickup::InitializePickup(const TSubclassOf<USPItemBase> BaseClass, const int32 InQuantity)
 {
-
-	if(HasAuthority())
+	if (HasAuthority())
 	{
 		if (RowNames.Num() > 0)
 		{
-			int32 RandomIndex = FMath::RandRange(0, RowNames.Num() - 2);
-			if(RandomIndex>=0 && RandomIndex<=2) //0~3의 범위
+			if (bIsSpectrumPotion) //스펙트럼 스폰 신호가 온다면? 
 			{
-				int32 Adjustment=  FMath::RandRange(0, 1);
-				if(Adjustment) //1이 나오면 확률 조정
+				// DesiredItemID = RowNames[RandomIndex];
+				int32 RandomIndex = RowNames.Find(FName(TEXT("S_Potion"))); // 있다면 인덱스를 반환한다.
+				if(RandomIndex)
 				{
-					//PotionRange
-					RandomIndex+=PotionRange;
-					RandomIndex=FMath::Clamp(RandomIndex,0,RowNames.Num()-2);
-					
+					UE_LOG(LogTemp,Log,TEXT("Spectrum Index %d"), RandomIndex); //있다면 7 반환 
 				}
-				// else if(Adjustment &&RandomIndex==3)
-				// {
-				// 	RandomIndex+=FMath::RandRange(1, PotionRange-1); //0~3
-				// 	RandomIndex=FMath::Clamp(RandomIndex,0,RowNames.Num()-1);
-				// }
+				
 			}
-			DesiredItemID = RowNames[RandomIndex];
+			else
+			{
+				int32 RandomIndex = FMath::RandRange(0, RowNames.Num() - 2);
+				if (RandomIndex >= 0 && RandomIndex <= 2) //0~3의 범위
+				{
+					int32 Adjustment = FMath::RandRange(0, 1);
+					if (Adjustment) //1이 나오면 확률 조정
+					{
+						//PotionRange
+						RandomIndex += PotionRange;
+						RandomIndex = FMath::Clamp(RandomIndex, 0, RowNames.Num() - 2);
+						DesiredItemID = RowNames[RandomIndex];
+					}
+				}
+			}
 		}
 	}
 	if (ItemDataTable && !DesiredItemID.IsNone())
@@ -139,7 +145,7 @@ bool ASPPickup::Interact(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDW
 {
 	if (PlayerCharacter)
 	{
-		MyPlayerOwner=PlayerCharacter;
+		MyPlayerOwner = PlayerCharacter;
 		TakePickup(PlayerCharacter);
 		return true;
 	}
@@ -165,12 +171,12 @@ void ASPPickup::TakePickup(ASPCharacterPlayer* Taker) //서버
 			if (USPInventoryComponent* PlayerInvetory = Taker->GetInventory())
 			{
 				FTimerHandle TimerHandle;
-				PlayerInvetory->HandleAddItem(ItemReference,1);
+				PlayerInvetory->HandleAddItem(ItemReference, 1);
 				GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]()
 				{
 					//여기서 스포너한테 신호 보내야겠다.
 					ASPPotionSpawner* PotionSpawner = Cast<ASPPotionSpawner>(GetOwner());
-					if(PotionSpawner)
+					if (PotionSpawner)
 					{
 						PotionSpawner->SpawnEvent();
 					}
@@ -180,7 +186,7 @@ void ASPPickup::TakePickup(ASPCharacterPlayer* Taker) //서버
 			}
 			else
 			{
-				 //UE_LOG(LogTemp, Warning, TEXT("Inventory is null"));
+				//UE_LOG(LogTemp, Warning, TEXT("Inventory is null"));
 			}
 		}
 	}

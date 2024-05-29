@@ -91,4 +91,8 @@ protected:
 	
 	UFUNCTION(NetMulticast, Unreliable)
 	void MultiRPCPlayAnimation();
+
+	//스펙트럼 물약 스폰을 위한 변수
+	UPROPERTY()
+	uint8 bIsSpectrumPotion ;
 };

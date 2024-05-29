@@ -30,6 +30,8 @@ public:
 	virtual void SpawnEvent() override;
 
 	float SpawnTimeRate ;
+
+
 // public:	
 // 	// Called every frame
 // 	virtual void Tick(float DeltaTime) override;

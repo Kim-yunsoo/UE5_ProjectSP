@@ -45,6 +45,7 @@ public:
 	UPROPERTY(Transient, ReplicatedUsing= OnRapTime) //게임 시간 
 	int32 RemainingTime;
 	int32 MatchPlayTime = 600.f; // 10분
+	int32 SpectrumPotionSpawnTime = 420.f; // 시작하고 3분
 	
 protected: //Timer
 
@@ -73,5 +74,7 @@ public:
 
 	UFUNCTION(Server,Unreliable)
 	void ServerRPC();
+
+	void SpectrumPotionSpawn();
 
 };
