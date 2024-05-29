@@ -12,7 +12,7 @@
 
 USPManualWidget::USPManualWidget(const FObjectInitializer& ObjectInitializer) :Super(ObjectInitializer)
 {
-	static ConstructorHelpers::FObjectFinder<UTexture> TextureRef(TEXT("/Game/Spectrum/Yunsoo/Assets/T_Potion2"));
+	static ConstructorHelpers::FObjectFinder<UTexture> TextureRef(TEXT("/Script/Engine.Texture2D'/Game/Spectrum/Yunsoo/Assets/potion3.potion3'"));
 	if(TextureRef.Object)
 	{
 		SpectrumTexture = TextureRef.Object;
@@ -75,7 +75,7 @@ void USPManualWidget::UpdatePotionUI(const int32 Index)
 	UImage* PotionUI = NewObject<UImage>(this);
 	FSlateBrush MyBrush;
 	MyBrush = PotionUI->GetBrush();
-	//MyBrush.SetResourceObject(SpectrumTexture); //이미지 바꾸기 
+	MyBrush.SetResourceObject(SpectrumTexture); //이미지 바꾸기 
 	PotionUI->SetBrush(MyBrush);
 	
 	SizeBoxArray[Index]->AddChild(PotionUI);
