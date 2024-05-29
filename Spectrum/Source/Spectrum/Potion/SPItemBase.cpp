@@ -17,8 +17,8 @@ void USPItemBase::ResetItemFlags()
 
 USPItemBase* USPItemBase::CreatePotionCopy() const
 {
-	//ÀÎº¥Åä¸®¿¡ ÀÖ´Â°Ç Æ÷ÀÎÅÍ¸¦ ÅëÇØ¼­ °ü¸®µÉ ¿¹Á¤
-	//Ãß°¡ÇÒ ¶§ º¹»çÇØ¾ßÇÑ´Ù.
+	//ì¸ë²¤í† ë¦¬ì— ìˆëŠ”ê±´ í¬ì¸í„°ë¥¼ í†µí•´ì„œ ê´€ë¦¬ë  ì˜ˆì •
+	//ì¶”ê°€í•  ë•Œ ë³µì‚¬í•´ì•¼í•œë‹¤.
 	USPItemBase* PotionCopy = NewObject<USPItemBase>(StaticClass());
 
 	PotionCopy->ID = this->ID;
@@ -35,7 +35,7 @@ void USPItemBase::SetQuantity(const int32 NewQuantity)
 {
 	if(NewQuantity != Quantity)
 	{
-		//10±îÁö¸¸ °¡´ÉÇÏ°Ô!
+		//10ê¹Œì§€ë§Œ ê°€ëŠ¥í•˜ê²Œ!
 		Quantity = FMath::Clamp(NewQuantity, 0 , ItemNumericData.bIsStackable ? ItemNumericData.MaxStackSize : 1);
 
 		if(OwningInventory)

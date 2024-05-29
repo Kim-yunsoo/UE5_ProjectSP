@@ -33,7 +33,6 @@
 #include "Net/UnrealNetwork.h"
 #include "Skill/SPSkillCastComponent.h"
 #include "Skill/SPSlowSkill.h"
-#include "DrawDebugHelpers.h"
 #include "SPGameModeBase.h"
 #include "SPGameState.h"
 #include "Component/SPInventoryComponent.h"
@@ -428,7 +427,6 @@ TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_Chat.
 	bIsPicking = false;
 	KeyToggle = true;
 	bIsSeven = false;
-	// bIsActiveSlowSkill = true;
 	HitDistance = 1800.f;
 
 	InteractionCheckFrequency = 0.1;
@@ -2374,31 +2372,6 @@ void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 					}
 				
 			}
-
-			// const FColor LineColor = HitSuccess ? FColor::Green : FColor::Red;
-			//
-			// DrawDebugLine(
-			// 	GetWorld(),
-			// 	SphereLocationStart,
-			// 	SphereLocationEnd,
-			// 	LineColor,
-			// 	false,
-			// 	5.0f,
-			// 	0,
-			// 	1.0f
-			// );
-			// if (HitSuccess)
-			// {
-			// 	DrawDebugPoint(
-			// 		GetWorld(),
-			// 		outHitResult.ImpactPoint,
-			// 		10.0f,
-			// 		FColor::Blue,
-			// 		false,
-			// 		5.0f
-			// 	);
-			// }
-				
 		}
 	}
 	else
@@ -2587,5 +2560,3 @@ void ASPCharacterPlayer::ClientRPCAddMessageToChat_Implementation(const FString&
 {
 	HUDWidget->UpdateChatting(Sender,Message);
 }
-
-

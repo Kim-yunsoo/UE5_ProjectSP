@@ -26,6 +26,7 @@ void USPChatWidget::NativeConstruct()
 
 void USPChatWidget::OnChatTextCommitted(const FText& Text, ETextCommit::Type CommitMethod)
 {
+	
 	if (CommitMethod == ETextCommit::OnEnter)
 	{
 		ASPCharacterPlayer* Player = Cast<ASPCharacterPlayer>(GetOwningPlayerPawn());
