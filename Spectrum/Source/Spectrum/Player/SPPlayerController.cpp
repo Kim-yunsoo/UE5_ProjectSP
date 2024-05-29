@@ -4,6 +4,7 @@
 #include "Player/SPPlayerController.h"
 #include "UI/SPHUDWidget.h"
 #include "SpectrumGameInstance.h"
+#include "SpectrumLog.h"
 #include "SPGameModeBase.h"
 
 ASPPlayerController::ASPPlayerController()
@@ -92,3 +93,9 @@ void ASPPlayerController::SetHUDMatchCountdown(float CountdownTime)
    // //    MatchCountDownText->SetText(FText::FromString(CountdownText));
    // // }
 }
+
+void ASPPlayerController::ClientRPCSpawnUI_Implementation(const int32 Index)
+{
+   SPHUDWidget->UpdatePotionUI(Index);
+}
+

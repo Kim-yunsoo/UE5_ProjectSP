@@ -37,6 +37,9 @@ protected:
 	UPROPERTY(ReplicatedUsing=On_RapPurpleScore)
 	int32 PurpleScore;
 
+	UPROPERTY()
+	TObjectPtr<UDataTable> PositionTable;
+
 	virtual void AddScore(const ColorType& MyColor) override;
 
 
@@ -45,7 +48,8 @@ public:
 	UPROPERTY(Transient, ReplicatedUsing= OnRapTime) //게임 시간 
 	int32 RemainingTime;
 	int32 MatchPlayTime = 600.f; // 10분
-	int32 SpectrumPotionSpawnTime = 420.f; // 시작하고 3분
+	int32 SpectrumPotionSpawnTime = 590.f; // 시작하고 2분뒤
+	//int32 SpawnUITime = 510.f; 
 	
 protected: //Timer
 
@@ -76,5 +80,10 @@ public:
 	void ServerRPC();
 
 	void SpectrumPotionSpawn();
+
+	UFUNCTION(NetMulticast,Unreliable)
+	void MultiRPCSpawnUI();
+
+	
 
 };

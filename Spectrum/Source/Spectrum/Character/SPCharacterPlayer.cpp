@@ -2515,7 +2515,6 @@ void ASPCharacterPlayer::MultiRPCStopMove_Implementation(bool IsStop)
 
 void ASPCharacterPlayer::MultiRPCAimRotation_Implementation(bool IsAim)
 {
-	SP_LOG(LogSPNetwork,Log,TEXT("TEST"));
 	if(IsAim)
 	{
 	GetCharacterMovement()->bOrientRotationToMovement = false;
@@ -2560,3 +2559,9 @@ void ASPCharacterPlayer::ClientRPCAddMessageToChat_Implementation(const FString&
 {
 	HUDWidget->UpdateChatting(Sender,Message);
 }
+
+// void ASPCharacterPlayer::ClientRPCTest_Implementation()
+// {
+// 	SP_LOG(LogSPNetwork,Log,TEXT("ClientRPCTest"));
+//
+// }

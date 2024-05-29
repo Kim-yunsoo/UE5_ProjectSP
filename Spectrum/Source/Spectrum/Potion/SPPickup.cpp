@@ -48,7 +48,7 @@ void ASPPickup::BeginPlay()
 		this->AActor::SetReplicateMovement(true);
 	}
 	RowNames = ItemDataTable->GetRowNames(); //모든 데이터 이름 넣었음
-	InitializePickup(USPItemBase::StaticClass(), ItemQuantity);
+	InitializePickup(USPItemBase::StaticClass(), 1);
 
 	FVector ActorLocation = GetActorLocation();
 	ActorLocation.Z = ActorLocation.Z + 45;
@@ -68,19 +68,17 @@ void ASPPickup::InitializePickup(const TSubclassOf<USPItemBase> BaseClass, const
 	{
 		if (RowNames.Num() > 0)
 		{
+			int32 RandomIndex = FMath::RandRange(0, RowNames.Num() - 2);
 			if (bIsSpectrumPotion) //스펙트럼 스폰 신호가 온다면? 
 			{
-				// DesiredItemID = RowNames[RandomIndex];
-				int32 RandomIndex = RowNames.Find(FName(TEXT("S_Potion"))); // 있다면 인덱스를 반환한다.
-				if(RandomIndex)
+				RandomIndex = RowNames.Find(FName(TEXT("S_Potion"))); // 있다면 인덱스를 반환한다.
+				if (RandomIndex)
 				{
-					UE_LOG(LogTemp,Log,TEXT("Spectrum Index %d"), RandomIndex); //있다면 7 반환 
+					DesiredItemID = RowNames[RandomIndex];
 				}
-				
 			}
 			else
 			{
-				int32 RandomIndex = FMath::RandRange(0, RowNames.Num() - 2);
 				if (RandomIndex >= 0 && RandomIndex <= 2) //0~3의 범위
 				{
 					int32 Adjustment = FMath::RandRange(0, 1);
@@ -89,9 +87,9 @@ void ASPPickup::InitializePickup(const TSubclassOf<USPItemBase> BaseClass, const
 						//PotionRange
 						RandomIndex += PotionRange;
 						RandomIndex = FMath::Clamp(RandomIndex, 0, RowNames.Num() - 2);
-						DesiredItemID = RowNames[RandomIndex];
 					}
 				}
+				DesiredItemID = RowNames[RandomIndex];
 			}
 		}
 	}

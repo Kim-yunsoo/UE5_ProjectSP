@@ -6,6 +6,7 @@
 #include "Character/SPCharacterPlayer.h"
 #include "Components/Button.h"
 #include "Components/Image.h"
+#include "Components/SizeBox.h"
 #include "Kismet/GameplayStatics.h"
 
 
@@ -22,6 +23,15 @@ void USPManualWidget::NativeConstruct()
 	Back->OnClicked.AddDynamic(this, &USPManualWidget::BackCallBack);
 	MainImage->SetVisibility(ESlateVisibility::Visible);
 	ClickOn = LoadObject<USoundBase>(nullptr, TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/ClickOn.ClickOn'"));
+
+	SizeBoxArray={SizeBox0,SizeBox1,SizeBox2,SizeBox3};
+
+	static ConstructorHelpers::FObjectFinder<UTexture> TextureRef(TEXT("/Script/Engine.Texture2D'/Game/Spectrum/Yunsoo/Assets/T_SpectrumPotion2.T_SpectrumPotion2'"));
+
+	if(TextureRef.Object)
+	{
+		SpectrumTexture = TextureRef.Object;
+	}
 }
 
 void USPManualWidget::SpectrumLocationCallBack()
@@ -55,4 +65,15 @@ void USPManualWidget::BackCallBack()
 		MainImage->SetVisibility(ESlateVisibility::Visible);
 	}
 	UGameplayStatics::PlaySound2D(GetWorld(), ClickOn);
+}
+
+void USPManualWidget::UpdatePotionUI(const int32 Index)
+{
+	UImage* PotionUI = NewObject<UImage>(this);
+	FSlateBrush MyBrush;
+	MyBrush = PotionUI->GetBrush();
+	MyBrush.SetResourceObject(SpectrumTexture); //이미지 바꾸기 
+	PotionUI->SetBrush(MyBrush);
+	
+	SizeBoxArray[Index]->AddChild(PotionUI);
 }

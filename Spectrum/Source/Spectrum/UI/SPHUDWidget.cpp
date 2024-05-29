@@ -221,6 +221,11 @@ void USPHUDWidget::UpdateChatting(const FString& Sender, const FString& Message)
 	ChatWidget->AddMessageOntoMessagesList(Sender, Message);
 }
 
+void USPHUDWidget::UpdatePotionUI(const int32 Index)
+{
+	ManualWidget->UpdatePotionUI(Index);
+}
+
 void USPHUDWidget::ShowChat()
 {
 	ChatWidget->SetFousOnChat();

@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "SPManualWidget.generated.h"
 
+class USizeBox;
 class UImage;
 /**
  * 
@@ -35,9 +36,28 @@ class SPECTRUM_API USPManualWidget : public UUserWidget
 
 	UPROPERTY(EditAnywhere)
 	USoundBase* ClickOn;
+
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<USizeBox> SizeBox0;
+	
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<USizeBox> SizeBox1;
+	
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<USizeBox> SizeBox2;
+	
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<USizeBox> SizeBox3;
+
+	UPROPERTY()
+	TArray<USizeBox*> SizeBoxArray;
+
+	UPROPERTY()
+	TObjectPtr<UTexture> SpectrumTexture;
 	
 	virtual void NativeConstruct() override;
 public:
+	void UpdatePotionUI(const int32 Index);
 
 protected:
 	UFUNCTION()
@@ -46,4 +66,5 @@ protected:
 	void ManualCallBack();
 	UFUNCTION()
 	void BackCallBack();
+
 };

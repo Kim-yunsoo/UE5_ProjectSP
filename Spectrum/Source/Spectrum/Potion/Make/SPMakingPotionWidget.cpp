@@ -23,7 +23,7 @@ void USPMakingPotionWidget::ClearWidget()
 	}
 	Make->ClearChildren();
 	
-	UE_LOG(LogTemp, Log, TEXT("SpectrumLocationCallBack!!!"));
+	//UE_LOG(LogTemp, Log, TEXT("SpectrumLocationCallBack!!!"));
 }
 
 void USPMakingPotionWidget::MakingPotion(USPItemBase* Item)
@@ -114,7 +114,7 @@ bool USPMakingPotionWidget::NativeOnDrop(const FGeometry& InGeometry, const FDra
 
 void USPMakingPotionWidget::BackCallBack()
 {
-	UE_LOG(LogTemp, Log, TEXT("SpectrumLocationCallBack!!!"));
+	//UE_LOG(LogTemp, Log, TEXT("SpectrumLocationCallBack!!!"));
 	PlayerCharacter->HUDWidget->UpdateMakingPotionWidget(false);
 
 	PlaySound(ClickOn);

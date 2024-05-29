@@ -40,4 +40,7 @@ public:
 
 	void SetHUDMatchCountdown(float CountdownTime);
 
+	UFUNCTION(Client,Unreliable)
+	void ClientRPCSpawnUI(const int32 Index);
+
 };

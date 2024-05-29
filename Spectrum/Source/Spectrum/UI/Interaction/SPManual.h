@@ -29,6 +29,8 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UBoxComponent> Trigger;
 
+
+
 	UPROPERTY()
 	uint8 bIsVisible : 1;
 	

@@ -86,6 +86,8 @@ public:
 
 	void UpdateChatting(const FString& Sender, const FString& Message);
 
+	void UpdatePotionUI(const int32 Index);
+
 
 	void ShowChat();
 
