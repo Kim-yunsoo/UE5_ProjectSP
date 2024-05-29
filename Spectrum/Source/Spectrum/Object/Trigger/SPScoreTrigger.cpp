@@ -47,7 +47,7 @@ void ASPScoreTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor
 	if (SpectrumPotionHit)
 	{
 		SetOwner(OtherActor->GetOwner());
-		SP_LOG(LogSPNetwork, Log, TEXT("%s"), *(this->GetOwner())->GetName());
+		//SP_LOG(LogSPNetwork, Log, TEXT("%s"), *(this->GetOwner())->GetName());
 
 		TArray<AActor*> OverlappingActors;
 		Trigger->GetOverlappingActors(OverlappingActors);
@@ -69,7 +69,7 @@ void ASPScoreTrigger::MultiSpectrumRPC_Implementation(const TArray<AActor*>& Obj
 		//UE_LOG(LogTemp,Log,TEXT("%s"),*Actor->GetName());
 		if (ASPObject* MyObject = Cast<ASPObject>(Actor))
 		{
-			SP_LOG(LogSPNetwork, Log, TEXT("Server"));
+			//SP_LOG(LogSPNetwork, Log, TEXT("Server"));
 			if (MyObject->MyColorType != Color)
 			{
 				ISPDamageInterface* ChangeColor = Cast<ISPDamageInterface>(MyObject);
