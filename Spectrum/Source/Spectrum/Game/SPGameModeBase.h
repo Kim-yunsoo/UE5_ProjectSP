@@ -20,6 +20,9 @@ class SPECTRUM_API ASPGameModeBase : public AGameMode
 
 public:
 	ASPGameModeBase();
+
+	virtual void Tick(float DeltaSeconds) override;
+	
 	virtual void BeginPlay() override;
 	virtual void HandleSeamlessTravelPlayer(AController*& C) override;
 	void SpawnPlayerCharacter(APlayerController* MyController,const ColorType& MyColor,const GenderType& MyGender);
@@ -28,8 +31,17 @@ public:
 
 private:
 	TSubclassOf<UUserWidget> SPLobbyWidgetClass;
+	
 public:
+	UPROPERTY()
+	float WarmupTime = 10.f;
+
+	float LevelStartingTime = 0.f; //인게임에 진입한 시간 기록을 위한 변수
+	
 	void SendMessagesToEveryOne(const FString& Sender, const FString& Message);
 	virtual void PostSeamlessTravel() override;
+
+protected:
+	float CountdownTime = 0.f;
 
 };

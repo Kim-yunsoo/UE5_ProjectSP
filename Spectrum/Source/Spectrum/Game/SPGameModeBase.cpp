@@ -18,11 +18,32 @@ extern std::array<Protocol::PlayerType, 3> school_type;
 
 ASPGameModeBase::ASPGameModeBase()
 {
+	bDelayedStart = true;
+
 	GameStateClass = ASPGameState::StaticClass();
 	PlayerStateClass = ASPPlayerState::StaticClass();
 	PlayerControllerClass= ASPPlayerController::StaticClass();
 	bUseSeamlessTravel = true;
 	// 디폴트 폰 클래스 /Game/Spectrum/BluePrint/BP_SPCharacterMan2로 설정
+}
+void ASPGameModeBase::BeginPlay()
+{
+	Super::BeginPlay();
+	LevelStartingTime = GetWorld() ->GetTimeSeconds(); //여기까지 들어오게 된 시간 
+}
+void ASPGameModeBase::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	if(MatchState == MatchState::WaitingToStart)
+	{
+		CountdownTime=WarmupTime-GetWorld()->GetTimeSeconds()+LevelStartingTime;
+
+		if(CountdownTime<=0.f)
+		{
+			StartMatch(); //진행 모드로 변환
+		}
+	}
 }
 
 // bool ASPGameModeBase::TryChangePawn(APlayerController* pCon, FVector location, TSubclassOf<APawn> PAWN_C)
@@ -44,10 +65,7 @@ ASPGameModeBase::ASPGameModeBase()
 // 		pawn->Destroy();
 // }
 
-void ASPGameModeBase::BeginPlay()
-{
-	Super::BeginPlay();
-}
+
 
 void ASPGameModeBase::HandleSeamlessTravelPlayer(AController*& C)
 {
