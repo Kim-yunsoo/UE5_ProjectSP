@@ -4,6 +4,7 @@
 #include "UI/SPHUDWidget.h"
 #include "SPGameTimeWidget.h"
 #include "SPKeyWidget.h"
+#include "SPLoadingWidget.h"
 #include "SPManualWidget.h"
 #include "SPScoreWidget.h"
 #include "SPSkillWidget.h"
@@ -37,23 +38,13 @@ void USPHUDWidget::NativeConstruct()
 	//ensure(TargetUI);
 	GameTimeWidget = Cast<USPGameTimeWidget>(GetWidgetFromName(TEXT("WB_GameTimeWidget")));
 	ChatWidget = Cast<USPChatWidget>(GetWidgetFromName(TEXT("WBP_Chat")));
-	//			MessageBox->SetVisibility(ESlateVisibility::Collapsed);
+	
+	LoadingWidget = Cast<USPLoadingWidget>(GetWidgetFromName(TEXT("WBP_LoadingUI")));
 
 	if (ChatWidget)
 	{
 		ChatWidget->ActiveChat(false);
-		//ChatWidget->SetVisibility(ESlateVisibility::Collapsed); 
 	}
-
-	//ensure(TargetUI);
-
-	// MainMenuWidget = Cast<USPMainMenu>(GetWidgetFromName(TEXT("WBTargetUI")));
-	//  if(MainMenuClass)
-	//  {
-	//  	MainMenuWidget = CreateWidget<USPMainMenu>(GetWorld(), MainMenuClass);
-	//  	MainMenuWidget->AddToViewport(5);
-	//  	MainMenuWidget->SetVisibility(ESlateVisibility::Collapsed); 
-	//  }
 	KeyWidget = Cast<USPKeyWidget>(GetWidgetFromName("WBPKey"));
 
 	if (InteractionWidgetClass)
@@ -67,7 +58,7 @@ void USPHUDWidget::NativeConstruct()
 	{
 		CharacterWidget->SetupHUDWidget(this);
 	}
-	if(SpectrumText)
+	if (SpectrumText)
 	{
 		SpectrumText->SetVisibility(ESlateVisibility::Collapsed);
 	}
@@ -242,8 +233,16 @@ void USPHUDWidget::UpdateShowUIText()
 {
 	SpectrumText->SetVisibility(ESlateVisibility::Visible);
 	FTimerHandle TimerHandle;
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle,FTimerDelegate::CreateLambda([&]
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([&]
 	{
 		SpectrumText->SetVisibility(ESlateVisibility::Collapsed);
-	}),10.0f,false);
+	}), 10.0f, false);
+}
+
+void USPHUDWidget::HideLoadingWidget()
+{
+	if (LoadingWidget)
+	{
+		LoadingWidget->SetVisibility(ESlateVisibility::Collapsed);
+	}
 }

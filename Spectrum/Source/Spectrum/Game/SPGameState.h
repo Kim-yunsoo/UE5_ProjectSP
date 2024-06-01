@@ -33,7 +33,12 @@ protected:
 
 	UPROPERTY(ReplicatedUsing=On_RapPurpleScore)
 	int32 PurpleScore;
+	
+	UPROPERTY(ReplicatedUsing=OnInGamePlaySound)
+	int8 bIsInGame;
 
+
+	
 	UPROPERTY()
 	TObjectPtr<UDataTable> PositionTable;
 
@@ -48,7 +53,9 @@ public:
 	int32 SpectrumPotionSpawnTime = 540.f; //1분 뒤 
 	
 protected: //Timer
-
+	UPROPERTY()
+	TObjectPtr<USoundWave> BackGroundMusic;
+	
 	virtual void DefaultGameTimer(); //타이머로 사용할 함수 
 	FTimerHandle GameTimerHandle;
 	UFUNCTION()
@@ -63,6 +70,9 @@ protected: //Timer
 	UFUNCTION()
 	void OnRapTime();
 
+	UFUNCTION()
+	void OnInGamePlaySound();
+
 	UPROPERTY(Replicated)
 	uint32 ReadyCount;
 
@@ -73,4 +83,6 @@ public:
 	void SpectrumPotionSpawn();
 
 	void StartTimer();
+
+	void OnMathStateSet(FName State); // 매치 상태를 알려주는 함수를 만든다.
 };

@@ -5,6 +5,8 @@
 
 #include "SpectrumLog.h"
 #include "Data/SPSpawnPosition.h"
+#include "GameFramework/GameMode.h"
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 #include "Player/SPPlayerController.h"
 #include "Potion/SPPickup.h"
@@ -18,6 +20,7 @@ ASPGameState::ASPGameState()
 	OrangeScore = 0;
 	PurpleScore = 0;
 	ReadyCount= 0;
+	bIsInGame=false;
 
 	RemainingTime = MatchPlayTime;
 
@@ -26,7 +29,11 @@ ASPGameState::ASPGameState()
 	{
 		PositionTable = TableRef.Object;
 	}
-	
+	static ConstructorHelpers::FObjectFinder<USoundWave> SoundRef(TEXT("/Game/Spectrum/Sound/A_Winter_Migration"));
+	if(SoundRef.Object)
+	{
+		BackGroundMusic = SoundRef.Object;
+	}
 }
 
 void ASPGameState::BeginPlay()
@@ -98,6 +105,11 @@ void ASPGameState::OnRapTime()
 	OnTime.Broadcast(RemainingTime);
 }
 
+void ASPGameState::OnInGamePlaySound()
+{
+	UGameplayStatics::PlaySound2D(this, BackGroundMusic);
+}
+
 void ASPGameState::Ready()
 {
 	++ReadyCount;
@@ -147,6 +159,30 @@ void ASPGameState::StartTimer()
 										GetWorldSettings()->GetEffectiveTimeDilation(), true);
 }
 
+void ASPGameState::OnMathStateSet(FName State) //서버
+{
+	if(State ==  MatchState::InProgress)
+	{
+		StartTimer();
+		bIsInGame=true;
+		OnInGamePlaySound();
+		for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
+		{
+			APlayerController* PlayerController = Iterator->Get();
+			if (PlayerController)
+			{
+				ASPCharacterPlayer* MyCharacter = Cast<ASPCharacterPlayer>(PlayerController->GetCharacter());
+				if (MyCharacter)
+				{
+					MyCharacter->bCanUseInput=true;
+				}
+			}
+		}
+		//for(GetWorld()->GetPlayerControllerIterator())
+		
+	}
+}
+
 void ASPGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
@@ -156,6 +192,7 @@ void ASPGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 	DOREPLIFETIME(ASPGameState, PurpleScore);
 	DOREPLIFETIME(ASPGameState, RemainingTime);
 	DOREPLIFETIME(ASPGameState, ReadyCount);
+	DOREPLIFETIME(ASPGameState, bIsInGame);
 }
 
 

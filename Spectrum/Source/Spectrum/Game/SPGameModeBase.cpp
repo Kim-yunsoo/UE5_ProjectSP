@@ -2,8 +2,6 @@
 
 
 #include "Game/SPGameModeBase.h"
-
-#include "SpectrumLog.h"
 #include "SPPlayerState.h"
 #include "Game/SPGameState.h"
 #include "UI/SPLobbyWidget.h"
@@ -39,66 +37,40 @@ void ASPGameModeBase::Tick(float DeltaSeconds)
 
 	if(MatchState == MatchState::WaitingToStart)
 	{
-		CountdownTime=WarmupTime-GetWorld()->GetTimeSeconds()+LevelStartingTime;
+		CountdownTime=WarmupTime-GetWorld()->GetTimeSeconds()+LevelStartingTime; //10초 로딩 시간
 
 		if(CountdownTime<=0.f)
 		{
 			StartMatch(); //진행 모드로 변환
 		}
 	}
+	//if()
 }
 
 void ASPGameModeBase::OnMatchStateSet()
 {
 	Super::OnMatchStateSet();
-	
-	if(MatchState == MatchState::InProgress)
-	{
 
-		ASPGameState* SPGameState = Cast<ASPGameState>(GetWorld()->GetGameState());
-		if (SPGameState)
+	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+	{
+		ASPPlayerController* MyPlayer = Cast<ASPPlayerController>(It->Get());
+		if(MyPlayer)
 		{
-			SPGameState->StartTimer(); //시간 제대로 작동 확인 
+			MyPlayer->ClientRCPMathState(MatchState);
 		}
 	}
-	
-
-	// for(FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
-	// {
-	// 	ASPPlayerController* SPPlayer = Cast<ASPPlayerController>(*It);
-	// 	if(SPPlayer)
-	// 	{
-	// 		SPPlayer->OnMathStateSet(MatchState); //서버에서 불려진다. 
-	// 	}
-	// }
+	ASPGameState* SPGameState = Cast<ASPGameState>(GetWorld()->GetGameState());
+	if (SPGameState)
+	{
+		SPGameState->OnMathStateSet(MatchState); //시간 제대로 작동 확인 
+	}
 }
-
-
-// bool ASPGameModeBase::TryChangePawn(APlayerController* pCon, FVector location, TSubclassOf<APawn> PAWN_C)
-// {
-// 	if (alreadyChange.Contains(pCon)) return false;
-//
-// 	auto newPawn = UAIBlueprintHelperLibrary::SpawnAIFromClass(GetWorld(), PAWN_C, nullptr, location,
-// 	                                                           FRotator::ZeroRotator);
-// 	if (!newPawn) return false;
-//
-// 	alreadyChange.Add(pCon, true);
-// 	pCon->Possess(newPawn);
-// 	return true;
-// }
-
-// void ASPGameModeBase::TryDestroyOldpawn_Implementation(APawn* pawn)
-// {
-// 	if (pawn->IsValidLowLevel())
-// 		pawn->Destroy();
-// }
 
 
 
 void ASPGameModeBase::HandleSeamlessTravelPlayer(AController*& C)
 {
 	Super::HandleSeamlessTravelPlayer(C);
-	//UE_LOG(LogTemp,Log,TEXT("HandleSeamlessTravelPlayer"));
 
 	if(!C)
 	{
@@ -163,7 +135,12 @@ void ASPGameModeBase::SpawnPlayerCharacter(APlayerController* MyController, cons
 		SpawnParams.Owner = MyController;
 		APawn* NewPawn = GetWorld()->SpawnActor<APawn>(DesiredPawnClass, SpawnLocation, FRotator::ZeroRotator,
 		 	                                               SpawnParams);
-		MyController->Possess(NewPawn);
+		ASPPlayerController* PC = Cast<ASPPlayerController>(MyController);
+		if(PC)
+		{
+			PC->Possess(NewPawn);
+		}
+		//MyController->Possess(NewPawn);
 	}
 }
 

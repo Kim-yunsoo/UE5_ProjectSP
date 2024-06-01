@@ -14,6 +14,7 @@
 #include "Potion/SPItemBase.h"
 #include "SPCharacterPlayer.generated.h"
 
+class ASPGameState;
 class ASPPickup;
 class USPInventoryComponent;
 class USPHUDWidget;
@@ -663,7 +664,6 @@ public:
 	UFUNCTION(Client,Unreliable)
 	void ClientRPCAddMessageToChat(const FString& Sender, const FString& Message );
 
-
-
-	
+	UPROPERTY(Replicated)
+	uint8 bCanUseInput:1; 
 };

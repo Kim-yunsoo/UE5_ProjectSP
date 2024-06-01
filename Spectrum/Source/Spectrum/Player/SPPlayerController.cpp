@@ -3,9 +3,7 @@
 
 #include "Player/SPPlayerController.h"
 #include "UI/SPHUDWidget.h"
-#include "SpectrumGameInstance.h"
 #include "SPGameModeBase.h"
-#include "Net/UnrealNetwork.h"
 
 ASPPlayerController::ASPPlayerController()
 {
@@ -14,23 +12,12 @@ ASPPlayerController::ASPPlayerController()
    {
       SPHUDWidgetClass = SPHUDWidgetRef.Class;
    }
+ 
 }
 
 void ASPPlayerController::OnPossess(APawn* aPawn)
 {
    Super::OnPossess(aPawn);
-
-   //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("OnPossess"));
-   auto Instance = Cast<USpectrumGameInstance>(GetWorld()->GetGameInstance());
-   if (!Instance) return;
-   if (Instance->ClientPawnClass == nullptr) return;
-
-   GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, 
-      UKismetSystemLibrary::GetClassDisplayName(Instance->ClientPawnClass));
-   if (Instance->bAlreadyChangePawn) return;
-
-   Instance->bAlreadyChangePawn = true;
-
 }
 
 
@@ -39,9 +26,8 @@ void ASPPlayerController::BeginPlay()
 {
    Super::BeginPlay();
 
-   FInputModeGameOnly GameOblyInputMode;
-   SetInputMode(GameOblyInputMode);
-
+   FInputModeGameOnly GameOnlyInputMode;
+   SetInputMode(GameOnlyInputMode);
    if(IsLocalPlayerController())
    {
       SPHUDWidget = CreateWidget<USPHUDWidget>(this, SPHUDWidgetClass);
@@ -49,27 +35,16 @@ void ASPPlayerController::BeginPlay()
       {
          SPHUDWidget->AddToViewport();
          SPHUDWidget->SetVisibility(ESlateVisibility::Visible);
+
       }
    }
-}
 
-void ASPPlayerController::OnMathStateSet(FName State)
-{
-   MatchState = State;
-   if(MatchState == MatchState::InProgress)
-   {
-     
-   }
-}
 
-void ASPPlayerController::OnRep_MatchState()
-{
 }
 
 void ASPPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-   DOREPLIFETIME(ASPPlayerController, MatchState);
 }
 
 USPHUDWidget* ASPPlayerController::GetSPHUDWidget() const
@@ -77,6 +52,18 @@ USPHUDWidget* ASPPlayerController::GetSPHUDWidget() const
    return SPHUDWidget;
 }
 
+void ASPPlayerController::ClientRCPMathState_Implementation(FName State)
+{
+   if(State == MatchState::InProgress)
+   {
+    
+      if(SPHUDWidget)
+      {
+          SPHUDWidget->HideLoadingWidget();
+      }
+      
+   }
+}
 
 
 void ASPPlayerController::ClientRPCSpawnUI_Implementation(const int32 Index)

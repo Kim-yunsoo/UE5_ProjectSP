@@ -63,6 +63,9 @@ protected:
 
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UTextBlock> SpectrumText;
+
+	UPROPERTY()
+	TObjectPtr<class USPLoadingWidget> LoadingWidget;
 	
 	
 public:
@@ -96,6 +99,7 @@ public:
 
 	void ShowChat();
 	void UpdateShowUIText();
+	void HideLoadingWidget();
 
 protected:
 };

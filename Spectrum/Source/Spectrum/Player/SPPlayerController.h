@@ -35,6 +35,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = HUD)
 	TObjectPtr<class USPHUDWidget> SPHUDWidget;
 
+
+
 public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
@@ -44,12 +46,10 @@ public:
 	UFUNCTION(Client,Unreliable)
 	void ClientRPCSpawnUI(const int32 Index);
 
-	void OnMathStateSet(FName State); // 매치 상태를 알려주는 함수를 만든다. 
+	UFUNCTION(Client,Unreliable)
+	void ClientRCPMathState(FName State); // 매치 상태를 알려주는 함수를 만든다. 
 
-	UPROPERTY(ReplicatedUsing = OnRep_MatchState)
+	UPROPERTY()
 	FName MatchState;
-
-	UFUNCTION()
-	void OnRep_MatchState();
-
+	
 };
