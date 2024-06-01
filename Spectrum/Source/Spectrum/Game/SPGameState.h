@@ -21,9 +21,6 @@ public:
 	FOnScore OnScore;
 	FOnTime OnTime;
 	ASPGameState();
-
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-
 	virtual void BeginPlay() override;
 	
 protected:
@@ -49,7 +46,6 @@ public:
 	int32 RemainingTime;
 	int32 MatchPlayTime = 600.f; // 10분
 	int32 SpectrumPotionSpawnTime = 540.f; //1분 뒤 
-	//int32 SpawnUITime = 510.f; 
 	
 protected: //Timer
 
@@ -69,21 +65,12 @@ protected: //Timer
 
 	UPROPERTY(Replicated)
 	uint32 ReadyCount;
-	
+
 public:
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	
 	void Ready();
-
-	UFUNCTION()
-	void MoveToInGame();
-
-	UFUNCTION(Server,Unreliable)
-	void ServerRPC();
-
 	void SpectrumPotionSpawn();
 
-	UFUNCTION(NetMulticast,Unreliable)
-	void MultiRPCSpawnUI();
-
-	
-
+	void StartTimer();
 };

@@ -36,11 +36,20 @@ protected:
 	TObjectPtr<class USPHUDWidget> SPHUDWidget;
 
 public:
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 	USPHUDWidget* GetSPHUDWidget() const;
 
-	void SetHUDMatchCountdown(float CountdownTime);
 
 	UFUNCTION(Client,Unreliable)
 	void ClientRPCSpawnUI(const int32 Index);
+
+	void OnMathStateSet(FName State); // 매치 상태를 알려주는 함수를 만든다. 
+
+	UPROPERTY(ReplicatedUsing = OnRep_MatchState)
+	FName MatchState;
+
+	UFUNCTION()
+	void OnRep_MatchState();
 
 };

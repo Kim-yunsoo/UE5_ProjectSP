@@ -4,8 +4,8 @@
 #include "Player/SPPlayerController.h"
 #include "UI/SPHUDWidget.h"
 #include "SpectrumGameInstance.h"
-#include "SpectrumLog.h"
 #include "SPGameModeBase.h"
+#include "Net/UnrealNetwork.h"
 
 ASPPlayerController::ASPPlayerController()
 {
@@ -30,31 +30,10 @@ void ASPPlayerController::OnPossess(APawn* aPawn)
    if (Instance->bAlreadyChangePawn) return;
 
    Instance->bAlreadyChangePawn = true;
-//   CallServerDuetoChangePawn(aPawn->GetActorLocation(), Instance->ClientPawnClass, aPawn);
+
 }
 
-// void ASPPlayerController::ChangePawnName(FString path)
-// {
-//    FString BPPath = path;
-//    UBlueprint* BPClass = Cast<UBlueprint>(StaticLoadObject(UBlueprint::StaticClass(), nullptr, *BPPath));
-//    if (!BPClass) return;
-//
-//    UClass* PawnClass = BPClass->GeneratedClass;
-//    if (!PawnClass) return;
-//
-//    TSubclassOf<APawn> PAWN_C = PawnClass;
-//    //CallServerDuetoChangePawn(GetPawn()->GetActorLocation(), PAWN_C, GetPawn());
-// }
 
-
-// void ASPPlayerController::CallServerDuetoChangePawn_Implementation(FVector location, TSubclassOf<APawn> PAWN_C, APawn* OLDpAWN)
-// {
-//    auto mode = Cast<ASPGameModeBase>(GetWorld()->GetAuthGameMode());
-//    if (!mode) return;
-//
-//    if (mode->TryChangePawn(this, location, PAWN_C))
-//       mode->TryDestroyOldpawn(OLDpAWN);
-// }
 
 void ASPPlayerController::BeginPlay()
 {
@@ -72,7 +51,25 @@ void ASPPlayerController::BeginPlay()
          SPHUDWidget->SetVisibility(ESlateVisibility::Visible);
       }
    }
-   
+}
+
+void ASPPlayerController::OnMathStateSet(FName State)
+{
+   MatchState = State;
+   if(MatchState == MatchState::InProgress)
+   {
+     
+   }
+}
+
+void ASPPlayerController::OnRep_MatchState()
+{
+}
+
+void ASPPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+   Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+   DOREPLIFETIME(ASPPlayerController, MatchState);
 }
 
 USPHUDWidget* ASPPlayerController::GetSPHUDWidget() const
@@ -80,19 +77,7 @@ USPHUDWidget* ASPPlayerController::GetSPHUDWidget() const
    return SPHUDWidget;
 }
 
-void ASPPlayerController::SetHUDMatchCountdown(float CountdownTime)
-{
-   // SPHUDWidget* SPHUD = SPHUD== nullptr? Cast<USPHUDWidget>(GetHUD()) : SPHUD; 
-   // int32 Minutes = FMath::FloorToInt(CountdownTime/60.f);
-   //
-   // int32 Seconds = CountdownTime - Minutes *60;
-   //
-   // FString CountdownText = FString::Printf(TEXT("%02d:%02d"),Minutes,Seconds);
-   // // if(MatchCountDownText)
-   // // {
-   // //    MatchCountDownText->SetText(FText::FromString(CountdownText));
-   // // }
-}
+
 
 void ASPPlayerController::ClientRPCSpawnUI_Implementation(const int32 Index)
 {

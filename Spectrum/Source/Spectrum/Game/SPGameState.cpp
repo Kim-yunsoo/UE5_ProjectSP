@@ -32,8 +32,7 @@ ASPGameState::ASPGameState()
 void ASPGameState::BeginPlay()
 {
 	Super::BeginPlay();
-		GetWorldTimerManager().SetTimer(GameTimerHandle, this, &ASPGameState::DefaultGameTimer,
-		                                GetWorldSettings()->GetEffectiveTimeDilation(), true);
+	
 }
 
 void ASPGameState::AddScore(const ColorType& MyColor)
@@ -107,18 +106,12 @@ void ASPGameState::Ready()
 		GetWorld()->ServerTravel(TEXT("/Game/Spectrum/Room/Map/Building?listen"));
 	}
 }
-void ASPGameState::MoveToInGame()
-{
-	GetWorld()->ServerTravel(TEXT("/Game/Spectrum/Room/Map/Building?listen"));
-}
+
 
 void ASPGameState::SpectrumPotionSpawn()
 {
-	UE_LOG(LogTemp,Log,TEXT("SpectrumPotionSpawn"));
-	//GetWorld()->SpawnActorDeferred<ASPPickup>()
 	TArray<FName> RowNames = PositionTable->GetRowNames();
 	int32 RandomIndex = FMath::RandRange(0,PositionTable->GetRowNames().Num()-1); // 인덱스를 뽑아야하니까 -1
-	
 
 	if(RandomIndex>=0)
 	{
@@ -131,16 +124,10 @@ void ASPGameState::SpectrumPotionSpawn()
 		SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
 		FTransform SpawnTransform(FRotator::ZeroRotator, RandomPosition->Position);
 		ASPPickup* MyActor =GetWorld()->SpawnActorDeferred<ASPPickup>(ASPPickup::StaticClass(),SpawnTransform);
-		//MyActor->SetOwner(Owner);
 		MyActor->bIsSpectrumPotion = true;
-		//SP_SUBLOG(LogSPNetwork,Log,TEXT("Owner"));
 		MyActor->FinishSpawning(SpawnTransform);
-		
 	}
-	//Getplayer
-	//
-	//SP_LOG(LogSPNetwork,Log,TEXT(" Owner Name ?? : %s"), *GetOwner()->GetName())
-	//GetWorld()->GetPlayerControllerIterator()
+
 	for(FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It;++It)
 	{
 		APlayerController* PlayerController = It->Get();
@@ -154,18 +141,11 @@ void ASPGameState::SpectrumPotionSpawn()
 	
 }
 
-void ASPGameState::MultiRPCSpawnUI_Implementation()
+void ASPGameState::StartTimer()
 {
-	
+	GetWorldTimerManager().SetTimer(GameTimerHandle, this, &ASPGameState::DefaultGameTimer,
+										GetWorldSettings()->GetEffectiveTimeDilation(), true);
 }
-
-void ASPGameState::ServerRPC_Implementation()
-{
-	//SP_LOG(LogSPNetwork,Log,TEXT("In Travel22!!"));
-	GetWorld()->ServerTravel(TEXT("/Game/Spectrum/Room/Map/Building?listen"));
-
-}
-
 
 void ASPGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {

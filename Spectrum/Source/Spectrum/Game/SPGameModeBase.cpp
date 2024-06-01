@@ -2,6 +2,8 @@
 
 
 #include "Game/SPGameModeBase.h"
+
+#include "SpectrumLog.h"
 #include "SPPlayerState.h"
 #include "Game/SPGameState.h"
 #include "UI/SPLobbyWidget.h"
@@ -18,11 +20,11 @@ extern std::array<Protocol::PlayerType, 3> school_type;
 
 ASPGameModeBase::ASPGameModeBase()
 {
-	bDelayedStart = true;
 
 	GameStateClass = ASPGameState::StaticClass();
 	PlayerStateClass = ASPPlayerState::StaticClass();
 	PlayerControllerClass= ASPPlayerController::StaticClass();
+	bDelayedStart = true;
 	bUseSeamlessTravel = true;
 	// 디폴트 폰 클래스 /Game/Spectrum/BluePrint/BP_SPCharacterMan2로 설정
 }
@@ -46,6 +48,32 @@ void ASPGameModeBase::Tick(float DeltaSeconds)
 	}
 }
 
+void ASPGameModeBase::OnMatchStateSet()
+{
+	Super::OnMatchStateSet();
+	
+	if(MatchState == MatchState::InProgress)
+	{
+
+		ASPGameState* SPGameState = Cast<ASPGameState>(GetWorld()->GetGameState());
+		if (SPGameState)
+		{
+			SPGameState->StartTimer(); //시간 제대로 작동 확인 
+		}
+	}
+	
+
+	// for(FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+	// {
+	// 	ASPPlayerController* SPPlayer = Cast<ASPPlayerController>(*It);
+	// 	if(SPPlayer)
+	// 	{
+	// 		SPPlayer->OnMathStateSet(MatchState); //서버에서 불려진다. 
+	// 	}
+	// }
+}
+
+
 // bool ASPGameModeBase::TryChangePawn(APlayerController* pCon, FVector location, TSubclassOf<APawn> PAWN_C)
 // {
 // 	if (alreadyChange.Contains(pCon)) return false;
@@ -58,7 +86,7 @@ void ASPGameModeBase::Tick(float DeltaSeconds)
 // 	pCon->Possess(newPawn);
 // 	return true;
 // }
-//
+
 // void ASPGameModeBase::TryDestroyOldpawn_Implementation(APawn* pawn)
 // {
 // 	if (pawn->IsValidLowLevel())
@@ -70,7 +98,7 @@ void ASPGameModeBase::Tick(float DeltaSeconds)
 void ASPGameModeBase::HandleSeamlessTravelPlayer(AController*& C)
 {
 	Super::HandleSeamlessTravelPlayer(C);
-	UE_LOG(LogTemp,Log,TEXT("HandleSeamlessTravelPlayer"));
+	//UE_LOG(LogTemp,Log,TEXT("HandleSeamlessTravelPlayer"));
 
 	if(!C)
 	{
@@ -142,14 +170,14 @@ void ASPGameModeBase::SpawnPlayerCharacter(APlayerController* MyController, cons
 void ASPGameModeBase::PostLogin(APlayerController* NewPlayer)
 {
 	Super::PostLogin(NewPlayer);
-	UE_LOG(LogTemp,Log,TEXT("PostLogin"));
-
+	//UE_LOG(LogTemp,Log,TEXT("PostLogin"));
 }
 
 void ASPGameModeBase::PostSeamlessTravel()
 {
 	Super::PostSeamlessTravel();
 }
+
 
 void ASPGameModeBase::SendMessagesToEveryOne(const FString& Sender, const FString& Message)
 {

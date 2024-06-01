@@ -35,7 +35,7 @@ void USPChatWidget::OnChatTextCommitted(const FText& Text, ETextCommit::Type Com
 			//ASPCharacterPlayer Player = Cast<>(GetO);
 			if (Player)
 			{
-				FString PlayerIdString = FString::FromInt(GetOwningPlayer()->PlayerState->GetPlayerId());
+				FString PlayerIdString = FString(GetOwningPlayer()->PlayerState->GetPlayerName());
 				Player->ServerRPCSendMessage(PlayerIdString, Text.ToString());
 				//보냈으니 비워주는 작업을 한다. 
 				MessageBox->SetText(FText::GetEmpty());
