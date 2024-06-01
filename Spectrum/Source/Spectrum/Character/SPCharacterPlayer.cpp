@@ -453,7 +453,7 @@ TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_Chat.
 	{
 		StopGrapSound = StopGrapSoundRef.Object;
 	}
-	bCanUseInput = false;
+	bCanUseInput = true;
 }
 
 void ASPCharacterPlayer::BeginPlay()

@@ -108,7 +108,7 @@ void ASPPlayerController::ClientRCPMathState_Implementation(FName State)
     
       if(SPHUDWidget)
       {
-          SPHUDWidget->HideLoadingWidget();
+         // SPHUDWidget->HideLoadingWidget();
       }
       
    }

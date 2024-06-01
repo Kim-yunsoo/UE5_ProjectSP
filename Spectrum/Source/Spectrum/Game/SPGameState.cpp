@@ -39,7 +39,8 @@ ASPGameState::ASPGameState()
 void ASPGameState::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	GetWorldTimerManager().SetTimer(GameTimerHandle, this, &ASPGameState::DefaultGameTimer,
+										GetWorldSettings()->GetEffectiveTimeDilation(), true);
 }
 
 void ASPGameState::AddScore(const ColorType& MyColor)
@@ -161,26 +162,26 @@ void ASPGameState::StartTimer()
 
 void ASPGameState::OnMathStateSet(FName State) //서버
 {
-	if(State ==  MatchState::InProgress)
-	{
-		StartTimer();
-		bIsInGame=true;
-		OnInGamePlaySound();
-		for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
-		{
-			APlayerController* PlayerController = Iterator->Get();
-			if (PlayerController)
-			{
-				ASPCharacterPlayer* MyCharacter = Cast<ASPCharacterPlayer>(PlayerController->GetCharacter());
-				if (MyCharacter)
-				{
-					MyCharacter->bCanUseInput=true;
-				}
-			}
-		}
-		//for(GetWorld()->GetPlayerControllerIterator())
-		
-	}
+	// if(State ==  MatchState::InProgress)
+	// {
+	// 	StartTimer();
+	// 	bIsInGame=true;
+	// 	OnInGamePlaySound();
+	// 	for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
+	// 	{
+	// 		APlayerController* PlayerController = Iterator->Get();
+	// 		if (PlayerController)
+	// 		{
+	// 			ASPCharacterPlayer* MyCharacter = Cast<ASPCharacterPlayer>(PlayerController->GetCharacter());
+	// 			if (MyCharacter)
+	// 			{
+	// 				MyCharacter->bCanUseInput=true;
+	// 			}
+	// 		}
+	// 	}
+	// 	//for(GetWorld()->GetPlayerControllerIterator())
+	// 	
+	// }
 }
 
 void ASPGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
