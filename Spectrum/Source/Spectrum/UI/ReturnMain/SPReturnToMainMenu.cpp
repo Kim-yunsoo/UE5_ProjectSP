@@ -33,7 +33,7 @@ void USPReturnToMainMenu::MenuSetup()
 		}
 	}
 
-	if(ReturnButton)
+	if(ReturnButton && !ReturnButton->OnClicked.IsBound())
 	{
 		ReturnButton->OnClicked.AddDynamic(this,&USPReturnToMainMenu::ReturnButtonClicked);
 	}
@@ -64,7 +64,14 @@ void USPReturnToMainMenu::MenuTearDown()
 			PlayerController->SetShowMouseCursor(false);
 		}
 	}
-
+	if(ReturnButton && ReturnButton->OnClicked.IsBound()) //위에서 바인드한 것을 또 바인드하는 중복오류를 피하기 위해서 지운다.
+	{
+		ReturnButton->OnClicked.RemoveDynamic(this,&USPReturnToMainMenu::ReturnButtonClicked);
+	}
+	if(MultiplayerSessionsSubsystem && MultiplayerSessionsSubsystem->MultiplayerOnDestroySessionComplete.IsBound())
+	{
+		MultiplayerSessionsSubsystem->MultiplayerOnDestroySessionComplete.RemoveDynamic(this,&USPReturnToMainMenu::OnDestorySession);
+	}
 }
 
 void USPReturnToMainMenu::ReturnButtonClicked() //세션을 종료하는 버튼을 만들어야한다. 

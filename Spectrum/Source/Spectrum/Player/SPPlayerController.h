@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "SPPlayerController.generated.h"
 
+class USPReturnToMainMenu;
 /**
  *
  */
@@ -29,11 +30,20 @@ protected:
 
 	//HUD Section
 protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> Quit;
+	
+	virtual void SetupInputComponent() override;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HUD)
 	TSubclassOf<class USPHUDWidget> SPHUDWidgetClass;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = HUD)
 	TObjectPtr<class USPHUDWidget> SPHUDWidget;
+
+	void ShowReturnToMainMenu();
+
+
 
 
 
@@ -51,5 +61,14 @@ public:
 
 	UPROPERTY()
 	FName MatchState;
-	
+
+private:
+
+	UPROPERTY()
+	TSubclassOf<class UUserWidget> ReturnToMainMenuWidget;
+
+	UPROPERTY()
+	TObjectPtr<USPReturnToMainMenu> ReturnToMainMenu;
+
+	uint8 bReturnToMainMenuOpen :1;
 };
