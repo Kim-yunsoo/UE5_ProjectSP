@@ -14,15 +14,32 @@ class SPECTRUM_API ASPCharacterNonPlayer : public ACharacter
 public:
 	// Sets default values for this character's properties
 	ASPCharacterNonPlayer();
+protected:
+	virtual void BeginPlay() override;
 
 protected:
 	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stat, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UAnimMontage> DeadMontage;
+	
+
 	 void AttackHitCheck() ;
 	void SetDead();
 	void PlayDeadAnimation();
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 
 	float DeadEventDelayTime = 5.0f;
+
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Stat, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class USPNonCharacterStatComponent> Stat;
+
+	//UI Widget Section
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UWidgetComponent> HpBar; 
+
+	
+	
 
 };

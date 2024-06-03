@@ -2,8 +2,9 @@
 
 
 #include "Character/SPCharacterNonPlayer.h"
-
+#include "Component/SPNonCharacterStatComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
@@ -27,6 +28,24 @@ ASPCharacterNonPlayer::ASPCharacterNonPlayer()
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -100.0f), FRotator(0.0f, -90.0f, 0.0f));
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 	GetMesh()->SetCollisionProfileName(TEXT("NoCollision"));
+
+	// Stat Component 
+	Stat = CreateDefaultSubobject<USPNonCharacterStatComponent>(TEXT("Stat"));
+	// Widget Component 
+	HpBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("Widget"));
+	HpBar->SetupAttachment(GetMesh());
+	HpBar->SetRelativeLocation(FVector(0.0f, 0.0f, 180.0f)); //조절 필요
+	static ConstructorHelpers::FClassFinder<UUserWidget> HpBarWidgetRef(TEXT("/Game/Spectrum/UMG/WBP_HpBar.WBP_HpBar_C"));
+	if(HpBarWidgetRef.Class)
+	{
+		HpBar->SetWidgetClass(HpBarWidgetRef.Class);
+		HpBar->SetWidgetSpace(EWidgetSpace::Screen);
+		HpBar->SetDrawSize(FVector2D(150.0f, 15.0f));
+		HpBar->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+	
+	///Script/UMGEditor.WidgetBlueprint'/Game/Spectrum/UMG/WBP_HpBar.WBP_HpBar'
+	
 }
 
 // Called when the game starts or when spawned

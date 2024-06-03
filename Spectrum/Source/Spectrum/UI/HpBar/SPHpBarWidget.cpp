@@ -13,6 +13,15 @@ USPHpBarWidget::USPHpBarWidget(const FObjectInitializer& ObjectInitializer) :Sup
 void USPHpBarWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
+
+	HpProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("PbHpBar")));
+	ensure(HpProgressBar);
+
+	// IABCharacterWidgetInterface* CharacterWidget = Cast<IABCharacterWidgetInterface>(OwningActor);
+	// if (CharacterWidget)
+	// {
+	// 	CharacterWidget->SetupCharacterWidget(this);
+	// }
 	
 }
 
