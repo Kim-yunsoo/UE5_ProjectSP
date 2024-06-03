@@ -39,8 +39,8 @@ ASPGameState::ASPGameState()
 void ASPGameState::BeginPlay()
 {
 	Super::BeginPlay();
-	GetWorldTimerManager().SetTimer(GameTimerHandle, this, &ASPGameState::DefaultGameTimer,
-										GetWorldSettings()->GetEffectiveTimeDilation(), true);
+	//GetWorldTimerManager().SetTimer(GameTimerHandle, this, &ASPGameState::DefaultGameTimer,
+										//GetWorldSettings()->GetEffectiveTimeDilation(), true);
 }
 
 void ASPGameState::AddScore(const ColorType& MyColor)
@@ -140,7 +140,7 @@ void ASPGameState::SpectrumPotionSpawn()
 		MyActor->bIsSpectrumPotion = true;
 		MyActor->FinishSpawning(SpawnTransform);
 	}
-
+	
 	for(FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It;++It)
 	{
 		APlayerController* PlayerController = It->Get();
@@ -162,30 +162,29 @@ void ASPGameState::StartTimer()
 
 void ASPGameState::OnMathStateSet(FName State) //서버
 {
-	// if(State ==  MatchState::InProgress)
-	// {
-	// 	StartTimer();
-	// 	bIsInGame=true;
-	// 	OnInGamePlaySound();
-	// 	for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
-	// 	{
-	// 		APlayerController* PlayerController = Iterator->Get();
-	// 		if (PlayerController)
-	// 		{
-	// 			ASPCharacterPlayer* MyCharacter = Cast<ASPCharacterPlayer>(PlayerController->GetCharacter());
-	// 			if (MyCharacter)
-	// 			{
-	// 				MyCharacter->bCanUseInput=true;
-	// 			}
-	// 		}
-	// 	}
-	// 	//for(GetWorld()->GetPlayerControllerIterator())
-	// 	
-	// }
+	if(State ==  MatchState::InProgress)
+	{
+		StartTimer();
+		bIsInGame=true;
+		OnInGamePlaySound();
+		for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
+		{
+			APlayerController* PlayerController = Iterator->Get();
+			if (PlayerController)
+			{
+				ASPCharacterPlayer* MyCharacter = Cast<ASPCharacterPlayer>(PlayerController->GetCharacter());
+				if (MyCharacter)
+				{
+					MyCharacter->bCanUseInput=true;
+				}
+			}
+		}
+	}
 }
 
 void ASPGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
+	
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(ASPGameState, GreenScore);
@@ -194,6 +193,7 @@ void ASPGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 	DOREPLIFETIME(ASPGameState, RemainingTime);
 	DOREPLIFETIME(ASPGameState, ReadyCount);
 	DOREPLIFETIME(ASPGameState, bIsInGame);
+	
 }
 
 

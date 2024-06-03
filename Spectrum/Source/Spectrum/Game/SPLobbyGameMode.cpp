@@ -22,15 +22,12 @@ ASPLobbyGameMode::ASPLobbyGameMode()
 void ASPLobbyGameMode::PostLogin(APlayerController* NewPlayer)
 {
 	Super::PostLogin(NewPlayer);
-
-	
 }
 
 void ASPLobbyGameMode::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(ASPLobbyGameMode, ReadyCount);
-
 }
 
 void ASPLobbyGameMode::Ready()
@@ -39,7 +36,7 @@ void ASPLobbyGameMode::Ready()
 	
 	++ReadyCount;
 	SP_LOG(LogSPNetwork,Log,TEXT("ReadCount! %d"), ReadyCount);
-	if(ReadyCount==2)
+	if(ReadyCount==1)
 	{
 		GetWorld()->ServerTravel(TEXT("/Game/Spectrum/Room/Map/Building?listen"));
 		///Script/Engine.World'/Game/Spectrum/Room/Map/Building.Building'
@@ -52,7 +49,6 @@ void ASPLobbyGameMode::Ready()
 		//GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ASPGameState::MoveToInGame, 5.0f, false);
 	}
 }
-
 void ASPLobbyGameMode::MoveToInGame()
 {
 }

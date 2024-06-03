@@ -39,7 +39,7 @@ void USPHUDWidget::NativeConstruct()
 	GameTimeWidget = Cast<USPGameTimeWidget>(GetWidgetFromName(TEXT("WB_GameTimeWidget")));
 	ChatWidget = Cast<USPChatWidget>(GetWidgetFromName(TEXT("WBP_Chat")));
 	
-	//LoadingWidget = Cast<USPLoadingWidget>(GetWidgetFromName(TEXT("WBP_LoadingUI")));
+	LoadingWidget = Cast<USPLoadingWidget>(GetWidgetFromName(TEXT("WBP_LoadingUI")));
 
 	if (ChatWidget)
 	{
@@ -239,10 +239,10 @@ void USPHUDWidget::UpdateShowUIText()
 	}), 10.0f, false);
 }
 
-// void USPHUDWidget::HideLoadingWidget()
-// {
-// 	if (LoadingWidget)
-// 	{
-// 		LoadingWidget->SetVisibility(ESlateVisibility::Collapsed);
-// 	}
-// }
+void USPHUDWidget::HideLoadingWidget()
+{
+	if (LoadingWidget)
+	{
+		LoadingWidget->SetVisibility(ESlateVisibility::Collapsed);
+	}
+}

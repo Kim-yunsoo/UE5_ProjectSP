@@ -43,7 +43,5 @@ public:
 
 protected:
 	virtual void OnMatchStateSet() override;
-
 	float CountdownTime = 0.f;
-
 };

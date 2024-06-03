@@ -18,13 +18,11 @@ extern std::array<Protocol::PlayerType, 3> school_type;
 
 ASPGameModeBase::ASPGameModeBase()
 {
-	//bDelayedStart = true;
+	bDelayedStart = true;
 	bUseSeamlessTravel = true;
-
 	GameStateClass = ASPGameState::StaticClass();
 	PlayerStateClass = ASPPlayerState::StaticClass();
 	PlayerControllerClass= ASPPlayerController::StaticClass();
-	// 디폴트 폰 클래스 /Game/Spectrum/BluePrint/BP_SPCharacterMan2로 설정
 }
 void ASPGameModeBase::BeginPlay()
 {
@@ -35,35 +33,34 @@ void ASPGameModeBase::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	// if(MatchState == MatchState::WaitingToStart)
-	// {
-	// 	CountdownTime=WarmupTime-GetWorld()->GetTimeSeconds()+LevelStartingTime; //10초 로딩 시간
-	//
-	// 	if(CountdownTime<=0.f)
-	// 	{
-	// 		StartMatch(); //진행 모드로 변환
-	// 	}
-	// }
-	//if()
+	if(MatchState == MatchState::WaitingToStart)
+	{
+		CountdownTime=WarmupTime-GetWorld()->GetTimeSeconds()+LevelStartingTime; //10초 로딩 시간
+	
+		if(CountdownTime<=0.f)
+		{
+			StartMatch(); //진행 모드로 변환
+		}
+	}
 }
 
 void ASPGameModeBase::OnMatchStateSet()
 {
 	Super::OnMatchStateSet();
 
-	// for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
-	// {
-	// 	ASPPlayerController* MyPlayer = Cast<ASPPlayerController>(It->Get());
-	// 	if(MyPlayer)
-	// 	{
-	// 		MyPlayer->ClientRCPMathState(MatchState);
-	// 	}
-	// }
-	// ASPGameState* SPGameState = Cast<ASPGameState>(GetWorld()->GetGameState());
-	// if (SPGameState)
-	// {
-	// 	SPGameState->OnMathStateSet(MatchState); //시간 제대로 작동 확인 
-	// }
+	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+	{
+		ASPPlayerController* MyPlayer = Cast<ASPPlayerController>(It->Get());
+		if(MyPlayer)
+		{
+			MyPlayer->ClientRCPMathState(MatchState);
+		}
+	}
+	ASPGameState* SPGameState = Cast<ASPGameState>(GetWorld()->GetGameState());
+	if (SPGameState)
+	{
+		SPGameState->OnMathStateSet(MatchState); //시간 제대로 작동 확인 
+	}
 }
 
 

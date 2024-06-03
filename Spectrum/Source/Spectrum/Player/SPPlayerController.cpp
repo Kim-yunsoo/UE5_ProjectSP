@@ -2,8 +2,6 @@
 
 
 #include "Player/SPPlayerController.h"
-
-#include "EnhancedInputComponent.h"
 #include "UI/SPHUDWidget.h"
 #include "SPGameModeBase.h"
 #include "UI/ReturnMain/SPReturnToMainMenu.h"
@@ -16,12 +14,12 @@ ASPPlayerController::ASPPlayerController()
       SPHUDWidgetClass = SPHUDWidgetRef.Class;
    }
 
-   static ConstructorHelpers::FObjectFinder<UInputAction> InputActionJumpRef(
-      TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_Quit.IA_SP_Quit'"));
-   if (nullptr != InputActionJumpRef.Object)
-   {
-      Quit = InputActionJumpRef.Object;
-   }
+   // static ConstructorHelpers::FObjectFinder<UInputAction> InputActionJumpRef(
+   //    TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_Quit.IA_SP_Quit'"));
+   // if (nullptr != InputActionJumpRef.Object)
+   // {
+   //    Quit = InputActionJumpRef.Object;
+   // }
    bReturnToMainMenuOpen=false;
 }
 
@@ -29,13 +27,13 @@ void ASPPlayerController::SetupInputComponent()
 {
    Super::SetupInputComponent();
 
-   if(InputComponent ==nullptr) return;
+   // if(InputComponent ==nullptr) return;
 
    //InputComponent->BindAction(FName("Quit"), ETriggerEvent::Triggered, this, &ASPPlayerController::ShowReturnToMainMenu);
-   if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent))
-   {
-      EnhancedInputComponent->BindAction(Quit, ETriggerEvent::Triggered, this, &ASPPlayerController::ShowReturnToMainMenu);
-   }
+   // if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent))
+   // {
+   //    EnhancedInputComponent->BindAction(Quit, ETriggerEvent::Triggered, this, &ASPPlayerController::ShowReturnToMainMenu);
+   // }
    
 }
 
@@ -62,8 +60,6 @@ void ASPPlayerController::BeginPlay()
 
       }
    }
-
-
 }
 
 void ASPPlayerController::ShowReturnToMainMenu()
@@ -105,12 +101,10 @@ void ASPPlayerController::ClientRCPMathState_Implementation(FName State)
 {
    if(State == MatchState::InProgress)
    {
-    
       if(SPHUDWidget)
       {
-         // SPHUDWidget->HideLoadingWidget();
+          SPHUDWidget->HideLoadingWidget();
       }
-      
    }
 }
 
