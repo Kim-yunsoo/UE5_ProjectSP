@@ -387,8 +387,8 @@ protected:
 
 	//UI Widget Section
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget)
-	TObjectPtr<class USPWidgetComponent> Target;
+	// UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget)
+	// TObjectPtr<class USPWidgetComponent> Target;
 
 	virtual void SetupHUDWidget(USPHUDWidget* InUserWidget) override;
 public:
