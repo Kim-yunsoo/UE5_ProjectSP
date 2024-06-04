@@ -17,9 +17,6 @@ class SPECTRUM_API ASPPlayerController : public APlayerController
 
 public:
 	ASPPlayerController();
-
-	virtual void OnPossess(APawn* aPawn) override;
-
 	// UFUNCTION(BlueprintCallable)
 	// void ChangePawnName(FString path);
 	// UFUNCTION(Server, Reliable)

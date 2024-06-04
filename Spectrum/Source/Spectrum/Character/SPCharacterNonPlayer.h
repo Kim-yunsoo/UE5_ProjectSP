@@ -4,11 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Interface/SPCharacterAIInterface.h"
 #include "Interface/SPNonCharacterWidgetInterface.h"
 #include "SPCharacterNonPlayer.generated.h"
 
 UCLASS()
-class SPECTRUM_API ASPCharacterNonPlayer : public ACharacter ,public ISPNonCharacterWidgetInterface
+class SPECTRUM_API ASPCharacterNonPlayer : public ACharacter ,public ISPNonCharacterWidgetInterface, public ISPCharacterAIInterface
 {
 	GENERATED_BODY()
 
@@ -45,5 +46,10 @@ protected:
 
 	virtual void SetupCharacterWidget(class USPUserWidget* InUserWidget) override;
 
-
+	//AI Section
+protected:
+	virtual float GetAIPatrolRadius() override;
+	virtual float GetAIDetectRange() override;
+	virtual float GetAIAttackRange() override;
+	virtual float GetAITurnSpeed() override;
 };

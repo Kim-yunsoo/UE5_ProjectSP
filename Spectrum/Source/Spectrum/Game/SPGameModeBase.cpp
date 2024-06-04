@@ -19,7 +19,7 @@ extern std::array<Protocol::PlayerType, 3> school_type;
 ASPGameModeBase::ASPGameModeBase()
 {
 	//bDelayedStart = true;
-	bUseSeamlessTravel = true;
+	//bUseSeamlessTravel = true;
 	GameStateClass = ASPGameState::StaticClass();
 	PlayerStateClass = ASPPlayerState::StaticClass();
 	PlayerControllerClass= ASPPlayerController::StaticClass();
@@ -82,13 +82,18 @@ void ASPGameModeBase::HandleSeamlessTravelPlayer(AController*& C)
 			{
 				SpawnPlayerCharacter(MyController, PlayerState->Color,PlayerState->Gender);
 			}
+			
 		}
 	}
 }
 
-void ASPGameModeBase::SpawnPlayerCharacter(APlayerController* MyController, const ColorType& MyColor,
-	const GenderType& MyGender)
+void ASPGameModeBase::SpawnPlayerCharacter(APlayerController* MyController,  ColorType& MyColor,
+	 GenderType& MyGender)
 {
+	//임시지정
+	// MyColor=ColorType::Green;
+	// MyGender=GenderType::Man;
+	//
 	FString SpawnPath;
 	if(MyColor ==ColorType::Green && MyGender == GenderType::Man)
 	{

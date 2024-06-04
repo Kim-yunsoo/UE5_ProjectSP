@@ -12,7 +12,7 @@ public class Spectrum : ModuleRules
 
         PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "SlateCore", "Slate", "Sockets", "Networking",
 	        "EnhancedInput", "UMG", "GeometryCollectionEngine","GeometryFramework", "AIModule",
-	        "MultiplayerSessions","OnlineSubsystem","OnlineSubsystemSteam"
+	        "MultiplayerSessions","OnlineSubsystem","OnlineSubsystemSteam", "NavigationSystem","GameplayTasks"
         });
          
 		PrivateDependencyModuleNames.AddRange(new string[] { "ProtobufCore" });

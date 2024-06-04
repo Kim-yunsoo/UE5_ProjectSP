@@ -113,4 +113,21 @@ void ASPCharacterNonPlayer::SetupCharacterWidget(USPUserWidget* InUserWidget)
 	}
 }
 
+float ASPCharacterNonPlayer::GetAIPatrolRadius()
+{
+	return 500.0f;
+}
+
+float ASPCharacterNonPlayer::GetAIDetectRange()
+{
+}
+
+float ASPCharacterNonPlayer::GetAIAttackRange()
+{
+}
+
+float ASPCharacterNonPlayer::GetAITurnSpeed()
+{
+}
+
 

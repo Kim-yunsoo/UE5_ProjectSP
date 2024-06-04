@@ -37,13 +37,6 @@ void ASPPlayerController::SetupInputComponent()
    
 }
 
-void ASPPlayerController::OnPossess(APawn* aPawn)
-{
-   Super::OnPossess(aPawn);
-}
-
-
-
 void ASPPlayerController::BeginPlay()
 {
    Super::BeginPlay();
@@ -57,14 +50,13 @@ void ASPPlayerController::BeginPlay()
       {
          SPHUDWidget->AddToViewport();
          SPHUDWidget->SetVisibility(ESlateVisibility::Visible);
-
       }
    }
 }
 
 void ASPPlayerController::ShowReturnToMainMenu()
 {
-   UE_LOG(LogTemp,Log,TEXT("ShowReturnToMainMenu"));
+   //UE_LOG(LogTemp,Log,TEXT("ShowReturnToMainMenu"));
    if(ReturnToMainMenuWidget ==nullptr) return;
    if(ReturnToMainMenu ==nullptr)
    {
