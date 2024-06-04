@@ -4,6 +4,7 @@
 #include "UI/HpBar/SPHpBarWidget.h"
 
 #include "Components/ProgressBar.h"
+#include "Interface/SPNonCharacterWidgetInterface.h"
 
 USPHpBarWidget::USPHpBarWidget(const FObjectInitializer& ObjectInitializer) :Super(ObjectInitializer)
 {
@@ -17,11 +18,11 @@ void USPHpBarWidget::NativeConstruct()
 	HpProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("PbHpBar")));
 	ensure(HpProgressBar);
 
-	// IABCharacterWidgetInterface* CharacterWidget = Cast<IABCharacterWidgetInterface>(OwningActor);
-	// if (CharacterWidget)
-	// {
-	// 	CharacterWidget->SetupCharacterWidget(this);
-	// }
+	ISPNonCharacterWidgetInterface* CharacterWidget = Cast<ISPNonCharacterWidgetInterface>(OwningActor);
+	if (CharacterWidget)
+	{
+		CharacterWidget->SetupCharacterWidget(this);
+	}
 	
 }
 

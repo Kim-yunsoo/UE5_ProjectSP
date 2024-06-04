@@ -3,7 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UI/SPUserWidget.h"
+#include "Blueprint/UserWidget.h"
+//#include "UI/HpBar/SPUserWidget.h"
 #include "SPDrageItemVisual.generated.h"
 
 class UTextBlock;
@@ -13,7 +14,7 @@ class UBorder;
  * 
  */
 UCLASS()
-class SPECTRUM_API USPDrageItemVisual : public USPUserWidget
+class SPECTRUM_API USPDrageItemVisual : public UUserWidget
 {
 	GENERATED_BODY()
 

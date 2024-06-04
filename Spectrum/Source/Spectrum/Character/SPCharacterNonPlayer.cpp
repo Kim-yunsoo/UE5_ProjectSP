@@ -2,10 +2,13 @@
 
 
 #include "Character/SPCharacterNonPlayer.h"
+
+#include "AI/SPAIController.h"
 #include "Component/SPNonCharacterStatComponent.h"
 #include "Components/CapsuleComponent.h"
-#include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "UI/HpBar/SPHpBarWidget.h"
+#include "UI/HpBar/SPWidgetComponent.h"
 
 // Sets default values
 ASPCharacterNonPlayer::ASPCharacterNonPlayer()
@@ -32,7 +35,7 @@ ASPCharacterNonPlayer::ASPCharacterNonPlayer()
 	// Stat Component 
 	Stat = CreateDefaultSubobject<USPNonCharacterStatComponent>(TEXT("Stat"));
 	// Widget Component 
-	HpBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("Widget"));
+	HpBar = CreateDefaultSubobject<USPWidgetComponent>(TEXT("Widget"));
 	HpBar->SetupAttachment(GetMesh());
 	HpBar->SetRelativeLocation(FVector(0.0f, 0.0f, 180.0f)); //조절 필요
 	static ConstructorHelpers::FClassFinder<UUserWidget> HpBarWidgetRef(TEXT("/Game/Spectrum/UMG/WBP_HpBar.WBP_HpBar_C"));
@@ -44,8 +47,15 @@ ASPCharacterNonPlayer::ASPCharacterNonPlayer()
 		HpBar->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 	
-	///Script/UMGEditor.WidgetBlueprint'/Game/Spectrum/UMG/WBP_HpBar.WBP_HpBar'
-	
+	AIControllerClass = ASPAIController::StaticClass();
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+}
+
+void ASPCharacterNonPlayer::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	Stat->OnHpZero.AddUObject(this, &ASPCharacterNonPlayer::SetDead);
 }
 
 // Called when the game starts or when spawned
@@ -63,6 +73,8 @@ void ASPCharacterNonPlayer::SetDead()
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 	PlayDeadAnimation();
 	SetActorEnableCollision(false);
+
+	HpBar->SetHiddenInGame(true);
 
 	FTimerHandle DeadTimerHandle;
 	GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda(
@@ -85,9 +97,20 @@ float ASPCharacterNonPlayer::TakeDamage(float DamageAmount, FDamageEvent const& 
 {
 	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
-	SetDead();
+	Stat->ApplyDamage(DamageAmount);
 	
 	return DamageAmount;
+}
+
+void ASPCharacterNonPlayer::SetupCharacterWidget(USPUserWidget* InUserWidget)
+{
+	USPHpBarWidget* HpBarWidget = Cast<USPHpBarWidget>(InUserWidget);
+	if (HpBarWidget)
+	{
+		HpBarWidget->SetMaxHp(Stat->GetMaxHp());
+		HpBarWidget->UpdateHpBar(Stat->GetCurrentHp());
+		Stat->OnHpChanged.AddUObject(HpBarWidget, &USPHpBarWidget::UpdateHpBar);
+	}
 }
 
 

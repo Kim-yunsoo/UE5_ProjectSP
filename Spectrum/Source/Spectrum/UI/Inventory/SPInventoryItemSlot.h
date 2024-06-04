@@ -2,8 +2,9 @@
 
 #pragma once
 #include "CoreMinimal.h"
+#include "Blueprint/UserWidget.h"
 #include "Interface/SPWidgetInterface.h"
-#include "UI/SPUserWidget.h"
+//#include "UI/SPUserWidget.h"
 #include "SPInventoryItemSlot.generated.h"
 
 class UTextBlock;
@@ -15,7 +16,7 @@ class USPItemBase;
  * 
  */
 UCLASS()
-class SPECTRUM_API USPInventoryItemSlot : public USPUserWidget
+class SPECTRUM_API USPInventoryItemSlot : public UUserWidget
 {
 	GENERATED_BODY()
 

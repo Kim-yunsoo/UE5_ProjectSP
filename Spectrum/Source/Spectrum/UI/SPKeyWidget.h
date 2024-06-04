@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UI/SPUserWidget.h"
+#include "UI/HpBar/SPUserWidget.h"
 #include "SPKeyWidget.generated.h"
 
 /**

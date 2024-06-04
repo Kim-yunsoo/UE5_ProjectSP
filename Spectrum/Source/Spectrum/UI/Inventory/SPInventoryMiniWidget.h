@@ -3,7 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UI/SPUserWidget.h"
+#include "Blueprint/UserWidget.h"
+//#include "UI/SPUserWidget.h"
 #include "SPInventoryMiniWidget.generated.h"
 
 class USPItemBase;
@@ -15,7 +16,7 @@ class UWrapBox;
  * 
  */
 UCLASS()
-class SPECTRUM_API USPInventoryMiniWidget : public USPUserWidget
+class SPECTRUM_API USPInventoryMiniWidget : public UUserWidget
 {
 	GENERATED_BODY()
 public:

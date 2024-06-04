@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "SPUserWidget.h"
 #include "Blueprint/UserWidget.h"
 #include "SPHpBarWidget.generated.h"
 
@@ -10,7 +11,7 @@
  * 
  */
 UCLASS()
-class SPECTRUM_API USPHpBarWidget : public UUserWidget
+class SPECTRUM_API USPHpBarWidget : public USPUserWidget
 {
 	GENERATED_BODY()
 

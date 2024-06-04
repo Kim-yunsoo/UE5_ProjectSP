@@ -62,6 +62,10 @@ void USPHUDWidget::NativeConstruct()
 	{
 		SpectrumText->SetVisibility(ESlateVisibility::Collapsed);
 	}
+	if(LoadingWidget)
+	{
+		LoadingWidget->SetVisibility(ESlateVisibility::Collapsed);
+	}
 }
 
 

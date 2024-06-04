@@ -3,7 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UI/SPUserWidget.h"
+#include "Blueprint/UserWidget.h"
+//
+//#include "UI/SPUserWidget.h"
 #include "SPInteractionWidget.generated.h"
 
 class UProgressBar;
@@ -14,7 +16,7 @@ class ASPCharacterPlayer;
  * 
  */
 UCLASS()
-class SPECTRUM_API USPInteractionWidget : public USPUserWidget
+class SPECTRUM_API USPInteractionWidget : public UUserWidget
 {
 	GENERATED_BODY()
 

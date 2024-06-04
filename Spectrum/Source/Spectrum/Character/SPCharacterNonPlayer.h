@@ -4,16 +4,20 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Interface/SPNonCharacterWidgetInterface.h"
 #include "SPCharacterNonPlayer.generated.h"
 
 UCLASS()
-class SPECTRUM_API ASPCharacterNonPlayer : public ACharacter
+class SPECTRUM_API ASPCharacterNonPlayer : public ACharacter ,public ISPNonCharacterWidgetInterface
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this character's properties
 	ASPCharacterNonPlayer();
+
+	virtual void PostInitializeComponents() override;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -37,9 +41,9 @@ protected:
 	//UI Widget Section
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UWidgetComponent> HpBar; 
+	TObjectPtr<class USPWidgetComponent> HpBar;
 
-	
-	
+	virtual void SetupCharacterWidget(class USPUserWidget* InUserWidget) override;
+
 
 };
