@@ -59,7 +59,7 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 
 	//Capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
-	GetCapsuleComponent()->SetCollisionProfileName(CPROFILE_SPCAPSULE);
+	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Pawn"));
 
 	//Movement
 	GetCharacterMovement()->bOrientRotationToMovement = true;
@@ -2344,6 +2344,30 @@ void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 					}
 				
 			}
+
+			// const FColor LineColor = HitSuccess ? FColor::Green : FColor::Red;
+			//
+			// DrawDebugLine(
+			// 	GetWorld(),
+			// 	SphereLocationStart,
+			// 	SphereLocationEnd,
+			// 	LineColor,
+			// 	false,
+			// 	5.0f,
+			// 	0,
+			// 	1.0f
+			// );
+			// if (HitSuccess)
+			// {
+			// 	DrawDebugPoint(
+			// 		GetWorld(),
+			// 		outHitResult.ImpactPoint,
+			// 		10.0f,
+			// 		FColor::Blue,
+			// 		false,
+			// 		5.0f
+			// 	);
+			// }
 		}
 	}
 	else
