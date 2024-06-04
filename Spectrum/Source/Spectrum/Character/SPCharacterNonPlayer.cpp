@@ -115,19 +115,41 @@ void ASPCharacterNonPlayer::SetupCharacterWidget(USPUserWidget* InUserWidget)
 
 float ASPCharacterNonPlayer::GetAIPatrolRadius()
 {
-	return 500.0f;
+	return 800.0f;
 }
 
 float ASPCharacterNonPlayer::GetAIDetectRange()
 {
+	return 400.0f;
 }
 
 float ASPCharacterNonPlayer::GetAIAttackRange()
 {
+	return  Stat->GetAttackRadius() * 2;
 }
 
 float ASPCharacterNonPlayer::GetAITurnSpeed()
 {
+	return 2.0f;
+
+}
+
+void ASPCharacterNonPlayer::SetAIAttackDelegate(const FAICharacterAttackFinished& InOnAttackFinished)
+{
+	OnAttackFinished = InOnAttackFinished;
+}
+
+void ASPCharacterNonPlayer::AttackByAI()
+{
+	//공격 명령 내리는 곳 애니메이션 몽타주 플레이  ProcessComboCommand
+	//몽타주가 끝나는 부분에서 NotifyComboActionEnd 호출
+	NotifyComboActionEnd();
+}
+
+void ASPCharacterNonPlayer::NotifyComboActionEnd()
+{
+	//Super::NotifyComboActionEnd();
+	OnAttackFinished.ExecuteIfBound(); //델리게이트에 묶인 함수를 호출한다. 
 }
 
 

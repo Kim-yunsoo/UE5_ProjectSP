@@ -8,6 +8,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 //#include "Physics/SPCollision.h"
 #include "DrawDebugHelpers.h"
+#include "Physics/SPCollision.h"
 
 USPBTService_Detect::USPBTService_Detect()
 {
@@ -15,7 +16,7 @@ USPBTService_Detect::USPBTService_Detect()
 	Interval = 1.0f;
 }
 
-void USPBTService_Detect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
+void USPBTService_Detect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) //Detect 사용시 틱 이벤트 발동
 {
 	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
 
@@ -46,19 +47,19 @@ void USPBTService_Detect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 		OverlapResults,
 		Center,
 		FQuat::Identity,
-		CCHANNEL_ABACTION,
+		CCHANNEL_SPACTION,
 		FCollisionShape::MakeSphere(DetectRadius),
 		CollisionQueryParam
 	);
-
+	
 	if (bResult)
 	{
 		for (auto const& OverlapResult : OverlapResults)
 		{
 			APawn* Pawn = Cast<APawn>(OverlapResult.GetActor());
-			if (Pawn && Pawn->GetController()->IsPlayerController())
+			if (Pawn && Pawn->GetController()->IsPlayerController()) //플레이어 캐릭터인 경우만 감지했다고 한다. 
 			{
-				OwnerComp.GetBlackboardComponent()->SetValueAsObject(BBKEY_TARGET, Pawn);
+				OwnerComp.GetBlackboardComponent()->SetValueAsObject(BBKEY_TARGET, Pawn); //타겟값 저장 
 				DrawDebugSphere(World, Center, DetectRadius, 16, FColor::Green, false, 0.2f);
 	
 				DrawDebugPoint(World, Pawn->GetActorLocation(), 10.0f, FColor::Green, false, 0.2f);
@@ -68,6 +69,6 @@ void USPBTService_Detect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 		}
 	}
 
-	OwnerComp.GetBlackboardComponent()->SetValueAsObject(BBKEY_TARGET, nullptr);
-	DrawDebugSphere(World, Center, DetectRadius, 16, FColor::Red, false, 0.2f);
+	OwnerComp.GetBlackboardComponent()->SetValueAsObject(BBKEY_TARGET, nullptr); //플레이어를 찾지 못한 경우 
+	DrawDebugSphere(World, Center, DetectRadius, 16, FColor::Red, false, 0.2f); //붉은 색
 }

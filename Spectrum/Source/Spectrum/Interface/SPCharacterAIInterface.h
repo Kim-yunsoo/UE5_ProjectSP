@@ -16,6 +16,9 @@ class USPCharacterAIInterface : public UInterface
 /**
  * 
  */
+DECLARE_DELEGATE(FAICharacterAttackFinished);
+
+
 class SPECTRUM_API ISPCharacterAIInterface
 {
 	GENERATED_BODY()
@@ -24,6 +27,7 @@ public:
 	virtual float GetAIDetectRange() = 0;
 	virtual float GetAIAttackRange() = 0;
 	virtual float GetAITurnSpeed() = 0;
-	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
-public:
+	
+	virtual void SetAIAttackDelegate(const FAICharacterAttackFinished& InOnAttackFinished) = 0;
+	virtual void AttackByAI() = 0;
 };

@@ -20,6 +20,8 @@ public:
 
 	FORCEINLINE float GetMaxHp() { return MaxHp; }
 	FORCEINLINE float GetCurrentHp() { return CurrentHp; }
+	FORCEINLINE float GetAttackRadius() const { return AttackRadius; }
+
 	float ApplyDamage(float InDamage); // 데미지를 받으면 데미지를 적용할 ApplyDamage함수
 
 	FOnHpZeroDelegate OnHpZero;
@@ -33,6 +35,9 @@ protected:
 	
 	UPROPERTY(VisibleInstanceOnly, Category = Stat)
 	float MaxHp;
+
+	UPROPERTY(VisibleInstanceOnly, Category = Stat, Meta = (AllowPrivateAccess = "true"))
+	float AttackRadius;
 
 	UPROPERTY(Transient, VisibleInstanceOnly, Category = Stat)
 	float CurrentHp;

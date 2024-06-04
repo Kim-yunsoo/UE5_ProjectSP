@@ -7,6 +7,7 @@
 USPNonCharacterStatComponent::USPNonCharacterStatComponent()
 {
 	MaxHp = 200.0f;
+	AttackRadius = 50.0f; 
 	CurrentHp = MaxHp;
 }
 

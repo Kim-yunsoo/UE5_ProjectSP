@@ -36,6 +36,7 @@
 #include "SPGameModeBase.h"
 #include "SPGameState.h"
 #include "Component/SPInventoryComponent.h"
+#include "Physics/SPCollision.h"
 #include "Player/SPPlayerController.h"
 #include "Potion/SPItemBase.h"
 #include "Potion/Make/SPMakePotion.h"
@@ -58,7 +59,7 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 
 	//Capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
-	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Pawn"));
+	GetCapsuleComponent()->SetCollisionProfileName(CPROFILE_SPCAPSULE);
 
 	//Movement
 	GetCharacterMovement()->bOrientRotationToMovement = true;
