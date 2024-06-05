@@ -20,25 +20,38 @@ EBTNodeResult::Type UBTTask_TurnToTarget::ExecuteTask(UBehaviorTreeComponent& Ow
 	APawn* ControllingPawn = Cast<APawn>(OwnerComp.GetAIOwner()->GetPawn());
 	if (nullptr == ControllingPawn)
 	{
+		UE_LOG(LogTemp,Log,TEXT("ControllingPawn : Failed"));
 		return EBTNodeResult::Failed;
 	}
 
 	APawn* TargetPawn = Cast<APawn>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(BBKEY_TARGET));
 	if (nullptr == TargetPawn)
 	{
+		UE_LOG(LogTemp,Log,TEXT("TargetPawn : Failed"));
 		return EBTNodeResult::Failed;
 	}
 
 	ISPCharacterAIInterface* AIPawn = Cast<ISPCharacterAIInterface>(ControllingPawn);
 	if (nullptr == AIPawn)
 	{
+		UE_LOG(LogTemp,Log,TEXT("AIPawn : Failed"));
+
 		return EBTNodeResult::Failed;
 	}
-	float TurnSpeed = AIPawn->GetAITurnSpeed();
-	FVector LookVector = TargetPawn->GetActorLocation() - ControllingPawn->GetActorLocation();
-	LookVector.Z = 0.0f;
-	FRotator TargetRot = FRotationMatrix::MakeFromX(LookVector).Rotator();
-	ControllingPawn->SetActorRotation(FMath::RInterpTo(ControllingPawn->GetActorRotation(), TargetRot, GetWorld()->GetDeltaSeconds(), TurnSpeed));
 
+	AAIController* AIController = OwnerComp.GetAIOwner(); //AIController 가져올 수 있다.
+	if(AIController)
+	{
+		UE_LOG(LogTemp,Log,TEXT("%s"),*TargetPawn->GetName());
+		AIController->SetFocus(TargetPawn);
+	}
 	return EBTNodeResult::Succeeded;
+	//FinishExecute
+
+	// float TurnSpeed = AIPawn->GetAITurnSpeed();
+	// FVector LookVector = TargetPawn->GetActorLocation() - ControllingPawn->GetActorLocation();
+	// LookVector.Z = 0.0f;
+	// FRotator TargetRot = FRotationMatrix::MakeFromX(LookVector).Rotator();
+	// ControllingPawn->SetActorRotation(FMath::RInterpTo(ControllingPawn->GetActorRotation(), TargetRot, GetWorld()->GetDeltaSeconds(), TurnSpeed));
+
 }

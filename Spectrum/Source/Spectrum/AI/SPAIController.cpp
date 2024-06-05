@@ -9,18 +9,19 @@
 
 ASPAIController::ASPAIController()
 {
-	static ConstructorHelpers::FObjectFinder<UBlackboardData> BBAssetRef(TEXT("/Script/AIModule.BlackboardData'/Game/AI/BB_SP_Character.BB_SP_Character'"));
+	static ConstructorHelpers::FObjectFinder<UBlackboardData> BBAssetRef(
+		TEXT("/Script/AIModule.BlackboardData'/Game/AI/BB_SP_Character.BB_SP_Character'"));
 	if (nullptr != BBAssetRef.Object)
 	{
 		BBAsset = BBAssetRef.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UBehaviorTree> BTAssetRef(TEXT("/Script/AIModule.BehaviorTree'/Game/AI/BT_SP_Character.BT_SP_Character'"));
+	static ConstructorHelpers::FObjectFinder<UBehaviorTree> BTAssetRef(
+		TEXT("/Script/AIModule.BehaviorTree'/Game/AI/BT_SP_Character.BT_SP_Character'"));
 	if (nullptr != BTAssetRef.Object)
 	{
 		BTAsset = BTAssetRef.Object;
 	}
-	
 }
 
 void ASPAIController::RunAI()
@@ -28,12 +29,17 @@ void ASPAIController::RunAI()
 	UBlackboardComponent* BlackboardPtr = Blackboard.Get();
 	if (UseBlackboard(BBAsset, BlackboardPtr)) // 블랙보드 기동시키는 함수 
 	{
-		Blackboard->SetValueAsVector(BBKEY_HOMEPOS,GetPawn()->GetActorLocation());
-		//시작할 때 키에 값 할당 
-		bool RunResult = RunBehaviorTree(BTAsset);
-		ensure(RunResult);
+		//Blackboard->SetValueAsVector(BBKEY_HOMEPOS,GetPawn()->GetActorLocation());
+		FTimerHandle TimerHandle;
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([&]
+		{
+			//FName AttackTargetKeyName{TEXT("Target")};
+			Blackboard->SetValueAsObject(BBKEY_TARGET, GetWorld()->GetFirstPlayerController()->GetPawn());
+			//시작할 때 키에 값 할당 
+			bool RunResult = RunBehaviorTree(BTAsset);
+			ensure(RunResult);
+		}), 1.0f, false);
 	}
-	
 }
 
 void ASPAIController::StopAI()
@@ -51,4 +57,3 @@ void ASPAIController::OnPossess(APawn* InPawn)
 
 	RunAI(); //AI 구동
 }
-

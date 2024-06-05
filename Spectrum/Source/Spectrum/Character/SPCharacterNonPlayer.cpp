@@ -142,8 +142,15 @@ void ASPCharacterNonPlayer::SetAIAttackDelegate(const FAICharacterAttackFinished
 void ASPCharacterNonPlayer::AttackByAI()
 {
 	//공격 명령 내리는 곳 애니메이션 몽타주 플레이  ProcessComboCommand
-	//몽타주가 끝나는 부분에서 NotifyComboActionEnd 호출
-	NotifyComboActionEnd();
+	//몽타주가 끝나는 부분 혹은 중단된 부분 NotifyComboActionEnd 호출
+	FTimerHandle TimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle,FTimerDelegate::CreateLambda([&]
+	{
+		UE_LOG(LogTemp,Log,TEXT("NotifyComboActionEnd"));
+		NotifyComboActionEnd();
+
+	}
+	),5.0f,false);
 }
 
 void ASPCharacterNonPlayer::NotifyComboActionEnd()

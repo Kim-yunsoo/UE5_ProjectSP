@@ -16,6 +16,8 @@ class SPECTRUM_API UBTTask_TurnToTarget : public UBTTaskNode
 
 public:
 	UBTTask_TurnToTarget();
+	// UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	// FBlackboardKeySelector AttackTargetKey;
 
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory);
 };

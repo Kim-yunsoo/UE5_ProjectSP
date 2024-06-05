@@ -11,7 +11,7 @@ UBTTask_Attack::UBTTask_Attack()
 }
 
 EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
-{
+{//일종의 시작 플레이 , 작업이 실행되기 시작하면 어떤일이 발생하는지
 	EBTNodeResult::Type Result = Super::ExecuteTask(OwnerComp, NodeMemory);
 
 	APawn* ControllingPawn = Cast<APawn>(OwnerComp.GetAIOwner()->GetPawn());
@@ -35,6 +35,6 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 	);
 
 	AIPawn->SetAIAttackDelegate(OnAttackFinished);
-	AIPawn->AttackByAI();
+	AIPawn->AttackByAI(); //Attack 애니메이션 실행 
 	return EBTNodeResult::InProgress; //공격 애니메이션 진행 중이기 때문에 InProgress로 설정하고, 애니메이션 이후에 Succeded 값 반환
 }

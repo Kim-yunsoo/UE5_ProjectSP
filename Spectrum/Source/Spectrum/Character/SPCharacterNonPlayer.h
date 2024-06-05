@@ -24,7 +24,7 @@ protected:
 protected:
 	// Called when the game starts or when spawned
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stat, Meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UAnimMontage> DeadMontage;
+	TObjectPtr<class UAnimMontage> AttackMontage;
 	
 
 	 void AttackHitCheck() ;
