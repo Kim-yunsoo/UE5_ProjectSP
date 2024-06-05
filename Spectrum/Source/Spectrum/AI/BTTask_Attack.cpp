@@ -30,7 +30,6 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 	OnAttackFinished.BindLambda( //원하는 함수를 델리게이트에 바인드
 		[&]()
 		{
-			UE_LOG(LogTemp,Log,TEXT("SUCCEEDED"));
 			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded); //마무리 되었다고 알려주는 함수
 		}
 	);

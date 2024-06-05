@@ -14,7 +14,6 @@ class SPECTRUM_API ASPCharacterNonPlayer : public ACharacter ,public ISPNonChara
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
 	ASPCharacterNonPlayer();
 
 	virtual void PostInitializeComponents() override;

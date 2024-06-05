@@ -37,7 +37,7 @@ ASPCharacterNonPlayer::ASPCharacterNonPlayer()
 	// Widget Component 
 	HpBar = CreateDefaultSubobject<USPWidgetComponent>(TEXT("Widget"));
 	HpBar->SetupAttachment(GetMesh());
-	HpBar->SetRelativeLocation(FVector(0.0f, 0.0f, 180.0f)); //조절 필요
+	HpBar->SetRelativeLocation(FVector(0.0f, 0.0f, 210.0f)); //조절 필요
 	static ConstructorHelpers::FClassFinder<UUserWidget> HpBarWidgetRef(TEXT("/Game/Spectrum/UMG/WBP_HpBar.WBP_HpBar_C"));
 	if(HpBarWidgetRef.Class)
 	{
