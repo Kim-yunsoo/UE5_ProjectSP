@@ -15,8 +15,8 @@ public class Spectrum : ModuleRules
 	        "MultiplayerSessions","OnlineSubsystem","OnlineSubsystemSteam", "NavigationSystem","GameplayTasks"
         });
          
-		PrivateDependencyModuleNames.AddRange(new string[] { "ProtobufCore" });
-
+		PrivateDependencyModuleNames.AddRange(new string[] { "ProtobufCore", "AnimGraphRuntime" });
+//, "AnimGraphRuntime"
         PrivateIncludePaths.AddRange(new string[]
 {
             "Spectrum/",
