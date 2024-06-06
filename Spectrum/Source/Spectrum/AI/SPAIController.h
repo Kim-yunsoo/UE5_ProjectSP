@@ -4,11 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "Perception/AISense.h"
 #include "SPAIController.generated.h"
 
-/**
- * 
- */
+enum class EAISense : uint8;
+enum class AIState : uint8;
+
 UCLASS()
 class SPECTRUM_API ASPAIController : public AAIController
 {
@@ -32,15 +33,20 @@ private:
 	UPROPERTY()
 	TObjectPtr<UAIPerceptionComponent> AIPerception;
 
-	
-
 public:
 	UFUNCTION(BlueprintCallable)
 	void SetStatePassvie();
 
 	UFUNCTION(BlueprintCallable)
-	void SetStateAttacking(APawn* TargetPawn);
+	void SetStateAttacking(AActor* Target);
 
+	UFUNCTION()
+	void HandleSightSense (AActor* Actor, FAIStimulus Stimulus);
+
+	void HandleSensedSight(AActor* Actor);
 	
+	AIState GetCurrentState();
+	
+	EAISense GetSenseEnum(const FName& SenseType);
 };
 
