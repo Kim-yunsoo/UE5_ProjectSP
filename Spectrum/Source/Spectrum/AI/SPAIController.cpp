@@ -8,8 +8,9 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Enums/SPAIState.h"
 #include "Perception/AIPerceptionComponent.h"
+#include "Perception/AISenseConfig_Damage.h"
+#include "Perception/AISenseConfig_Hearing.h"
 #include "Perception/AISenseConfig_Sight.h"
-#include "Perception/AISense_Sight.h"
 
 ASPAIController::ASPAIController()
 {
@@ -38,11 +39,23 @@ ASPAIController::ASPAIController()
 		SightConfig->DetectionByAffiliation.bDetectEnemies =true;
 		SightConfig->DetectionByAffiliation.bDetectNeutrals =true;
 		SightConfig->DetectionByAffiliation.bDetectFriendlies =true;
-		
+		AIPerception->ConfigureSense(*SightConfig);
+
+		UAISenseConfig_Hearing* SoundConfig = CreateDefaultSubobject<UAISenseConfig_Hearing>(TEXT("SoundConfig"));
+		SoundConfig->HearingRange = 500.0f;
+		SoundConfig->SetMaxAge(3.0f); 
+		SoundConfig->DetectionByAffiliation.bDetectEnemies =true;
+		SoundConfig->DetectionByAffiliation.bDetectNeutrals =true;
+		SoundConfig->DetectionByAffiliation.bDetectFriendlies =true;
+		AIPerception->ConfigureSense(*SoundConfig);
+
+
+		UAISenseConfig_Damage* DamageConfig = CreateDefaultSubobject<UAISenseConfig_Damage>(TEXT("DamageConfig"));
+		DamageConfig->SetMaxAge(5.0f);
+		AIPerception->ConfigureSense(*DamageConfig);
 
 		
-		AIPerception->ConfigureSense(*SightConfig);
-		//감각 추가
+		
 		AIPerception->SetDominantSense(SightConfig->GetSenseImplementation());
 		//GetSenseImplementation는 UAISense_Sight함수를 반환한다. 
 		//우세 감각 설정
