@@ -44,6 +44,9 @@ public:
 	void HandleSightSense (AActor* Actor, FAIStimulus Stimulus);
 
 	void HandleSensedSight(AActor* Actor);
+	void HandleSensedSound(const FVector Location);
+	void HandleSensedDamage(AActor* Actor);
+	void SetStateAsInvestigating(const FVector Location);
 	
 	AIState GetCurrentState();
 	

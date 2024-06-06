@@ -95,13 +95,13 @@ void ASPAIController::OnPossess(APawn* InPawn)
 
 void ASPAIController::SetStatePassvie()
 {
-	Blackboard->SetValueAsEnum(BBKEY_State, static_cast<uint8>(AIState::Passive));
+	Blackboard->SetValueAsEnum(BBKEY_STATE, static_cast<uint8>(AIState::Passive));
 }
 
 void ASPAIController::SetStateAttacking(AActor* Target)
 {
 	Blackboard->SetValueAsObject(BBKEY_TARGET, Target);
-	Blackboard->SetValueAsEnum(BBKEY_State, static_cast<uint8>(AIState::Attacking));
+	Blackboard->SetValueAsEnum(BBKEY_STATE, static_cast<uint8>(AIState::Attacking));
 }
 
 void ASPAIController::HandleSightSense(AActor* Actor, FAIStimulus Stimulus)
@@ -111,6 +111,7 @@ void ASPAIController::HandleSightSense(AActor* Actor, FAIStimulus Stimulus)
 	if (SenseType == EAISense::Hearing)
 	{
 		UE_LOG(LogTemp, Log, TEXT("Hearing"));
+		HandleSensedSound(Stimulus.StimulusLocation);
 	}
 	if (SenseType == EAISense::Sight)
 	{
@@ -120,6 +121,7 @@ void ASPAIController::HandleSightSense(AActor* Actor, FAIStimulus Stimulus)
 	if (SenseType == EAISense::Damage)
 	{
 		UE_LOG(LogTemp, Log, TEXT("Damage"));
+		HandleSensedDamage(Actor);
 	}
 }
 
@@ -133,11 +135,34 @@ void ASPAIController::HandleSensedSight(AActor* Actor)
 			SetStateAttacking(Actor);
 		}
 	}
+	
+}
+
+void ASPAIController::HandleSensedSound(const FVector Location)
+{
+	if(GetCurrentState()==AIState::Passive ||GetCurrentState()==AIState::Investigating )
+	{
+		SetStateAsInvestigating(Location);
+	}
+}
+
+void ASPAIController::HandleSensedDamage(AActor* Actor)
+{
+	if(GetCurrentState()==AIState::Passive || GetCurrentState() ==AIState::Investigating)
+	{
+		SetStateAttacking(Actor);
+	}
+}
+
+void ASPAIController::SetStateAsInvestigating(const FVector Location)
+{
+	Blackboard->SetValueAsEnum(BBKEY_STATE,static_cast<uint8>(AIState::Investigating));
+	Blackboard->SetValueAsVector(BBKEY_POINTOFINTEREST,Location);
 }
 
 AIState ASPAIController::GetCurrentState()
 {
-	uint8 EnumValue = Blackboard->GetValueAsEnum(BBKEY_State);
+	uint8 EnumValue = Blackboard->GetValueAsEnum(BBKEY_STATE);
 	return static_cast<AIState>(EnumValue);
 }
 
