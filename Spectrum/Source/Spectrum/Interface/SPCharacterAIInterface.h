@@ -6,6 +6,7 @@
 #include "UObject/Interface.h"
 #include "SPCharacterAIInterface.generated.h"
 
+enum class MovementSpeed : uint8;
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
 class USPCharacterAIInterface : public UInterface
@@ -30,4 +31,7 @@ public:
 	
 	virtual void SetAIAttackDelegate(const FAICharacterAttackFinished& InOnAttackFinished) = 0;
 	virtual void AttackByAI() = 0;
+
+	virtual float SetMovementSpeed(const MovementSpeed MoveSpeed)=0;
+
 };

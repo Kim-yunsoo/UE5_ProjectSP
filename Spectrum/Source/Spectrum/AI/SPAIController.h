@@ -28,5 +28,19 @@ private:
 	
 	UPROPERTY()
 	TObjectPtr<class UBehaviorTree> BTAsset;
+
+	UPROPERTY()
+	TObjectPtr<UAIPerceptionComponent> AIPerception;
+
+	
+
+public:
+	UFUNCTION(BlueprintCallable)
+	void SetStatePassvie();
+
+	UFUNCTION(BlueprintCallable)
+	void SetStateAttacking(APawn* TargetPawn);
+
+	
 };
 

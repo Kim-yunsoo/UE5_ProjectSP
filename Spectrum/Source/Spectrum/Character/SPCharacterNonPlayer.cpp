@@ -6,6 +6,7 @@
 #include "AI/SPAIController.h"
 #include "Component/SPNonCharacterStatComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Enums/SPMovementSpeed.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "UI/HpBar/SPHpBarWidget.h"
 #include "UI/HpBar/SPWidgetComponent.h"
@@ -157,6 +158,30 @@ void ASPCharacterNonPlayer::NotifyComboActionEnd()
 {
 	//Super::NotifyComboActionEnd();
 	OnAttackFinished.ExecuteIfBound(); //델리게이트에 묶인 함수를 호출한다. 
+}
+
+float ASPCharacterNonPlayer::SetMovementSpeed(const MovementSpeed MoveSpeed)
+{
+	if(MoveSpeed == MovementSpeed::Idle)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = 0.0f;
+	}
+	else if(MoveSpeed == MovementSpeed::Walking)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = 100.0f;
+
+	}
+	else if(MoveSpeed == MovementSpeed::Jogging)
+	{
+		GetCharacterMovement()->MaxWalkSpeed =300.0f;
+
+	}
+	else if(MoveSpeed == MovementSpeed::Sprinting)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = 500.0f;
+
+	}
+	return GetCharacterMovement()->MaxWalkSpeed;
 }
 
 

@@ -6,10 +6,11 @@
 #include "GameFramework/Character.h"
 #include "Interface/SPCharacterAIInterface.h"
 #include "Interface/SPNonCharacterWidgetInterface.h"
+#include "Interface/BT_Interface/SPEnemyAIInterface.h"
 #include "SPCharacterNonPlayer.generated.h"
 
 UCLASS()
-class SPECTRUM_API ASPCharacterNonPlayer : public ACharacter ,public ISPNonCharacterWidgetInterface, public ISPCharacterAIInterface
+class SPECTRUM_API ASPCharacterNonPlayer : public ACharacter ,public ISPNonCharacterWidgetInterface, public ISPCharacterAIInterface,public ISPEnemyAIInterface
 {
 	GENERATED_BODY()
 
@@ -59,5 +60,9 @@ protected:
 
 
 	FAICharacterAttackFinished OnAttackFinished;
+
+public: //interface
+	float SetMovementSpeed(const MovementSpeed MoveSpeed);
+
 
 };
