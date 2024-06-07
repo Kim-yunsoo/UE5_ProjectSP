@@ -50,6 +50,9 @@ ASPCharacterNonPlayer::ASPCharacterNonPlayer()
 	
 	AIControllerClass = ASPAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+
+	DefendRadius=350.0f;
+	AttackRadius=150.0f;
 }
 
 void ASPCharacterNonPlayer::PostInitializeComponents()
@@ -182,6 +185,16 @@ float ASPCharacterNonPlayer::SetMovementSpeed(const MovementSpeed MoveSpeed)
 
 	}
 	return GetCharacterMovement()->MaxWalkSpeed;
+}
+
+float ASPCharacterNonPlayer::GetIdealAttackRange()
+{
+	return AttackRadius;
+}
+
+float ASPCharacterNonPlayer::GetIdealDefendRange()
+{
+	return DefendRadius;  //이 함수는 플레이어를 중심으로 생기는 EQS
 }
 
 

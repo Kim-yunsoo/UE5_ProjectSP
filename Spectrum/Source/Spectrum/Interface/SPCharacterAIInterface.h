@@ -33,5 +33,7 @@ public:
 	virtual void AttackByAI() = 0;
 
 	virtual float SetMovementSpeed(const MovementSpeed MoveSpeed)=0;
+	virtual float GetIdealAttackRange()=0;
+	virtual float GetIdealDefendRange()=0;
 
 };

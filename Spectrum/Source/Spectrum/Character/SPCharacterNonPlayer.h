@@ -10,7 +10,7 @@
 #include "SPCharacterNonPlayer.generated.h"
 
 UCLASS()
-class SPECTRUM_API ASPCharacterNonPlayer : public ACharacter ,public ISPNonCharacterWidgetInterface, public ISPCharacterAIInterface,public ISPEnemyAIInterface
+class SPECTRUM_API ASPCharacterNonPlayer : public ACharacter ,public ISPNonCharacterWidgetInterface, public ISPCharacterAIInterface
 {
 	GENERATED_BODY()
 
@@ -44,6 +44,11 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class USPWidgetComponent> HpBar;
 
+	UPROPERTY()
+	float DefendRadius;
+	UPROPERTY()
+	float AttackRadius ;
+	
 	virtual void SetupCharacterWidget(class USPUserWidget* InUserWidget) override;
 
 	//AI Section
@@ -57,12 +62,11 @@ protected:
 	virtual void AttackByAI() override;
 
 	virtual void NotifyComboActionEnd();
-
-
 	FAICharacterAttackFinished OnAttackFinished;
 
 public: //interface
-	float SetMovementSpeed(const MovementSpeed MoveSpeed);
-
-
+	virtual float SetMovementSpeed(const MovementSpeed MoveSpeed) override;
+	virtual float GetIdealAttackRange() override;
+	virtual float GetIdealDefendRange() override;
+	
 };

@@ -23,5 +23,5 @@ class SPECTRUM_API ISPEnemyAIInterface
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	float SetMovementSpeed(const MovementSpeed MoveSpeed);
+	//float SetMovementSpeed(const MovementSpeed MoveSpeed);
 };
