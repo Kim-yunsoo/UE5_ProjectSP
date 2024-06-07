@@ -59,7 +59,6 @@ ASPAIController::ASPAIController()
 		//GetSenseImplementation는 UAISense_Sight함수를 반환한다. 
 		//우세 감각 설정
 	}
-
 	AIPerception->OnTargetPerceptionUpdated.AddDynamic(this, &ASPAIController::HandleSightSense);
 }
 
@@ -102,6 +101,7 @@ void ASPAIController::SetStateAttacking(AActor* Target)
 {
 	Blackboard->SetValueAsObject(BBKEY_TARGET, Target);
 	Blackboard->SetValueAsEnum(BBKEY_STATE, static_cast<uint8>(AIState::Attacking));
+	AttackTarget = Target;
 }
 
 void ASPAIController::HandleSightSense(AActor* Actor, FAIStimulus Stimulus)

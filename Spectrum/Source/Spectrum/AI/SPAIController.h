@@ -33,7 +33,12 @@ private:
 	UPROPERTY()
 	TObjectPtr<UAIPerceptionComponent> AIPerception;
 
+
+
 public:
+	UPROPERTY(Blueprintable, EditAnywhere,BlueprintReadWrite )
+	TObjectPtr<AActor> AttackTarget;
+	
 	UFUNCTION(BlueprintCallable)
 	void SetStatePassvie();
 
