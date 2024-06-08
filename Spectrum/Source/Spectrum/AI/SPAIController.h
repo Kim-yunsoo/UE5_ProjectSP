@@ -33,18 +33,16 @@ private:
 	UPROPERTY()
 	TObjectPtr<UAIPerceptionComponent> AIPerception;
 
-
-
 public:
 	UPROPERTY(Blueprintable, EditAnywhere,BlueprintReadWrite )
 	TObjectPtr<AActor> AttackTarget;
 	
 	UFUNCTION(BlueprintCallable)
 	void SetStatePassvie();
-
 	UFUNCTION(BlueprintCallable)
 	void SetStateAttacking(AActor* Target);
-
+	//UFUNCTION(BlueprintCallable)
+	void SetStateAsDead();
 	UFUNCTION()
 	void HandleSightSense (AActor* Actor, FAIStimulus Stimulus);
 
@@ -52,6 +50,7 @@ public:
 	void HandleSensedSound(const FVector Location);
 	void HandleSensedDamage(AActor* Actor);
 	void SetStateAsInvestigating(const FVector Location);
+	void SetStateAsFrozen();
 	
 	AIState GetCurrentState();
 	

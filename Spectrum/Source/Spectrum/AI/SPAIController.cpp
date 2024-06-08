@@ -110,6 +110,11 @@ void ASPAIController::SetStateAttacking(AActor* Target)
 	AttackTarget = Target;
 }
 
+void ASPAIController::SetStateAsDead()
+{
+	Blackboard->SetValueAsEnum(BBKEY_STATE,static_cast<uint8>(AIState::Dead));
+}
+
 void ASPAIController::HandleSightSense(AActor* Actor, FAIStimulus Stimulus)
 {
 	EAISense SenseType = GetSenseEnum(Stimulus.Type.Name);
@@ -164,6 +169,11 @@ void ASPAIController::SetStateAsInvestigating(const FVector Location)
 {
 	Blackboard->SetValueAsEnum(BBKEY_STATE,static_cast<uint8>(AIState::Investigating));
 	Blackboard->SetValueAsVector(BBKEY_POINTOFINTEREST,Location);
+}
+
+void ASPAIController::SetStateAsFrozen()
+{
+	Blackboard->SetValueAsEnum(BBKEY_STATE,static_cast<uint8>(AIState::Frozen));
 }
 
 AIState ASPAIController::GetCurrentState()

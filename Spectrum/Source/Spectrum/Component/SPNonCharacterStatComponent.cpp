@@ -29,7 +29,6 @@ float USPNonCharacterStatComponent::ApplyDamage(float InDamage)
 	{
 		OnHpZero.Broadcast();
 	}
-
 	return ActualDamage;
 }
 

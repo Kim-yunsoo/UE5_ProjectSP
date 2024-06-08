@@ -9,6 +9,8 @@
 #include "Interface/AIInterface/SPDamagableInterface.h"
 #include "SPCharacterNonPlayer.generated.h"
 
+class ASPAIController;
+
 UCLASS()
 class SPECTRUM_API ASPCharacterNonPlayer : public ACharacter ,public ISPNonCharacterWidgetInterface, public ISPCharacterAIInterface, public ISPDamagableInterface
 {
@@ -52,6 +54,9 @@ protected:
 	float DefendRadius;
 	UPROPERTY()
 	float AttackRadius ;
+
+	UPROPERTY()
+	TObjectPtr<ASPAIController> AIController; 
 	
 	virtual void SetupCharacterWidget(class USPUserWidget* InUserWidget) override;
 
@@ -80,4 +85,7 @@ public: //interface
 
 	UFUNCTION(BlueprintCallable)
 	virtual bool TakeDamage(float Amount, bool ShouldForceInterrupt) override;
+	virtual bool IsDead() override;
+
+	virtual void HitResponse(); 
 };

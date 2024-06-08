@@ -30,10 +30,11 @@ public:
 	virtual float GetAITurnSpeed() = 0;
 	
 	virtual void SetAIAttackDelegate(const FAICharacterAttackFinished& InOnAttackFinished) = 0;
-	virtual void AttackByAI() = 0;
 
+	virtual void AttackByAI() = 0; //Attack
 	virtual float SetMovementSpeed(const MovementSpeed MoveSpeed)=0;
 	virtual float GetIdealAttackRange()=0;
 	virtual float GetIdealDefendRange()=0;
 
+	//virtual float Heal(float Amount)=0;
 };

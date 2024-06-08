@@ -10,11 +10,11 @@ USPDamageSystemComponent::USPDamageSystemComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
-	// ...
-
-	Health = 100;
+	//Health = 100;
 	MaxHealth = 100;
+	Health= MaxHealth;
 	IsDead = false;
+	IsInterruptible=true;
 }
 
 
@@ -22,8 +22,6 @@ USPDamageSystemComponent::USPDamageSystemComponent()
 void USPDamageSystemComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// ...
 }
 
 
@@ -34,6 +32,12 @@ void USPDamageSystemComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+}
+
+void USPDamageSystemComponent::SetHp(float NewHp)
+{
+	Health = FMath::Clamp<float>(NewHp, 0.0f, MaxHealth);
+	OnHpChanged.Broadcast(Health);
 }
 
 float USPDamageSystemComponent::Heal(float Amount)
@@ -51,6 +55,7 @@ bool USPDamageSystemComponent::TakeDamage(float Amount, bool ShouldForceInterrup
 	if (!IsDead)
 	{
 		Health = Health - Amount;
+		SetHp(Health); // HP 위젯 체력 조절 
 		if (Health <= 0.0f)
 		{
 			IsDead = true;

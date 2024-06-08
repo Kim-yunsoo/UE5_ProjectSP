@@ -2,13 +2,13 @@
 
 
 #include "Animation/SPAIAnimInstance.h"
-
 #include "KismetAnimationLibrary.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 USPAIAnimInstance::USPAIAnimInstance()
 {
+	
 }
 
 void USPAIAnimInstance::NativeInitializeAnimation()

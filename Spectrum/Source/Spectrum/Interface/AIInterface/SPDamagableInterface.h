@@ -25,5 +25,6 @@ public:
 	virtual float GetCurrentHealth() =0 ;
 	virtual float GetMaxHealth() =0; 
 	virtual float Heal(float Amount) =0;
-	virtual bool TakeDamage(float Amount,bool ShouldForceInterrupt)=0; // ShouldForceInterrupt애니메이션 중단에 사용 
+	virtual bool TakeDamage(float Amount,bool ShouldForceInterrupt)=0; // ShouldForceInterrupt애니메이션 중단에 사용
+	virtual bool IsDead() = 0;
 };

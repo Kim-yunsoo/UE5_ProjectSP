@@ -3,9 +3,9 @@
 
 #include "Character/SPCharacterNonPlayer.h"
 
+#include "BrainComponent.h"
 #include "AI/SPAIController.h"
 #include "Component/SPDamageSystemComponent.h"
-#include "Component/SPNonCharacterStatComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Enums/SPMovementSpeed.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -40,6 +40,7 @@ ASPCharacterNonPlayer::ASPCharacterNonPlayer()
 	HpBar = CreateDefaultSubobject<USPWidgetComponent>(TEXT("Widget"));
 	HpBar->SetupAttachment(GetMesh());
 	HpBar->SetRelativeLocation(FVector(0.0f, 0.0f, 210.0f)); //Á¶Àý ÇÊ¿ä
+	
 	static ConstructorHelpers::FClassFinder<UUserWidget> HpBarWidgetRef(TEXT("/Game/Spectrum/UMG/WBP_HpBar.WBP_HpBar_C"));
 	if(HpBarWidgetRef.Class)
 	{
@@ -51,7 +52,6 @@ ASPCharacterNonPlayer::ASPCharacterNonPlayer()
 
 	//component
 	DamageSystemComponent = CreateDefaultSubobject<USPDamageSystemComponent>(TEXT("DamageSystemComponent"));
-
 	
 	AIControllerClass = ASPAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
@@ -65,14 +65,20 @@ void ASPCharacterNonPlayer::PostInitializeComponents()
 	Super::PostInitializeComponents();
 	DamageSystemComponent->OnDamageResponse.AddUObject(this, &ASPCharacterNonPlayer::DamageResponse);
 	DamageSystemComponent->OnHpZero.AddUObject(this, &ASPCharacterNonPlayer::SetDead);
+	DamageSystemComponent->OnDamageResponse.AddUObject(this,&ASPCharacterNonPlayer::HitResponse);
 }
 void ASPCharacterNonPlayer::BeginPlay()
 {
 	Super::BeginPlay();
+
+	AIController = Cast<ASPAIController>(GetController());
 }
 
 void ASPCharacterNonPlayer::AttackHitCheck()
 {
+	GetCharacterMovement()->StopMovementImmediately(); //Àá±ñ ¸ØÃá´Ù.
+	AIController->SetStateAsFrozen();
+	//¸ùÅ¸ÁÖ Àç»ý 
 }
 
 void ASPCharacterNonPlayer::SetDead()
@@ -84,6 +90,8 @@ void ASPCharacterNonPlayer::SetDead()
 
 	HpBar->SetHiddenInGame(true);
 
+	AIController->BrainComponent->StopLogic(FString{}); // ·ÎÁ÷ Áß´Ü
+	AIController->SetStateAsDead();
 	FTimerHandle DeadTimerHandle;
 	GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda(
 		[&]()
@@ -103,6 +111,7 @@ void ASPCharacterNonPlayer::PlayDeadAnimation()
 void ASPCharacterNonPlayer::DamageResponse()
 {
 	UE_LOG(LogTemp,Log,TEXT("DamageResponse"));
+	// add animation
 
 }
 
@@ -121,9 +130,9 @@ void ASPCharacterNonPlayer::SetupCharacterWidget(USPUserWidget* InUserWidget)
 	USPHpBarWidget* HpBarWidget = Cast<USPHpBarWidget>(InUserWidget);
 	if (HpBarWidget)
 	{
-		//HpBarWidget->SetMaxHp(Stat->GetMaxHp());
-		//HpBarWidget->UpdateHpBar(Stat->GetCurrentHp());
-		//Stat->OnHpChanged.AddUObject(HpBarWidget, &USPHpBarWidget::UpdateHpBar); 
+		HpBarWidget->SetMaxHp(DamageSystemComponent->GetMaxHp());
+		HpBarWidget->UpdateHpBar(DamageSystemComponent->GetCurrentHp());
+		DamageSystemComponent->OnHpChanged.AddUObject(HpBarWidget, &USPHpBarWidget::UpdateHpBar); 
 	}
 }
 
@@ -226,6 +235,16 @@ float ASPCharacterNonPlayer::Heal(float Amount)
 bool ASPCharacterNonPlayer::TakeDamage(float Amount, bool ShouldForceInterrupt)
 {
 	return DamageSystemComponent->TakeDamage(Amount,ShouldForceInterrupt);
+}
+
+bool ASPCharacterNonPlayer::IsDead()
+{
+	return DamageSystemComponent->IsDead;
+}
+
+void ASPCharacterNonPlayer::HitResponse()
+{
+	
 }
 
 
