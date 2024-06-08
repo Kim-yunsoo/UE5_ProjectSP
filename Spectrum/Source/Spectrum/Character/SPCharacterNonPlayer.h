@@ -6,11 +6,11 @@
 #include "GameFramework/Character.h"
 #include "Interface/SPCharacterAIInterface.h"
 #include "Interface/SPNonCharacterWidgetInterface.h"
-#include "Interface/BT_Interface/SPEnemyAIInterface.h"
+#include "Interface/AIInterface/SPDamagableInterface.h"
 #include "SPCharacterNonPlayer.generated.h"
 
 UCLASS()
-class SPECTRUM_API ASPCharacterNonPlayer : public ACharacter ,public ISPNonCharacterWidgetInterface, public ISPCharacterAIInterface
+class SPECTRUM_API ASPCharacterNonPlayer : public ACharacter ,public ISPNonCharacterWidgetInterface, public ISPCharacterAIInterface, public ISPDamagableInterface
 {
 	GENERATED_BODY()
 
@@ -68,5 +68,10 @@ public: //interface
 	virtual float SetMovementSpeed(const MovementSpeed MoveSpeed) override;
 	virtual float GetIdealAttackRange() override;
 	virtual float GetIdealDefendRange() override;
+
 	
+	virtual float GetCurrentHealth() override;
+	virtual float GetMaxHealth() override;
+	virtual float Heal(float Amount) override;
+	virtual bool TakeDamage(float Amount, bool ShouldForceInterrupt) override;
 };

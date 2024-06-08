@@ -4,6 +4,7 @@
 #include "BehaviorTree/BlackboardData.h"
 #include "SPAI.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Character/SPCharacterNonPlayer.h"
 #include "Character/SPCharacterPlayer.h"
 #include "Enums/SPAISense.h"
 #include "Enums/SPAIState.h"
@@ -71,8 +72,13 @@ void ASPAIController::RunAI()
 		ensure(RunResult);
 		SetStatePassvie();
 
-		//SetStateAttacking();
-		//Blackboard->SetValueAsEnum(BBKEY_State, static_cast<uint8>(AIState::Attacking));
+		//GetPawn();
+		ASPCharacterNonPlayer* AIPlayer = Cast<ASPCharacterNonPlayer>(GetPawn());
+		if(AIPlayer)
+		{
+			Blackboard->SetValueAsFloat(BBKEY_ATTACKRADIUS, AIPlayer->GetIdealAttackRange());
+			Blackboard->SetValueAsFloat(BBKEY_DEFENDRADIUS, AIPlayer->GetIdealDefendRange());
+		}
 	}
 }
 

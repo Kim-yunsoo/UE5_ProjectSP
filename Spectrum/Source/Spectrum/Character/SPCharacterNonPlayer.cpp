@@ -197,4 +197,20 @@ float ASPCharacterNonPlayer::GetIdealDefendRange()
 	return DefendRadius;  //이 함수는 플레이어를 중심으로 생기는 EQS
 }
 
+float ASPCharacterNonPlayer::GetCurrentHealth()
+{
+}
+
+float ASPCharacterNonPlayer::GetMaxHealth()
+{
+}
+
+float ASPCharacterNonPlayer::Heal(float Amount)
+{
+}
+
+bool ASPCharacterNonPlayer::TakeDamage(float Amount, bool ShouldForceInterrupt)
+{
+}
+
 

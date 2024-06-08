@@ -9,6 +9,7 @@
 DECLARE_MULTICAST_DELEGATE(FOnHpZeroDelegate);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnHpChangedDelegate, float /*CurrentHp*/);
 
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SPECTRUM_API USPNonCharacterStatComponent : public UActorComponent
 {
@@ -30,8 +31,8 @@ public:
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
+	
 	void SetHp(float NewHp);
-
 	
 	UPROPERTY(VisibleInstanceOnly, Category = Stat)
 	float MaxHp;
@@ -41,5 +42,5 @@ protected:
 
 	UPROPERTY(Transient, VisibleInstanceOnly, Category = Stat)
 	float CurrentHp;
-
+	
 };
