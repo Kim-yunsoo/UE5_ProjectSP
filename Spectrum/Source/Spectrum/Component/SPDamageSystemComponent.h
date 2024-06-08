@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "SPDamageSystemComponent.generated.h"
+DECLARE_MULTICAST_DELEGATE(FOnHpZeroDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnHpDamageResponseDelegate);
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -16,6 +18,9 @@ public:
 	// Sets default values for this component's properties
 	USPDamageSystemComponent();
 
+	FOnHpZeroDelegate OnHpZero;
+	FOnHpDamageResponseDelegate OnDamageResponse;
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -23,6 +28,14 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	float Health;
+	float MaxHealth;
+	bool IsDead;
+	bool IsInterruptible;
+
+	float Heal(float Amount);
+	bool TakeDamage(float Amount, bool ShouldForceInterrupt);
 
 		
 };

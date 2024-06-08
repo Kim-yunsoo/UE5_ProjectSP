@@ -28,21 +28,25 @@ protected:
 	TObjectPtr<class UAnimMontage> AttackMontage;
 	
 
-	 void AttackHitCheck() ;
+	void AttackHitCheck() ;
 	void SetDead();
 	void PlayDeadAnimation();
+	void DamageResponse();
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 
 	float DeadEventDelayTime = 5.0f;
 
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Stat, Meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class USPNonCharacterStatComponent> Stat;
+	// UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Stat, Meta = (AllowPrivateAccess = "true"))
+	// TObjectPtr<class USPNonCharacterStatComponent> Stat;
 
 	//UI Widget Section
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class USPWidgetComponent> HpBar;
+
+	UPROPERTY()
+	TObjectPtr<class USPDamageSystemComponent> DamageSystemComponent ;  
 
 	UPROPERTY()
 	float DefendRadius;
@@ -73,5 +77,7 @@ public: //interface
 	virtual float GetCurrentHealth() override;
 	virtual float GetMaxHealth() override;
 	virtual float Heal(float Amount) override;
+
+	UFUNCTION(BlueprintCallable)
 	virtual bool TakeDamage(float Amount, bool ShouldForceInterrupt) override;
 };

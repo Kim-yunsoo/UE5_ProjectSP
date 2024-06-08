@@ -4,6 +4,7 @@
 #include "Character/SPCharacterNonPlayer.h"
 
 #include "AI/SPAIController.h"
+#include "Component/SPDamageSystemComponent.h"
 #include "Component/SPNonCharacterStatComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Enums/SPMovementSpeed.h"
@@ -34,7 +35,7 @@ ASPCharacterNonPlayer::ASPCharacterNonPlayer()
 	GetMesh()->SetCollisionProfileName(TEXT("NoCollision"));
 
 	// Stat Component 
-	Stat = CreateDefaultSubobject<USPNonCharacterStatComponent>(TEXT("Stat"));
+	//Stat = CreateDefaultSubobject<USPNonCharacterStatComponent>(TEXT("Stat"));
 	// Widget Component 
 	HpBar = CreateDefaultSubobject<USPWidgetComponent>(TEXT("Widget"));
 	HpBar->SetupAttachment(GetMesh());
@@ -47,6 +48,10 @@ ASPCharacterNonPlayer::ASPCharacterNonPlayer()
 		HpBar->SetDrawSize(FVector2D(150.0f, 15.0f));
 		HpBar->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
+
+	//component
+	DamageSystemComponent = CreateDefaultSubobject<USPDamageSystemComponent>(TEXT("DamageSystemComponent"));
+
 	
 	AIControllerClass = ASPAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
@@ -58,11 +63,9 @@ ASPCharacterNonPlayer::ASPCharacterNonPlayer()
 void ASPCharacterNonPlayer::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
-
-	Stat->OnHpZero.AddUObject(this, &ASPCharacterNonPlayer::SetDead);
+	DamageSystemComponent->OnDamageResponse.AddUObject(this, &ASPCharacterNonPlayer::DamageResponse);
+	DamageSystemComponent->OnHpZero.AddUObject(this, &ASPCharacterNonPlayer::SetDead);
 }
-
-// Called when the game starts or when spawned
 void ASPCharacterNonPlayer::BeginPlay()
 {
 	Super::BeginPlay();
@@ -74,6 +77,7 @@ void ASPCharacterNonPlayer::AttackHitCheck()
 
 void ASPCharacterNonPlayer::SetDead()
 {
+	UE_LOG(LogTemp,Log,TEXT("SetDead"));
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 	PlayDeadAnimation();
 	SetActorEnableCollision(false);
@@ -96,12 +100,18 @@ void ASPCharacterNonPlayer::PlayDeadAnimation()
 	//AnimInstance->Montage_Play(DeadMontage, 1.0f);
 }
 
+void ASPCharacterNonPlayer::DamageResponse()
+{
+	UE_LOG(LogTemp,Log,TEXT("DamageResponse"));
+
+}
+
 float ASPCharacterNonPlayer::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,
-	AController* EventInstigator, AActor* DamageCauser)
+                                        AController* EventInstigator, AActor* DamageCauser)
 {
 	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
-	Stat->ApplyDamage(DamageAmount);
+	//Stat->ApplyDamage(DamageAmount);
 	
 	return DamageAmount;
 }
@@ -111,9 +121,9 @@ void ASPCharacterNonPlayer::SetupCharacterWidget(USPUserWidget* InUserWidget)
 	USPHpBarWidget* HpBarWidget = Cast<USPHpBarWidget>(InUserWidget);
 	if (HpBarWidget)
 	{
-		HpBarWidget->SetMaxHp(Stat->GetMaxHp());
-		HpBarWidget->UpdateHpBar(Stat->GetCurrentHp());
-		Stat->OnHpChanged.AddUObject(HpBarWidget, &USPHpBarWidget::UpdateHpBar);
+		//HpBarWidget->SetMaxHp(Stat->GetMaxHp());
+		//HpBarWidget->UpdateHpBar(Stat->GetCurrentHp());
+		//Stat->OnHpChanged.AddUObject(HpBarWidget, &USPHpBarWidget::UpdateHpBar); 
 	}
 }
 
@@ -129,7 +139,8 @@ float ASPCharacterNonPlayer::GetAIDetectRange()
 
 float ASPCharacterNonPlayer::GetAIAttackRange()
 {
-	return  Stat->GetAttackRadius() * 2;
+	//return  Stat->GetAttackRadius() * 2;
+	return 0.0f;
 }
 
 float ASPCharacterNonPlayer::GetAITurnSpeed()
@@ -171,7 +182,7 @@ float ASPCharacterNonPlayer::SetMovementSpeed(const MovementSpeed MoveSpeed)
 	}
 	else if(MoveSpeed == MovementSpeed::Walking)
 	{
-		GetCharacterMovement()->MaxWalkSpeed = 100.0f;
+		GetCharacterMovement()->MaxWalkSpeed = 200.0f;
 
 	}
 	else if(MoveSpeed == MovementSpeed::Jogging)
@@ -199,18 +210,22 @@ float ASPCharacterNonPlayer::GetIdealDefendRange()
 
 float ASPCharacterNonPlayer::GetCurrentHealth()
 {
+	return DamageSystemComponent->Health;
 }
 
 float ASPCharacterNonPlayer::GetMaxHealth()
 {
+	return DamageSystemComponent->MaxHealth;
 }
 
 float ASPCharacterNonPlayer::Heal(float Amount)
 {
+	return DamageSystemComponent->Heal(Amount);
 }
 
 bool ASPCharacterNonPlayer::TakeDamage(float Amount, bool ShouldForceInterrupt)
 {
+	return DamageSystemComponent->TakeDamage(Amount,ShouldForceInterrupt);
 }
 
 
