@@ -12,9 +12,9 @@ USPDamageSystemComponent::USPDamageSystemComponent()
 
 	//Health = 100;
 	MaxHealth = 100;
-	Health= MaxHealth;
+	Health = MaxHealth;
 	IsDead = false;
-	IsInterruptible=true;
+	IsInterruptible = true;
 }
 
 
@@ -63,7 +63,10 @@ bool USPDamageSystemComponent::TakeDamage(float Amount, bool ShouldForceInterrup
 			return true;
 		}
 		//데미지에 대한 반응
-		OnDamageResponse.Broadcast();
+		if (IsInterruptible)
+		{
+			OnDamageResponse.Broadcast();
+		}
 	}
 	return true;
 }

@@ -87,6 +87,7 @@ void ASPSlowSkillActor::BeginPlay()
 		if (bIsHoming)
 		{
 			ProjectileMovement->bIsHomingProjectile = true;
+			ProjectileMovement->HomingAccelerationMagnitude= 2000.0f;
 			ProjectileMovement->HomingTargetComponent = TargetActor->GetRootComponent();
 		}
 	}

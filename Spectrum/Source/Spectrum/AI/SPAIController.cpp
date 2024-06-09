@@ -74,7 +74,7 @@ void ASPAIController::RunAI()
 
 		//GetPawn();
 		ASPCharacterNonPlayer* AIPlayer = Cast<ASPCharacterNonPlayer>(GetPawn());
-		if(AIPlayer)
+		if (AIPlayer)
 		{
 			Blackboard->SetValueAsFloat(BBKEY_ATTACKRADIUS, AIPlayer->GetIdealAttackRange());
 			Blackboard->SetValueAsFloat(BBKEY_DEFENDRADIUS, AIPlayer->GetIdealDefendRange());
@@ -103,16 +103,34 @@ void ASPAIController::SetStatePassvie()
 	Blackboard->SetValueAsEnum(BBKEY_STATE, static_cast<uint8>(AIState::Passive));
 }
 
-void ASPAIController::SetStateAttacking(AActor* Target)
+void ASPAIController::SetStateAttacking(AActor* Target, bool bUseLastTarget)
 {
-	Blackboard->SetValueAsObject(BBKEY_TARGET, Target);
-	Blackboard->SetValueAsEnum(BBKEY_STATE, static_cast<uint8>(AIState::Attacking));
-	AttackTarget = Target;
+	AActor* NewAttackTarget;
+	if (bUseLastTarget && IsValid(AttackTarget))
+	{
+		NewAttackTarget = AttackTarget;
+	}
+	else
+	{
+		NewAttackTarget = Target;
+	}
+
+	if (NewAttackTarget)
+	{
+		Blackboard->SetValueAsObject(BBKEY_TARGET, NewAttackTarget);
+		Blackboard->SetValueAsEnum(BBKEY_STATE, static_cast<uint8>(AIState::Attacking));
+		AttackTarget = NewAttackTarget;
+	}
+	else
+	{
+		Blackboard->SetValueAsEnum(BBKEY_STATE, static_cast<uint8>(AIState::Passive));
+	}
+
 }
 
 void ASPAIController::SetStateAsDead()
 {
-	Blackboard->SetValueAsEnum(BBKEY_STATE,static_cast<uint8>(AIState::Dead));
+	Blackboard->SetValueAsEnum(BBKEY_STATE, static_cast<uint8>(AIState::Dead));
 }
 
 void ASPAIController::HandleSightSense(AActor* Actor, FAIStimulus Stimulus)
@@ -143,15 +161,14 @@ void ASPAIController::HandleSensedSight(AActor* Actor)
 	{
 		if (Cast<ACharacter>(Actor)) //내플레이어가 맞으면 
 		{
-			SetStateAttacking(Actor);
+			SetStateAttacking(Actor,false);
 		}
 	}
-	
 }
 
 void ASPAIController::HandleSensedSound(const FVector Location)
 {
-	if(GetCurrentState()==AIState::Passive ||GetCurrentState()==AIState::Investigating )
+	if (GetCurrentState() == AIState::Passive || GetCurrentState() == AIState::Investigating)
 	{
 		SetStateAsInvestigating(Location);
 	}
@@ -159,21 +176,21 @@ void ASPAIController::HandleSensedSound(const FVector Location)
 
 void ASPAIController::HandleSensedDamage(AActor* Actor)
 {
-	if(GetCurrentState()==AIState::Passive || GetCurrentState() ==AIState::Investigating)
+	if (GetCurrentState() == AIState::Passive || GetCurrentState() == AIState::Investigating)
 	{
-		SetStateAttacking(Actor);
+		SetStateAttacking(Actor,false);
 	}
 }
 
 void ASPAIController::SetStateAsInvestigating(const FVector Location)
 {
-	Blackboard->SetValueAsEnum(BBKEY_STATE,static_cast<uint8>(AIState::Investigating));
-	Blackboard->SetValueAsVector(BBKEY_POINTOFINTEREST,Location);
+	Blackboard->SetValueAsEnum(BBKEY_STATE, static_cast<uint8>(AIState::Investigating));
+	Blackboard->SetValueAsVector(BBKEY_POINTOFINTEREST, Location);
 }
 
 void ASPAIController::SetStateAsFrozen()
 {
-	Blackboard->SetValueAsEnum(BBKEY_STATE,static_cast<uint8>(AIState::Frozen));
+	Blackboard->SetValueAsEnum(BBKEY_STATE, static_cast<uint8>(AIState::Frozen));
 }
 
 AIState ASPAIController::GetCurrentState()

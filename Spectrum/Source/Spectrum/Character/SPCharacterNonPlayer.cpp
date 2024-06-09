@@ -40,9 +40,10 @@ ASPCharacterNonPlayer::ASPCharacterNonPlayer()
 	HpBar = CreateDefaultSubobject<USPWidgetComponent>(TEXT("Widget"));
 	HpBar->SetupAttachment(GetMesh());
 	HpBar->SetRelativeLocation(FVector(0.0f, 0.0f, 210.0f)); //조절 필요
-	
-	static ConstructorHelpers::FClassFinder<UUserWidget> HpBarWidgetRef(TEXT("/Game/Spectrum/UMG/WBP_HpBar.WBP_HpBar_C"));
-	if(HpBarWidgetRef.Class)
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> HpBarWidgetRef(
+		TEXT("/Game/Spectrum/UMG/WBP_HpBar.WBP_HpBar_C"));
+	if (HpBarWidgetRef.Class)
 	{
 		HpBar->SetWidgetClass(HpBarWidgetRef.Class);
 		HpBar->SetWidgetSpace(EWidgetSpace::Screen);
@@ -52,12 +53,17 @@ ASPCharacterNonPlayer::ASPCharacterNonPlayer()
 
 	//component
 	DamageSystemComponent = CreateDefaultSubobject<USPDamageSystemComponent>(TEXT("DamageSystemComponent"));
-	
+
 	AIControllerClass = ASPAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
-	DefendRadius=350.0f;
-	AttackRadius=150.0f;
+	DefendRadius = 350.0f;
+	AttackRadius = 150.0f;
+	//
+	// MaxHealth=100;
+	// Health=100;
+	// bIsDead=false;
+	//IsDead= false;
 }
 
 void ASPCharacterNonPlayer::PostInitializeComponents()
@@ -65,8 +71,9 @@ void ASPCharacterNonPlayer::PostInitializeComponents()
 	Super::PostInitializeComponents();
 	DamageSystemComponent->OnDamageResponse.AddUObject(this, &ASPCharacterNonPlayer::DamageResponse);
 	DamageSystemComponent->OnHpZero.AddUObject(this, &ASPCharacterNonPlayer::SetDead);
-	DamageSystemComponent->OnDamageResponse.AddUObject(this,&ASPCharacterNonPlayer::HitResponse);
+	DamageSystemComponent->OnDamageResponse.AddUObject(this, &ASPCharacterNonPlayer::HitResponse);
 }
+
 void ASPCharacterNonPlayer::BeginPlay()
 {
 	Super::BeginPlay();
@@ -78,12 +85,13 @@ void ASPCharacterNonPlayer::AttackHitCheck()
 {
 	GetCharacterMovement()->StopMovementImmediately(); //잠깐 멈춘다.
 	AIController->SetStateAsFrozen();
-	//몽타주 재생 
+	//몽타주 재생
+	//몽타주 끝나는 부분에 SetStateasAttacking 실행 
 }
 
 void ASPCharacterNonPlayer::SetDead()
 {
-	UE_LOG(LogTemp,Log,TEXT("SetDead"));
+	UE_LOG(LogTemp, Log, TEXT("SetDead"));
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 	PlayDeadAnimation();
 	SetActorEnableCollision(false);
@@ -94,11 +102,11 @@ void ASPCharacterNonPlayer::SetDead()
 	AIController->SetStateAsDead();
 	FTimerHandle DeadTimerHandle;
 	GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda(
-		[&]()
-		{
-			Destroy();
-		}
-	), DeadEventDelayTime, false);
+		                                       [&]()
+		                                       {
+			                                       Destroy();
+		                                       }
+	                                       ), DeadEventDelayTime, false);
 }
 
 void ASPCharacterNonPlayer::PlayDeadAnimation()
@@ -110,20 +118,19 @@ void ASPCharacterNonPlayer::PlayDeadAnimation()
 
 void ASPCharacterNonPlayer::DamageResponse()
 {
-	UE_LOG(LogTemp,Log,TEXT("DamageResponse"));
+	UE_LOG(LogTemp, Log, TEXT("DamageResponse"));
 	// add animation
-
 }
 
-float ASPCharacterNonPlayer::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,
-                                        AController* EventInstigator, AActor* DamageCauser)
-{
-	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-
-	//Stat->ApplyDamage(DamageAmount);
-	
-	return DamageAmount;
-}
+// float ASPCharacterNonPlayer::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,
+//                                         AController* EventInstigator, AActor* DamageCauser)
+// {
+// 	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+//
+// 	//Stat->ApplyDamage(DamageAmount);
+//
+// 	return DamageAmount;
+// }
 
 void ASPCharacterNonPlayer::SetupCharacterWidget(USPUserWidget* InUserWidget)
 {
@@ -132,7 +139,7 @@ void ASPCharacterNonPlayer::SetupCharacterWidget(USPUserWidget* InUserWidget)
 	{
 		HpBarWidget->SetMaxHp(DamageSystemComponent->GetMaxHp());
 		HpBarWidget->UpdateHpBar(DamageSystemComponent->GetCurrentHp());
-		DamageSystemComponent->OnHpChanged.AddUObject(HpBarWidget, &USPHpBarWidget::UpdateHpBar); 
+		DamageSystemComponent->OnHpChanged.AddUObject(HpBarWidget, &USPHpBarWidget::UpdateHpBar);
 	}
 }
 
@@ -155,7 +162,6 @@ float ASPCharacterNonPlayer::GetAIAttackRange()
 float ASPCharacterNonPlayer::GetAITurnSpeed()
 {
 	return 2.0f;
-
 }
 
 void ASPCharacterNonPlayer::SetAIAttackDelegate(const FAICharacterAttackFinished& InOnAttackFinished)
@@ -163,18 +169,17 @@ void ASPCharacterNonPlayer::SetAIAttackDelegate(const FAICharacterAttackFinished
 	OnAttackFinished = InOnAttackFinished;
 }
 
-void ASPCharacterNonPlayer::AttackByAI()
+void ASPCharacterNonPlayer::Attack()
 {
 	//공격 명령 내리는 곳 애니메이션 몽타주 플레이  ProcessComboCommand
 	//몽타주가 끝나는 부분 혹은 중단된 부분 NotifyComboActionEnd 호출
 	FTimerHandle TimerHandle;
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle,FTimerDelegate::CreateLambda([&]
-	{
-		UE_LOG(LogTemp,Log,TEXT("NotifyComboActionEnd"));
-		NotifyComboActionEnd();
-
-	}
-	),5.0f,false);
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([&]
+		                                       {
+			                                       UE_LOG(LogTemp, Log, TEXT("NotifyComboActionEnd"));
+			                                       NotifyComboActionEnd();
+		                                       }
+	                                       ), 5.0f, false);
 }
 
 void ASPCharacterNonPlayer::NotifyComboActionEnd()
@@ -185,24 +190,21 @@ void ASPCharacterNonPlayer::NotifyComboActionEnd()
 
 float ASPCharacterNonPlayer::SetMovementSpeed(const MovementSpeed MoveSpeed)
 {
-	if(MoveSpeed == MovementSpeed::Idle)
+	if (MoveSpeed == MovementSpeed::Idle)
 	{
 		GetCharacterMovement()->MaxWalkSpeed = 0.0f;
 	}
-	else if(MoveSpeed == MovementSpeed::Walking)
+	else if (MoveSpeed == MovementSpeed::Walking)
 	{
 		GetCharacterMovement()->MaxWalkSpeed = 200.0f;
-
 	}
-	else if(MoveSpeed == MovementSpeed::Jogging)
+	else if (MoveSpeed == MovementSpeed::Jogging)
 	{
-		GetCharacterMovement()->MaxWalkSpeed =300.0f;
-
+		GetCharacterMovement()->MaxWalkSpeed = 300.0f;
 	}
-	else if(MoveSpeed == MovementSpeed::Sprinting)
+	else if (MoveSpeed == MovementSpeed::Sprinting)
 	{
 		GetCharacterMovement()->MaxWalkSpeed = 500.0f;
-
 	}
 	return GetCharacterMovement()->MaxWalkSpeed;
 }
@@ -214,7 +216,7 @@ float ASPCharacterNonPlayer::GetIdealAttackRange()
 
 float ASPCharacterNonPlayer::GetIdealDefendRange()
 {
-	return DefendRadius;  //이 함수는 플레이어를 중심으로 생기는 EQS
+	return DefendRadius; //이 함수는 플레이어를 중심으로 생기는 EQS
 }
 
 float ASPCharacterNonPlayer::GetCurrentHealth()
@@ -234,17 +236,29 @@ float ASPCharacterNonPlayer::Heal(float Amount)
 
 bool ASPCharacterNonPlayer::TakeDamage(float Amount, bool ShouldForceInterrupt)
 {
-	return DamageSystemComponent->TakeDamage(Amount,ShouldForceInterrupt);
+	//피해를 입었을 때 호출되는 곳
+	// Health = Health - Amount;
+	// Health = FMath::Clamp<float>(Health, 0.0f, MaxHealth);
+	//
+	// if(Health<=0.0f)
+	// {
+	// 	bIsDead=true;
+	// }
+
+	return DamageSystemComponent->TakeDamage(Amount, ShouldForceInterrupt);
 }
 
 bool ASPCharacterNonPlayer::IsDead()
 {
+	
 	return DamageSystemComponent->IsDead;
 }
 
 void ASPCharacterNonPlayer::HitResponse()
 {
+	GetCharacterMovement()->StopMovementImmediately();
+	AIController->SetStateAsFrozen(); //맞을땐 Frozen 상태 
+	//몽타지 End 부분에 Set State as attack으로 바꿀 것
+	AIController->SetStateAttacking(AIController->AttackTarget,true);
 	
 }
-
-

@@ -4,16 +4,21 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTDecorator.h"
-#include "BTDecorator_CanSeeTarget.generated.h"
+#include "BTDecorator_IsHealthBelow.generated.h"
 
+/**
+ * 
+ */
 UCLASS()
-class SPECTRUM_API UBTDecorator_CanSeeTarget : public UBTDecorator
+class SPECTRUM_API UBTDecorator_IsHealthBelow : public UBTDecorator
 {
 	GENERATED_BODY()
-public:
-	// UPROPERTY(EditInstanceOnly,BlueprintReadWrite)
-	// FBlackboardKeySelector AttackTargetKey;
 
-protected:
+public:
+	UBTDecorator_IsHealthBelow();
 	virtual bool CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const override;
+
+	UPROPERTY(EditInstanceOnly,BlueprintReadWrite)
+	float HealthThreshold; //0.3À¸·Î 
+	
 };

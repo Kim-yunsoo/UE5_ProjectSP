@@ -40,7 +40,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetStatePassvie();
 	UFUNCTION(BlueprintCallable)
-	void SetStateAttacking(AActor* Target);
+	void SetStateAttacking(AActor* Target, bool bUseLastTarget);
 	//UFUNCTION(BlueprintCallable)
 	void SetStateAsDead();
 	UFUNCTION()

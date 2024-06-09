@@ -48,6 +48,7 @@ void ASPSkillActorBase::BeginPlay()
 	ProjectileMovement->MaxSpeed = Speed;
 	ProjectileMovement->ProjectileGravityScale = Gravity;
 	ProjectileMovement->HomingAccelerationMagnitude = 7000.f;
+	
 }
 
 void ASPSkillActorBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

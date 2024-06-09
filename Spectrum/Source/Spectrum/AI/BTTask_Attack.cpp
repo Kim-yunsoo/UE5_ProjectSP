@@ -35,6 +35,6 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 	);
 
 	AIPawn->SetAIAttackDelegate(OnAttackFinished);
-	AIPawn->AttackByAI(); //Attack 애니메이션 실행 
+	AIPawn->Attack(); //Attack 애니메이션 실행 
 	return EBTNodeResult::InProgress; //공격 애니메이션 진행 중이기 때문에 InProgress로 설정하고, 애니메이션 이후에 Succeded 값 반환
 }
