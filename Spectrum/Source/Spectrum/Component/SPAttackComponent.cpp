@@ -3,14 +3,14 @@
 
 #include "Component/SPAttackComponent.h"
 
+#include "Character/SPCharacterNonPlayer.h"
+#include "Components/CapsuleComponent.h"
+#include "Skill/AISkillActor/SPAIMagicSkill.h"
+
 // Sets default values for this component's properties
 USPAttackComponent::USPAttackComponent()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
 
-	// ...
 }
 
 
@@ -19,20 +19,26 @@ void USPAttackComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
 	
 }
 
-
-// Called every frame
-void USPAttackComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void USPAttackComponent::MagicSpell(AActor* Target, FTransform Transform)
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
+	SpawnParams.Owner= GetOwner();
+	
+	
+	ASPAIMagicSkill* MyActor =GetWorld()->SpawnActorDeferred<ASPAIMagicSkill>(ASPAIMagicSkill::StaticClass(),Transform,GetOwner() );
+	if(MyActor)
+	{
+		MyActor->InitTarget(Target);
+		MyActor->FinishSpawning(Transform);
+	}
 
-	// ...
-}
-
-void USPAttackComponent::MagicSpell()
-{
+	ASPCharacterNonPlayer* AIPlayer = Cast<ASPCharacterNonPlayer>(GetOwner());
+	AIPlayer->GetCapsuleComponent()->IgnoreActorWhenMoving(MyActor,true);
+	//end 델리게이트 ?? 왜쓰는거지 ? 
 }
 

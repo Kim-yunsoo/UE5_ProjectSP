@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "SPAIMagicSkill.generated.h"
 
+
+
 UCLASS()
 class SPECTRUM_API ASPAIMagicSkill : public AActor
 {
@@ -38,6 +40,12 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<AActor> TargetActor;
+
+	UPROPERTY()
+	uint8 bIsHoming:1;
+
+	uint8 bDoOnce :1 ;
+	
 	
 	
 	UFUNCTION()
@@ -45,5 +53,7 @@ protected:
 						   UPrimitiveComponent* OtherComp, FVector NormalImpulse,
 						   const FHitResult& Hit);
 
-
+public:
+	void InitTarget(AActor* TargetPlayer);
+	void RotateToTarget();
 };

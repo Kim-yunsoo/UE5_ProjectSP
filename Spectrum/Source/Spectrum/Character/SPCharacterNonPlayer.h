@@ -52,6 +52,9 @@ protected:
 	TObjectPtr<class USPDamageSystemComponent> DamageSystemComponent;
 
 	UPROPERTY()
+	TObjectPtr<class USPAttackComponent> AttackComponent;
+
+	UPROPERTY()
 	float DefendRadius;
 	UPROPERTY()
 	float AttackRadius;
@@ -69,14 +72,18 @@ protected:
 	virtual float GetAITurnSpeed() override;
 
 	virtual void SetAIAttackDelegate(const FAICharacterAttackFinished& InOnAttackFinished) override;
-	virtual void Attack() override;
+	virtual void Attack(AActor* Target)override;
 
-	virtual void NotifyComboActionEnd();
+	UPROPERTY()
+	TObjectPtr<AActor> MyTarget;
+
+	virtual void NotifyComboActionEnd(UAnimMontage* Montage, bool bInterrupted);
 	FAICharacterAttackFinished OnAttackFinished;
 
 	// float MaxHealth;
 	// float Health;
 	// uint8 bIsDead : 1;
+	bool Attacking; 
 
 public: //interface
 	virtual float SetMovementSpeed(const MovementSpeed MoveSpeed) override;
@@ -94,4 +101,20 @@ public: //interface
 	virtual bool IsDead() override;
 
 	virtual void HitResponse();
+
+	void Teleport(FVector Location);
+	
+	
+	//Montage
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UAnimMontage> HitMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UAnimMontage> FireBallMontage;
+
+	UFUNCTION()
+	void HandleMontageAnimNotify(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload);
+
+	UFUNCTION()
+	void HitMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 };

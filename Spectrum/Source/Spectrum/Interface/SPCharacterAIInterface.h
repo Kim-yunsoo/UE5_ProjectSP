@@ -31,7 +31,7 @@ public:
 	
 	virtual void SetAIAttackDelegate(const FAICharacterAttackFinished& InOnAttackFinished) = 0;
 
-	virtual void Attack() = 0; //Attack
+	virtual void Attack(AActor* Target) = 0; //Attack
 	virtual float SetMovementSpeed(const MovementSpeed MoveSpeed)=0;
 	virtual float GetIdealAttackRange()=0;
 	virtual float GetIdealDefendRange()=0;

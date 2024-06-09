@@ -76,7 +76,6 @@ void USPSlowSkill::SkillAction()
 	FTransform SpawnTransform(Owner->SkillLocation->GetComponentRotation(), Owner->SkillLocation->GetComponentLocation());
 	ASPSlowSkillActor* MyActor =GetWorld()->SpawnActorDeferred<ASPSlowSkillActor>(ASPSlowSkillActor::StaticClass(),SpawnTransform);
 	MyActor->SetOwner(Owner);
-	//SP_SUBLOG(LogSPNetwork,Log,TEXT("Owner"));
 	MyActor->FinishSpawning(SpawnTransform);
 }
 

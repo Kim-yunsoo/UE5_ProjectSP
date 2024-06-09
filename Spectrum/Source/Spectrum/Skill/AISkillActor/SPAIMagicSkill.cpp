@@ -6,6 +6,7 @@
 #include "Components/BoxComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Particles/ParticleSystemComponent.h"
 
 // Sets default values
@@ -45,9 +46,10 @@ ASPAIMagicSkill::ASPAIMagicSkill()
 	}
 	
 
-	Speed = 1500.f;
+	Speed = 1000.f;
 	Gravity = 0.0f;
-	
+	bIsHoming=false;
+	bDoOnce = true; 
 }
 
 // Called when the game starts or when spawned
@@ -62,16 +64,47 @@ void ASPAIMagicSkill::BeginPlay()
 
 	BoxCollision->IgnoreActorWhenMoving(GetOwner(),true); // 이것을 발사하는 캐릭터는 충돌이 안되도록 설정
 
-	
+	if (TargetActor) // 타겟해야할 액터를 찾은 경우 ? 
+	{
+		RotateToTarget();
+		if (bIsHoming)
+		{
+			ProjectileMovement->bIsHomingProjectile = true;
+			ProjectileMovement->HomingAccelerationMagnitude= 2000.0f;
+			ProjectileMovement->HomingTargetComponent = TargetActor->GetRootComponent();
+		}
+	}
 }
 
 void ASPAIMagicSkill::OnBoxCollisionHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	FVector HitLocation = Hit.ImpactPoint;
-	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), EmitterHit, HitLocation, FRotator::ZeroRotator,
-											 FVector(1.0f), true, EPSCPoolMethod::None, true);
-	Destroy();
+	if(bDoOnce)
+	{
+		FVector HitLocation = Hit.ImpactPoint;
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), EmitterHit, HitLocation, FRotator::ZeroRotator,
+		                                         FVector(1.0f), true, EPSCPoolMethod::None, true);
+		//player에게 데미지를 주는 코드를 추가 한다.
+
+		SetLifeSpan(0.5f);
+		bDoOnce =false;
+		
+	}
+	// Destroy();
 }
 
+void ASPAIMagicSkill::InitTarget(AActor* TargetPlayer)
+{
+	TargetActor = TargetPlayer;
+	bIsHoming = true;
+}
+
+void ASPAIMagicSkill::RotateToTarget()
+{
+	FVector TargetLocation = TargetActor->GetActorLocation();
+	FVector MyLocation = GetActorLocation();
+	FVector UnitVector = UKismetMathLibrary::GetDirectionUnitVector(MyLocation, TargetLocation);
+
+	ProjectileMovement->Velocity = UnitVector * Speed;
+}
 

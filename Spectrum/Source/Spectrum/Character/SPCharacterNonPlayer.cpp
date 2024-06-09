@@ -5,6 +5,7 @@
 
 #include "BrainComponent.h"
 #include "AI/SPAIController.h"
+#include "Component/SPAttackComponent.h"
 #include "Component/SPDamageSystemComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Enums/SPMovementSpeed.h"
@@ -53,12 +54,15 @@ ASPCharacterNonPlayer::ASPCharacterNonPlayer()
 
 	//component
 	DamageSystemComponent = CreateDefaultSubobject<USPDamageSystemComponent>(TEXT("DamageSystemComponent"));
+	AttackComponent = CreateDefaultSubobject<USPAttackComponent>(TEXT("AttackComponent"));
 
 	AIControllerClass = ASPAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
-	DefendRadius = 350.0f;
-	AttackRadius = 150.0f;
+	AttackRadius = 500.0f;
+	DefendRadius = 700.0f;
+
+	Attacking= false; 
 	//
 	// MaxHealth=100;
 	// Health=100;
@@ -79,12 +83,16 @@ void ASPCharacterNonPlayer::BeginPlay()
 	Super::BeginPlay();
 
 	AIController = Cast<ASPAIController>(GetController());
+	GetMesh()->GetAnimInstance()->OnPlayMontageNotifyBegin.AddDynamic(
+	this, &ASPCharacterNonPlayer::HandleMontageAnimNotify);
 }
 
 void ASPCharacterNonPlayer::AttackHitCheck()
 {
 	GetCharacterMovement()->StopMovementImmediately(); //잠깐 멈춘다.
 	AIController->SetStateAsFrozen();
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	AnimInstance->Montage_Play(FireBallMontage, 1.0f);
 	//몽타주 재생
 	//몽타주 끝나는 부분에 SetStateasAttacking 실행 
 }
@@ -169,22 +177,23 @@ void ASPCharacterNonPlayer::SetAIAttackDelegate(const FAICharacterAttackFinished
 	OnAttackFinished = InOnAttackFinished;
 }
 
-void ASPCharacterNonPlayer::Attack()
+void ASPCharacterNonPlayer::Attack(AActor* Target)
 {
-	//공격 명령 내리는 곳 애니메이션 몽타주 플레이  ProcessComboCommand
-	//몽타주가 끝나는 부분 혹은 중단된 부분 NotifyComboActionEnd 호출
-	FTimerHandle TimerHandle;
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([&]
-		                                       {
-			                                       UE_LOG(LogTemp, Log, TEXT("NotifyComboActionEnd"));
-			                                       NotifyComboActionEnd();
-		                                       }
-	                                       ), 5.0f, false);
+	Attacking = true; 
+	MyTarget= Target;
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	AnimInstance->Montage_Play(FireBallMontage, 1.0f);
+	
+	FOnMontageEnded CompleteDelegate;
+	CompleteDelegate.BindUObject(this, &ASPCharacterNonPlayer::NotifyComboActionEnd);
+	AnimInstance->Montage_SetEndDelegate(CompleteDelegate, FireBallMontage);
+	
 }
 
-void ASPCharacterNonPlayer::NotifyComboActionEnd()
+void ASPCharacterNonPlayer::NotifyComboActionEnd(UAnimMontage* Montage, bool bInterrupted)
 {
 	//Super::NotifyComboActionEnd();
+	Attacking=false; 
 	OnAttackFinished.ExecuteIfBound(); //델리게이트에 묶인 함수를 호출한다. 
 }
 
@@ -259,6 +268,36 @@ void ASPCharacterNonPlayer::HitResponse()
 	GetCharacterMovement()->StopMovementImmediately();
 	AIController->SetStateAsFrozen(); //맞을땐 Frozen 상태 
 	//몽타지 End 부분에 Set State as attack으로 바꿀 것
-	AIController->SetStateAttacking(AIController->AttackTarget,true);
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	AnimInstance->Montage_Play(HitMontage, 1.0f);
+	//AIController->SetStateAttacking(AIController->AttackTarget,true);
+
+	FOnMontageEnded CompleteDelegate;
+	CompleteDelegate.BindUObject(this, &ASPCharacterNonPlayer::HitMontageEnded);
+	AnimInstance->Montage_SetEndDelegate(CompleteDelegate, HitMontage);
+}
+
+void ASPCharacterNonPlayer::Teleport(FVector Location)
+{
+
 	
+	
+}
+
+void ASPCharacterNonPlayer::HandleMontageAnimNotify(FName NotifyName,
+                                                    const FBranchingPointNotifyPayload& BranchingPointPayload)
+{
+	if (NotifyName == FName("AIFire"))
+	{
+		FVector Location=GetMesh()->GetSocketLocation(FName(TEXT("RightHand")));
+
+		FTransform Transform = FTransform{FRotator::ZeroRotator, Location,FVector{1.0,1.0,1.0,}};
+		
+		AttackComponent->MagicSpell(MyTarget,Transform );
+	}
+}
+
+void ASPCharacterNonPlayer::HitMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+	AIController->SetStateAttacking(AIController->AttackTarget,true);
 }

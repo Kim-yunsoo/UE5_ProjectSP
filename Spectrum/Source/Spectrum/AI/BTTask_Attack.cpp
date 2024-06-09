@@ -4,6 +4,8 @@
 #include "AI/BTTask_Attack.h"
 
 #include "AIController.h"
+#include "SPAI.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "Interface/SPCharacterAIInterface.h"
 
 UBTTask_Attack::UBTTask_Attack()
@@ -33,8 +35,10 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded); //마무리 되었다고 알려주는 함수
 		}
 	);
-
+	UObject* TargetObject = OwnerComp.GetBlackboardComponent()->GetValueAsObject(BBKEY_TARGET);
+	AActor* TargetAcotr =Cast<AActor>(TargetObject);
+	
 	AIPawn->SetAIAttackDelegate(OnAttackFinished);
-	AIPawn->Attack(); //Attack 애니메이션 실행 
+	AIPawn->Attack(TargetAcotr); //Attack 애니메이션 실행 
 	return EBTNodeResult::InProgress; //공격 애니메이션 진행 중이기 때문에 InProgress로 설정하고, 애니메이션 이후에 Succeded 값 반환
 }
