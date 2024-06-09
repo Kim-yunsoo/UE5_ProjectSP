@@ -10,6 +10,9 @@
 #include "Components/CapsuleComponent.h"
 #include "Enums/SPMovementSpeed.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Particles/ParticleSystemComponent.h"
+#include "Skill/AISkillActor/SPAIMagicSkill.h"
 #include "UI/HpBar/SPHpBarWidget.h"
 #include "UI/HpBar/SPWidgetComponent.h"
 
@@ -61,8 +64,8 @@ ASPCharacterNonPlayer::ASPCharacterNonPlayer()
 
 	AttackRadius = 500.0f;
 	DefendRadius = 700.0f;
-
-	Attacking= false; 
+	IsTeleporting=false;
+	Attacking = false;
 	//
 	// MaxHealth=100;
 	// Health=100;
@@ -84,7 +87,7 @@ void ASPCharacterNonPlayer::BeginPlay()
 
 	AIController = Cast<ASPAIController>(GetController());
 	GetMesh()->GetAnimInstance()->OnPlayMontageNotifyBegin.AddDynamic(
-	this, &ASPCharacterNonPlayer::HandleMontageAnimNotify);
+		this, &ASPCharacterNonPlayer::HandleMontageAnimNotify);
 }
 
 void ASPCharacterNonPlayer::AttackHitCheck()
@@ -177,25 +180,34 @@ void ASPCharacterNonPlayer::SetAIAttackDelegate(const FAICharacterAttackFinished
 	OnAttackFinished = InOnAttackFinished;
 }
 
-void ASPCharacterNonPlayer::Attack(AActor* Target)
+void ASPCharacterNonPlayer::SetAITeleportDelegate(const FAICharacterTeleportFinished& InOnTeleportFinished)
 {
-	Attacking = true; 
-	MyTarget= Target;
-	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-	AnimInstance->Montage_Play(FireBallMontage, 1.0f);
-	
-	FOnMontageEnded CompleteDelegate;
-	CompleteDelegate.BindUObject(this, &ASPCharacterNonPlayer::NotifyComboActionEnd);
-	AnimInstance->Montage_SetEndDelegate(CompleteDelegate, FireBallMontage);
-	
+	OnTeleportFinished = InOnTeleportFinished;
 }
 
-void ASPCharacterNonPlayer::NotifyComboActionEnd(UAnimMontage* Montage, bool bInterrupted)
+void ASPCharacterNonPlayer::Attack(AActor* Target)
+{
+	Attacking = true;
+	MyTarget = Target;
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	AnimInstance->Montage_Play(FireBallMontage, 1.0f);
+
+	FOnMontageEnded CompleteDelegate;
+	CompleteDelegate.BindUObject(this, &ASPCharacterNonPlayer::AttackEndDelegate);
+	AnimInstance->Montage_SetEndDelegate(CompleteDelegate, FireBallMontage);
+}
+
+void ASPCharacterNonPlayer::AttackEndDelegate(UAnimMontage* Montage, bool bInterrupted)
 {
 	//Super::NotifyComboActionEnd();
-	Attacking=false; 
+	Attacking = false;
 	OnAttackFinished.ExecuteIfBound(); //델리게이트에 묶인 함수를 호출한다. 
 }
+
+// void ASPCharacterNonPlayer::TeleportEndDelegate(UAnimMontage* Montage, bool bInterrupted)
+// {
+// 	OnTeleportFinished.ExecuteIfBound();
+// }
 
 float ASPCharacterNonPlayer::SetMovementSpeed(const MovementSpeed MoveSpeed)
 {
@@ -259,7 +271,6 @@ bool ASPCharacterNonPlayer::TakeDamage(float Amount, bool ShouldForceInterrupt)
 
 bool ASPCharacterNonPlayer::IsDead()
 {
-	
 	return DamageSystemComponent->IsDead;
 }
 
@@ -279,9 +290,66 @@ void ASPCharacterNonPlayer::HitResponse()
 
 void ASPCharacterNonPlayer::Teleport(FVector Location)
 {
+	if(!IsTeleporting)
+	{
+		IsTeleporting=true;
+		
+		GetCharacterMovement()->SetMovementMode(MOVE_Flying);
+		GetCharacterMovement()->MaxFlySpeed = 5000;
+		GetCharacterMovement()->MaxAcceleration = 99999;
 
-	
-	
+		GetMesh()->SetVisibility(false, true);
+		GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
+
+		TeleportBodyComponent = UGameplayStatics::SpawnEmitterAttached(TeleportBodyParticle, GetMesh(),
+		                                                               FName(TEXT("spine_01")));
+		TeleportTrailComponent = UGameplayStatics::SpawnEmitterAttached(TeleportTrailParticle, GetMesh(),
+		                                                                FName(TEXT("spine_01")));
+		StopAnimMontage();
+
+		AIController->MoveToLocation(Location, 15.0f);
+		SetActorLocation(Location);
+		TeleportEnd();
+	}
+	else
+	{
+		FLatentActionInfo LatentInfo;
+		LatentInfo.CallbackTarget = this;
+		LatentInfo.ExecutionFunction = FName("OnTeleportEnd");
+		LatentInfo.Linkage = 0;
+		LatentInfo.UUID = __LINE__;
+		UKismetSystemLibrary::DelayUntilNextTick(this, LatentInfo);
+		OnTeleportFinished.ExecuteIfBound();
+	}
+	// FTimerHandle TimerHandle;
+	// GetWorld()->GetTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([&]
+	// {
+	// }), 0.7f, false);
+}
+
+void ASPCharacterNonPlayer::TeleportEnd()
+{
+	GetCharacterMovement()->StopMovementImmediately();
+	GetCharacterMovement()->SetMovementMode(MOVE_Walking);
+	GetCharacterMovement()->MaxAcceleration = 1500.0;
+	GetMesh()->SetVisibility(true, true);
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+
+	OnTeleportFinished.ExecuteIfBound();
+
+	FTimerHandle TimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([&]
+	{
+		IsTeleporting=false;
+		if (TeleportBodyComponent)
+		{
+			TeleportBodyComponent->DestroyComponent();
+		}
+		if (TeleportTrailComponent)
+		{
+			TeleportTrailComponent->DestroyComponent();
+		}
+	}), 1.0f, false);
 }
 
 void ASPCharacterNonPlayer::HandleMontageAnimNotify(FName NotifyName,
@@ -289,15 +357,15 @@ void ASPCharacterNonPlayer::HandleMontageAnimNotify(FName NotifyName,
 {
 	if (NotifyName == FName("AIFire"))
 	{
-		FVector Location=GetMesh()->GetSocketLocation(FName(TEXT("RightHand")));
+		FVector Location = GetMesh()->GetSocketLocation(FName(TEXT("RightHand")));
 
-		FTransform Transform = FTransform{FRotator::ZeroRotator, Location,FVector{1.0,1.0,1.0,}};
-		
-		AttackComponent->MagicSpell(MyTarget,Transform );
+		FTransform Transform = FTransform{FRotator::ZeroRotator, Location, FVector{1.0, 1.0, 1.0,}};
+
+		AttackComponent->MagicSpell(MyTarget, Transform);
 	}
 }
 
 void ASPCharacterNonPlayer::HitMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
-	AIController->SetStateAttacking(AIController->AttackTarget,true);
+	AIController->SetStateAttacking(AIController->AttackTarget, true);
 }

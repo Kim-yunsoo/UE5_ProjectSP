@@ -6,6 +6,8 @@
 #include "AIController.h"
 #include "SPAI.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "BehaviorTree/BTFunctionLibrary.h"
+#include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "Interface/SPCharacterAIInterface.h"
 
 UBTTask_TurnToTarget::UBTTask_TurnToTarget()
@@ -42,10 +44,24 @@ EBTNodeResult::Type UBTTask_TurnToTarget::ExecuteTask(UBehaviorTreeComponent& Ow
 	AAIController* AIController = OwnerComp.GetAIOwner(); //AIController 가져올 수 있다.
 	if(AIController)
 	{
-		UE_LOG(LogTemp,Log,TEXT("%s"),*TargetPawn->GetName());
-		AIController->SetFocus(TargetPawn);
+		//AActor* TargetActor =UBTFunctionLibrary::GetBlackboardValueAsActor(this,FocusTarget);
+		UObject* TargetObject = OwnerComp.GetBlackboardComponent()->GetValueAsObject(BBKEY_TARGET);
+		if(TargetObject)
+		{
+			UE_LOG(LogTemp,Log,TEXT("SetFocus"));
+			AActor* TargetActor = Cast<AActor>(TargetObject); 
+			AIController->SetFocus(TargetActor,EAIFocusPriority::Gameplay);
+		}
+		// else
+		// {
+		// 	FVector Location =  UBTFunctionLibrary::GetBlackboardValueAsVector(this, FocusTarget);
+		// 	if(UAIBlueprintHelperLibrary::IsValidAILocation(Location))
+		// 	{
+		// 		AIController->SetFocalPoint(Location);
+		// 	}
+		// }
 	}
-	return EBTNodeResult::Succeeded;
+	return EBTNodeResult::Succeeded;     
 	//FinishExecute
 
 	// float TurnSpeed = AIPawn->GetAITurnSpeed();

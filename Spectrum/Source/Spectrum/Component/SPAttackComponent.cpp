@@ -10,7 +10,6 @@
 // Sets default values for this component's properties
 USPAttackComponent::USPAttackComponent()
 {
-
 }
 
 
@@ -18,8 +17,6 @@ USPAttackComponent::USPAttackComponent()
 void USPAttackComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-	
 }
 
 void USPAttackComponent::MagicSpell(AActor* Target, FTransform Transform)
@@ -27,18 +24,23 @@ void USPAttackComponent::MagicSpell(AActor* Target, FTransform Transform)
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
-	SpawnParams.Owner= GetOwner();
-	
-	
-	ASPAIMagicSkill* MyActor =GetWorld()->SpawnActorDeferred<ASPAIMagicSkill>(ASPAIMagicSkill::StaticClass(),Transform,GetOwner() );
-	if(MyActor)
+	SpawnParams.Owner = GetOwner();
+
+	ASPAIMagicSkill* MyActor = GetWorld()->SpawnActorDeferred<ASPAIMagicSkill>(
+		ASPAIMagicSkill::StaticClass(), Transform, GetOwner());
+	if (MyActor)
 	{
+		//GetOwner()
 		MyActor->InitTarget(Target);
 		MyActor->FinishSpawning(Transform);
 	}
+	ASPCharacterNonPlayer* AICharacter = Cast<ASPCharacterNonPlayer>(GetOwner());
+	if (AICharacter)
+	{
+		AICharacter->GetCapsuleComponent()->IgnoreActorWhenMoving(MyActor, true);
+	}
 
 	ASPCharacterNonPlayer* AIPlayer = Cast<ASPCharacterNonPlayer>(GetOwner());
-	AIPlayer->GetCapsuleComponent()->IgnoreActorWhenMoving(MyActor,true);
+	AIPlayer->GetCapsuleComponent()->IgnoreActorWhenMoving(MyActor, true);
 	//end 델리게이트 ?? 왜쓰는거지 ? 
 }
-

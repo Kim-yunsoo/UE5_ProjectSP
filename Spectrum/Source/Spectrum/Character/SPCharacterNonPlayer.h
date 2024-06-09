@@ -72,18 +72,23 @@ protected:
 	virtual float GetAITurnSpeed() override;
 
 	virtual void SetAIAttackDelegate(const FAICharacterAttackFinished& InOnAttackFinished) override;
+	virtual void SetAITeleportDelegate(const FAICharacterTeleportFinished& InOnTeleportFinished) override;
+
 	virtual void Attack(AActor* Target)override;
 
 	UPROPERTY()
 	TObjectPtr<AActor> MyTarget;
 
-	virtual void NotifyComboActionEnd(UAnimMontage* Montage, bool bInterrupted);
+	virtual void AttackEndDelegate(UAnimMontage* Montage, bool bInterrupted);
+	//virtual void TeleportEndDelegate(UAnimMontage* Montage, bool bInterrupted);
 	FAICharacterAttackFinished OnAttackFinished;
+	FAICharacterTeleportFinished OnTeleportFinished;
 
 	// float MaxHealth;
 	// float Health;
 	// uint8 bIsDead : 1;
-	bool Attacking; 
+	bool Attacking;
+	bool IsTeleporting;
 
 public: //interface
 	virtual float SetMovementSpeed(const MovementSpeed MoveSpeed) override;
@@ -103,6 +108,7 @@ public: //interface
 	virtual void HitResponse();
 
 	void Teleport(FVector Location);
+	void TeleportEnd();
 	
 	
 	//Montage
@@ -112,6 +118,15 @@ public: //interface
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UAnimMontage> FireBallMontage;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Particle, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UParticleSystem> TeleportBodyParticle;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Particle, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UParticleSystem> TeleportTrailParticle;
+
+	UPROPERTY()
+	TObjectPtr<class UParticleSystemComponent> TeleportBodyComponent;
+	UPROPERTY()
+	TObjectPtr<class UParticleSystemComponent> TeleportTrailComponent;
 	UFUNCTION()
 	void HandleMontageAnimNotify(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload);
 

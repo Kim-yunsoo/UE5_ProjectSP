@@ -21,6 +21,7 @@ ASPAIController::ASPAIController()
 	{
 		BBAsset = BBAssetRef.Object;
 	}
+	
 
 	static ConstructorHelpers::FObjectFinder<UBehaviorTree> BTAssetRef(
 		TEXT("/Script/AIModule.BehaviorTree'/Game/AI/BT_SP_Character.BT_SP_Character'"));
