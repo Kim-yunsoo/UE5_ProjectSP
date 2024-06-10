@@ -49,13 +49,21 @@ ASPAIMagicSkill::ASPAIMagicSkill()
 	Speed = 1000.f;
 	Gravity = 0.0f;
 	bIsHoming=false;
-	bDoOnce = true; 
+	bDoOnce = true;
+	//TargetLocation= FVector::Zero();
 }
 
 // Called when the game starts or when spawned
 void ASPAIMagicSkill::BeginPlay()
 {
 	Super::BeginPlay();
+	if (HasAuthority())
+	{
+		this->SetReplicates(true);
+		this->AActor::SetReplicateMovement(true);
+	}
+
+	
 	ProjectileMovement->InitialSpeed = Speed;
 	ProjectileMovement->MaxSpeed = Speed;
 	ProjectileMovement->ProjectileGravityScale = Gravity;
@@ -74,6 +82,7 @@ void ASPAIMagicSkill::BeginPlay()
 			ProjectileMovement->HomingTargetComponent = TargetActor->GetRootComponent();
 		}
 	}
+	SetLifeSpan(7.0f);
 }
 
 void ASPAIMagicSkill::OnBoxCollisionHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
@@ -96,14 +105,15 @@ void ASPAIMagicSkill::OnBoxCollisionHit(UPrimitiveComponent* HitComponent, AActo
 void ASPAIMagicSkill::InitTarget(AActor* TargetPlayer)
 {
 	TargetActor = TargetPlayer;
+	TargetLocation = TargetPlayer->GetActorLocation();
 	bIsHoming = true;
 }
 
 void ASPAIMagicSkill::RotateToTarget()
 {
-	FVector TargetLocation = TargetActor->GetActorLocation();
+	FVector MyTargetLocation {TargetLocation};
 	FVector MyLocation = GetActorLocation();
-	FVector UnitVector = UKismetMathLibrary::GetDirectionUnitVector(MyLocation, TargetLocation);
+	FVector UnitVector = UKismetMathLibrary::GetDirectionUnitVector(MyLocation, MyTargetLocation);
 
 	ProjectileMovement->Velocity = UnitVector * Speed;
 }

@@ -468,7 +468,6 @@ void ASPCharacterPlayer::BeginPlay()
 	SetCharacterControl(CurrentCharacterControlType);
 	GetMesh()->GetAnimInstance()->OnPlayMontageNotifyBegin.AddDynamic(
 		this, &ASPCharacterPlayer::HandleMontageAnimNotify);
-	//
 };
 
 void ASPCharacterPlayer::Tick(float DeltaTime)
@@ -953,6 +952,7 @@ void ASPCharacterPlayer::ServerRPCSpectrumPotionSpawn_Implementation()
 				FActorSpawnParameters SpawnParams;
 				SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 				SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
+				SpawnParams.Owner= this;
 				Potion = GetWorld()->SpawnActor<ASPSpectrumPotion>(ASPSpectrumPotion::StaticClass(),
 																   GetMesh()->GetSocketLocation("Item_Socket"),
 																   FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
@@ -984,6 +984,7 @@ void ASPCharacterPlayer::ServerRPCSpectrumPotionSpawn_Implementation()
 			FActorSpawnParameters SpawnParams;
 			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 			SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
+			SpawnParams.Owner=this;
 			Potion = GetWorld()->SpawnActor<ASPSpectrumPotion>(ASPSpectrumPotion::StaticClass(),
 															   GetMesh()->GetSocketLocation("Item_Socket"),
 															   FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
@@ -1225,6 +1226,7 @@ void ASPCharacterPlayer::ServerRPCGreenPotionSpawn_Implementation()
 				FActorSpawnParameters SpawnParams;
 				SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 				SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
+				SpawnParams.Owner=this;
 				Potion = GetWorld()->SpawnActor<ASPGreenPotion>(ASPGreenPotion::StaticClass(),
 																GetMesh()->GetSocketLocation("Item_Socket"),
 																FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
@@ -1258,6 +1260,7 @@ void ASPCharacterPlayer::ServerRPCGreenPotionSpawn_Implementation()
 			FActorSpawnParameters SpawnParams;
 			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 			SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
+			SpawnParams.Owner=this;
 			Potion = GetWorld()->SpawnActor<ASPGreenPotion>(ASPGreenPotion::StaticClass(),
 			                                                GetMesh()->GetSocketLocation("Item_Socket"),
 			                                                FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
@@ -1297,6 +1300,7 @@ void ASPCharacterPlayer::ServerRPCOrangePotionSpawn_Implementation()
 				FActorSpawnParameters SpawnParams;
 				SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 				SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
+				SpawnParams.Owner=this;
 				Potion = GetWorld()->SpawnActor<ASPOrangePotion>(ASPOrangePotion::StaticClass(),
 																 GetMesh()->GetSocketLocation("Item_Socket"),
 																 FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
@@ -1327,6 +1331,7 @@ void ASPCharacterPlayer::ServerRPCOrangePotionSpawn_Implementation()
 			FActorSpawnParameters SpawnParams;
 			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 			SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
+			SpawnParams.Owner=this;
 			Potion = GetWorld()->SpawnActor<ASPOrangePotion>(ASPOrangePotion::StaticClass(),
 			                                                 GetMesh()->GetSocketLocation("Item_Socket"),
 			                                                 FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
@@ -1362,6 +1367,7 @@ void ASPCharacterPlayer::ServerRPCPurplePotionSpawn_Implementation()
 				FActorSpawnParameters SpawnParams;
 				SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 				SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
+				SpawnParams.Owner=this;
 				Potion = GetWorld()->SpawnActor<ASPPurplePotion>(ASPPurplePotion::StaticClass(),
 																 GetMesh()->GetSocketLocation("Item_Socket"),
 																 FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
@@ -1392,6 +1398,7 @@ void ASPCharacterPlayer::ServerRPCPurplePotionSpawn_Implementation()
 			FActorSpawnParameters SpawnParams;
 			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 			SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
+			SpawnParams.Owner=this;
 			Potion = GetWorld()->SpawnActor<ASPPurplePotion>(ASPPurplePotion::StaticClass(),
 															 GetMesh()->GetSocketLocation("Item_Socket"),
 															 FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
@@ -2147,6 +2154,7 @@ void ASPCharacterPlayer::ServerRPCBlackPotionSpawn_Implementation()
 				FActorSpawnParameters SpawnParams;
 				SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 				SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
+				SpawnParams.Owner = this;
 				Potion = GetWorld()->SpawnActor<ASPBlackPotion>(ASPBlackPotion::StaticClass(),
 																GetMesh()->GetSocketLocation("Item_Socket"),
 																FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
@@ -2178,6 +2186,7 @@ void ASPCharacterPlayer::ServerRPCBlackPotionSpawn_Implementation()
 			FActorSpawnParameters SpawnParams;
 			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 			SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
+			SpawnParams.Owner=this;
 			Potion = GetWorld()->SpawnActor<ASPBlackPotion>(ASPBlackPotion::StaticClass(),
 			                                                GetMesh()->GetSocketLocation("Item_Socket"),
 			                                                FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);

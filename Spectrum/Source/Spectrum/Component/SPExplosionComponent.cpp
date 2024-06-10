@@ -42,9 +42,6 @@ void USPExplosionComponent::BeginPlay()
 void USPExplosionComponent::Explode(ColorType& MyColor)
 {
 	Super::Explode(MyColor);
-	SP_SUBLOG(LogSPNetwork,Log,TEXT("EXplode!")); //서버만 들어옴  
-	//Multi Sphere Trace For Object
-	//Start & End
 	FVector SphereTracePoint = GetOwner()->GetRootComponent()->GetComponentLocation();
 	float Radius = 125.f;
 	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;

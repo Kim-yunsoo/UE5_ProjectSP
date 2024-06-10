@@ -22,4 +22,5 @@ protected:
 
 public:	
 	void MagicSpell(AActor* Target, FTransform Transform);
+	virtual void InitializeComponent() override;
 };

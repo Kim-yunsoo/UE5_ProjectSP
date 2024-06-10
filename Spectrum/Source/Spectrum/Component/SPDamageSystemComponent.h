@@ -9,8 +9,6 @@ DECLARE_MULTICAST_DELEGATE(FOnHpZeroDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnHpDamageResponseDelegate);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnHpChangedDelegate, float /*CurrentHp*/);
 
-
-
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SPECTRUM_API USPDamageSystemComponent : public UActorComponent
 {
@@ -30,12 +28,15 @@ protected:
 
 public:	
 	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	FORCEINLINE float GetMaxHp() { return MaxHealth; }
 	FORCEINLINE float GetCurrentHp() { return Health; }
 
-	
+
+	UPROPERTY()
 	float Health;
+
+
+	
 	float MaxHealth;
 	bool IsDead;
 	bool IsInterruptible;
@@ -45,4 +46,6 @@ public:
 
 	
 	bool TakeDamage(float Amount, bool ShouldForceInterrupt);
+	virtual void InitializeComponent() override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };

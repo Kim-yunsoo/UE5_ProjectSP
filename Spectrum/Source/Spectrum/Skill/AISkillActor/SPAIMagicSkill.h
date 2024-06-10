@@ -32,12 +32,13 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Gravity ;
+	
 	UPROPERTY()
 	TObjectPtr<UParticleSystemComponent> MainVFX;
 	
 	UPROPERTY()
 	TObjectPtr<UParticleSystem> EmitterHit;
-
+	
 	UPROPERTY()
 	TObjectPtr<AActor> TargetActor;
 
@@ -45,6 +46,8 @@ protected:
 	uint8 bIsHoming:1;
 
 	uint8 bDoOnce :1 ;
+
+	FVector TargetLocation;
 	
 	
 	

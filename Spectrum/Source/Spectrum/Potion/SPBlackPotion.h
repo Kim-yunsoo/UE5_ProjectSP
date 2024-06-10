@@ -44,4 +44,10 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Default")
 	TObjectPtr<USoundWave> CrushSound;
 
+	UFUNCTION(NetMulticast, Unreliable )
+	void MultiRPCTakeDamage(ASPCharacterNonPlayer* AIPlayer);
+
+	// UPROPERTY()
+	// TObjectPtr<ASPCharacterNonPlayer> AIPlayer ;
+
 };

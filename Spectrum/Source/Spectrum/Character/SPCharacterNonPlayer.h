@@ -21,9 +21,12 @@ public:
 	ASPCharacterNonPlayer();
 
 	virtual void PostInitializeComponents() override;
+	
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaSeconds) override;
+
 
 protected:
 	// Called when the game starts or when spawned
@@ -59,7 +62,7 @@ protected:
 	UPROPERTY()
 	float AttackRadius;
 
-	UPROPERTY()
+	UPROPERTY(Replicated)
 	TObjectPtr<ASPAIController> AIController;
 
 	virtual void SetupCharacterWidget(class USPUserWidget* InUserWidget) override;
@@ -132,4 +135,21 @@ public: //interface
 
 	UFUNCTION()
 	void HitMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+
+	//¼­¹ö
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const;
+
+	UFUNCTION(NetMulticast, Unreliable)
+	void MultiRPCAttack();
+
+	UFUNCTION(NetMulticast, Unreliable)
+	void MultiRPCTeleport();
+
+	UFUNCTION(NetMulticast, Unreliable)
+	void MultiRPCTeleportEnd();
+
+	// UFUNCTION(Client, Unreliable)
+	// void ClientRPCTeleport();
+
+	void DeletParticle();
 };

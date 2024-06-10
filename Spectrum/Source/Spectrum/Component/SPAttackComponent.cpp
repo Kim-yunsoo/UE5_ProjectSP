@@ -10,6 +10,7 @@
 // Sets default values for this component's properties
 USPAttackComponent::USPAttackComponent()
 {
+	bWantsInitializeComponent = true;
 }
 
 
@@ -17,6 +18,12 @@ USPAttackComponent::USPAttackComponent()
 void USPAttackComponent::BeginPlay()
 {
 	Super::BeginPlay();
+
+}
+void USPAttackComponent::InitializeComponent()
+{
+	SetIsReplicated(true);
+	Super::InitializeComponent();
 }
 
 void USPAttackComponent::MagicSpell(AActor* Target, FTransform Transform)
@@ -39,8 +46,8 @@ void USPAttackComponent::MagicSpell(AActor* Target, FTransform Transform)
 	{
 		AICharacter->GetCapsuleComponent()->IgnoreActorWhenMoving(MyActor, true);
 	}
-
-	ASPCharacterNonPlayer* AIPlayer = Cast<ASPCharacterNonPlayer>(GetOwner());
-	AIPlayer->GetCapsuleComponent()->IgnoreActorWhenMoving(MyActor, true);
+	// ASPCharacterNonPlayer* AIPlayer = Cast<ASPCharacterNonPlayer>(GetOwner());
+	// AIPlayer->GetCapsuleComponent()->IgnoreActorWhenMoving(MyActor, true);
 	//end 델리게이트 ?? 왜쓰는거지 ? 
 }
+

@@ -1,7 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "Potion/SPBlackPotion.h"
 
+#include "SpectrumLog.h"
 #include "SPGlobalEnum.h"
+#include "Character/SPCharacterNonPlayer.h"
 #include "Component/SPExplosionComponent.h"
 
 
@@ -39,6 +41,16 @@ void ASPBlackPotion::BeginPlay()
 
 void ASPBlackPotion::HandleActorHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
 {
+	//서버만 들어옴
+	if(OtherActor)
+	{
+		SP_LOG(LogSPNetwork,Log,TEXT("%s"), *OtherActor->GetName());
+	}
+	 ASPCharacterNonPlayer* AIPlayer = Cast<ASPCharacterNonPlayer>(OtherActor);
+	if(AIPlayer)
+	{
+		MultiRPCTakeDamage(AIPlayer);
+	}
 	ExplosionComponent->Explode(MyColor);
 	this->SetLifeSpan(0.1f);
 }
@@ -48,5 +60,10 @@ void ASPBlackPotion::HandleActorHit(AActor* SelfActor, AActor* OtherActor, FVect
 void ASPBlackPotion::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+}
+
+void ASPBlackPotion::MultiRPCTakeDamage_Implementation(ASPCharacterNonPlayer* AIPlayer)
+{
+	AIPlayer->TakeDamage(10.0f, true);
 }
 

@@ -3,6 +3,9 @@
 
 #include "Component/SPDamageSystemComponent.h"
 
+#include "SpectrumLog.h"
+#include "Net/UnrealNetwork.h"
+
 // Sets default values for this component's properties
 USPDamageSystemComponent::USPDamageSystemComponent()
 {
@@ -15,6 +18,7 @@ USPDamageSystemComponent::USPDamageSystemComponent()
 	Health = MaxHealth;
 	IsDead = false;
 	IsInterruptible = true;
+	bWantsInitializeComponent = true;
 }
 
 
@@ -24,14 +28,17 @@ void USPDamageSystemComponent::BeginPlay()
 	Super::BeginPlay();
 }
 
-
-// Called every frame
-void USPDamageSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
-                                             FActorComponentTickFunction* ThisTickFunction)
+void USPDamageSystemComponent::InitializeComponent()
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	SetIsReplicated(true);
+	Super::InitializeComponent();
+	SetHp(MaxHealth);
+}
 
-	// ...
+void USPDamageSystemComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	//DOREPLIFETIME(USPDamageSystemComponent, Health);
 }
 
 void USPDamageSystemComponent::SetHp(float NewHp)
@@ -54,7 +61,10 @@ bool USPDamageSystemComponent::TakeDamage(float Amount, bool ShouldForceInterrup
 {
 	if (!IsDead)
 	{
+		SP_SUBLOG(LogSPNetwork, Log, TEXT("Amount : %f"),Amount);
+
 		Health = Health - Amount;
+		SP_SUBLOG(LogSPNetwork, Log, TEXT("Health : %f"),Health);
 		SetHp(Health); // HP 위젯 체력 조절 
 		if (Health <= 0.0f)
 		{

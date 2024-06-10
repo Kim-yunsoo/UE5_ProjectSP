@@ -3,6 +3,7 @@
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardData.h"
 #include "SPAI.h"
+#include "SpectrumLog.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Character/SPCharacterNonPlayer.h"
 #include "Character/SPCharacterPlayer.h"
@@ -107,6 +108,7 @@ void ASPAIController::SetStatePassvie()
 void ASPAIController::SetStateAttacking(AActor* Target, bool bUseLastTarget)
 {
 	AActor* NewAttackTarget;
+	//AttackTarget라는 것은 기존의 타겟팅이었던 것 
 	if (bUseLastTarget && IsValid(AttackTarget))
 	{
 		NewAttackTarget = AttackTarget;
@@ -115,6 +117,15 @@ void ASPAIController::SetStateAttacking(AActor* Target, bool bUseLastTarget)
 	{
 		NewAttackTarget = Target;
 	}
+	//
+	// if(AttackTarget!=Target)
+	// {
+	// 	//if(GetPawn()->GetActorLocation())
+	// 	
+	// 	//UE_LOG(LogTemp,Log,TEXT("Diffence Pawn"));
+	// }
+
+	
 
 	if (NewAttackTarget)
 	{
@@ -126,7 +137,6 @@ void ASPAIController::SetStateAttacking(AActor* Target, bool bUseLastTarget)
 	{
 		Blackboard->SetValueAsEnum(BBKEY_STATE, static_cast<uint8>(AIState::Passive));
 	}
-
 }
 
 void ASPAIController::SetStateAsDead()
@@ -140,17 +150,14 @@ void ASPAIController::HandleSightSense(AActor* Actor, FAIStimulus Stimulus)
 
 	if (SenseType == EAISense::Hearing)
 	{
-		UE_LOG(LogTemp, Log, TEXT("Hearing"));
 		HandleSensedSound(Stimulus.StimulusLocation);
 	}
 	if (SenseType == EAISense::Sight)
 	{
-		UE_LOG(LogTemp, Log, TEXT("Sight"));
 		HandleSensedSight(Actor);
 	}
 	if (SenseType == EAISense::Damage)
 	{
-		UE_LOG(LogTemp, Log, TEXT("Damage"));
 		HandleSensedDamage(Actor);
 	}
 }
@@ -160,6 +167,8 @@ void ASPAIController::HandleSensedSight(AActor* Actor)
 	//GetCurrentState();
 	if (GetCurrentState() == AIState::Passive || GetCurrentState() == AIState::Investigating)
 	{
+		UE_LOG(LogTemp,Log,TEXT("HandleSensedSight"));
+
 		if (Cast<ACharacter>(Actor)) //내플레이어가 맞으면 
 		{
 			SetStateAttacking(Actor,false);
