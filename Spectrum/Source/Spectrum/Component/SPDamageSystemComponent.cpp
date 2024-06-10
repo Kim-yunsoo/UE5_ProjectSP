@@ -52,7 +52,8 @@ float USPDamageSystemComponent::Heal(float Amount)
 	if (!IsDead)
 	{
 		Health = Health + Amount;
-		Health = FMath::Clamp(Health, 0.0f, MaxHealth);
+		//Health = FMath::Clamp(Health, 0.0f, MaxHealth);
+		SetHp(Health);
 	}
 	return Health;
 }

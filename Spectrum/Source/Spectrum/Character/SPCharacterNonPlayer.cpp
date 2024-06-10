@@ -13,6 +13,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
+#include "Object/SPHealZone.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "UI/HpBar/SPHpBarWidget.h"
 #include "UI/HpBar/SPWidgetComponent.h"
@@ -218,6 +219,11 @@ void ASPCharacterNonPlayer::SetAITeleportDelegate(const FAICharacterTeleportFini
 	OnTeleportFinished = InOnTeleportFinished;
 }
 
+void ASPCharacterNonPlayer::SetAIHealDelegate(const FAICharacterHealFinished& InOnTeleportFinished)
+{
+	OnHealFinished= InOnTeleportFinished;
+}
+
 void ASPCharacterNonPlayer::Attack(AActor* Target)
 {
 	//서버가 들어온다. 
@@ -321,6 +327,18 @@ void ASPCharacterNonPlayer::HealOverTiem()
 {
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	AnimInstance->Montage_Play(HealMontage, 1.0f);
+
+	FOnMontageEnded CompleteDelegate;
+	CompleteDelegate.BindUObject(this, &ASPCharacterNonPlayer::HealMontageEnded);
+	AnimInstance->Montage_SetEndDelegate(CompleteDelegate, HealMontage);
+	
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
+	SpawnParams.Owner=this;
+	HealZone =GetWorld()->SpawnActor<ASPHealZone>(ASPHealZone::StaticClass(),GetActorLocation(),
+											   FRotator::ZeroRotator, SpawnParams);
+	HealZone->OnHpUpDelegate.AddUObject(this, &ASPCharacterNonPlayer::HealDelegateFun);
 }
 
 void ASPCharacterNonPlayer::Teleport(FVector Location)
@@ -418,6 +436,20 @@ void ASPCharacterNonPlayer::HitMontageEnded(UAnimMontage* Montage, bool bInterru
 	{
 		AIController->SetStateAttacking(AIController->AttackTarget, true);
 	}
+}
+
+void ASPCharacterNonPlayer::HealMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+	if(HealZone)
+	{
+		HealZone->Destroy();
+	}
+	OnHealFinished.ExecuteIfBound(); //델리게이트에 묶인 함수를 호출한다. 
+}
+
+void ASPCharacterNonPlayer::HealDelegateFun()
+{
+	Heal(DamageSystemComponent->MaxHealth*0.05);
 }
 
 void ASPCharacterNonPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

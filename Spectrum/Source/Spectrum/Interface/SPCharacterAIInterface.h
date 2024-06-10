@@ -19,6 +19,7 @@ class USPCharacterAIInterface : public UInterface
  */
 DECLARE_DELEGATE(FAICharacterAttackFinished);
 DECLARE_DELEGATE(FAICharacterTeleportFinished);
+DECLARE_DELEGATE(FAICharacterHealFinished);
 
 
 class SPECTRUM_API ISPCharacterAIInterface
@@ -32,6 +33,7 @@ public:
 	
 	virtual void SetAIAttackDelegate(const FAICharacterAttackFinished& InOnAttackFinished) = 0;
 	virtual void SetAITeleportDelegate(const FAICharacterTeleportFinished& InOnTeleportFinished) = 0;
+	virtual void SetAIHealDelegate(const FAICharacterHealFinished& InOnTeleportFinished) = 0;
 
 	virtual void Attack(AActor* Target) = 0; //Attack
 	virtual float SetMovementSpeed(const MovementSpeed MoveSpeed)=0;

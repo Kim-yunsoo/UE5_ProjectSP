@@ -3,6 +3,8 @@
 
 #include "Object/SPHealZone.h"
 
+#include "Character/SPCharacterNonPlayer.h"
+#include "Character/SPCharacterPlayer.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Particles/ParticleSystemComponent.h"
 
@@ -23,7 +25,7 @@ void ASPHealZone::BeginPlay()
 {
 	Super::BeginPlay();
 
-	float HealTimeDuration = 3.0f;
+	float HealTimeDuration = 0.5f;
 	
 	FTimerHandle TimerHandle;
 	GetWorldTimerManager().SetTimer(TimerHandle, this, &ASPHealZone::SpawnHealSphere,
@@ -66,6 +68,12 @@ void ASPHealZone::SpawnHealSphere()
 		);
 	}
 	//
-	
-
+	for(AActor* MyActor : OverlappedActors)
+	{
+		ASPCharacterNonPlayer* AIPlayer = Cast<ASPCharacterNonPlayer>(MyActor);
+		if(AIPlayer)
+		{
+			OnHpUpDelegate.Broadcast();
+		}
+	}
 }

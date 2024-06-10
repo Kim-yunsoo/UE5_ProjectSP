@@ -125,8 +125,6 @@ void ASPAIController::SetStateAttacking(AActor* Target, bool bUseLastTarget)
 	// 	//UE_LOG(LogTemp,Log,TEXT("Diffence Pawn"));
 	// }
 
-	
-
 	if (NewAttackTarget)
 	{
 		Blackboard->SetValueAsObject(BBKEY_TARGET, NewAttackTarget);
@@ -165,7 +163,7 @@ void ASPAIController::HandleSightSense(AActor* Actor, FAIStimulus Stimulus)
 void ASPAIController::HandleSensedSight(AActor* Actor)
 {
 	//GetCurrentState();
-	if (GetCurrentState() == AIState::Passive || GetCurrentState() == AIState::Investigating)
+	if (GetCurrentState() == AIState::Passive || GetCurrentState() == AIState::Investigating || GetCurrentState() == AIState::Frozen)
 	{
 		UE_LOG(LogTemp,Log,TEXT("HandleSensedSight"));
 

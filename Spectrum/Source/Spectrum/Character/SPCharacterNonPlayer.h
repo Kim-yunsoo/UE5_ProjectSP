@@ -9,6 +9,7 @@
 #include "Interface/AIInterface/SPDamagableInterface.h"
 #include "SPCharacterNonPlayer.generated.h"
 
+class ASPHealZone;
 class ASPAIController;
 
 UCLASS()
@@ -76,7 +77,7 @@ protected:
 
 	virtual void SetAIAttackDelegate(const FAICharacterAttackFinished& InOnAttackFinished) override;
 	virtual void SetAITeleportDelegate(const FAICharacterTeleportFinished& InOnTeleportFinished) override;
-
+	virtual void SetAIHealDelegate(const FAICharacterHealFinished& InOnTeleportFinished) ;
 	virtual void Attack(AActor* Target)override;
 
 	UPROPERTY()
@@ -86,6 +87,7 @@ protected:
 	//virtual void TeleportEndDelegate(UAnimMontage* Montage, bool bInterrupted);
 	FAICharacterAttackFinished OnAttackFinished;
 	FAICharacterTeleportFinished OnTeleportFinished;
+	FAICharacterHealFinished OnHealFinished;
 
 	// float MaxHealth;
 	// float Health;
@@ -134,13 +136,21 @@ public: //interface
 	TObjectPtr<class UParticleSystemComponent> TeleportBodyComponent;
 	UPROPERTY()
 	TObjectPtr<class UParticleSystemComponent> TeleportTrailComponent;
+
+	UPROPERTY()
+	TObjectPtr<ASPHealZone> HealZone;
 	
 	UFUNCTION()
 	void HandleMontageAnimNotify(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload);
 
 	UFUNCTION()
 	void HitMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+	
+	UFUNCTION()
+	void HealMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 
+	UFUNCTION()
+	void HealDelegateFun();
 	//¼­¹ö
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const;
 

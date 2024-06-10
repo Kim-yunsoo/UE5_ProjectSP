@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "SPHealZone.generated.h"
 
+DECLARE_MULTICAST_DELEGATE(FOnHpUpDelegate);
+
 UCLASS()
 class SPECTRUM_API ASPHealZone : public AActor
 {
@@ -14,7 +16,7 @@ class SPECTRUM_API ASPHealZone : public AActor
 public:	
 	// Sets default values for this actor's properties
 	ASPHealZone();
-
+	FOnHpUpDelegate OnHpUpDelegate;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
