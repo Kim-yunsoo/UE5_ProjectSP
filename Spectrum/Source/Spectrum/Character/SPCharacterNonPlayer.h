@@ -112,6 +112,8 @@ public: //interface
 
 	void Teleport(FVector Location);
 	void TeleportEnd();
+
+	void HealOverTiem();
 	
 	
 	//Montage
@@ -120,6 +122,8 @@ public: //interface
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UAnimMontage> FireBallMontage;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UAnimMontage> HealMontage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Particle, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UParticleSystem> TeleportBodyParticle;
@@ -130,6 +134,7 @@ public: //interface
 	TObjectPtr<class UParticleSystemComponent> TeleportBodyComponent;
 	UPROPERTY()
 	TObjectPtr<class UParticleSystemComponent> TeleportTrailComponent;
+	
 	UFUNCTION()
 	void HandleMontageAnimNotify(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload);
 

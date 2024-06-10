@@ -317,6 +317,12 @@ void ASPCharacterNonPlayer::HitResponse()
 	AnimInstance->Montage_SetEndDelegate(CompleteDelegate, HitMontage);
 }
 
+void ASPCharacterNonPlayer::HealOverTiem()
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	AnimInstance->Montage_Play(HealMontage, 1.0f);
+}
+
 void ASPCharacterNonPlayer::Teleport(FVector Location)
 {
 	if (!IsTeleporting)
@@ -381,6 +387,8 @@ void ASPCharacterNonPlayer::TeleportEnd()
 
 	OnTeleportFinished.ExecuteIfBound();
 }
+
+
 
 void ASPCharacterNonPlayer::MultiRPCTeleportEnd_Implementation()
 {
