@@ -49,7 +49,8 @@ void ASPBlackPotion::HandleActorHit(AActor* SelfActor, AActor* OtherActor, FVect
 	 ASPCharacterNonPlayer* AIPlayer = Cast<ASPCharacterNonPlayer>(OtherActor);
 	if(AIPlayer)
 	{
-		MultiRPCTakeDamage(AIPlayer);
+		AIPlayer->TakeDamage(10.0f, true);
+		//MultiRPCTakeDamage(AIPlayer);
 	}
 	ExplosionComponent->Explode(MyColor);
 	this->SetLifeSpan(0.1f);

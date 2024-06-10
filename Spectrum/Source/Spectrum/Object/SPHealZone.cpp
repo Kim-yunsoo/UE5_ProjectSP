@@ -24,6 +24,11 @@ ASPHealZone::ASPHealZone()
 void ASPHealZone::BeginPlay()
 {
 	Super::BeginPlay();
+	if (HasAuthority())
+	{
+		this->SetReplicates(true);
+		this->AActor::SetReplicateMovement(true);
+	}
 
 	float HealTimeDuration = 0.5f;
 	
@@ -51,22 +56,22 @@ void ASPHealZone::SpawnHealSphere()
 	
 	bool Result = UKismetSystemLibrary::SphereOverlapActors(GetWorld(),GetActorLocation(),300.f,ObjectTypes,nullptr,ActorsToIgnore,OverlappedActors);
 // 디버그 
-	UWorld* World = GetWorld();
-	if (World)
-	{
-		FColor SphereColor = Result ? FColor::Green : FColor::Red;
-		DrawDebugSphere(
-			World,
-			GetActorLocation(),
-			300.f,
-			12,  // 구체의 세그먼트 수
-			SphereColor,
-			false,  // 지속 시간 (true면 지속적으로 그려짐)
-			1.0f,  // 5초 동안 디버그 구체를 그립니다.
-			0,     // 두께
-			2.0f   // 라인 두께
-		);
-	}
+	// UWorld* World = GetWorld();
+	// if (World)
+	// {
+	// 	FColor SphereColor = Result ? FColor::Green : FColor::Red;
+	// 	DrawDebugSphere(
+	// 		World,
+	// 		GetActorLocation(),
+	// 		300.f,
+	// 		12,  // 구체의 세그먼트 수
+	// 		SphereColor,
+	// 		false,  // 지속 시간 (true면 지속적으로 그려짐)
+	// 		1.0f,  // 5초 동안 디버그 구체를 그립니다.
+	// 		0,     // 두께
+	// 		2.0f   // 라인 두께
+	// 	);
+	// }
 	//
 	for(AActor* MyActor : OverlappedActors)
 	{

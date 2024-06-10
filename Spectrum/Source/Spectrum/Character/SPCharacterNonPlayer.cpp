@@ -200,7 +200,6 @@ float ASPCharacterNonPlayer::GetAIDetectRange()
 
 float ASPCharacterNonPlayer::GetAIAttackRange()
 {
-	//return  Stat->GetAttackRadius() * 2;
 	return 0.0f;
 }
 
@@ -325,9 +324,8 @@ void ASPCharacterNonPlayer::HitResponse()
 
 void ASPCharacterNonPlayer::HealOverTiem()
 {
+	MultiRPCHeal();
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-	AnimInstance->Montage_Play(HealMontage, 1.0f);
-
 	FOnMontageEnded CompleteDelegate;
 	CompleteDelegate.BindUObject(this, &ASPCharacterNonPlayer::HealMontageEnded);
 	AnimInstance->Montage_SetEndDelegate(CompleteDelegate, HealMontage);
@@ -341,28 +339,23 @@ void ASPCharacterNonPlayer::HealOverTiem()
 	HealZone->OnHpUpDelegate.AddUObject(this, &ASPCharacterNonPlayer::HealDelegateFun);
 }
 
+void ASPCharacterNonPlayer::MultiRPCHeal_Implementation()
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	AnimInstance->Montage_Play(HealMontage, 1.0f);
+}
 void ASPCharacterNonPlayer::Teleport(FVector Location)
 {
 	if (!IsTeleporting)
 	{
 		IsTeleporting = true;
-
 		GetCharacterMovement()->SetMovementMode(MOVE_Flying);
 		GetCharacterMovement()->MaxFlySpeed = 5000;
 		GetCharacterMovement()->MaxAcceleration = 99999;
 
 		GetMesh()->SetVisibility(false, true);
 		GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
-		//AIController->SetStateAsInvestigating(AIController->AttackTarget->GetActorLocation());
-
 		MultiRPCTeleport();
-
-		// TeleportBodyComponent = UGameplayStatics::SpawnEmitterAttached(TeleportBodyParticle, GetMesh(),
-		//                                                                FName(TEXT("spine_01")));
-		// TeleportTrailComponent = UGameplayStatics::SpawnEmitterAttached(TeleportTrailParticle, GetMesh(),
-		//                                                                 FName(TEXT("spine_01")));
-	
-
 		AIController->MoveToLocation(Location, 15.0f);
 		SetActorLocation(Location);
 		TeleportEnd();
@@ -458,6 +451,8 @@ void ASPCharacterNonPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>
 	DOREPLIFETIME(ASPCharacterNonPlayer, AIController);
 }
 
+
+
 void ASPCharacterNonPlayer::DeletParticle()
 {
 
@@ -472,7 +467,6 @@ void ASPCharacterNonPlayer::DeletParticle()
 		TeleportTrailComponent->DestroyComponent();
 	}
 }
-
 void ASPCharacterNonPlayer::MultiRPCAttack_Implementation()
 {
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();

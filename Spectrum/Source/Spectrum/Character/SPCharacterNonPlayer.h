@@ -161,6 +161,9 @@ public: //interface
 	void MultiRPCTeleport();
 
 	UFUNCTION(NetMulticast, Unreliable)
+	void MultiRPCHeal();
+
+	UFUNCTION(NetMulticast, Unreliable)
 	void MultiRPCTeleportEnd();
 
 	// UFUNCTION(Client, Unreliable)

@@ -32,8 +32,11 @@ public:
 	FORCEINLINE float GetCurrentHp() { return Health; }
 
 
-	UPROPERTY()
+	UPROPERTY(ReplicatedUsing=OnRep_SetHp)
 	float Health;
+
+	UFUNCTION()
+	void OnRep_SetHp();
 
 
 	

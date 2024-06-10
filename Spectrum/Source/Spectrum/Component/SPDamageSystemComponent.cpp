@@ -28,6 +28,12 @@ void USPDamageSystemComponent::BeginPlay()
 	Super::BeginPlay();
 }
 
+void USPDamageSystemComponent::OnRep_SetHp()
+{
+	Health = FMath::Clamp<float>(Health, 0.0f, MaxHealth);
+	OnHpChanged.Broadcast(Health);
+}
+
 void USPDamageSystemComponent::InitializeComponent()
 {
 	SetIsReplicated(true);
@@ -38,13 +44,12 @@ void USPDamageSystemComponent::InitializeComponent()
 void USPDamageSystemComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	//DOREPLIFETIME(USPDamageSystemComponent, Health);
+	DOREPLIFETIME(USPDamageSystemComponent, Health);
 }
 
 void USPDamageSystemComponent::SetHp(float NewHp)
 {
-	Health = FMath::Clamp<float>(NewHp, 0.0f, MaxHealth);
-	OnHpChanged.Broadcast(Health);
+
 }
 
 float USPDamageSystemComponent::Heal(float Amount)
@@ -52,8 +57,9 @@ float USPDamageSystemComponent::Heal(float Amount)
 	if (!IsDead)
 	{
 		Health = Health + Amount;
-		//Health = FMath::Clamp(Health, 0.0f, MaxHealth);
-		SetHp(Health);
+		Health = FMath::Clamp(Health, 0.0f, MaxHealth);
+		OnRep_SetHp();
+		//SetHp(Health);
 	}
 	return Health;
 }
@@ -63,10 +69,10 @@ bool USPDamageSystemComponent::TakeDamage(float Amount, bool ShouldForceInterrup
 	if (!IsDead)
 	{
 		SP_SUBLOG(LogSPNetwork, Log, TEXT("Amount : %f"),Amount);
-
 		Health = Health - Amount;
+		OnRep_SetHp();
 		SP_SUBLOG(LogSPNetwork, Log, TEXT("Health : %f"),Health);
-		SetHp(Health); // HP 위젯 체력 조절 
+		//SetHp(Health); // HP 위젯 체력 조절 
 		if (Health <= 0.0f)
 		{
 			IsDead = true;
