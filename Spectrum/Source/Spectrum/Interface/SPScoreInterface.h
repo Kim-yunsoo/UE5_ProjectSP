@@ -6,6 +6,7 @@
 #include "UObject/Interface.h"
 #include "SPGlobalEnum.h"
 #include "SPScoreInterface.generated.h"
+
 enum class EScoreType : uint8;
 
 // This class does not need to be modified.
@@ -15,14 +16,10 @@ class USPScoreInterface : public UInterface
 	GENERATED_BODY()
 };
 
-/**
- * 
- */
 class SPECTRUM_API ISPScoreInterface
 {
 	GENERATED_BODY()
 
-	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	virtual void AddScore(const ColorType& MyColor,EScoreType ScoreType) = 0;
 };
