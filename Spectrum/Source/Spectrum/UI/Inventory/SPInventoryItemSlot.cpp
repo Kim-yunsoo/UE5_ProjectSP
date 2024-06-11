@@ -52,7 +52,7 @@ FReply USPInventoryItemSlot::NativeOnMouseButtonDown(const FGeometry& InGeometry
 		ClickResult = Player->BackItem(ItemReference, 1); //되돌린다. 근데 완제품을 누르면 터짐
 		if(ClickResult)
 		{
-			SetVisibility(ESlateVisibility::Hidden);
+			this->RemoveFromParent();
 		}
 
 		
