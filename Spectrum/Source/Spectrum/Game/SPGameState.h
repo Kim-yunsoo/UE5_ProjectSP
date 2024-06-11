@@ -49,8 +49,8 @@ protected:
 public:
 	UPROPERTY(Transient, ReplicatedUsing= OnRapTime) //게임 시간 
 	int32 RemainingTime;
-	int32 MatchPlayTime = 600.f; // 10분
-	int32 SpectrumPotionSpawnTime = 540.f; //1분 뒤 
+	int32 MatchPlayTime = 180.f; // 3분
+	int32 SpectrumPotionSpawnTime = 120.f; //1분 뒤 
 	
 protected: //Timer
 	UPROPERTY()

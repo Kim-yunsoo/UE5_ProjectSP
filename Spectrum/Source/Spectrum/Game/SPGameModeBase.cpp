@@ -47,7 +47,7 @@ void ASPGameModeBase::Tick(float DeltaSeconds)
 void ASPGameModeBase::OnMatchStateSet()
 {
 	Super::OnMatchStateSet();
-
+	
 	// for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
 	// {
 	// 	ASPPlayerController* MyPlayer = Cast<ASPPlayerController>(It->Get());

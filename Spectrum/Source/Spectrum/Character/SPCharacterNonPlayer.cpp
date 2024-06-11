@@ -68,11 +68,8 @@ ASPCharacterNonPlayer::ASPCharacterNonPlayer()
 	DefendRadius = 500.0f;
 	IsTeleporting = false;
 	Attacking = false;
-	//
-	// MaxHealth=100;
-	// Health=100;
-	// bIsDead=false;
-	//IsDead= false;
+	
+	
 }
 
 void ASPCharacterNonPlayer::PostInitializeComponents()
@@ -305,17 +302,14 @@ bool ASPCharacterNonPlayer::IsDead()
 
 void ASPCharacterNonPlayer::HitResponse()
 {
-	SP_LOG(LogSPNetwork, Log, TEXT("HitResponse"));
 	GetCharacterMovement()->StopMovementImmediately();
 	if (HasAuthority())
 	{
 		ASPAIController* MYAIController = Cast<ASPAIController>(GetController());
 		MYAIController->SetStateAsFrozen(); //¸ÂÀ»¶© Frozen »óÅÂ 
 	}
-	//¸ùÅ¸Áö End ºÎºÐ¿¡ Set State as attackÀ¸·Î ¹Ù²Ü °Í
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-	AnimInstance->Montage_Play(HitMontage, 1.0f);
-	//AIController->SetStateAttacking(AIController->AttackTarget,true);
+	MultiRPCHitAnim();
 
 	FOnMontageEnded CompleteDelegate;
 	CompleteDelegate.BindUObject(this, &ASPCharacterNonPlayer::HitMontageEnded);
@@ -334,7 +328,9 @@ void ASPCharacterNonPlayer::HealOverTiem()
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
 	SpawnParams.Owner=this;
-	HealZone =GetWorld()->SpawnActor<ASPHealZone>(ASPHealZone::StaticClass(),GetActorLocation(),
+	//(GetCapsuleComponent()->GetScaledCapsuleHalfHeight())
+	FVector SpawnLocation = GetActorLocation()-FVector(0.0f, 0.0f, GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
+	HealZone =GetWorld()->SpawnActor<ASPHealZone>(ASPHealZone::StaticClass(),SpawnLocation,
 											   FRotator::ZeroRotator, SpawnParams);
 	HealZone->OnHpUpDelegate.AddUObject(this, &ASPCharacterNonPlayer::HealDelegateFun);
 }
@@ -356,6 +352,9 @@ void ASPCharacterNonPlayer::Teleport(FVector Location)
 		GetMesh()->SetVisibility(false, true);
 		GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 		MultiRPCTeleport();
+		Location = Location+ FVector(0.0f,0.0f,GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
+		UE_LOG(LogTemp,Log,TEXT("Height : %f"),GetCapsuleComponent()->GetScaledCapsuleHalfHeight() );
+		//GetCapsuleComponent()->getCap
 		AIController->MoveToLocation(Location, 15.0f);
 		SetActorLocation(Location);
 		TeleportEnd();
@@ -369,7 +368,9 @@ void ASPCharacterNonPlayer::Teleport(FVector Location)
 		LatentInfo.UUID = __LINE__;
 		UKismetSystemLibrary::DelayUntilNextTick(this, LatentInfo);
 		//AIController->SetStateAsInvestigating(AIController->AttackTarget->GetActorLocation());
+		IsTeleporting=false;
 		OnTeleportFinished.ExecuteIfBound();
+
 	}
 	// FTimerHandle TimerHandle;
 	// GetWorld()->GetTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([&]
@@ -394,8 +395,7 @@ void ASPCharacterNonPlayer::TeleportEnd()
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
 	//AIController->SetStateAsInvestigating(AIController->AttackTarget->GetActorLocation());
 	MultiRPCTeleportEnd();
-
-
+	IsTeleporting=false;
 	OnTeleportFinished.ExecuteIfBound();
 }
 
@@ -452,6 +452,11 @@ void ASPCharacterNonPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>
 }
 
 
+void ASPCharacterNonPlayer::MultiRPCHitAnim_Implementation()
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	AnimInstance->Montage_Play(HitMontage, 1.0f);
+}
 
 void ASPCharacterNonPlayer::DeletParticle()
 {

@@ -28,6 +28,8 @@ ASPPotionBase::ASPPotionBase()
 
 	//EmitterHit = CreateDefaultSubobject<UParticleSystem>(TEXT("EmitterHit"));
 
+	BaseDamage=10.0f; 
+
 }
 
 // Called when the game starts or when spawned

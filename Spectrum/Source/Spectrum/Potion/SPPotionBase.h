@@ -35,6 +35,8 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class USPExplosionComponent> ExplosionComponent ;
 
+	float BaseDamage; 
+
 	bool bHasExecutedOnce;
 public:
 	void Throw(const FVector& PotionDirection);

@@ -5,6 +5,7 @@
 
 #include "SpectrumLog.h"
 #include "SPGlobalEnum.h"
+#include "Character/SPCharacterNonPlayer.h"
 #include "Kismet/GameplayStatics.h"
 #include "Interface/SPDamageInterface.h"
 
@@ -60,6 +61,14 @@ void USPExplosionComponent::Explode(ColorType& MyColor)
 	for(FHitResult& Hits : OutHits)
 	{
 		MyArray.AddUnique(Hits.GetActor());
+
+		ASPCharacterNonPlayer* AIPlayer = Cast<ASPCharacterNonPlayer>(Hits.GetActor());
+		if(AIPlayer)
+		{
+			//색에 따른 추가 구현 
+			AIPlayer->TakeDamage(10.0f, true);
+		}
+		
 	}
 
 	if (Success)

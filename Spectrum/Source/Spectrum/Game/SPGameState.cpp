@@ -39,8 +39,8 @@ ASPGameState::ASPGameState()
 void ASPGameState::BeginPlay()
 {
 	Super::BeginPlay();
-	//GetWorldTimerManager().SetTimer(GameTimerHandle, this, &ASPGameState::DefaultGameTimer,
-										//GetWorldSettings()->GetEffectiveTimeDilation(), true);
+	GetWorldTimerManager().SetTimer(GameTimerHandle, this, &ASPGameState::DefaultGameTimer,
+										GetWorldSettings()->GetEffectiveTimeDilation(), true);
 }
 
 void ASPGameState::AddScore(const ColorType& MyColor)

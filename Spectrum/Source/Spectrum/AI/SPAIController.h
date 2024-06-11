@@ -33,7 +33,13 @@ private:
 	UPROPERTY()
 	TObjectPtr<UAIPerceptionComponent> AIPerception;
 
+ 
+
+
 public:
+	UPROPERTY(EditInstanceOnly,BlueprintReadWrite)
+	bool SetTarget;
+	
 	UPROPERTY(Blueprintable, EditAnywhere,BlueprintReadWrite )
 	TObjectPtr<AActor> AttackTarget;
 	
@@ -55,5 +61,9 @@ public:
 	AIState GetCurrentState();
 	
 	EAISense GetSenseEnum(const FName& SenseType);
+
+	UFUNCTION()
+	void HandleSightSenseArray(const TArray<AActor*>& Actors);
+
 };
 

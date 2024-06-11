@@ -46,12 +46,7 @@ void ASPBlackPotion::HandleActorHit(AActor* SelfActor, AActor* OtherActor, FVect
 	{
 		SP_LOG(LogSPNetwork,Log,TEXT("%s"), *OtherActor->GetName());
 	}
-	 ASPCharacterNonPlayer* AIPlayer = Cast<ASPCharacterNonPlayer>(OtherActor);
-	if(AIPlayer)
-	{
-		AIPlayer->TakeDamage(10.0f, true);
-		//MultiRPCTakeDamage(AIPlayer);
-	}
+
 	ExplosionComponent->Explode(MyColor);
 	this->SetLifeSpan(0.1f);
 }

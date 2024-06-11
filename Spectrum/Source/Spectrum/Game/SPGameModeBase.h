@@ -34,7 +34,7 @@ private:
 	
 public:
 	UPROPERTY()
-	float WarmupTime = 10.f;
+	float WarmupTime = 5.0f; // 로딩 시간 
 
 	float LevelStartingTime = 0.f; //인게임에 진입한 시간 기록을 위한 변수
 	

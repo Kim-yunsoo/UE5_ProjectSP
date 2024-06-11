@@ -13,6 +13,7 @@
 #include "Perception/AISenseConfig_Damage.h"
 #include "Perception/AISenseConfig_Hearing.h"
 #include "Perception/AISenseConfig_Sight.h"
+#include "Tests/AutomationCommon.h"
 
 ASPAIController::ASPAIController()
 {
@@ -22,7 +23,7 @@ ASPAIController::ASPAIController()
 	{
 		BBAsset = BBAssetRef.Object;
 	}
-	
+
 
 	static ConstructorHelpers::FObjectFinder<UBehaviorTree> BTAssetRef(
 		TEXT("/Script/AIModule.BehaviorTree'/Game/AI/BT_SP_Character.BT_SP_Character'"));
@@ -38,7 +39,7 @@ ASPAIController::ASPAIController()
 		SightConfig->SightRadius = 800.0f; //시야반경
 		SightConfig->LoseSightRadius = 1200.0f;
 		SightConfig->PeripheralVisionAngleDegrees = 60.0f; //시야 각
-		SightConfig->SetMaxAge(5.0f); // 시야 반경에서 사라졌을 시 얼마나 오래 기억하는지?
+		SightConfig->SetMaxAge(0.5f); // 시야 반경에서 사라졌을 시 얼마나 오래 기억하는지?
 		SightConfig->DetectionByAffiliation.bDetectEnemies = true;
 		SightConfig->DetectionByAffiliation.bDetectNeutrals = true;
 		SightConfig->DetectionByAffiliation.bDetectFriendlies = true;
@@ -62,7 +63,9 @@ ASPAIController::ASPAIController()
 		//GetSenseImplementation는 UAISense_Sight함수를 반환한다. 
 		//우세 감각 설정
 	}
-	AIPerception->OnTargetPerceptionUpdated.AddDynamic(this, &ASPAIController::HandleSightSense);
+	//AIPerception->OnTargetPerceptionUpdated.AddDynamic(this, &ASPAIController::HandleSightSense);
+
+	AIPerception->OnPerceptionUpdated.AddDynamic(this,&ASPAIController::HandleSightSenseArray);
 }
 
 void ASPAIController::RunAI()
@@ -117,13 +120,7 @@ void ASPAIController::SetStateAttacking(AActor* Target, bool bUseLastTarget)
 	{
 		NewAttackTarget = Target;
 	}
-	//
-	// if(AttackTarget!=Target)
-	// {
-	// 	//if(GetPawn()->GetActorLocation())
-	// 	
-	// 	//UE_LOG(LogTemp,Log,TEXT("Diffence Pawn"));
-	// }
+
 
 	if (NewAttackTarget)
 	{
@@ -152,7 +149,14 @@ void ASPAIController::HandleSightSense(AActor* Actor, FAIStimulus Stimulus)
 	}
 	if (SenseType == EAISense::Sight)
 	{
-		HandleSensedSight(Actor);
+		if (nullptr == AttackTarget)
+		{
+			HandleSensedSight(Actor);
+		}
+		else if (SetTarget && AttackTarget)
+		{
+			HandleSensedSight(Actor);
+		}
 	}
 	if (SenseType == EAISense::Damage)
 	{
@@ -163,15 +167,16 @@ void ASPAIController::HandleSightSense(AActor* Actor, FAIStimulus Stimulus)
 void ASPAIController::HandleSensedSight(AActor* Actor)
 {
 	//GetCurrentState();
-	if (GetCurrentState() == AIState::Passive || GetCurrentState() == AIState::Investigating || GetCurrentState() == AIState::Frozen)
-	{
-		UE_LOG(LogTemp,Log,TEXT("HandleSensedSight"));
+	// if (GetCurrentState() == AIState::Passive || GetCurrentState() == AIState::Investigating || GetCurrentState() ==
+	// 	AIState::Frozen)
+	// {
+		UE_LOG(LogTemp, Log, TEXT("HandleSensedSight"));
 
 		if (Cast<ACharacter>(Actor)) //내플레이어가 맞으면 
 		{
-			SetStateAttacking(Actor,false);
+			SetStateAttacking(Actor, false); //여기서 타겟값을 바꿔준다. 
 		}
-	}
+	// }
 }
 
 void ASPAIController::HandleSensedSound(const FVector Location)
@@ -186,7 +191,7 @@ void ASPAIController::HandleSensedDamage(AActor* Actor)
 {
 	if (GetCurrentState() == AIState::Passive || GetCurrentState() == AIState::Investigating)
 	{
-		SetStateAttacking(Actor,false);
+		SetStateAttacking(Actor, false);
 	}
 }
 
@@ -223,4 +228,38 @@ EAISense ASPAIController::GetSenseEnum(const FName& SenseType)
 	}
 
 	return EAISense::None;
+}
+
+void ASPAIController::HandleSightSenseArray(const TArray<AActor*>& Actors)
+{
+	UE_LOG(LogTemp,Log,TEXT("HandleSightSenseTest"));
+	FVector MyLocation = GetPawn()->GetActorLocation();
+
+	AActor* ClosestActor = nullptr;
+	float MinDistance = TNumericLimits<float>::Max();
+	
+	for(AActor* Actor : Actors)
+	{
+		if(Cast<ASPCharacterPlayer>(Actor))
+		{
+			FVector ActorLocation = Actor->GetActorLocation();
+			float Distance = FVector::Dist(MyLocation, ActorLocation); //거리 계산
+
+			if(Distance<MinDistance)
+			{
+				MinDistance=Distance;
+				ClosestActor = Actor;
+			}
+		}
+	}
+	
+	if(ClosestActor &&nullptr == AttackTarget)
+	{
+		HandleSensedSight(ClosestActor);
+	}
+	else if( SetTarget && ClosestActor)
+	{
+		UE_LOG(LogTemp,Log,TEXT("ClosestActor %s"),*ClosestActor->GetName());
+		HandleSensedSight(ClosestActor);
+	}
 }
