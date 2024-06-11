@@ -5,6 +5,7 @@
 
 #include "SpectrumLog.h"
 #include "Data/SPSpawnPosition.h"
+#include "Enums/SPScoreType.h"
 #include "GameFramework/GameMode.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
@@ -43,13 +44,27 @@ void ASPGameState::BeginPlay()
 										GetWorldSettings()->GetEffectiveTimeDilation(), true);
 }
 
-void ASPGameState::AddScore(const ColorType& MyColor)
+void ASPGameState::AddScore(const ColorType& MyColor,EScoreType ScoreType)
 {
+	int32 ScoreUpPoint = 0; 
+	if(ScoreType == EScoreType::Default )
+	{
+		ScoreUpPoint = 1;
+	}
+	else if(ScoreType == EScoreType::AttackDefault )
+	{
+		ScoreUpPoint= 2; 
+	}
+	else if(ScoreType == EScoreType::AttackSpecial )
+	{
+		ScoreUpPoint= 4; 
+	}
+	
 	if (MyColor == ColorType::Green)
 	{
 		if(HasAuthority())
 		{
-		++GreenScore;
+		GreenScore+=ScoreUpPoint;
 		On_RapGreenScore();
 		}
 	}
@@ -57,7 +72,7 @@ void ASPGameState::AddScore(const ColorType& MyColor)
 	{
 		if(HasAuthority())
 		{
-			++OrangeScore;
+			OrangeScore+=ScoreUpPoint;
 			On_RapOrangeScore();
 		}
 	}
@@ -65,7 +80,7 @@ void ASPGameState::AddScore(const ColorType& MyColor)
 	{
 		if(HasAuthority())
 		{
-			++PurpleScore;
+			PurpleScore+=ScoreUpPoint;
 			On_RapPurpleScore();
 		}
 	}

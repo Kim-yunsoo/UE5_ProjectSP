@@ -42,7 +42,7 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UDataTable> PositionTable;
 
-	virtual void AddScore(const ColorType& MyColor) override;
+	virtual void AddScore(const ColorType& MyColor,EScoreType ScoreType) override;
 
 
 	
