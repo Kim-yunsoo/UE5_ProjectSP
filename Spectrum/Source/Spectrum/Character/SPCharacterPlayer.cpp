@@ -1451,7 +1451,7 @@ void ASPCharacterPlayer::ServerRPCDragItem_Implementation(int Num, const int32 Q
 	USPItemBase* ItemBase = PlayerInventory->FindMatchingMiniItem(Num);
 	PlayerInventory->RemoveAmountOfItem(ItemBase, 1);
 	GetInventory()->AddInventorMakeContents(ItemBase);
-	if (GetInventory()->GetInventorMakeContents().Num() == 3)
+	if (GetInventory()->GetInventorMakeContents().Num() == 3) //3개의 칸에 어떤게 들어왔는지 확인 GetInventorMakeContents
 	{
 		USPItemBase* Item = PlayerInventory->MakingPotion();
 		if (Item)
@@ -1475,8 +1475,9 @@ void ASPCharacterPlayer::ClientRPCUpdateMakingPotion_Implementation(int Num)
 void ASPCharacterPlayer::ServerRPCBackItem_Implementation(int Num, const int32 QuantityToDrop)
 {
 	USPItemBase* ItemBase = PlayerInventory->FindMatchingMiniItem(Num);
-	PlayerInventory->HandleAddItem(ItemBase, 1);
-	GetInventory()->RemoveInventorMakeContents(ItemBase);
+
+	PlayerInventory->HandleAddItem(ItemBase, 1); //미니 인벤토리에 넣는 것
+	GetInventory()->RemoveInventorMakeContents(ItemBase); //3개에 배열 있는 것에서 지워주는 것 
 }
 
 void ASPCharacterPlayer::ServerRPCAddItemClick_Implementation(int Num)
@@ -1959,11 +1960,19 @@ void ASPCharacterPlayer::DragItem(USPItemBase* ItemToDrop, const int32 QuantityT
 	ServerRPCDragItem(num, 1);
 }
 
-void ASPCharacterPlayer::BackItem(USPItemBase* ItemToDrop, const int32 QuantityToDrop)
+bool ASPCharacterPlayer::BackItem(USPItemBase* ItemToDrop, const int32 QuantityToDrop)
 {
+	if(PlayerInventory->IsMiniPotion(ItemToDrop->ID) == -1)
+	{
+		UE_LOG(LogTemp,Log,TEXT("BackItem"));
+		return false; 
+	}
+	
+	UE_LOG(LogTemp,Log,TEXT("PostBackItem"));
+
 	int num = PlayerInventory->IsMiniPotion(ItemToDrop->ID);
 	ServerRPCBackItem(num, QuantityToDrop);
-
+	return true; 
 	// TArray<USPItemBase*> InventoryContents = GetInventory()->GetInventorMakeContents();
 	//
 	// for (USPItemBase* Item : InventoryContents)
@@ -2036,7 +2045,7 @@ void ASPCharacterPlayer::PlayTeleSkillAnimation()
 
 void ASPCharacterPlayer::HitSlowSkillResult()
 {
-	UE_LOG(LogTemp,Log,TEXT("HitSlowSkillResult"));
+	UE_LOG(LogTemp, Log, TEXT("HitSlowSkillResult"));
 
 	bIsDamage = true;
 	if (false == IsMontagePlaying())
@@ -2050,7 +2059,7 @@ void ASPCharacterPlayer::HitSlowSkillResult()
 
 void ASPCharacterPlayer::SlowSillApply()
 {
-	UE_LOG(LogTemp,Log,TEXT("SlowSillApply"));
+	UE_LOG(LogTemp, Log, TEXT("SlowSillApply"));
 	GetCharacterMovement()->MaxWalkSpeed = 500.f;
 	bIsDamage = false;
 }

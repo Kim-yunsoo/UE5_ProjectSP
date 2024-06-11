@@ -11,7 +11,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "Interface/SPDamageInterface.h"
 #include "Interface/SPScoreInterface.h"
-
+#include "GameFramework\GameStateBase.h"
+//D:\UE_5.3\Engine\Source\Runtime\Engine\Classes\GameFramework\GameStateBase.h
 // Sets default values for this component's properties
 USPExplosionComponent::USPExplosionComponent()
 {
@@ -34,6 +35,7 @@ void USPExplosionComponent::Explode(ColorType& MyColor)
 	float Radius = 125.f;
 	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
 	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldDynamic));
+	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn));
 	TArray<AActor*> ActorsToIgnore;
 	TArray<FHitResult> OutHits;
 	FLinearColor GreenColor(0.0f, 1.0f, 0.0f);
@@ -49,9 +51,6 @@ void USPExplosionComponent::Explode(ColorType& MyColor)
 	ASPCharacterPlayer* MyOwner = Cast<ASPCharacterPlayer>(GetOwner()->Owner);
 	AGameStateBase* State  = GetWorld()->GetGameState();
 	ISPScoreInterface* ScoreFuntion = Cast<ISPScoreInterface>(State);
-
-	
-	
 
 	
 	for(FHitResult& Hits : OutHits)

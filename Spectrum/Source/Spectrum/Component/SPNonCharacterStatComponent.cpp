@@ -6,7 +6,8 @@
 // Sets default values for this component's properties
 USPNonCharacterStatComponent::USPNonCharacterStatComponent()
 {
-	MaxHp = 200.0f;
+	MaxHp = 100.0f;
+	
 	AttackRadius = 50.0f; 
 	CurrentHp = MaxHp;
 }

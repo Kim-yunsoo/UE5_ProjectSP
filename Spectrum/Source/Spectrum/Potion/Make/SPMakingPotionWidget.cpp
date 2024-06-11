@@ -13,7 +13,7 @@
 
 class ASPMakePotion;
 
-void USPMakingPotionWidget::ClearWidget()
+void USPMakingPotionWidget::ClearWidget() // 완제품이 완성되면 3개 포션 위치를 지우는 로직 
 {
 	TArray<USizeBox*> DropWidgets = {Drop1, Drop2, Drop3};
 	
@@ -22,8 +22,6 @@ void USPMakingPotionWidget::ClearWidget()
 		Drop->ClearChildren();
 	}
 	Make->ClearChildren();
-	
-	//UE_LOG(LogTemp, Log, TEXT("SpectrumLocationCallBack!!!"));
 }
 
 void USPMakingPotionWidget::MakingPotion(USPItemBase* Item)
@@ -59,13 +57,14 @@ bool USPMakingPotionWidget::NativeOnDrop(const FGeometry& InGeometry, const FDra
 	if ((ItemDragDrop && PlayerCharacter && ItemDragDrop->SourceItem->Quantity != 0) || (ItemDragDrop && PlayerCharacter && PlayerCharacter->bIsSeven == true))
 	{
 		FVector2D DropLocation = InDragDropEvent.GetScreenSpacePosition();
+		//내가 놓은 위치 
 
-		TArray<USizeBox*> DropWidgets = {Drop1, Drop2, Drop3};
+		TArray<USizeBox*> DropWidgets = {Drop1, Drop2, Drop3}; //위에있는거
 
 		USizeBox* ClosestDropWidget = nullptr;
 		float MinDistanceSquared = TNumericLimits<float>::Max();
 
-		for (USizeBox* DropWidget : DropWidgets)
+		for (USizeBox* DropWidget : DropWidgets) //어느 위치에 드롭할건지 ? 
 		{
 			if (DropWidget)
 			{
@@ -81,7 +80,8 @@ bool USPMakingPotionWidget::NativeOnDrop(const FGeometry& InGeometry, const FDra
 				}
 			}
 		}
-		if (ClosestDropWidget)
+		
+		if (ClosestDropWidget && ClosestDropWidget->GetChildrenCount() <=0) //위치가 정해졌으니까 
 		{
 			ClosestDropWidget->ClearChildren();
 			USPInventoryItemSlot* ItemSlot = CreateWidget<USPInventoryItemSlot>(this, InventorySlotClass);
@@ -93,8 +93,6 @@ bool USPMakingPotionWidget::NativeOnDrop(const FGeometry& InGeometry, const FDra
 				ItemSlot->HideText();
 			}
 			ClosestDropWidget->AddChild(ItemSlot);
-			//인벤토리 숫자 줄게 하기
-			//여기서 서버로 가야함!
 			UE_LOG(LogTemp, Warning, TEXT("%s"), *GetOwningPlayer()->GetName());
 			PlayerCharacter->DragItem(ItemDragDrop->SourceItem,1);
 			PlaySound(DropSound);

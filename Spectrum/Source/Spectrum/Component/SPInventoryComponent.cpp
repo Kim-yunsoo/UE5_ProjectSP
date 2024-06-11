@@ -61,6 +61,7 @@ int32 USPInventoryComponent::RemoveAmountOfItem(USPItemBase* ItemIn, int32 Desir
 
 USPItemBase* USPInventoryComponent::MakingPotion()
 {
+	//그 칸에 몇개가 들어왔는지 확인 
 	int Blue = 0;
 	int Yellow = 0;
 	int Red = 0;
@@ -308,7 +309,7 @@ int USPInventoryComponent::IsMiniPotion(FName ID)
 		if (InventoryItem && InventoryItem->ID == ID)
 		{
 			return Index;
-		}
+         		}
 	}
 	return -1;
 }

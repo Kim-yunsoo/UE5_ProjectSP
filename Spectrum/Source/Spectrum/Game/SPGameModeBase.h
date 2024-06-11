@@ -10,9 +10,8 @@
 class ASPPlayerController;
 enum class GenderType : uint8;
 enum class ColorType : uint8;
-/**
- *
- */
+
+
 UCLASS()
 class SPECTRUM_API ASPGameModeBase : public AGameMode
 {
@@ -44,4 +43,5 @@ public:
 protected:
 	virtual void OnMatchStateSet() override;
 	float CountdownTime = 0.f;
+
 };

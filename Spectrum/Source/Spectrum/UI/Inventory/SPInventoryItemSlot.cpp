@@ -41,15 +41,21 @@ void USPInventoryItemSlot::NativeConstruct()
 FReply USPInventoryItemSlot::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
 {
 	FReply Reply = Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
-	if(InMouseEvent.GetEffectingButton() == EKeys::LeftMouseButton)
+	if(InMouseEvent.GetEffectingButton() == EKeys::LeftMouseButton) //좌클릭 드래그 버튼 
 	{
 		return Reply.Handled().DetectDrag(TakeWidget(), EKeys::LeftMouseButton);
 	}
-	if(InMouseEvent.GetEffectingButton() == EKeys::RightMouseButton)
+	if(InMouseEvent.GetEffectingButton() == EKeys::RightMouseButton) //우클릭 - 취소할 때 
 	{
 		ASPCharacterPlayer* Player = Cast<ASPCharacterPlayer>(GetOwningPlayerPawn());
-		Player->BackItem(ItemReference, 1);
-		SetVisibility(ESlateVisibility::Hidden);
+		
+		ClickResult = Player->BackItem(ItemReference, 1); //되돌린다. 근데 완제품을 누르면 터짐
+		if(ClickResult)
+		{
+			SetVisibility(ESlateVisibility::Hidden);
+		}
+
+		
 		return Reply.Handled();
 	}
 	return Reply.Unhandled();
@@ -68,7 +74,7 @@ void USPInventoryItemSlot::HideText()
 FReply USPInventoryItemSlot::NativeOnMouseButtonUp(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
 {
 	FReply Reply = Super::NativeOnMouseButtonUp(InGeometry, InMouseEvent);
-	if(PlayerCharacter->GetInventory()->IsPotion(ItemReference->ID) != -1)
+	if(PlayerCharacter->GetInventory()->IsPotion(ItemReference->ID) != -1 )
 	{
 		ASPCharacterPlayer* Player = Cast<ASPCharacterPlayer>(GetOwningPlayerPawn());
 		int num = Player->GetInventory()->IsPotion(ItemReference->ID);
@@ -83,7 +89,6 @@ FReply USPInventoryItemSlot::NativeOnMouseButtonUp(const FGeometry& InGeometry, 
 
 void USPInventoryItemSlot::ServerRPCButtonUp_Implementation(int num)
 {
-	//Player->GetInventory()->HandleAddItem(ItemReference);
 	ASPCharacterPlayer* Player = Cast<ASPCharacterPlayer>(GetOwningPlayerPawn());
 	USPItemBase* ItemBase = Player->GetInventory()->FindMatchingItem(num);
 	Player->BackItem(ItemReference, 1);
@@ -102,9 +107,8 @@ void USPInventoryItemSlot::NativeOnDragDetected(const FGeometry& InGeometry, con
 		{
 			DragVisual->ItemIcon->SetBrushFromTexture(ItemReference->ItemAssetData.Icon);
 			DragVisual->ItemBorder->SetBrushColor(ItemBorder->GetBrushColor());
-			//DragVisual->ItemQuantity->SetText(FText::AsNumber(ItemReference->Quantity));
 			DragVisual->ItemQuantity->SetVisibility(ESlateVisibility::Hidden);
-			//HideText();
+			
 			USPItemDragDropOperation* DragItemOperation = NewObject<USPItemDragDropOperation>();
 			DragItemOperation->SourceItem = ItemReference;
 			DragItemOperation->SourceInventory = ItemReference->OwningInventory;
@@ -113,9 +117,7 @@ void USPInventoryItemSlot::NativeOnDragDetected(const FGeometry& InGeometry, con
 			DragItemOperation->Pivot = EDragPivot::TopLeft;
 			OutOperation = DragItemOperation;
 		}
-	
 	}
-	
 }
 
 bool USPInventoryItemSlot::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent,

@@ -60,9 +60,14 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<ASPCharacterPlayer> PlayerCharacter;
+
+	UPROPERTY()
+	bool ClickResult;
 	
 	UFUNCTION(Server, Unreliable)
 	void ServerRPCButtonUp(int num);
+
+	
 	
 	UPROPERTY(EditAnywhere)
 	USoundBase* ClickOn;

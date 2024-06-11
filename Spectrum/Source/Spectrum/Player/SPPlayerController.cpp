@@ -56,26 +56,26 @@ void ASPPlayerController::BeginPlay()
 
 void ASPPlayerController::ShowReturnToMainMenu()
 {
-   //UE_LOG(LogTemp,Log,TEXT("ShowReturnToMainMenu"));
-   if(ReturnToMainMenuWidget ==nullptr) return;
-   if(ReturnToMainMenu ==nullptr)
-   {
-      ReturnToMainMenu= CreateWidget<USPReturnToMainMenu>(this, ReturnToMainMenuWidget);  
-   }
-
-   if(ReturnToMainMenu)
-   {
-      bReturnToMainMenuOpen=!bReturnToMainMenuOpen;
-
-      if(bReturnToMainMenuOpen)
-      {
-         ReturnToMainMenu->MenuSetup();
-      }
-      else
-      {
-         ReturnToMainMenu->MenuTearDown();
-      }
-   }
+   UE_LOG(LogTemp,Log,TEXT("ShowReturnToMainMenu"));
+    if(ReturnToMainMenuWidget ==nullptr) return;
+    if(ReturnToMainMenu ==nullptr)
+    {
+       ReturnToMainMenu= CreateWidget<USPReturnToMainMenu>(this, ReturnToMainMenuWidget);  
+    }
+   
+    if(ReturnToMainMenu)
+    {
+       bReturnToMainMenuOpen=!bReturnToMainMenuOpen;
+   
+       if(bReturnToMainMenuOpen)
+       {
+          ReturnToMainMenu->MenuSetup();
+       }
+       else
+       {
+          ReturnToMainMenu->MenuTearDown();
+       }
+    }
    
 }
 

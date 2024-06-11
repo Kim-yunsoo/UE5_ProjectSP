@@ -68,7 +68,6 @@ void USPHUDWidget::NativeConstruct()
 	}
 }
 
-
 void USPHUDWidget::ToggleMouse(bool bIsShowMouse)
 {
 	ASPCharacterPlayer* PlayerCharacter = Cast<ASPCharacterPlayer>(GetOwningPlayerPawn());

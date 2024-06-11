@@ -39,10 +39,7 @@ ASPCharacterNonPlayer::ASPCharacterNonPlayer()
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -100.0f), FRotator(0.0f, -90.0f, 0.0f));
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 	GetMesh()->SetCollisionProfileName(TEXT("NoCollision"));
-
-	// Stat Component 
-	//Stat = CreateDefaultSubobject<USPNonCharacterStatComponent>(TEXT("Stat"));
-	// Widget Component 
+	
 	HpBar = CreateDefaultSubobject<USPWidgetComponent>(TEXT("Widget"));
 	HpBar->SetupAttachment(GetMesh());
 	HpBar->SetRelativeLocation(FVector(0.0f, 0.0f, 210.0f)); //조절 필요
@@ -292,6 +289,7 @@ float ASPCharacterNonPlayer::Heal(float Amount)
 
 bool ASPCharacterNonPlayer::TakeDamage(float Amount, bool ShouldForceInterrupt)
 {
+	//UE_LOG(LogTemp,Log,TEXT("TakeDamage"));
 	return DamageSystemComponent->TakeDamage(Amount, ShouldForceInterrupt);
 }
 

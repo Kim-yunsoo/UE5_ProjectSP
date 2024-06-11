@@ -4,7 +4,6 @@
 #include "Game/SPGameModeBase.h"
 #include "SPPlayerState.h"
 #include "Game/SPGameState.h"
-#include "UI/SPLobbyWidget.h"
 #include "GameFramework/GameStateBase.h"
 #include "Character/SPCharacterPlayer.h"
 #include "Player/SPPlayerController.h"
@@ -12,7 +11,7 @@
 
 ASPGameModeBase::ASPGameModeBase()
 {
-	// bDelayedStart = true;
+	//bDelayedStart = true;
 	bUseSeamlessTravel = true;
 	GameStateClass = ASPGameState::StaticClass();
 	PlayerStateClass = ASPPlayerState::StaticClass();
