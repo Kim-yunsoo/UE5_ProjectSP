@@ -34,14 +34,10 @@ bool UBTDecorator_CanSeeTarget::CalculateRawConditionValue(UBehaviorTreeComponen
 	FCollisionQueryParams TraceParams;
 	TraceParams.bTraceComplex = false;
 	TraceParams.AddIgnoredActor(ControllingPawn); //쏘는 액터는 무시 
-	
-	//TraceParams.bReturnPhysicalMaterial = false;
 
-	// 디버그용 라인 그리기
-	//DrawDebugLine(GetWorld(), Start, End, FColor::Green, false, 1, 0, 1);
 
 	// 라인 트레이스 실행
 	bool bHit = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, TraceChannel, TraceParams);
-
+	
 	return !bHit; //충돌이 없는 경우 true를 반환한다. 
 }

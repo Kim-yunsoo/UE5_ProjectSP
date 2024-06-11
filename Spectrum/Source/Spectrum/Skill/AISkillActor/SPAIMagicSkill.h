@@ -7,6 +7,7 @@
 #include "SPAIMagicSkill.generated.h"
 
 
+class ASPCharacterPlayer;
 
 UCLASS()
 class SPECTRUM_API ASPAIMagicSkill : public AActor
@@ -56,6 +57,17 @@ protected:
 						   UPrimitiveComponent* OtherComp, FVector NormalImpulse,
 						   const FHitResult& Hit);
 
+
+	UFUNCTION(NetMulticast,Unreliable)
+	void MultiRPCMagicEffet(FVector HitLoction);
+
+	
+	UFUNCTION(NetMulticast,Unreliable)
+	void MultiRPCMagicSlow(ASPCharacterPlayer* Player);
+
+	
+	
+	
 public:
 	void InitTarget(AActor* TargetPlayer);
 	void RotateToTarget();

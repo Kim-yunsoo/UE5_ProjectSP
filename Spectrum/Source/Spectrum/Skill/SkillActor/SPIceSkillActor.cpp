@@ -64,7 +64,6 @@ void ASPIceSkillActor::MultiRPCIceSkill_Implementation(const FHitResult& Hit)
 												 FVector(1.0f), true, EPSCPoolMethod::None, true);
 		bIsOnce=false;
 	}
-	
 	ISPSkillInterface* CheckIceAction = Cast<ISPSkillInterface>(Hit.GetActor());
 	if (CheckIceAction)
 	{

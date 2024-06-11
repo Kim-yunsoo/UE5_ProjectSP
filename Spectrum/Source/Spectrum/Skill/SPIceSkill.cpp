@@ -64,7 +64,6 @@ void USPIceSkill::SkillAction()
 	ASPIceSkillActor* MyActor =GetWorld()->SpawnActor<ASPIceSkillActor>(ASPIceSkillActor::StaticClass(),Owner->SkillLocation->GetComponentLocation(),
 											   Owner->SkillLocation->GetComponentRotation(), SpawnParams);
 	MyActor->SetOwner(Owner);
-	
 }
 
 void USPIceSkill::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

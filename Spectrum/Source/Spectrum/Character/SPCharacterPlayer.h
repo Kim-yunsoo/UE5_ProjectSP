@@ -662,5 +662,10 @@ public:
 	void ClientRPCAddMessageToChat(const FString& Sender, const FString& Message );
 
 	UPROPERTY(Replicated)
-	uint8 bCanUseInput:1; 
+	uint8 bCanUseInput:1;
+
+	UFUNCTION()
+	void SlowSillApply();
+
+	
 };

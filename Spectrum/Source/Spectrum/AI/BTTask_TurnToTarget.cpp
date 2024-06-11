@@ -48,7 +48,6 @@ EBTNodeResult::Type UBTTask_TurnToTarget::ExecuteTask(UBehaviorTreeComponent& Ow
 		UObject* TargetObject = OwnerComp.GetBlackboardComponent()->GetValueAsObject(BBKEY_TARGET);
 		if(TargetObject)
 		{
-			UE_LOG(LogTemp,Log,TEXT("SetFocus"));
 			AActor* TargetActor = Cast<AActor>(TargetObject); 
 			AIController->SetFocus(TargetActor,EAIFocusPriority::Gameplay);
 		}

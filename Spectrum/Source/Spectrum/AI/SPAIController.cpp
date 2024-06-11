@@ -170,7 +170,6 @@ void ASPAIController::HandleSensedSight(AActor* Actor)
 	// if (GetCurrentState() == AIState::Passive || GetCurrentState() == AIState::Investigating || GetCurrentState() ==
 	// 	AIState::Frozen)
 	// {
-		UE_LOG(LogTemp, Log, TEXT("HandleSensedSight"));
 
 		if (Cast<ACharacter>(Actor)) //내플레이어가 맞으면 
 		{
@@ -232,7 +231,6 @@ EAISense ASPAIController::GetSenseEnum(const FName& SenseType)
 
 void ASPAIController::HandleSightSenseArray(const TArray<AActor*>& Actors)
 {
-	UE_LOG(LogTemp,Log,TEXT("HandleSightSenseTest"));
 	FVector MyLocation = GetPawn()->GetActorLocation();
 
 	AActor* ClosestActor = nullptr;
@@ -259,7 +257,6 @@ void ASPAIController::HandleSightSenseArray(const TArray<AActor*>& Actors)
 	}
 	else if( SetTarget && ClosestActor)
 	{
-		UE_LOG(LogTemp,Log,TEXT("ClosestActor %s"),*ClosestActor->GetName());
 		HandleSensedSight(ClosestActor);
 	}
 }

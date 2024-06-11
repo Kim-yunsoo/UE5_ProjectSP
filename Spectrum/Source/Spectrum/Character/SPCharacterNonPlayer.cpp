@@ -353,8 +353,6 @@ void ASPCharacterNonPlayer::Teleport(FVector Location)
 		GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 		MultiRPCTeleport();
 		Location = Location+ FVector(0.0f,0.0f,GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
-		UE_LOG(LogTemp,Log,TEXT("Height : %f"),GetCapsuleComponent()->GetScaledCapsuleHalfHeight() );
-		//GetCapsuleComponent()->getCap
 		AIController->MoveToLocation(Location, 15.0f);
 		SetActorLocation(Location);
 		TeleportEnd();
@@ -367,15 +365,10 @@ void ASPCharacterNonPlayer::Teleport(FVector Location)
 		LatentInfo.Linkage = 0;
 		LatentInfo.UUID = __LINE__;
 		UKismetSystemLibrary::DelayUntilNextTick(this, LatentInfo);
-		//AIController->SetStateAsInvestigating(AIController->AttackTarget->GetActorLocation());
 		IsTeleporting=false;
 		OnTeleportFinished.ExecuteIfBound();
 
 	}
-	// FTimerHandle TimerHandle;
-	// GetWorld()->GetTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([&]
-	// {
-	// }), 0.7f, false);
 }
 void ASPCharacterNonPlayer::MultiRPCTeleport_Implementation()
 {
@@ -393,7 +386,6 @@ void ASPCharacterNonPlayer::TeleportEnd()
 	GetCharacterMovement()->MaxAcceleration = 1500.0;
 	GetMesh()->SetVisibility(true, true);
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
-	//AIController->SetStateAsInvestigating(AIController->AttackTarget->GetActorLocation());
 	MultiRPCTeleportEnd();
 	IsTeleporting=false;
 	OnTeleportFinished.ExecuteIfBound();
