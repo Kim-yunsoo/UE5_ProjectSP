@@ -49,7 +49,6 @@ FReply USPInventoryItemSlot::NativeOnMouseButtonDown(const FGeometry& InGeometry
 	{
 		ASPCharacterPlayer* Player = Cast<ASPCharacterPlayer>(GetOwningPlayerPawn());
 		Player->BackItem(ItemReference, 1);
-		UE_LOG(LogTemp, Warning, TEXT("BACK Inventory"));
 		SetVisibility(ESlateVisibility::Hidden);
 		return Reply.Handled();
 	}

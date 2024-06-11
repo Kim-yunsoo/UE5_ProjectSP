@@ -105,22 +105,6 @@ void ASPAIMagicSkill::OnBoxCollisionHit(UPrimitiveComponent* HitComponent, AActo
 			TArray<AActor*> ActorsToIgnore;
 	
 			bool Result = UKismetSystemLibrary::SphereOverlapActors(GetWorld(),GetActorLocation(),100.f,ObjectTypes,nullptr,ActorsToIgnore,OverlappedActors);
-			UWorld* World = GetWorld();
-			if (World)
-			{
-				FColor SphereColor = Result ? FColor::Green : FColor::Red;
-				DrawDebugSphere(
-					World,
-					GetActorLocation(),
-					100.f,
-					12,  
-					SphereColor,
-					false,  
-					1.0f,  
-					0,     
-					2.0f   
-				);
-			}
 			if(Result)
 			{
 				for(AActor* Actor : OverlappedActors)

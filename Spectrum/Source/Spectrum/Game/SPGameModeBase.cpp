@@ -9,16 +9,10 @@
 #include "Character/SPCharacterPlayer.h"
 #include "Player/SPPlayerController.h"
 
-//extern Protocol::PlayerType player_type;
-extern Protocol::PlayerType school_num_type;
-extern int32 NumPlayers;
-extern std::array<Protocol::PlayerType, 3> school_type;
-//extern FString IPAddress;
-//extern PlayerInfomation MyPlayerInfo;
 
 ASPGameModeBase::ASPGameModeBase()
 {
-	//bDelayedStart = true;
+	// bDelayedStart = true;
 	bUseSeamlessTravel = true;
 	GameStateClass = ASPGameState::StaticClass();
 	PlayerStateClass = ASPPlayerState::StaticClass();
