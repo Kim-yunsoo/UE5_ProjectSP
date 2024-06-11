@@ -27,9 +27,7 @@ ASPPotionBase::ASPPotionBase()
 	ExplosionComponent = CreateDefaultSubobject<USPExplosionComponent>(TEXT("ExplosionComponent"));
 
 	//EmitterHit = CreateDefaultSubobject<UParticleSystem>(TEXT("EmitterHit"));
-
-	BaseDamage=10.0f; 
-
+	//BaseDamage=10.0f; 
 }
 
 // Called when the game starts or when spawned

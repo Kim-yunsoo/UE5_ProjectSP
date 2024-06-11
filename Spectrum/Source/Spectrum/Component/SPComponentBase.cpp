@@ -17,6 +17,8 @@ USPComponentBase::USPComponentBase()
 	{
 		DataAsset = TableRef.Object;
 	}
+
+	BaseDamage=10.0f;
 }
 
 
@@ -28,14 +30,11 @@ void USPComponentBase::BeginPlay()
 
 void USPComponentBase::Explode(ColorType& MyColor)
 {
-	//Spawn Emitter at Location�� ���� ����
-	FVector ActorLocation = GetOwner()->GetActorLocation(); //������ ������ ��ġ 
+	FVector ActorLocation = GetOwner()->GetActorLocation(); 
 	FVector Location = ActorLocation;
 	FRotator Rotation = FRotator(0.0f, 0.0f, 0.0f);
 	FVector Scale{ 1.0f,1.0f,1.0f };
 	FTransform SpawnTransform{ Rotation,Location,Scale };
-	//UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), Effect, SpawnTransform, true, EPSCPoolMethod::None, true);
-	//여기서 로드 에셋
 	
 	RoadAsset(MyColor);
 	

@@ -6,6 +6,7 @@
 #include "SpectrumLog.h"
 #include "SPGlobalEnum.h"
 #include "Character/SPCharacterNonPlayer.h"
+#include "Character/SPCharacterPlayer.h"
 #include "Kismet/GameplayStatics.h"
 #include "Interface/SPDamageInterface.h"
 
@@ -43,6 +44,9 @@ void USPExplosionComponent::BeginPlay()
 void USPExplosionComponent::Explode(ColorType& MyColor)
 {
 	Super::Explode(MyColor);
+	
+	//SP_SUBLOG(LogSPNetwork,Log,TEXT("Explode Owner %s "), *(GetOwner()->Owner)->GetName());
+	
 	FVector SphereTracePoint = GetOwner()->GetRootComponent()->GetComponentLocation();
 	float Radius = 125.f;
 	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
@@ -58,6 +62,10 @@ void USPExplosionComponent::Explode(ColorType& MyColor)
 																	GreenColor, RedColor, DrawTime);
 
 	TArray<AActor*>MyArray;
+
+	ASPCharacterPlayer* MyOwner = Cast<ASPCharacterPlayer>(GetOwner()->Owner);
+
+	
 	for(FHitResult& Hits : OutHits)
 	{
 		MyArray.AddUnique(Hits.GetActor());
@@ -65,8 +73,15 @@ void USPExplosionComponent::Explode(ColorType& MyColor)
 		ASPCharacterNonPlayer* AIPlayer = Cast<ASPCharacterNonPlayer>(Hits.GetActor());
 		if(AIPlayer)
 		{
-			//색에 따른 추가 구현 
-			AIPlayer->TakeDamage(10.0f, true);
+			//색에 따른 추가 구현
+			if(MyColor == ColorType::Black ||MyOwner->SchoolAffiliation == MyColor )
+			{
+				AIPlayer->TakeDamage(BaseDamage * 2, true);
+			}
+			else
+			{
+				AIPlayer->TakeDamage(BaseDamage , true);
+			}
 		}
 		
 	}

@@ -44,6 +44,8 @@ protected:
 
 	void RoadAsset(ColorType& MyColor);
 
+	float BaseDamage;
+
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 };
