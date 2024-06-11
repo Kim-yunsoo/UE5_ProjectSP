@@ -5,6 +5,7 @@
 
 #include "SpectrumLog.h"
 #include "SPGameState.h"
+#include "Enums/SPScoreType.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/GameState.h"
 #include "Object/SPObject.h"
@@ -87,25 +88,19 @@ void ASPScoreTrigger::MultiSpectrumRPC_Implementation(const TArray<AActor*>& Obj
 					ChangeColor->OnChangeColorPurple();
 				}
 			}
-			//MultiSpectrumRPC(MyObject);
 			if (HasAuthority())
 			{
 				if (MyObject->bIsScoreReflected == false)
 				{
 					MyObject->bIsScoreReflected = true;
-					// ACharacter* player = Cast<ACharacter>(GetOwner());
-					// if (player)
-					// {
-						AGameStateBase* State  = GetWorld()->GetGameState();
-						//AGameStateBase* State = player->GetController()->GetWorld()->GetGameState();
+					AGameStateBase* State = GetWorld()->GetGameState();
 
-						ISPScoreInterface* ScoreFuntion = Cast<ISPScoreInterface>(State);
+					ISPScoreInterface* ScoreFuntion = Cast<ISPScoreInterface>(State);
 
-						if (ScoreFuntion)
-						{
-							ScoreFuntion->AddScore(Color); //State에서 점수를 올려준다. 
-						}
-					// }
+					if (ScoreFuntion)
+					{
+						ScoreFuntion->AddScore(Color, EScoreType::Default); //State에서 점수를 올려준다. 
+					}
 				}
 			}
 		}
@@ -125,7 +120,7 @@ void ASPScoreTrigger::ServerRPC_Implementation(ASPObject* Object)
 
 		if (ScoreFuntion)
 		{
-			ScoreFuntion->AddScore(Color); //State에서 점수를 올려준다. 
+			ScoreFuntion->AddScore(Color, EScoreType::Default); //State에서 점수를 올려준다. 
 		}
 	}
 }

@@ -7,30 +7,15 @@
 #include "SPGlobalEnum.h"
 #include "Character/SPCharacterNonPlayer.h"
 #include "Character/SPCharacterPlayer.h"
+#include "Enums/SPScoreType.h"
 #include "Kismet/GameplayStatics.h"
 #include "Interface/SPDamageInterface.h"
+#include "Interface/SPScoreInterface.h"
 
 // Sets default values for this component's properties
 USPExplosionComponent::USPExplosionComponent()
 {
 	
-	// static ConstructorHelpers::FObjectFinder<UParticleSystem> EffectRef(
-	// 	TEXT("/Script/Engine.ParticleSystem'/Game/Box/MagicStaff/Demo/Particles/P_Explosion.P_Explosion'"));
-	// if (EffectRef.Object)
-	// {
-	// 	Effect = EffectRef.Object;
-	// }
-
-// 	static ConstructorHelpers::FObjectFinder<UParticleSystem> HitRef(
-// TEXT("/Script/Engine.ParticleSystem'/Game/MagicProjectilesVol2/Particles/Hits/CP_BlackPotion.CP_BlackPotion'"));
-//
-// 	if (HitRef.Succeeded())
-// 	{
-// 		EmitterHit = HitRef.Object;
-// 	}
-
-	//WaterSound = LoadObject<USoundWave>(nullptr, TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/Water2.Water2'"));
-	//CrushSound = LoadObject<USoundWave>(nullptr, TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/Crush.Crush'"));
 }
 
 
@@ -38,14 +23,12 @@ USPExplosionComponent::USPExplosionComponent()
 void USPExplosionComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	//this->SetAutoActivate(false);
 }
 
 void USPExplosionComponent::Explode(ColorType& MyColor)
 {
 	Super::Explode(MyColor);
 	
-	//SP_SUBLOG(LogSPNetwork,Log,TEXT("Explode Owner %s "), *(GetOwner()->Owner)->GetName());
 	
 	FVector SphereTracePoint = GetOwner()->GetRootComponent()->GetComponentLocation();
 	float Radius = 125.f;
@@ -64,6 +47,11 @@ void USPExplosionComponent::Explode(ColorType& MyColor)
 	TArray<AActor*>MyArray;
 
 	ASPCharacterPlayer* MyOwner = Cast<ASPCharacterPlayer>(GetOwner()->Owner);
+	AGameStateBase* State  = GetWorld()->GetGameState();
+	ISPScoreInterface* ScoreFuntion = Cast<ISPScoreInterface>(State);
+
+	
+	
 
 	
 	for(FHitResult& Hits : OutHits)
@@ -77,10 +65,19 @@ void USPExplosionComponent::Explode(ColorType& MyColor)
 			if(MyColor == ColorType::Black ||MyOwner->SchoolAffiliation == MyColor )
 			{
 				AIPlayer->TakeDamage(BaseDamage * 2, true);
+				if (ScoreFuntion)
+				{
+					ScoreFuntion->AddScore(MyOwner->SchoolAffiliation , EScoreType::AttackSpecial); //State에서 점수를 올려준다. 
+				}
+				
 			}
 			else
 			{
 				AIPlayer->TakeDamage(BaseDamage , true);
+				if (ScoreFuntion)
+				{
+					ScoreFuntion->AddScore(MyOwner->SchoolAffiliation , EScoreType::AttackDefault); //State에서 점수를 올려준다. 
+				}
 			}
 		}
 		
