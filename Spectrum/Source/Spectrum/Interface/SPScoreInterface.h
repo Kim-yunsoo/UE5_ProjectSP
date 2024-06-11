@@ -6,6 +6,7 @@
 #include "UObject/Interface.h"
 #include "SPGlobalEnum.h"
 #include "SPScoreInterface.generated.h"
+enum class EScoreType : uint8;
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
