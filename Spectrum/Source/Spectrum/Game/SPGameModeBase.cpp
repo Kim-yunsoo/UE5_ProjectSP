@@ -2,6 +2,8 @@
 
 
 #include "Game/SPGameModeBase.h"
+
+#include "SpectrumLog.h"
 #include "SPPlayerState.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "Game/SPGameState.h"
@@ -9,12 +11,13 @@
 #include "Character/SPCharacterPlayer.h"
 #include "Player/SPPlayerController.h"
 #include "BehaviorTree/BehaviorTree.h"
+#include "UI/ReturnMain/SPReturnToMainMenu.h"
 
 
 
 ASPGameModeBase::ASPGameModeBase()
 {
-	//bDelayedStart = true;
+	bDelayedStart = true;
 	bUseSeamlessTravel = true;
 	GameStateClass = ASPGameState::StaticClass();
 	PlayerStateClass = ASPPlayerState::StaticClass();
@@ -33,6 +36,13 @@ ASPGameModeBase::ASPGameModeBase()
 		BTAsset = BTAssetRef.Object;
 	}
 
+	// static ConstructorHelpers::FClassFinder<USPHUDWidget> SPHUDWidgetRef(TEXT("/Game/Spectrum/UMG/WBP_SPHUD.WBP_SPHUD_C"));
+	// if (SPHUDWidgetRef.Class)
+	// {
+	// 	SPHUDWidgetClass = SPHUDWidgetRef.Class;
+	// }
+
+
 }
 void ASPGameModeBase::BeginPlay()
 {
@@ -43,34 +53,60 @@ void ASPGameModeBase::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	// if(MatchState == MatchState::WaitingToStart)
-	// {
-	// 	CountdownTime=WarmupTime-GetWorld()->GetTimeSeconds()+LevelStartingTime; //10초 로딩 시간
-	//
-	// 	if(CountdownTime<=0.f)
-	// 	{
-	// 		StartMatch(); //진행 모드로 변환
-	// 	}
-	// }
+	if(MatchState == MatchState::WaitingToStart)
+	{
+		CountdownTime=WarmupTime-GetWorld()->GetTimeSeconds()+LevelStartingTime; //10초 로딩 시간
+	
+		if(CountdownTime<=0.f)
+		{
+			StartMatch(); //진행 모드로 변환
+		}
+	}
 }
 
 void ASPGameModeBase::OnMatchStateSet()
 {
 	Super::OnMatchStateSet();
 	
-	// for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
-	// {
-	// 	ASPPlayerController* MyPlayer = Cast<ASPPlayerController>(It->Get());
-	// 	if(MyPlayer)
-	// 	{
-	// 		MyPlayer->ClientRCPMathState(MatchState);
-	// 	}
-	// }
-	// ASPGameState* SPGameState = Cast<ASPGameState>(GetWorld()->GetGameState());
-	// if (SPGameState)
-	// {
-	// 	SPGameState->OnMathStateSet(MatchState); //시간 제대로 작동 확인 
-	// }
+	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+	{
+		ASPPlayerController* MyPlayer = Cast<ASPPlayerController>(It->Get());
+		if(MyPlayer)
+		{
+			MyPlayer->ClientRCPMathState(MatchState);
+		}
+	}
+	ASPGameState* SPGameState = Cast<ASPGameState>(GetWorld()->GetGameState());
+	if (SPGameState)
+	{
+		SPGameState->OnMathStateSet(MatchState); //시간 제대로 작동 확인 
+	}
+	if(MatchState == MatchState::WaitingPostMatch)
+	{
+		//각자 위젯에 엔드 위젯 넣기 
+		//SP_LOG(LogSPNetwork,Log,TEXT("WaitingPostMatch"));
+		for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
+		{
+			APlayerController* PlayerController = Iterator->Get();
+			ASPPlayerController* SPPlayerController = Cast<ASPPlayerController>(PlayerController);
+			if(SPPlayerController)
+			{
+				SPPlayerController->ShowReturnToMainMenu();
+				 //여기서 위젯 호출 
+			}
+		}
+	}
+}
+
+
+void ASPGameModeBase::FinishMatch()
+{
+	UE_LOG(LogTemp,Log,TEXT("FinishMatch"));
+	ASPGameModeBase* const SPGameState = Cast<ASPGameModeBase>(GameState);
+	if(SPGameState && IsMatchInProgress())
+	{
+		EndMatch();
+	}
 }
 
 void ASPGameModeBase::AISpawn()
@@ -157,14 +193,12 @@ void ASPGameModeBase::SpawnPlayerCharacter(APlayerController* MyController,  Col
 		{
 			PC->Possess(NewPawn);
 		}
-		//MyController->Possess(NewPawn);
 	}
 }
 
 void ASPGameModeBase::PostLogin(APlayerController* NewPlayer)
 {
 	Super::PostLogin(NewPlayer);
-	//UE_LOG(LogTemp,Log,TEXT("PostLogin"));
 }
 
 void ASPGameModeBase::PostSeamlessTravel()

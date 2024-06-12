@@ -45,9 +45,8 @@ ASPGameState::ASPGameState()
 void ASPGameState::BeginPlay()
 {
 	Super::BeginPlay();
-	GetWorldTimerManager().SetTimer(GameTimerHandle, this, &ASPGameState::DefaultGameTimer,
-										GetWorldSettings()->GetEffectiveTimeDilation(), true);
-	
+	// GetWorldTimerManager().SetTimer(GameTimerHandle, this, &ASPGameState::DefaultGameTimer,
+	// 									GetWorldSettings()->GetEffectiveTimeDilation(), true);
 }
 
 void ASPGameState::AddScore(const ColorType& MyColor,EScoreType ScoreType)
@@ -96,22 +95,31 @@ void ASPGameState::DefaultGameTimer()
 {
 	if(HasAuthority())
 	{
+		ASPGameModeBase* GameMode = Cast<ASPGameModeBase>(GetWorld()->GetAuthGameMode());
+
 		if (RemainingTime > 0)
 		{
 			RemainingTime--;
 			OnRapTime();
-			if(RemainingTime == SpectrumPotionSpawnTime) //현재 3분이라면? 
-			{
-				SpectrumPotionSpawn(); //물약 스폰 
-			}
 
-			if(RemainingTime == AISpawnTime)
+			
+			// if(RemainingTime == SpectrumPotionSpawnTime) //현재 3분이라면? 
+			// {
+			// 	SpectrumPotionSpawn(); //물약 스폰 
+			// }
+			//
+			// if(RemainingTime == AISpawnTime)
+			// {
+			// 	GameMode->AISpawn();
+			// 	
+			// }
+
+			if(RemainingTime<=0) // 0이 되었을 때 
 			{
-				ASPGameModeBase* GameMode = Cast<ASPGameModeBase>(GetWorld()->GetAuthGameMode());
-				GameMode->AISpawn();
-				
+				GameMode->EndMatch();
 			}
 		}
+	
 	}
 }
 
@@ -206,6 +214,11 @@ void ASPGameState::OnMathStateSet(FName State) //서버
 			}
 		}
 	}
+
+	// if(State ==  MatchState::WaitingPostMatch)
+	// {
+	// 	UE_LOG(LogTemp,Log,TEXT("WaitingPostMatch "));
+	// }
 }
 
 // void ASPGameState::AISpawn()

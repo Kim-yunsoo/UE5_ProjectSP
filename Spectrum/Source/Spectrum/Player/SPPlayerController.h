@@ -38,10 +38,16 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = HUD)
 	TObjectPtr<class USPHUDWidget> SPHUDWidget;
 
-	void ShowReturnToMainMenu();
 
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TSubclassOf<class USPReturnToMainMenu> EndWidgetClass;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<class USPReturnToMainMenu> EndWidget;
 public:
+	UFUNCTION(Client,Unreliable)
+	void ShowReturnToMainMenu();
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	USPHUDWidget* GetSPHUDWidget() const;
@@ -66,3 +72,4 @@ private:
 
 	uint8 bReturnToMainMenuOpen :1;
 };
+
