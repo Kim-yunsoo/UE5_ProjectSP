@@ -87,4 +87,10 @@ Content/StarterContent
 Spectrum.sln.DotSettings.user
 Packaging/*
 Plugins/*
-Content/ESM_NoviceSorceress/
+Content/ESM_NoviceSorceress/mesh/
+Content/ESM_NoviceSorceress/metarial/
+Content/ESM_NoviceSorceress/map/
+Content/ESM_NoviceSorceress/DemoContent/
+Content/ESM_NoviceSorceress/texture/
+
+
