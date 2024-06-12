@@ -39,7 +39,7 @@ ASPCharacterNonPlayer::ASPCharacterNonPlayer()
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -100.0f), FRotator(0.0f, -90.0f, 0.0f));
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 	GetMesh()->SetCollisionProfileName(TEXT("NoCollision"));
-	
+
 	HpBar = CreateDefaultSubobject<USPWidgetComponent>(TEXT("Widget"));
 	HpBar->SetupAttachment(GetMesh());
 	HpBar->SetRelativeLocation(FVector(0.0f, 0.0f, 210.0f)); //조절 필요
@@ -62,11 +62,9 @@ ASPCharacterNonPlayer::ASPCharacterNonPlayer()
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
 	AttackRadius = 400.0f;
-	DefendRadius = 500.0f;
+	DefendRadius = 450.0f;
 	IsTeleporting = false;
 	Attacking = false;
-	
-	
 }
 
 void ASPCharacterNonPlayer::PostInitializeComponents()
@@ -127,32 +125,36 @@ void ASPCharacterNonPlayer::AttackHitCheck()
 
 void ASPCharacterNonPlayer::SetDead()
 {
-	UE_LOG(LogTemp,Log,TEXT("SetDead"));
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
-	PlayDeadAnimation();
-	SetActorEnableCollision(false);
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 
-	HpBar->SetHiddenInGame(true);
+	MultiRPCDeadAnim();
 
-	if(HasAuthority())
+	if (HasAuthority())
 	{
 		AIController->BrainComponent->StopLogic(FString{}); // 로직 중단
 		AIController->SetStateAsDead();
 	}
-	FTimerHandle DeadTimerHandle;
-	GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda(
-		                                       [&]()
-		                                       {
-			                                       Destroy();
-		                                       }
-	                                       ), DeadEventDelayTime, false);
+
+	// FOnMontageEnded CompleteDelegate;
+	// CompleteDelegate.BindUObject(this, &ASPCharacterNonPlayer::DeadEndDelegate);
+	// AnimInstance->Montage_SetEndDelegate(CompleteDelegate, DeadMontage);
+
+
+	// FTimerHandle DeadTimerHandle;
+	// GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda(
+	// 	                                       [&]()
+	// 	                                       {
+	// 		                                       Destroy();
+	// 	                                       }
+	//                                        ), DeadEventDelayTime, false);
 }
 
 void ASPCharacterNonPlayer::PlayDeadAnimation()
 {
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	AnimInstance->StopAllMontages(0.0f);
-	//AnimInstance->Montage_Play(DeadMontage, 1.0f);
+	AnimInstance->Montage_Play(DeadMontage, 1.0f);
 }
 
 void ASPCharacterNonPlayer::DamageResponse()
@@ -214,7 +216,7 @@ void ASPCharacterNonPlayer::SetAITeleportDelegate(const FAICharacterTeleportFini
 
 void ASPCharacterNonPlayer::SetAIHealDelegate(const FAICharacterHealFinished& InOnTeleportFinished)
 {
-	OnHealFinished= InOnTeleportFinished;
+	OnHealFinished = InOnTeleportFinished;
 }
 
 void ASPCharacterNonPlayer::Attack(AActor* Target)
@@ -236,8 +238,8 @@ void ASPCharacterNonPlayer::AttackEndDelegate(UAnimMontage* Montage, bool bInter
 	//Super::NotifyComboActionEnd();
 	//SetStateAsFrozen
 	Attacking = false;
-	
-	
+
+
 	OnAttackFinished.ExecuteIfBound(); //델리게이트에 묶인 함수를 호출한다. 
 }
 
@@ -321,15 +323,16 @@ void ASPCharacterNonPlayer::HealOverTiem()
 	FOnMontageEnded CompleteDelegate;
 	CompleteDelegate.BindUObject(this, &ASPCharacterNonPlayer::HealMontageEnded);
 	AnimInstance->Montage_SetEndDelegate(CompleteDelegate, HealMontage);
-	
+
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
-	SpawnParams.Owner=this;
+	SpawnParams.Owner = this;
 	//(GetCapsuleComponent()->GetScaledCapsuleHalfHeight())
-	FVector SpawnLocation = GetActorLocation()-FVector(0.0f, 0.0f, GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
-	HealZone =GetWorld()->SpawnActor<ASPHealZone>(ASPHealZone::StaticClass(),SpawnLocation,
-											   FRotator::ZeroRotator, SpawnParams);
+	FVector SpawnLocation = GetActorLocation() - FVector(
+		0.0f, 0.0f, GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
+	HealZone = GetWorld()->SpawnActor<ASPHealZone>(ASPHealZone::StaticClass(), SpawnLocation,
+	                                               FRotator::ZeroRotator, SpawnParams);
 	HealZone->OnHpUpDelegate.AddUObject(this, &ASPCharacterNonPlayer::HealDelegateFun);
 }
 
@@ -338,6 +341,7 @@ void ASPCharacterNonPlayer::MultiRPCHeal_Implementation()
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	AnimInstance->Montage_Play(HealMontage, 1.0f);
 }
+
 void ASPCharacterNonPlayer::Teleport(FVector Location)
 {
 	if (!IsTeleporting)
@@ -350,7 +354,7 @@ void ASPCharacterNonPlayer::Teleport(FVector Location)
 		GetMesh()->SetVisibility(false, true);
 		GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 		MultiRPCTeleport();
-		Location = Location+ FVector(0.0f,0.0f,GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
+		Location = Location + FVector(0.0f, 0.0f, GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
 		AIController->MoveToLocation(Location, 15.0f);
 		SetActorLocation(Location);
 		TeleportEnd();
@@ -363,17 +367,17 @@ void ASPCharacterNonPlayer::Teleport(FVector Location)
 		LatentInfo.Linkage = 0;
 		LatentInfo.UUID = __LINE__;
 		UKismetSystemLibrary::DelayUntilNextTick(this, LatentInfo);
-		IsTeleporting=false;
+		IsTeleporting = false;
 		OnTeleportFinished.ExecuteIfBound();
-
 	}
 }
+
 void ASPCharacterNonPlayer::MultiRPCTeleport_Implementation()
 {
 	TeleportBodyComponent = UGameplayStatics::SpawnEmitterAttached(TeleportBodyParticle, GetMesh(),
-																   FName(TEXT("spine_01")));
+	                                                               FName(TEXT("spine_01")));
 	TeleportTrailComponent = UGameplayStatics::SpawnEmitterAttached(TeleportTrailParticle, GetMesh(),
-																	FName(TEXT("spine_01")));
+	                                                                FName(TEXT("spine_01")));
 	StopAnimMontage();
 }
 
@@ -385,16 +389,15 @@ void ASPCharacterNonPlayer::TeleportEnd()
 	GetMesh()->SetVisibility(true, true);
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
 	MultiRPCTeleportEnd();
-	IsTeleporting=false;
+	IsTeleporting = false;
 	OnTeleportFinished.ExecuteIfBound();
 }
-
 
 
 void ASPCharacterNonPlayer::MultiRPCTeleportEnd_Implementation()
 {
 	FTimerHandle TimerHandle;
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle,this,&ASPCharacterNonPlayer::DeletParticle, 1.5f, false);
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ASPCharacterNonPlayer::DeletParticle, 1.5f, false);
 }
 
 void ASPCharacterNonPlayer::HandleMontageAnimNotify(FName NotifyName,
@@ -402,13 +405,22 @@ void ASPCharacterNonPlayer::HandleMontageAnimNotify(FName NotifyName,
 {
 	if (NotifyName == FName("AIFire"))
 	{
-		if(HasAuthority())
+		if (HasAuthority())
 		{
 			FVector Location = GetMesh()->GetSocketLocation(FName(TEXT("RightHand")));
 
 			FTransform Transform = FTransform{FRotator::ZeroRotator, Location, FVector{1.0, 1.0, 1.0,}};
 
 			AttackComponent->MagicSpell(MyTarget, Transform);
+		}
+	}
+	//AIDead
+
+	if (NotifyName == FName("AIDead"))
+	{
+		if (HasAuthority())
+		{
+			Destroy();
 		}
 	}
 }
@@ -423,7 +435,7 @@ void ASPCharacterNonPlayer::HitMontageEnded(UAnimMontage* Montage, bool bInterru
 
 void ASPCharacterNonPlayer::HealMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
-	if(HealZone)
+	if (HealZone)
 	{
 		HealZone->Destroy();
 	}
@@ -432,7 +444,7 @@ void ASPCharacterNonPlayer::HealMontageEnded(UAnimMontage* Montage, bool bInterr
 
 void ASPCharacterNonPlayer::HealDelegateFun()
 {
-	Heal(DamageSystemComponent->MaxHealth*0.05);
+	Heal(DamageSystemComponent->MaxHealth * 0.05);
 }
 
 void ASPCharacterNonPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -448,11 +460,17 @@ void ASPCharacterNonPlayer::MultiRPCHitAnim_Implementation()
 	AnimInstance->Montage_Play(HitMontage, 1.0f);
 }
 
+void ASPCharacterNonPlayer::MultiRPCDeadAnim_Implementation()
+{
+	PlayDeadAnimation();
+	SetActorEnableCollision(false);
+	HpBar->SetHiddenInGame(true);
+}
+
 void ASPCharacterNonPlayer::DeletParticle()
 {
-
 	IsTeleporting = false;
-		
+
 	if (TeleportBodyComponent)
 	{
 		TeleportBodyComponent->DestroyComponent();
@@ -462,6 +480,7 @@ void ASPCharacterNonPlayer::DeletParticle()
 		TeleportTrailComponent->DestroyComponent();
 	}
 }
+
 void ASPCharacterNonPlayer::MultiRPCAttack_Implementation()
 {
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();

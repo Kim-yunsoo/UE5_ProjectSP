@@ -3,10 +3,13 @@
 
 #include "Game/SPGameModeBase.h"
 #include "SPPlayerState.h"
+#include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "Game/SPGameState.h"
 #include "GameFramework/GameStateBase.h"
 #include "Character/SPCharacterPlayer.h"
 #include "Player/SPPlayerController.h"
+#include "BehaviorTree/BehaviorTree.h"
+
 
 
 ASPGameModeBase::ASPGameModeBase()
@@ -16,6 +19,20 @@ ASPGameModeBase::ASPGameModeBase()
 	GameStateClass = ASPGameState::StaticClass();
 	PlayerStateClass = ASPPlayerState::StaticClass();
 	PlayerControllerClass= ASPPlayerController::StaticClass();
+
+	static ConstructorHelpers::FClassFinder<APawn> AIPawnClassRef(TEXT("/Script/Engine.Blueprint'/Game/ESM_NoviceSorceress/AI/Blueprint/BP_SPCharacterNonPlayer.BP_SPCharacterNonPlayer_C'"));
+	if(AIPawnClassRef.Class)
+	{
+		AIPawnClass = AIPawnClassRef.Class;
+	}
+	
+	static ConstructorHelpers::FObjectFinder<UBehaviorTree> BTAssetRef(
+		TEXT("/Script/AIModule.BehaviorTree'/Game/AI/BT_SP_Character.BT_SP_Character'"));
+	if (nullptr != BTAssetRef.Object)
+	{
+		BTAsset = BTAssetRef.Object;
+	}
+
 }
 void ASPGameModeBase::BeginPlay()
 {
@@ -56,7 +73,12 @@ void ASPGameModeBase::OnMatchStateSet()
 	// }
 }
 
-
+void ASPGameModeBase::AISpawn()
+{
+	//AAIController* AIController = Cast<ASPCharacterNonPlayer>(AIPawnClass)->GetController()
+	FVector Location= FVector{-700,330,3784};
+	UAIBlueprintHelperLibrary::SpawnAIFromClass(GetWorld(),AIPawnClass,BTAsset,Location,FRotator::ZeroRotator);
+}
 
 void ASPGameModeBase::HandleSeamlessTravelPlayer(AController*& C)
 {

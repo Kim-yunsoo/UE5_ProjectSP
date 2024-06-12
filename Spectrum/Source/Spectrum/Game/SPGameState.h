@@ -49,8 +49,10 @@ protected:
 public:
 	UPROPERTY(Transient, ReplicatedUsing= OnRapTime) //게임 시간 
 	int32 RemainingTime;
+	
 	int32 MatchPlayTime = 180.f; // 3분
-	int32 SpectrumPotionSpawnTime = 120.f; //1분 뒤 
+	int32 AISpawnTime= 120.f; //2분 전 
+	int32 SpectrumPotionSpawnTime = 60.0; //1분 전 
 	
 protected: //Timer
 	UPROPERTY()
@@ -75,6 +77,10 @@ protected: //Timer
 
 	UPROPERTY(Replicated)
 	uint32 ReadyCount;
+
+
+
+
 
 public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;

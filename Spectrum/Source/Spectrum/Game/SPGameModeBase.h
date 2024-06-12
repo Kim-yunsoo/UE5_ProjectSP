@@ -33,15 +33,28 @@ private:
 	
 public:
 	UPROPERTY()
-	float WarmupTime = 5.0f; // 로딩 시간 
+	float WarmupTime = 5.0f; // 로딩 시간
+
+
 
 	float LevelStartingTime = 0.f; //인게임에 진입한 시간 기록을 위한 변수
 	
 	void SendMessagesToEveryOne(const FString& Sender, const FString& Message);
 	virtual void PostSeamlessTravel() override;
+	
+	UFUNCTION()
+	void AISpawn();
 
 protected:
+	UPROPERTY()
+	TObjectPtr<class UBehaviorTree> BTAsset;
+	
+	UPROPERTY()
+	TSubclassOf<APawn> AIPawnClass;
+	
 	virtual void OnMatchStateSet() override;
 	float CountdownTime = 0.f;
+
+
 
 };

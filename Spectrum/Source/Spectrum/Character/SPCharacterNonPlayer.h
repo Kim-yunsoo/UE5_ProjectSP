@@ -127,6 +127,9 @@ public: //interface
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UAnimMontage> HealMontage;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UAnimMontage> DeadMontage;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Particle, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UParticleSystem> TeleportBodyParticle;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Particle, Meta = (AllowPrivateAccess = "true"))
@@ -151,7 +154,7 @@ public: //interface
 
 	UFUNCTION()
 	void HealDelegateFun();
-	//¼­¹ö
+	
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const;
 
 	UFUNCTION(NetMulticast, Unreliable)
@@ -168,6 +171,9 @@ public: //interface
 
 	UFUNCTION(NetMulticast, Unreliable)
 	void MultiRPCHitAnim();
+	
+	UFUNCTION(NetMulticast, Unreliable)
+	void MultiRPCDeadAnim();
 
 	// UFUNCTION(Client, Unreliable)
 	// void ClientRPCTeleport();

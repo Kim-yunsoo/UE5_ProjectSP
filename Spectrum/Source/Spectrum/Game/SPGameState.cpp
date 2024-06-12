@@ -4,6 +4,7 @@
 #include "Game/SPGameState.h"
 
 #include "SpectrumLog.h"
+#include "SPGameModeBase.h"
 #include "Data/SPSpawnPosition.h"
 #include "Enums/SPScoreType.h"
 #include "GameFramework/GameMode.h"
@@ -35,6 +36,10 @@ ASPGameState::ASPGameState()
 	{
 		BackGroundMusic = SoundRef.Object;
 	}
+
+	///Script/Engine.Blueprint'/Game/ESM_NoviceSorceress/AI/Blueprint/BP_SPCharacterNonPlayer.BP_SPCharacterNonPlayer'
+	///
+
 }
 
 void ASPGameState::BeginPlay()
@@ -42,6 +47,7 @@ void ASPGameState::BeginPlay()
 	Super::BeginPlay();
 	GetWorldTimerManager().SetTimer(GameTimerHandle, this, &ASPGameState::DefaultGameTimer,
 										GetWorldSettings()->GetEffectiveTimeDilation(), true);
+	
 }
 
 void ASPGameState::AddScore(const ColorType& MyColor,EScoreType ScoreType)
@@ -97,6 +103,13 @@ void ASPGameState::DefaultGameTimer()
 			if(RemainingTime == SpectrumPotionSpawnTime) //현재 3분이라면? 
 			{
 				SpectrumPotionSpawn(); //물약 스폰 
+			}
+
+			if(RemainingTime == AISpawnTime)
+			{
+				ASPGameModeBase* GameMode = Cast<ASPGameModeBase>(GetWorld()->GetAuthGameMode());
+				GameMode->AISpawn();
+				
 			}
 		}
 	}
@@ -165,8 +178,6 @@ void ASPGameState::SpectrumPotionSpawn()
 			MyPlayer->ClientRPCSpawnUI(RandomIndex);
 		}
 	}
-	
-	
 }
 
 void ASPGameState::StartTimer()
@@ -196,6 +207,11 @@ void ASPGameState::OnMathStateSet(FName State) //서버
 		}
 	}
 }
+
+// void ASPGameState::AISpawn()
+// {
+// 	UAIBlueprintHelperLibrary::SpawnAIFromClass(GetWorld(),AIPawnClass,,);
+// }
 
 void ASPGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
