@@ -36,10 +36,6 @@ ASPGameState::ASPGameState()
 	{
 		BackGroundMusic = SoundRef.Object;
 	}
-
-	///Script/Engine.Blueprint'/Game/ESM_NoviceSorceress/AI/Blueprint/BP_SPCharacterNonPlayer.BP_SPCharacterNonPlayer'
-	///
-
 }
 
 void ASPGameState::BeginPlay()
@@ -103,16 +99,16 @@ void ASPGameState::DefaultGameTimer()
 			OnRapTime();
 
 			
-			// if(RemainingTime == SpectrumPotionSpawnTime) //현재 3분이라면? 
-			// {
-			// 	SpectrumPotionSpawn(); //물약 스폰 
-			// }
-			//
-			// if(RemainingTime == AISpawnTime)
-			// {
-			// 	GameMode->AISpawn();
-			// 	
-			// }
+			if(RemainingTime == SpectrumPotionSpawnTime) //현재 3분이라면? 
+			{
+				SpectrumPotionSpawn(); //물약 스폰 
+			}
+			
+			if(RemainingTime == AISpawnTime)
+			{
+				GameMode->AISpawn();
+				
+			}
 
 			if(RemainingTime<=0) // 0이 되었을 때 
 			{
@@ -166,8 +162,6 @@ void ASPGameState::SpectrumPotionSpawn()
 	{
 		FName RandomRowName = RowNames[RandomIndex];
 		FPosition* RandomPosition = PositionTable->FindRow<FPosition>(RandomRowName,TEXT(""));
-		//GetWorld()->SpawnActorDeferred<ASPPickup>( );
-
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
@@ -214,17 +208,7 @@ void ASPGameState::OnMathStateSet(FName State) //서버
 			}
 		}
 	}
-
-	// if(State ==  MatchState::WaitingPostMatch)
-	// {
-	// 	UE_LOG(LogTemp,Log,TEXT("WaitingPostMatch "));
-	// }
 }
-
-// void ASPGameState::AISpawn()
-// {
-// 	UAIBlueprintHelperLibrary::SpawnAIFromClass(GetWorld(),AIPawnClass,,);
-// }
 
 void ASPGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {

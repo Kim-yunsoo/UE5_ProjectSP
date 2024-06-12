@@ -50,7 +50,7 @@ public:
 	UPROPERTY(Transient, ReplicatedUsing= OnRapTime) //게임 시간 
 	int32 RemainingTime;
 	
-	int32 MatchPlayTime = 60.f; // 3분
+	int32 MatchPlayTime = 180.f; // 3분
 	int32 AISpawnTime= 120.f; //2분 전 
 	int32 SpectrumPotionSpawnTime = 60.0; //1분 전 
 	

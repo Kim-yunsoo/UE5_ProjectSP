@@ -3,7 +3,6 @@
 
 #include "Game/SPGameModeBase.h"
 
-#include "SpectrumLog.h"
 #include "SPPlayerState.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "Game/SPGameState.h"
@@ -11,9 +10,6 @@
 #include "Character/SPCharacterPlayer.h"
 #include "Player/SPPlayerController.h"
 #include "BehaviorTree/BehaviorTree.h"
-#include "UI/ReturnMain/SPReturnToMainMenu.h"
-
-
 
 ASPGameModeBase::ASPGameModeBase()
 {
@@ -35,14 +31,6 @@ ASPGameModeBase::ASPGameModeBase()
 	{
 		BTAsset = BTAssetRef.Object;
 	}
-
-	// static ConstructorHelpers::FClassFinder<USPHUDWidget> SPHUDWidgetRef(TEXT("/Game/Spectrum/UMG/WBP_SPHUD.WBP_SPHUD_C"));
-	// if (SPHUDWidgetRef.Class)
-	// {
-	// 	SPHUDWidgetClass = SPHUDWidgetRef.Class;
-	// }
-
-
 }
 void ASPGameModeBase::BeginPlay()
 {
@@ -81,10 +69,10 @@ void ASPGameModeBase::OnMatchStateSet()
 	{
 		SPGameState->OnMathStateSet(MatchState); //시간 제대로 작동 확인 
 	}
+
+	
 	if(MatchState == MatchState::WaitingPostMatch)
 	{
-		//각자 위젯에 엔드 위젯 넣기 
-		//SP_LOG(LogSPNetwork,Log,TEXT("WaitingPostMatch"));
 		for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
 		{
 			APlayerController* PlayerController = Iterator->Get();
@@ -141,10 +129,7 @@ void ASPGameModeBase::HandleSeamlessTravelPlayer(AController*& C)
 void ASPGameModeBase::SpawnPlayerCharacter(APlayerController* MyController,  ColorType& MyColor,
 	 GenderType& MyGender)
 {
-	//임시지정
-	// MyColor=ColorType::Green;
-	// MyGender=GenderType::Man;
-	//
+
 	FString SpawnPath;
 	if(MyColor ==ColorType::Green && MyGender == GenderType::Man)
 	{
@@ -214,8 +199,6 @@ void ASPGameModeBase::SendMessagesToEveryOne(const FString& Sender, const FStrin
 		APlayerController* PlayerController = Iterator->Get();
 		if (PlayerController)
 		{
-			//APawn* Pawn =PlayerController->GetPawn();
-			//체크
 			ASPCharacterPlayer* MyPlayer = Cast<ASPCharacterPlayer>(PlayerController->GetPawn());
 			if (MyPlayer)
 			{
