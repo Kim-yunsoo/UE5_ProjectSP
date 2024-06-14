@@ -31,6 +31,9 @@ public:
 	UPROPERTY()
 	FString NickName;
 
+	UPROPERTY()
+	uint32 Rank;
+
 	UFUNCTION(Server,Unreliable)
 	void SetPlayerColor(ColorType MyColor);
 	UFUNCTION(Server,Unreliable)

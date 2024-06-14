@@ -20,13 +20,13 @@ struct FItemTextData
 	FText Name;
 	
 	UPROPERTY(EditAnywhere)
-	FText Description; //고민
+	FText Description; 
 
 	UPROPERTY(EditAnywhere)
-	FText InteractionText; //고민
+	FText InteractionText; 
 
 	UPROPERTY(EditAnywhere)
-	FText UsageText; //고민
+	FText UsageText; 
 };
 
 USTRUCT()

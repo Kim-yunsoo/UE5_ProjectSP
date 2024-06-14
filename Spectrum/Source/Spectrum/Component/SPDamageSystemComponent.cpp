@@ -68,10 +68,8 @@ bool USPDamageSystemComponent::TakeDamage(float Amount, bool ShouldForceInterrup
 {
 	if (!IsDead)
 	{
-		SP_SUBLOG(LogSPNetwork, Log, TEXT("Amount : %f"),Amount);
 		Health = Health - Amount;
 		OnRep_SetHp();
-		SP_SUBLOG(LogSPNetwork, Log, TEXT("Health : %f"),Health);
 		//SetHp(Health); // HP 위젯 체력 조절 
 		if (Health <= 0.0f)
 		{

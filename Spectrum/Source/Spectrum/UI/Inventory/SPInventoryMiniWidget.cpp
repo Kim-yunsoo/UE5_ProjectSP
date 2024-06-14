@@ -19,12 +19,9 @@ void USPInventoryMiniWidget::RefreshMiniInventory(TArray<USPItemBase*> Inventory
 
 		for(USPItemBase* const& InventoryItem : InventoryReference->GetInventorMiniContents())
 		{
-			// if(InventoryItem->Quantity)
-			// {
 				USPInventoryItemSlot* ItemSlot = CreateWidget<USPInventoryItemSlot>(this, InventorySlotClass);
 				ItemSlot->SetItemReference(InventoryItem);
 				InventoryPanel->AddChildToWrapBox(ItemSlot);
-			// }
 
 		}
 		SetInfoText();

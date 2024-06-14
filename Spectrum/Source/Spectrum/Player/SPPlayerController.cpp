@@ -2,10 +2,11 @@
 
 
 #include "Player/SPPlayerController.h"
+
+#include "SpectrumLog.h"
 #include "UI/SPHUDWidget.h"
 #include "SPGameModeBase.h"
 #include "UI/ReturnMain/SPReturnToMainMenu.h"
-
 ASPPlayerController::ASPPlayerController()
 {
 	static ConstructorHelpers::FClassFinder<USPHUDWidget> SPHUDWidgetRef(
@@ -89,9 +90,9 @@ void ASPPlayerController::BeginPlay()
 // 	// }
 // }
 
-void ASPPlayerController::ShowReturnToMainMenu_Implementation()
+void ASPPlayerController::ClientRPCReturnToMainMenu_Implementation(const TArray<FColorScoreData>& ColorScoreDataArray)
 {
-	UE_LOG(LogTemp, Log, TEXT("ShowReturnToMainMenu"));
+	SP_LOG(LogSPNetwork,Log,TEXT("Client"));
 	if (EndWidgetClass == nullptr) return;
 	if (EndWidget == nullptr)
 	{
@@ -100,7 +101,7 @@ void ASPPlayerController::ShowReturnToMainMenu_Implementation()
 
 	if (EndWidget)
 	{
-		EndWidget->MenuSetup();
+		EndWidget->MenuSetup(ColorScoreDataArray);
 	}
 }
 

@@ -28,7 +28,6 @@
 #include "SPCharacterMovementComponent.h"
 //#include "UI/SPHUDWidget.h"
 #include "EngineUtils.h"
-#include "SpectrumLog.h"
 #include "GameFramework/GameStateBase.h"
 #include "Net/UnrealNetwork.h"
 #include "Skill/SPSkillCastComponent.h"
@@ -36,7 +35,6 @@
 #include "SPGameModeBase.h"
 #include "SPGameState.h"
 #include "Component/SPInventoryComponent.h"
-#include "Physics/SPCollision.h"
 #include "Player/SPPlayerController.h"
 #include "Potion/SPItemBase.h"
 #include "Potion/Make/SPMakePotion.h"
@@ -46,7 +44,6 @@
 #include "Potion/SPPickup.h"
 #include "Potion/SPSpectrumPotion.h"
 #include "UI/Interaction/SPManual.h"
-
 
 ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<USPCharacterMovementComponent>(
@@ -389,24 +386,9 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 	}
 
 	PickupSound = LoadObject<USoundWave>(nullptr, TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/Pickup.Pickup'"));
-	//Effect
-
-	// static ConstructorHelpers::FObjectFinder<UParticleSystem> SlowEffectRef(
-	// 	TEXT("/Script/Engine.ParticleSystem'/Game/Box/MagicStaff/Demo/Particles/P_Explosion.P_Explosion'"));
-	// if (SlowEffectRef.Object)
-	// {
-	// 	SlowEffect = SlowEffectRef.Object;
-	// }
-
-	//SlowSkillComponent->SetIsReplicated(true);
 
 	DecalSphere->SetVisibility(false);
 	MyDecal->SetVisibility(false);
-	// DecalSphere->SetIsReplicated(true);
-
-	//Widget
-	//Target = CreateDefaultSubobject<USPWidgetComponent>(TEXT("Widget"));
-
 
 	CurrentCharacterControlType = ECharacterControlType::Shoulder;
 	LastInput = FVector2D::ZeroVector;
@@ -477,14 +459,9 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 
 	if (bIsHolding && HasAuthority())
 	{
-		//to do
 		PhysicsHandleComponent->SetTargetLocation(GravityArrow->K2_GetComponentLocation());
 	}
-	//
-	// if (GetWorld()->TimeSince(InteractionData.LastInteractionCheckTime) > InteractionCheckFrequency)
-	// {
-	// 	PerformInteractionCheck();
-	// }
+
 }
 
 void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -2045,7 +2022,6 @@ void ASPCharacterPlayer::PlayTeleSkillAnimation()
 
 void ASPCharacterPlayer::HitSlowSkillResult()
 {
-	UE_LOG(LogTemp, Log, TEXT("HitSlowSkillResult"));
 
 	bIsDamage = true;
 	if (false == IsMontagePlaying())
@@ -2054,7 +2030,7 @@ void ASPCharacterPlayer::HitSlowSkillResult()
 	}
 	GetCharacterMovement()->MaxWalkSpeed = 100.f;
 	FTimerHandle Handle;
-	GetWorld()->GetTimerManager().SetTimer(Handle, this, &ASPCharacterPlayer::SlowSillApply, 5, false, -1.0f);
+	GetWorld()->GetTimerManager().SetTimer(Handle, this, &ASPCharacterPlayer::SlowSillApply, 3, false, -1.0f);
 }
 
 void ASPCharacterPlayer::SlowSillApply()
@@ -2240,26 +2216,16 @@ void ASPCharacterPlayer::Graping(const FInputActionValue& Value)
 void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 {
 	MultiRPCAimRotation(false);
-	//GetCharacterMovement()->bOrientRotationToMovement = true;
-	//GetCharacterMovement()->bUseControllerDesiredRotation = false;
-
 	if (false == bIsHolding)
 	{
-		//FVector SphereLocationStart = Sphere->K2_GetComponentLocation();
 		FVector SphereLocationStart = FollowCamera->K2_GetComponentLocation();
-		//FVector SphereLocationEnd = SphereLocationStart + (1500 * FollowCamera->GetForwardVector());
 		APlayerController* PlayerController = GetController<APlayerController>();
 		FVector Location;
 		FRotator Rotation;
-		//PlayerController(Location);
 		PlayerController->GetPlayerViewPoint(Location, Rotation);
 
 		if (PlayerController != nullptr)
 		{
-			// if(bIsActiveGraping)
-			// {
-
-
 			FRotator ControlRotation = PlayerController->GetControlRotation();
 			FVector ReseltFoward = UKismetMathLibrary::GetForwardVector(ControlRotation);
 
@@ -2268,9 +2234,7 @@ void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 			bool TransSuccess = PlayerController->DeprojectScreenPositionToWorld(
 				0.5, 0.5, WorldLocation, WorldDirection);
 
-			//FVector SphereLocationEnd = ReseltFoward * SphereRange + SphereLocationStart;
 			FVector SphereLocationEnd = Location + Rotation.Vector() * SphereRange;
-			// Location + Rotation.Vector() * MaxRange; 
 			TArray<TEnumAsByte<EObjectTypeQuery>> EmptyObjectTypes;
 			EDrawDebugTrace::Type drawDebugType = EDrawDebugTrace::None;
 			TArray<AActor*> HitActorsToIgnore;
@@ -2349,40 +2313,14 @@ void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 						NAME_None,
 						HitComponent->K2_GetComponentLocation()
 					);
-
 					bIsHolding = true;
 					ClientRPCSound(GrapSound);
 				}
 			}
-
-			// const FColor LineColor = HitSuccess ? FColor::Green : FColor::Red;
-			//
-			// DrawDebugLine(
-			// 	GetWorld(),
-			// 	SphereLocationStart,
-			// 	SphereLocationEnd,
-			// 	LineColor,
-			// 	false,
-			// 	5.0f,
-			// 	0,
-			// 	1.0f
-			// );
-			// if (HitSuccess)
-			// {
-			// 	DrawDebugPoint(
-			// 		GetWorld(),
-			// 		outHitResult.ImpactPoint,
-			// 		10.0f,
-			// 		FColor::Blue,
-			// 		false,
-			// 		5.0f
-			// 	);
-			// }
 		}
 	}
 	else
 	{
-		UE_LOG(LogTemp, Log, TEXT("HI"));
 		bIsHolding = false;
 		if (HitComponent && HitComponent->IsSimulatingPhysics())
 		{
@@ -2418,9 +2356,6 @@ void ASPCharacterPlayer::Aiming_CameraMove()
 {
 	if (false == bIsHolding)
 	{
-		//todo
-		//GetCharacterMovement()->bOrientRotationToMovement = false;
-		//GetCharacterMovement()->bUseControllerDesiredRotation = true;
 		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld,
 		                                          EAttachmentRule::KeepWorld, true);
 		FollowCamera->AttachToComponent(SpringArm, AttachmentRules, NAME_None);
@@ -2428,8 +2363,6 @@ void ASPCharacterPlayer::Aiming_CameraMove()
 	}
 	else
 	{
-		//GetCharacterMovement()->bOrientRotationToMovement = true;
-		//GetCharacterMovement()->bUseControllerDesiredRotation = false;
 		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld,
 		                                          EAttachmentRule::KeepWorld, true);
 		FollowCamera->AttachToComponent(CameraBoom, AttachmentRules, NAME_None);
@@ -2569,9 +2502,3 @@ void ASPCharacterPlayer::ClientRPCAddMessageToChat_Implementation(const FString&
 {
 	HUDWidget->UpdateChatting(Sender, Message);
 }
-
-// void ASPCharacterPlayer::ClientRPCTest_Implementation()
-// {
-// 	SP_LOG(LogSPNetwork,Log,TEXT("ClientRPCTest"));
-//
-// }

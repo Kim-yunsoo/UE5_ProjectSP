@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "Data/SPColorScoreData.h"
 #include "SPPlayerController.generated.h"
 
 class USPReturnToMainMenu;
@@ -47,7 +48,8 @@ protected:
 	TObjectPtr<class USPReturnToMainMenu> EndWidget;
 public:
 	UFUNCTION(Client,Unreliable)
-	void ShowReturnToMainMenu();
+	void ClientRPCReturnToMainMenu(const TArray<FColorScoreData>& ColorScoreDataArray);
+	
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	USPHUDWidget* GetSPHUDWidget() const;

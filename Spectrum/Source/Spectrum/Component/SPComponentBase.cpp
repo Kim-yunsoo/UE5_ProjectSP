@@ -18,7 +18,7 @@ USPComponentBase::USPComponentBase()
 		DataAsset = TableRef.Object;
 	}
 
-	BaseDamage=10.0f;
+	BaseDamage=20.0f;
 }
 
 
@@ -43,8 +43,6 @@ void USPComponentBase::Explode(ColorType& MyColor)
 void USPComponentBase::RoadAsset(ColorType& MyColor)
 {
 	FString AssetColor = UEnum::GetValueAsString(MyColor);
-	SP_SUBLOG(LogSPNetwork,Log,TEXT("%s"), *AssetColor);
-
 	FExplosionData* Data = DataAsset->FindRow<FExplosionData>( FName(*AssetColor),"");
 	if(Data)
 	{

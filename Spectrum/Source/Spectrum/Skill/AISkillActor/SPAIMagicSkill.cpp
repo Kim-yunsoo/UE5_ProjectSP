@@ -82,9 +82,9 @@ void ASPAIMagicSkill::BeginPlay()
 		RotateToTarget();
 		if (bIsHoming)
 		{
-			ProjectileMovement->bIsHomingProjectile = true;
-			ProjectileMovement->HomingAccelerationMagnitude = 3000.0f;
-			ProjectileMovement->HomingTargetComponent = TargetActor->GetRootComponent();
+			// ProjectileMovement->bIsHomingProjectile = true;
+			// ProjectileMovement->HomingAccelerationMagnitude = 3000.0f;
+			// ProjectileMovement->HomingTargetComponent = TargetActor->GetRootComponent();
 		}
 	}
 	SetLifeSpan(7.0f);

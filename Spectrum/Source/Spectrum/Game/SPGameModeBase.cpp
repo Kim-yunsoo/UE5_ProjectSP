@@ -2,14 +2,16 @@
 
 
 #include "Game/SPGameModeBase.h"
-
 #include "SPPlayerState.h"
+#include "AI/SPAIController.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "Game/SPGameState.h"
 #include "GameFramework/GameStateBase.h"
 #include "Character/SPCharacterPlayer.h"
 #include "Player/SPPlayerController.h"
 #include "BehaviorTree/BehaviorTree.h"
+#include "Net/UnrealNetwork.h"
+
 
 ASPGameModeBase::ASPGameModeBase()
 {
@@ -17,14 +19,15 @@ ASPGameModeBase::ASPGameModeBase()
 	bUseSeamlessTravel = true;
 	GameStateClass = ASPGameState::StaticClass();
 	PlayerStateClass = ASPPlayerState::StaticClass();
-	PlayerControllerClass= ASPPlayerController::StaticClass();
+	PlayerControllerClass = ASPPlayerController::StaticClass();
 
-	static ConstructorHelpers::FClassFinder<APawn> AIPawnClassRef(TEXT("/Script/Engine.Blueprint'/Game/ESM_NoviceSorceress/AI/Blueprint/BP_SPCharacterNonPlayer.BP_SPCharacterNonPlayer_C'"));
-	if(AIPawnClassRef.Class)
+	static ConstructorHelpers::FClassFinder<APawn> AIPawnClassRef(TEXT(
+		"/Script/Engine.Blueprint'/Game/ESM_NoviceSorceress/AI/Blueprint/BP_SPCharacterNonPlayer.BP_SPCharacterNonPlayer_C'"));
+	if (AIPawnClassRef.Class)
 	{
 		AIPawnClass = AIPawnClassRef.Class;
 	}
-	
+
 	static ConstructorHelpers::FObjectFinder<UBehaviorTree> BTAssetRef(
 		TEXT("/Script/AIModule.BehaviorTree'/Game/AI/BT_SP_Character.BT_SP_Character'"));
 	if (nullptr != BTAssetRef.Object)
@@ -32,20 +35,22 @@ ASPGameModeBase::ASPGameModeBase()
 		BTAsset = BTAssetRef.Object;
 	}
 }
+
 void ASPGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
-	LevelStartingTime = GetWorld() ->GetTimeSeconds(); //여기까지 들어오게 된 시간 
+	LevelStartingTime = GetWorld()->GetTimeSeconds(); //여기까지 들어오게 된 시간 
 }
+
 void ASPGameModeBase::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	if(MatchState == MatchState::WaitingToStart)
+	if (MatchState == MatchState::WaitingToStart)
 	{
-		CountdownTime=WarmupTime-GetWorld()->GetTimeSeconds()+LevelStartingTime; //10초 로딩 시간
-	
-		if(CountdownTime<=0.f)
+		CountdownTime = WarmupTime - GetWorld()->GetTimeSeconds() + LevelStartingTime; //10초 로딩 시간
+
+		if (CountdownTime <= 0.f)
 		{
 			StartMatch(); //진행 모드로 변환
 		}
@@ -55,11 +60,11 @@ void ASPGameModeBase::Tick(float DeltaSeconds)
 void ASPGameModeBase::OnMatchStateSet()
 {
 	Super::OnMatchStateSet();
-	
+
 	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
 	{
 		ASPPlayerController* MyPlayer = Cast<ASPPlayerController>(It->Get());
-		if(MyPlayer)
+		if (MyPlayer)
 		{
 			MyPlayer->ClientRCPMathState(MatchState);
 		}
@@ -67,31 +72,44 @@ void ASPGameModeBase::OnMatchStateSet()
 	ASPGameState* SPGameState = Cast<ASPGameState>(GetWorld()->GetGameState());
 	if (SPGameState)
 	{
-		SPGameState->OnMathStateSet(MatchState); //시간 제대로 작동 확인 
+		SPGameState->OnMathStateSet(MatchState);
 	}
 
-	
-	if(MatchState == MatchState::WaitingPostMatch)
+	if (MatchState == MatchState::WaitingPostMatch)
 	{
-		for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
+		//TArray 점수 데이터 - state 담아두고  , 닉네임 데이터 담고
+
+		FinalizeMatchResults();
+		
+	}
+}
+
+
+
+void ASPGameModeBase::FinalizeMatchResults()
+{
+	//여기서 어떤 색이 몇 등인지 계산해야한다. TArray  - F로 점수랑 색 뭔지 담아서 점수에 따라서 정렬 후
+	//이터레이터 돌면서 내가 몇 등인지 인덱스로 알게 된 후, PlayerState에 등수 저장 그럼 닉네임 , 색 , 등수 모두 해결 
+
+
+
+
+	for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
+	{
+		APlayerController* PlayerController = Iterator->Get();
+		if (AIPawn)
 		{
-			APlayerController* PlayerController = Iterator->Get();
-			ASPPlayerController* SPPlayerController = Cast<ASPPlayerController>(PlayerController);
-			if(SPPlayerController)
-			{
-				SPPlayerController->ShowReturnToMainMenu();
-				 //여기서 위젯 호출 
-			}
+			AIPawn->Destroy();
 		}
+	
 	}
 }
 
 
 void ASPGameModeBase::FinishMatch()
 {
-	UE_LOG(LogTemp,Log,TEXT("FinishMatch"));
 	ASPGameModeBase* const SPGameState = Cast<ASPGameModeBase>(GameState);
-	if(SPGameState && IsMatchInProgress())
+	if (SPGameState && IsMatchInProgress())
 	{
 		EndMatch();
 	}
@@ -100,69 +118,67 @@ void ASPGameModeBase::FinishMatch()
 void ASPGameModeBase::AISpawn()
 {
 	//AAIController* AIController = Cast<ASPCharacterNonPlayer>(AIPawnClass)->GetController()
-	FVector Location= FVector{-700,330,3784};
-	UAIBlueprintHelperLibrary::SpawnAIFromClass(GetWorld(),AIPawnClass,BTAsset,Location,FRotator::ZeroRotator);
+	FVector Location = FVector{-700, 330, 3784};
+	AIPawn = UAIBlueprintHelperLibrary::SpawnAIFromClass(GetWorld(), AIPawnClass, BTAsset, Location,
+	                                                     FRotator::ZeroRotator);
 }
 
 void ASPGameModeBase::HandleSeamlessTravelPlayer(AController*& C)
 {
 	Super::HandleSeamlessTravelPlayer(C);
 
-	if(!C)
+	if (!C)
 	{
 		return;
 	}
 
-	if(ASPPlayerController* MyController = Cast<ASPPlayerController>(C))
+	if (ASPPlayerController* MyController = Cast<ASPPlayerController>(C))
 	{
-		if(ASPPlayerState* PlayerState = MyController->GetPlayerState<ASPPlayerState>())
+		if (ASPPlayerState* PlayerState = MyController->GetPlayerState<ASPPlayerState>())
 		{
-			if(PlayerState)
+			if (PlayerState)
 			{
-				SpawnPlayerCharacter(MyController, PlayerState->Color,PlayerState->Gender);
+				SpawnPlayerCharacter(MyController, PlayerState->Color, PlayerState->Gender);
 			}
-			
 		}
 	}
 }
 
-void ASPGameModeBase::SpawnPlayerCharacter(APlayerController* MyController,  ColorType& MyColor,
-	 GenderType& MyGender)
+void ASPGameModeBase::SpawnPlayerCharacter(APlayerController* MyController, ColorType& MyColor, GenderType& MyGender)
 {
-
 	FString SpawnPath;
-	if(MyColor ==ColorType::Green && MyGender == GenderType::Man)
+	if (MyColor == ColorType::Green && MyGender == GenderType::Man)
 	{
-		SpawnPath= TEXT("/Game/Spectrum/BluePrint/BP_SPCharacterMan2.BP_SPCharacterMan2_C");
+		SpawnPath = TEXT("/Game/Spectrum/BluePrint/BP_SPCharacterMan2.BP_SPCharacterMan2_C");
 	}
-	else if(MyColor ==ColorType::Orange && MyGender == GenderType::Man)
+	else if (MyColor == ColorType::Orange && MyGender == GenderType::Man)
 	{
 		SpawnPath = TEXT("/Game/Spectrum/BluePrint/BP_SPCharacterMan3.BP_SPCharacterMan3_C");
 	}
-	else if(MyColor ==ColorType::Purple && MyGender == GenderType::Man)
+	else if (MyColor == ColorType::Purple && MyGender == GenderType::Man)
 	{
-		SpawnPath =  TEXT("/Game/Spectrum/BluePrint/BP_SPCharacterMan1.BP_SPCharacterMan1_C");
+		SpawnPath = TEXT("/Game/Spectrum/BluePrint/BP_SPCharacterMan1.BP_SPCharacterMan1_C");
 	}
-	
-	else if(MyColor ==ColorType::Green && MyGender == GenderType::Woman)
+
+	else if (MyColor == ColorType::Green && MyGender == GenderType::Woman)
 	{
-		SpawnPath =  TEXT("/Game/Spectrum/BluePrint/BP_SPCharaterPlayer_W2.BP_SPCharaterPlayer_W2_C");
+		SpawnPath = TEXT("/Game/Spectrum/BluePrint/BP_SPCharaterPlayer_W2.BP_SPCharaterPlayer_W2_C");
 	}
-	else if(MyColor ==ColorType::Orange && MyGender == GenderType::Woman)
+	else if (MyColor == ColorType::Orange && MyGender == GenderType::Woman)
 	{
 		SpawnPath = TEXT("/Game/Spectrum/BluePrint/BP_SPCharaterPlayer_W3.BP_SPCharaterPlayer_W3_C");
 	}
-	else if(MyColor ==ColorType::Purple && MyGender == GenderType::Woman)
+	else if (MyColor == ColorType::Purple && MyGender == GenderType::Woman)
 	{
 		SpawnPath = TEXT("/Game/Spectrum/BluePrint/BP_SPCharaterPlayer_W1.BP_SPCharaterPlayer_W1_C");
 	}
-	
+
 	UClass* DesiredPawnClass = StaticLoadClass(UObject::StaticClass(), nullptr, *SpawnPath);
 
-	if(DesiredPawnClass)
+	if (DesiredPawnClass)
 	{
 		APawn* OldPawn = MyController->GetPawn();
-		if(OldPawn)
+		if (OldPawn)
 		{
 			OldPawn->Destroy();
 		}
@@ -172,9 +188,9 @@ void ASPGameModeBase::SpawnPlayerCharacter(APlayerController* MyController,  Col
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Owner = MyController;
 		APawn* NewPawn = GetWorld()->SpawnActor<APawn>(DesiredPawnClass, SpawnLocation, FRotator::ZeroRotator,
-		 	                                               SpawnParams);
+		                                               SpawnParams);
 		ASPPlayerController* PC = Cast<ASPPlayerController>(MyController);
-		if(PC)
+		if (PC)
 		{
 			PC->Possess(NewPawn);
 		}
@@ -207,4 +223,3 @@ void ASPGameModeBase::SendMessagesToEveryOne(const FString& Sender, const FStrin
 		}
 	}
 }
-

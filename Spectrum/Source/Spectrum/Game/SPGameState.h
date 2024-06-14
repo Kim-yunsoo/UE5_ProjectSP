@@ -6,6 +6,8 @@
 #include "GameFramework/GameState.h"
 #include "SPGlobalEnum.h"
 #include "Interface/SPScoreInterface.h"
+#include "Data/SPColorScoreData.h"
+
 #include "SPGameState.generated.h"
 
 DECLARE_MULTICAST_DELEGATE_TwoParams(FOnScore, const ColorType& /*MyColor*/,const int32 /*Score*/)
@@ -38,7 +40,6 @@ protected:
 	int8 bIsInGame;
 
 
-	
 	UPROPERTY()
 	TObjectPtr<UDataTable> PositionTable;
 
@@ -51,8 +52,8 @@ public:
 	int32 RemainingTime;
 	
 	int32 MatchPlayTime = 180.f; // 3분
-	int32 AISpawnTime= 120.f; //2분 전 
-	int32 SpectrumPotionSpawnTime = 60.0; //1분 전 
+	int32 AISpawnTime= 30.0f; //30초 남았을 때 
+	int32 SpectrumPotionSpawnTime = 120.0; //2분전
 	
 protected: //Timer
 	UPROPERTY()
@@ -78,11 +79,11 @@ protected: //Timer
 	UPROPERTY(Replicated)
 	uint32 ReadyCount;
 
-
-
-
-
 public:
+	FORCEINLINE int32 GetGreenScore() const {return GreenScore; };
+	FORCEINLINE int32 GetOrangeScore() const {return OrangeScore; };
+	FORCEINLINE int32 GetPurpleScore() const {return PurpleScore; };
+	
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
 	void Ready();
@@ -91,4 +92,5 @@ public:
 	void StartTimer();
 
 	void OnMathStateSet(FName State); // 매치 상태를 알려주는 함수를 만든다.
+	
 };

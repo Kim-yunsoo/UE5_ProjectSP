@@ -41,8 +41,6 @@ ASPGameState::ASPGameState()
 void ASPGameState::BeginPlay()
 {
 	Super::BeginPlay();
-	// GetWorldTimerManager().SetTimer(GameTimerHandle, this, &ASPGameState::DefaultGameTimer,
-	// 									GetWorldSettings()->GetEffectiveTimeDilation(), true);
 }
 
 void ASPGameState::AddScore(const ColorType& MyColor,EScoreType ScoreType)
@@ -97,7 +95,6 @@ void ASPGameState::DefaultGameTimer()
 		{
 			RemainingTime--;
 			OnRapTime();
-
 			
 			if(RemainingTime == SpectrumPotionSpawnTime) //현재 3분이라면? 
 			{
@@ -109,13 +106,12 @@ void ASPGameState::DefaultGameTimer()
 				GameMode->AISpawn();
 				
 			}
-
 			if(RemainingTime<=0) // 0이 되었을 때 
 			{
+				
 				GameMode->EndMatch();
 			}
 		}
-	
 	}
 }
 
@@ -208,7 +204,25 @@ void ASPGameState::OnMathStateSet(FName State) //서버
 			}
 		}
 	}
+	if(State == MatchState::WaitingPostMatch  )
+	{
+		TArray<FColorScoreData> ColorScoreArray;
+		ColorScoreArray.Add(FColorScoreData(ColorType::Green,GreenScore));
+		ColorScoreArray.Add(FColorScoreData(ColorType::Orange,OrangeScore));
+		ColorScoreArray.Add(FColorScoreData(ColorType::Purple,PurpleScore));
+		for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
+		{
+			APlayerController* PlayerController = Iterator->Get();
+			ASPPlayerController* SPPlayerController = Cast<ASPPlayerController>(PlayerController);
+			if (SPPlayerController)
+			{
+				SPPlayerController->ClientRPCReturnToMainMenu(ColorScoreArray); //ClientRPC인데 
+			}
+		}
+	}
 }
+
+
 
 void ASPGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
@@ -221,7 +235,6 @@ void ASPGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 	DOREPLIFETIME(ASPGameState, RemainingTime);
 	DOREPLIFETIME(ASPGameState, ReadyCount);
 	DOREPLIFETIME(ASPGameState, bIsInGame);
-	
 }
 
 

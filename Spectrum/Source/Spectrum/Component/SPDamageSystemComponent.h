@@ -39,7 +39,6 @@ public:
 	void OnRep_SetHp();
 
 
-	
 	float MaxHealth;
 	bool IsDead;
 	bool IsInterruptible;
@@ -51,4 +50,5 @@ public:
 	bool TakeDamage(float Amount, bool ShouldForceInterrupt);
 	virtual void InitializeComponent() override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	
 };

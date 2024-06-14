@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "SPGlobalEnum.h"
 #include "Blueprint/UserWidget.h"
 #include "GameFramework/GameMode.h"
 #include "SPGameModeBase.generated.h"
@@ -10,6 +11,7 @@
 class ASPPlayerController;
 enum class GenderType : uint8;
 enum class ColorType : uint8;
+
 
 
 UCLASS()
@@ -54,4 +56,18 @@ protected:
 	virtual void OnMatchStateSet() override;
 	float CountdownTime = 0.f;
 
+	UPROPERTY()
+	TObjectPtr<AActor> AIPawn;
+
+	// UPROPERTY()
+	// TMap<ColorType, int32> ScoreMap;
+	//
+	// UPROPERTY()
+	// TMap<ColorType,FString> NicNameMap;
+	//
+	// TArray<TPair<ColorType, int32>> OutSortedScores;
+
+
+
+	void FinalizeMatchResults();
 };
