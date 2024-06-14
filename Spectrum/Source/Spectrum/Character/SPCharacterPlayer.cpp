@@ -1941,25 +1941,11 @@ bool ASPCharacterPlayer::BackItem(USPItemBase* ItemToDrop, const int32 QuantityT
 {
 	if(PlayerInventory->IsMiniPotion(ItemToDrop->ID) == -1)
 	{
-		UE_LOG(LogTemp,Log,TEXT("BackItem"));
 		return false; 
 	}
-	
-	UE_LOG(LogTemp,Log,TEXT("PostBackItem"));
-
 	int num = PlayerInventory->IsMiniPotion(ItemToDrop->ID);
 	ServerRPCBackItem(num, QuantityToDrop);
 	return true; 
-	// TArray<USPItemBase*> InventoryContents = GetInventory()->GetInventorMakeContents();
-	//
-	// for (USPItemBase* Item : InventoryContents)
-	// {
-	// 	if (Item)
-	// 	{
-	// 		UE_LOG(LogTemp, Warning, TEXT("Item Name: %s"), *Item->ItemTextData.Name.ToString());
-	// 	}
-	// }
-	// UE_LOG(LogTemp, Warning, TEXT("============="));
 }
 
 
