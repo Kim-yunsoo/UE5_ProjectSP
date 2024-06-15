@@ -119,7 +119,7 @@ void ASPAIMagicSkill::OnBoxCollisionHit(UPrimitiveComponent* HitComponent, AActo
 			
 			//ASPCharacterPlayer* Player = Cast<ASPCharacterPlayer>(Hit.GetActor());
 			this->SetActorHiddenInGame(true);
-			this->SetLifeSpan(5.0f);
+			this->SetLifeSpan(0.5f);
 			bDoOnce = false;
 		}
 	}
@@ -129,13 +129,7 @@ void ASPAIMagicSkill::MultiRPCMagicEffet_Implementation(FVector HitLoction)
 {
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), EmitterHit, HitLoction, FRotator::ZeroRotator,
 	                                         FVector(1.0f), true, EPSCPoolMethod::None, true);
-
-	// UE_LOG(LogTemp,Log,TEXT("HitAtctor : %s "), *HitAtctor->GetName());
-	// ISPSkillInterface* CheckIceAction = Cast<ISPSkillInterface>(HitAtctor);
-	// if (CheckIceAction)
-	// {
-	// 	CheckIceAction->HitSlowSkillResult();
-	// }
+	
 }
 
 
