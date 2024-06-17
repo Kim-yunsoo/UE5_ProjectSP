@@ -35,7 +35,7 @@ void USPExplosionComponent::Explode(ColorType& MyColor)
 	float Radius = 125.f;
 	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
 	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldDynamic));
-	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn));
+	//ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn));
 	TArray<AActor*> ActorsToIgnore;
 	TArray<FHitResult> OutHits;
 	FLinearColor GreenColor(0.0f, 1.0f, 0.0f);

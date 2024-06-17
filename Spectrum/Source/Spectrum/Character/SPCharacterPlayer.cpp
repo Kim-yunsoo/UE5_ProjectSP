@@ -114,25 +114,10 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 		Sphere->SetStaticMesh(SphereMeshRef.Object);
 		Sphere->SetupAttachment(Staff);
 		Sphere->SetWorldScale3D(FVector(-0.03125, -0.03125, -0.03125));
-		// Sphere->SetRelativeLocation(FVector(-2.277422, 0.0, 51.739027));
 		Sphere->SetVisibility(false);
 		Sphere->SetCollisionProfileName(TEXT("AllCollisionIgnore"));
 	}
 
-	//static ConstructorHelpers::FObjectFinder<USkeletalMesh> CharacterMeshRef(TEXT("/Script/Engine.SkeletalMesh'/Game/Characters/Mannequins/Meshes/SKM_Quinn_Simple.SKM_Quinn_Simple'"));
-	//
-	//if (CharacterMeshRef.Object)
-	//{
-	//	GetMesh()->SetSkeletalMesh(CharacterMeshRef.Object);
-	//}
-
-	// static ConstructorHelpers::FClassFinder<UAnimInstance> AnimInstanceClassRef(
-	// 	TEXT("/Game/Spectrum/Animation/AB_SP_Anim.AB_SP_Anim_c"));
-	//
-	// if (AnimInstanceClassRef.Class)
-	// {
-	// 	GetMesh()->SetAnimInstanceClass(AnimInstanceClassRef.Class);
-	// }
 
 	static ConstructorHelpers::FObjectFinder<USPCharacterControlData> ShoulderDataRef(
 		TEXT("/Script/Spectrum.SPCharacterControlData'/Game/Spectrum/CharacterControl/SPC_Shoulder.SPC_Shoulder'"));
@@ -311,12 +296,6 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 		SpectrumFive = SpectrumFiveRef.Object;
 	}
 
-	/*static ConstructorHelpers::FObjectFinder<UAnimMontage> ThrowMontageRef(TEXT("/Script/Engine.AnimMontage'/Game/Spectrum/Animation/AniMeta/Man/AM_SP_Throw.AM_SP_Throw'"));
-	if (ThrowMontageRef.Object)
-	{
-		ThrowMontage = ThrowMontageRef.Object;
-	}*/
-
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticMeshforSplineRef(
 		TEXT("/Script/Engine.StaticMesh'/Game/Spectrum/SM_MERGED_StaticMeshActor_90.SM_MERGED_StaticMeshActor_90'"));
@@ -353,7 +332,6 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 	if (MeshFinder1.Succeeded())
 	{
 		DecalSphere->SetMaterial(0, MeshFinder1.Object);
-		// 필요에 따라 추가적인 MeshFinder 사용하여 다른 메시 로드 및 추가
 	}
 
 	static ConstructorHelpers::FObjectFinder<UMaterialInterface> MeshFinder2(
@@ -361,7 +339,6 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 	if (MeshFinder2.Succeeded())
 	{
 		MyDecal->SetMaterial(0, MeshFinder2.Object);
-		// 필요에 따라 추가적인 MeshFinder 사용하여 다른 메시 로드 및 추가
 	}
 
 	static ConstructorHelpers::FObjectFinder<UInputAction> KeyMenuRef(
@@ -419,10 +396,6 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 	//Inventory
 	PlayerInventory = CreateDefaultSubobject<USPInventoryComponent>(TEXT("playerInventory"));
 
-	//GravityArrow->SetIsReplicated(true);
-	//PhysicsHandleComponent->SetIsReplicated(true);
-
-	//GrapSound= CreateDefaultSubobject<USoundWave>(TEXT("GrapSound"));
 	static ConstructorHelpers::FObjectFinder<USoundWave> GrapSoundRef(
 		TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/GrapSound.GrapSound'"));
 	if (GrapSoundRef.Object)
@@ -430,7 +403,6 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 		GrapSound = GrapSoundRef.Object;
 	}
 
-	// StopGrapSound= CreateDefaultSubobject<USoundWave>(TEXT("StopGrapSound"));
 	static ConstructorHelpers::FObjectFinder<USoundWave> StopGrapSoundRef(
 		TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/StopGrapingSound.StopGrapingSound'"));
 	if (StopGrapSoundRef.Object)
@@ -803,7 +775,7 @@ void ASPCharacterPlayer::AimPotion(const FInputActionValue& Value)
 {
 	if (bIsSpawn && false == IsMontagePlaying())
 	{
-		if (!HasAuthority())
+		if (!HasAuthority()) //클라이언트
 		{
 			bIsTurnReady = true;
 			PlayTurnAnimation();
@@ -817,14 +789,11 @@ void ASPCharacterPlayer::ServerRPCTurnReady_Implementation()
 	bIsTurnReady = true;
 	PlayTurnAnimation();
 	for (APlayerController* PlayerController : TActorRange<APlayerController>(GetWorld()))
-	//플레이어 컨트롤러 목록을 서버에서 가지고 오기
 	{
 		if (PlayerController && GetController() != PlayerController) //시뮬레이트 프록시
 		{
 			if (!PlayerController->IsLocalController())
 			{
-				//서버 아니고 공격 명령 내린 플레이어 컨트롤러도 아닌 시뮬레이트 프록시
-				//폰을 재생하는 플레이어 컨트롤러
 				ASPCharacterPlayer* OtherPlayer = Cast<ASPCharacterPlayer>(PlayerController->GetPawn());
 				if (OtherPlayer)
 				{
@@ -840,7 +809,7 @@ void ASPCharacterPlayer::ThrowPotion(const FInputActionValue& Value)
 {
 	if (GetMesh()->GetAnimInstance()->Montage_IsPlaying(ThrowMontage))
 	{
-		if (bIsThrowReady)
+		if (bIsThrowReady) //던질 준비 완료
 		{
 			bIsTurnReady = false;
 			ServerRPCThrowPotion(bIsThrowReady);
@@ -856,13 +825,13 @@ void ASPCharacterPlayer::ThrowPotion(const FInputActionValue& Value)
 				Potion = nullptr;
 			}
 		}
-		else
+		else //던질 준비가 안된상태이다. 
 		{
 			if (!HasAuthority())
 			{
 				PlayStopAnimation();
 			}
-			//ServerRPCThrowPotion(bIsThrowReady);
+			ServerRPCThrowPotion(bIsThrowReady);
 		}
 	}
 }
@@ -1538,7 +1507,6 @@ void ASPCharacterPlayer::ServerRPCThrowPotion_Implementation(bool IsThrowReady)
 		MultiRPCAimRotation(false);
 		//GetCharacterMovement()->bOrientRotationToMovement = true;
 		//GetCharacterMovement()->bUseControllerDesiredRotation = false;
-		bIsTurnReady = false;
 		bIsSpawn = false;
 		Potion = nullptr;
 		for (APlayerController* PlayerController : TActorRange<APlayerController>(GetWorld()))
@@ -1558,8 +1526,10 @@ void ASPCharacterPlayer::ServerRPCThrowPotion_Implementation(bool IsThrowReady)
 			}
 		}
 	}
-	else
+	else //던질 준비가 안된 상태이다. 
 	{
+		bIsTurnReady=false; //턴인플레이스 멈추기
+		MultiRPCAimRotation(false);
 		PlayStopAnimation();
 		for (APlayerController* PlayerController : TActorRange<APlayerController>(GetWorld()))
 		//플레이어 컨트롤러 목록을 서버에서 가지고 오기
@@ -1580,23 +1550,6 @@ void ASPCharacterPlayer::ServerRPCThrowPotion_Implementation(bool IsThrowReady)
 		}
 	}
 }
-
-
-// void ASPCharacterPlayer::ServerRPCSlowSkillMake_Implementation()
-// {
-//
-// 	ASPSlowSkill* ProjectileSkill = NewObject<ASPSlowSkill>(this,ASPSlowSkill::StaticClass());
-// 	// byclass
-// 	if(ProjectileSkill)
-// 	{
-// 		UE_LOG(LogTemp,Log,TEXT("Make!!"));
-//
-// 		ProjectileSkill->SetActorLocation(SkillLocation->GetComponentLocation());
-// 		ProjectileSkill->RegisterAllComponents();
-// 		ProjectileSkill->SkillAction(this);
-// 		
-// 	}
-// }
 
 void ASPCharacterPlayer::ShowProjectilePath()
 {

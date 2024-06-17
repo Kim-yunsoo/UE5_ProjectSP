@@ -64,7 +64,7 @@ void USPHUDWidget::NativeConstruct()
 	}
 	if(LoadingWidget)
 	{
-		//LoadingWidget->SetVisibility(ESlateVisibility::Collapsed);
+		LoadingWidget->SetVisibility(ESlateVisibility::Collapsed);
 	}
 }
 
