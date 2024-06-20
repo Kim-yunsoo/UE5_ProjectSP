@@ -22,26 +22,12 @@ ASPPlayerController::ASPPlayerController()
 	{
 		EndWidgetClass = EndWidgetClassRef.Class;
 	}
-	// static ConstructorHelpers::FObjectFinder<UInputAction> InputActionJumpRef(
-	//    TEXT("/Script/EnhancedInput.InputAction'/Game/Spectrum/Input/Actions/IA_SP_Quit.IA_SP_Quit'"));
-	// if (nullptr != InputActionJumpRef.Object)
-	// {
-	//    Quit = InputActionJumpRef.Object;
-	// }
 	bReturnToMainMenuOpen = false;
 }
 
 void ASPPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
-
-	// if(InputComponent ==nullptr) return;
-
-	//InputComponent->BindAction(FName("Quit"), ETriggerEvent::Triggered, this, &ASPPlayerController::ShowReturnToMainMenu);
-	// if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent))
-	// {
-	//    EnhancedInputComponent->BindAction(Quit, ETriggerEvent::Triggered, this, &ASPPlayerController::ShowReturnToMainMenu);
-	// }
 }
 
 void ASPPlayerController::BeginPlay()
@@ -61,38 +47,8 @@ void ASPPlayerController::BeginPlay()
 	}
 }
 
-// void ASPPlayerController::ShowReturnToMainMenu()
-// {
-// 	UE_LOG(LogTemp, Log, TEXT("ShowReturnToMainMenu"));
-// 	if (EndWidgetClass == nullptr) return;
-// 	if (EndWidget == nullptr)
-// 	{
-// 		EndWidget = CreateWidget<USPReturnToMainMenu>(this, EndWidgetClass);
-// 	}
-//
-// 	if (EndWidget)
-// 	{
-// 		EndWidget->MenuSetup();
-// 	}
-//
-// 	// if (ReturnToMainMenu)
-// 	// {
-// 	// 	bReturnToMainMenuOpen = !bReturnToMainMenuOpen;
-// 	//
-// 	// 	if (bReturnToMainMenuOpen)
-// 	// 	{
-// 	// 		ReturnToMainMenu->MenuSetup();
-// 	// 	}
-// 	// 	else
-// 	// 	{
-// 	// 		ReturnToMainMenu->MenuTearDown();
-// 	// 	}
-// 	// }
-// }
-
 void ASPPlayerController::ClientRPCReturnToMainMenu_Implementation(const TArray<FColorScoreData>& ColorScoreDataArray)
 {
-	SP_LOG(LogSPNetwork,Log,TEXT("Client"));
 	if (EndWidgetClass == nullptr) return;
 	if (EndWidget == nullptr)
 	{

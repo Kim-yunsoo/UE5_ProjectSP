@@ -6,9 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "SPLobbyPlayerController.generated.h"
 
-/**
- * 
- */
+
 UCLASS()
 class SPECTRUM_API ASPLobbyPlayerController : public APlayerController
 {
@@ -28,7 +26,7 @@ public:
 	uint32 ReadyCount;
 	
 	UFUNCTION(Server,Unreliable)
-	void ServerTEST();
+	void ServerRPCReady();
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 

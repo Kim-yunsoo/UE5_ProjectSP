@@ -3,6 +3,7 @@
 
 #include "UI/Select/SPSelectWidget.h"
 
+#include "SpectrumLog.h"
 #include "SPGlobalEnum.h"
 #include "SPPlayerState.h"
 #include "Components/Button.h"
@@ -129,16 +130,11 @@ void USPSelectWidget::OnClickReadyBut()
 	{
 		if (bIsSendNickName && bIsSelectColor && bIsSelectGender)
 		{
-			//UE_LOG(LogTemp,Log,TEXT("1"));
-			//여기서 게임 모드로 RPC 보내야할거같다.
-			//UE_LOG(LogTemp,Log,TEXT("%s"),*(GetWorld()->GetAuthGameMode())->GetName() );
-			//ServerRPC();
 			ASPLobbyPlayerController* PC = Cast<ASPLobbyPlayerController>(GetOwningPlayer());
 			if(PC)
 			{
-				PC->ServerTEST();
+				PC->ServerRPCReady();
 			}
-		
 			bIsReady=true;
 		}
 	}
