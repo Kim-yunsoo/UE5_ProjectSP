@@ -41,8 +41,8 @@ ASPGameState::ASPGameState()
 void ASPGameState::BeginPlay()
 {
 	Super::BeginPlay();
-	GetWorldTimerManager().SetTimer(GameTimerHandle, this, &ASPGameState::DefaultGameTimer,
-										GetWorldSettings()->GetEffectiveTimeDilation(), true);
+	// GetWorldTimerManager().SetTimer(GameTimerHandle, this, &ASPGameState::DefaultGameTimer,
+	// 									GetWorldSettings()->GetEffectiveTimeDilation(), true);
 }
 
 void ASPGameState::AddScore(const ColorType& MyColor,EScoreType ScoreType)
@@ -108,7 +108,7 @@ void ASPGameState::DefaultGameTimer()
 				GameMode->AISpawn();
 				
 			}
-			if(RemainingTime<=0) // 0이 되었을 때 
+			if(RemainingTime<=0) 
 			{
 				
 				GameMode->EndMatch();

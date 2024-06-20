@@ -36,7 +36,7 @@ void ASPLobbyGameMode::Ready()
 	
 	++ReadyCount;
 	SP_LOG(LogSPNetwork,Log,TEXT("ReadCount! %d"), ReadyCount);
-	if(ReadyCount==1)
+	if(ReadyCount==2)
 	{
 		GetWorld()->ServerTravel(TEXT("/Game/Spectrum/Room/Map/Building?listen"));
 		///Script/Engine.World'/Game/Spectrum/Room/Map/Building.Building'

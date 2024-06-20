@@ -70,7 +70,7 @@ ASPCharacterNonPlayer::ASPCharacterNonPlayer()
 void ASPCharacterNonPlayer::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
-	DamageSystemComponent->OnDamageResponse.AddUObject(this, &ASPCharacterNonPlayer::DamageResponse);
+	//DamageSystemComponent->OnDamageResponse.AddUObject(this, &ASPCharacterNonPlayer::DamageResponse);
 	DamageSystemComponent->OnHpZero.AddUObject(this, &ASPCharacterNonPlayer::SetDead);
 	DamageSystemComponent->OnDamageResponse.AddUObject(this, &ASPCharacterNonPlayer::HitResponse);
 }
@@ -141,13 +141,13 @@ void ASPCharacterNonPlayer::SetDead()
 	// AnimInstance->Montage_SetEndDelegate(CompleteDelegate, DeadMontage);
 
 
-	// FTimerHandle DeadTimerHandle;
-	// GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda(
-	// 	                                       [&]()
-	// 	                                       {
-	// 		                                       Destroy();
-	// 	                                       }
-	//                                        ), DeadEventDelayTime, false);
+	FTimerHandle DeadTimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda(
+		                                       [&]()
+		                                       {
+			                                       Destroy();
+		                                       }
+	                                       ), DeadEventDelayTime, false);
 }
 
 void ASPCharacterNonPlayer::PlayDeadAnimation()
@@ -157,21 +157,7 @@ void ASPCharacterNonPlayer::PlayDeadAnimation()
 	AnimInstance->Montage_Play(DeadMontage, 1.0f);
 }
 
-void ASPCharacterNonPlayer::DamageResponse()
-{
-	UE_LOG(LogTemp, Log, TEXT("DamageResponse"));
-	// add animation
-}
 
-// float ASPCharacterNonPlayer::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,
-//                                         AController* EventInstigator, AActor* DamageCauser)
-// {
-// 	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-//
-// 	//Stat->ApplyDamage(DamageAmount);
-//
-// 	return DamageAmount;
-// }
 
 void ASPCharacterNonPlayer::SetupCharacterWidget(USPUserWidget* InUserWidget)
 {
@@ -416,13 +402,13 @@ void ASPCharacterNonPlayer::HandleMontageAnimNotify(FName NotifyName,
 	}
 	//AIDead
 
-	if (NotifyName == FName("AIDead"))
-	{
-		if (HasAuthority())
-		{
-			Destroy();
-		}
-	}
+	// if (NotifyName == FName("AIDead"))
+	// {
+	// 	if (HasAuthority())
+	// 	{
+	// 		Destroy();
+	// 	}
+	// }
 }
 
 void ASPCharacterNonPlayer::HitMontageEnded(UAnimMontage* Montage, bool bInterrupted)

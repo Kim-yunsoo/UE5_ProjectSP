@@ -58,16 +58,5 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<AActor> AIPawn;
-
-	// UPROPERTY()
-	// TMap<ColorType, int32> ScoreMap;
-	//
-	// UPROPERTY()
-	// TMap<ColorType,FString> NicNameMap;
-	//
-	// TArray<TPair<ColorType, int32>> OutSortedScores;
-
-
-
 	void FinalizeMatchResults();
 };

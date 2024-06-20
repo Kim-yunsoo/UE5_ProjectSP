@@ -38,16 +38,9 @@ protected:
 	void AttackHitCheck();
 	void SetDead();
 	void PlayDeadAnimation();
-	void DamageResponse();
-	//virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 
-	float DeadEventDelayTime = 5.0f;
+	float DeadEventDelayTime = 4.0f;
 
-protected:
-	// UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Stat, Meta = (AllowPrivateAccess = "true"))
-	// TObjectPtr<class USPNonCharacterStatComponent> Stat;
-
-	//UI Widget Section
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class USPWidgetComponent> HpBar;

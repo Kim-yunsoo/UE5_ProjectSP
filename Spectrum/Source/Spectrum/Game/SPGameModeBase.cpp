@@ -15,7 +15,7 @@
 
 ASPGameModeBase::ASPGameModeBase()
 {
-	//bDelayedStart = true;
+	bDelayedStart = true;
 	bUseSeamlessTravel = true;
 	GameStateClass = ASPGameState::StaticClass();
 	PlayerStateClass = ASPPlayerState::StaticClass();
@@ -46,41 +46,41 @@ void ASPGameModeBase::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	// if (MatchState == MatchState::WaitingToStart)
-	// {
-	// 	CountdownTime = WarmupTime - GetWorld()->GetTimeSeconds() + LevelStartingTime; //10초 로딩 시간
-	//
-	// 	if (CountdownTime <= 0.f)
-	// 	{
-	// 		StartMatch(); //진행 모드로 변환
-	// 	}
-	// }
+	if (MatchState == MatchState::WaitingToStart)
+	{
+		CountdownTime = WarmupTime - GetWorld()->GetTimeSeconds() + LevelStartingTime; //10초 로딩 시간
+	
+		if (CountdownTime <= 0.f)
+		{
+			StartMatch(); //진행 모드로 변환
+		}
+	}
 }
 
 void ASPGameModeBase::OnMatchStateSet()
 {
 	Super::OnMatchStateSet();
 
-	// for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
-	// {
-	// 	ASPPlayerController* MyPlayer = Cast<ASPPlayerController>(It->Get());
-	// 	if (MyPlayer)
-	// 	{
-	// 		MyPlayer->ClientRCPMathState(MatchState);
-	// 	}
-	// }
-	// ASPGameState* SPGameState = Cast<ASPGameState>(GetWorld()->GetGameState());
-	// if (SPGameState)
-	// {
-	// 	SPGameState->OnMathStateSet(MatchState);
-	// }
-	//
-	// if (MatchState == MatchState::WaitingPostMatch)
-	// {
-	// 	//TArray 점수 데이터 - state 담아두고  , 닉네임 데이터 담고
-	//
-	// 	FinalizeMatchResults();
-	// }
+	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+	{
+		ASPPlayerController* MyPlayer = Cast<ASPPlayerController>(It->Get());
+		if (MyPlayer)
+		{
+			MyPlayer->ClientRCPMathState(MatchState);
+		}
+	}
+	ASPGameState* SPGameState = Cast<ASPGameState>(GetWorld()->GetGameState());
+	if (SPGameState)
+	{
+		SPGameState->OnMathStateSet(MatchState);
+	}
+	
+	if (MatchState == MatchState::WaitingPostMatch)
+	{
+		//TArray 점수 데이터 - state 담아두고  , 닉네임 데이터 담고
+	
+		FinalizeMatchResults();
+	}
 }
 
 

@@ -1503,6 +1503,7 @@ void ASPCharacterPlayer::ServerRPCThrowPotion_Implementation(bool IsThrowReady)
 			float Mul = 1500.0f;
 			Potion->Throw((ForwardVector + FVector{0.0f, 0.0f, 0.4f}) * Mul);
 		}
+		bIsTurnReady=false;
 		bIsThrowReady = false;
 		MultiRPCAimRotation(false);
 		//GetCharacterMovement()->bOrientRotationToMovement = true;
@@ -2293,17 +2294,15 @@ void ASPCharacterPlayer::ServerRPCStopGraping_Implementation()
 
 void ASPCharacterPlayer::Aiming_CameraMove()
 {
+	FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld,
+	                                          EAttachmentRule::KeepWorld, true);
 	if (false == bIsHolding)
 	{
-		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld,
-		                                          EAttachmentRule::KeepWorld, true);
 		FollowCamera->AttachToComponent(SpringArm, AttachmentRules, NAME_None);
 		CameraMove();
 	}
 	else
 	{
-		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld,
-		                                          EAttachmentRule::KeepWorld, true);
 		FollowCamera->AttachToComponent(CameraBoom, AttachmentRules, NAME_None);
 		CameraMove();
 	}
