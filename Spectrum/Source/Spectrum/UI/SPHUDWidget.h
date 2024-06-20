@@ -8,6 +8,7 @@
 #include "SPHUDWidget.generated.h"
 
 
+class UImage;
 class UTextBlock;
 class USPItemBase;
 struct FInteractableData;
@@ -64,6 +65,13 @@ protected:
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UTextBlock> SpectrumText;
 
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<UTextBlock> AIText;
+
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<UImage> AlarmImage;
+	
+
 	UPROPERTY()
 	TObjectPtr<class USPLoadingWidget> LoadingWidget;
 	
@@ -99,6 +107,7 @@ public:
 
 	void ShowChat();
 	void UpdateShowUIText();
+	void UpdateAIInfoText();
 	void HideLoadingWidget();
 
 protected:

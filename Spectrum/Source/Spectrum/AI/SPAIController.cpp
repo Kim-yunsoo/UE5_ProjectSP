@@ -36,7 +36,7 @@ ASPAIController::ASPAIController()
 	if (AIPerception)
 	{
 		UAISenseConfig_Sight* SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("SightConfig"));
-		SightConfig->SightRadius = 800.0f; //시야반경
+		SightConfig->SightRadius = 1600.0f; //시야반경
 		SightConfig->LoseSightRadius = 1200.0f;
 		SightConfig->PeripheralVisionAngleDegrees = 60.0f; //시야 각
 		SightConfig->SetMaxAge(0.5f); // 시야 반경에서 사라졌을 시 얼마나 오래 기억하는지?

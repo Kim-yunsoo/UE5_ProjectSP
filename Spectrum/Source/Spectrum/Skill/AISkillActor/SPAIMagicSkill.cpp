@@ -116,10 +116,9 @@ void ASPAIMagicSkill::OnBoxCollisionHit(UPrimitiveComponent* HitComponent, AActo
 					}
 				}
 			}
-			
-			//ASPCharacterPlayer* Player = Cast<ASPCharacterPlayer>(Hit.GetActor());
+			//ASPCharacterPlayer* Player = Cast<ASPCharacterPlayer> (Hit.GetActor());
 			this->SetActorHiddenInGame(true);
-			this->SetLifeSpan(0.5f);
+			this->SetLifeSpan(0.1f);
 			bDoOnce = false;
 		}
 	}

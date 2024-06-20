@@ -115,6 +115,11 @@ USPHUDWidget* ASPPlayerController::GetSPHUDWidget() const
 	return SPHUDWidget;
 }
 
+void ASPPlayerController::ClientAIAlarmUI_Implementation()
+{
+	SPHUDWidget->UpdateAIInfoText();
+}
+
 void ASPPlayerController::ClientRCPMathState_Implementation(FName State)
 {
 	if (State == MatchState::InProgress)

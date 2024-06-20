@@ -105,6 +105,7 @@ void ASPGameState::DefaultGameTimer()
 			
 			if(RemainingTime == AISpawnTime)
 			{
+				AIAlarmUI();
 				GameMode->AISpawn();
 				
 			}
@@ -176,6 +177,20 @@ void ASPGameState::SpectrumPotionSpawn()
 		if(MyPlayer)
 		{
 			MyPlayer->ClientRPCSpawnUI(RandomIndex);
+		}
+	}
+}
+
+void ASPGameState::AIAlarmUI()
+{
+	for(FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It;++It)
+	{
+		APlayerController* PlayerController = It->Get();
+		ASPPlayerController* MyPlayer = Cast<ASPPlayerController>(PlayerController);
+		if(MyPlayer)
+		{
+			MyPlayer->ClientAIAlarmUI();
+			//MyPlayer->ClientRPCSpawnUI(RandomIndex);
 		}
 	}
 }

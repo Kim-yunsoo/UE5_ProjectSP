@@ -59,6 +59,9 @@ public:
 	void ClientRPCSpawnUI(const int32 Index);
 
 	UFUNCTION(Client,Unreliable)
+	void ClientAIAlarmUI();
+
+	UFUNCTION(Client,Unreliable)
 	void ClientRCPMathState(FName State); // 매치 상태를 알려주는 함수를 만든다. 
 
 	UPROPERTY()

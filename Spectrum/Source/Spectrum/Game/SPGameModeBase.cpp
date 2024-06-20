@@ -109,10 +109,10 @@ void ASPGameModeBase::FinishMatch()
 
 void ASPGameModeBase::AISpawn()
 {
-	//AAIController* AIController = Cast<ASPCharacterNonPlayer>(AIPawnClass)->GetController()
-	FVector Location = FVector{-700, 330, 3784};
-	AIPawn = UAIBlueprintHelperLibrary::SpawnAIFromClass(GetWorld(), AIPawnClass, BTAsset, Location,
-	                                                     FRotator::ZeroRotator);
+	FVector Location = FVector{509.0, 261.0, 3784};
+	FRotator Rotation = FRotator{0.0, 180.0, 0.0f};
+	
+	AIPawn = UAIBlueprintHelperLibrary::SpawnAIFromClass(GetWorld(), AIPawnClass, BTAsset, Location, Rotation);
 }
 
 void ASPGameModeBase::HandleSeamlessTravelPlayer(AController*& C)

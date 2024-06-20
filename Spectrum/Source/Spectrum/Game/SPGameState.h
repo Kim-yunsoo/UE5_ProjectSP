@@ -51,8 +51,8 @@ public:
 	UPROPERTY(Transient, ReplicatedUsing= OnRapTime) //게임 시간 
 	int32 RemainingTime;
 	
-	int32 MatchPlayTime = 30.f; // 3분
-	int32 AISpawnTime= 15.0f; //30초 남았을 때 
+	int32 MatchPlayTime = 180.f; // 3분
+	int32 AISpawnTime= 170.0f; //30초 남았을 때 
 	int32 SpectrumPotionSpawnTime = 120.0; //2분전
 	
 protected: //Timer
@@ -88,6 +88,7 @@ public:
 	
 	void Ready();
 	void SpectrumPotionSpawn();
+	void AIAlarmUI();
 
 	void StartTimer();
 

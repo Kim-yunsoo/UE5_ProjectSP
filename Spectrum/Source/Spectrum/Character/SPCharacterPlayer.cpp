@@ -2010,15 +2010,13 @@ void ASPCharacterPlayer::HitTeleSkillResult(const FVector TeleportLocation)
 
 void ASPCharacterPlayer::OverlapPortal(const FVector& Location)
 {
-	// GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
-	// this->TeleportTo(Location, this->GetActorRotation(), false, true);
-	// this->SetActorRelativeLocation(Location);
-	//ClientRPCSound();
-
 	FTimerHandle Handle;
+	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+
 	GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([&]
 		                                       {
-			                                       this->SetActorRelativeLocation(Location);
+												GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+												this->SetActorRelativeLocation(Location);
 		                                       }
 	                                       ), 5.0f, false);
 }

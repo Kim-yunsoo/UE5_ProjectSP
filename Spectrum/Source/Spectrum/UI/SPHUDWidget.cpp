@@ -11,6 +11,7 @@
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Character/SPCharacterPlayer.h"
 #include "Chat/SPChatWidget.h"
+#include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Interface/SPCharacterHUDInterface.h"
 #include "Potion/Make/SPMakingPotionWidget.h"
@@ -65,6 +66,15 @@ void USPHUDWidget::NativeConstruct()
 	if(LoadingWidget)
 	{
 		//LoadingWidget->SetVisibility(ESlateVisibility::Collapsed);
+	}
+
+	if(AIText)
+	{
+		AIText->SetVisibility(ESlateVisibility::Collapsed);
+	}
+	if(AlarmImage)
+	{
+		AlarmImage->SetVisibility(ESlateVisibility::Collapsed);
 	}
 }
 
@@ -223,6 +233,7 @@ void USPHUDWidget::UpdateChatting(const FString& Sender, const FString& Message)
 void USPHUDWidget::UpdatePotionUI(const int32 Index)
 {
 	ManualWidget->UpdatePotionUI(Index);
+	
 	UpdateShowUIText();
 }
 
@@ -234,11 +245,25 @@ void USPHUDWidget::ShowChat()
 
 void USPHUDWidget::UpdateShowUIText()
 {
+	AlarmImage->SetVisibility(ESlateVisibility::Visible);
 	SpectrumText->SetVisibility(ESlateVisibility::Visible);
 	FTimerHandle TimerHandle;
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([&]
 	{
+		AlarmImage->SetVisibility(ESlateVisibility::Collapsed);
 		SpectrumText->SetVisibility(ESlateVisibility::Collapsed);
+	}), 10.0f, false);
+}
+
+void USPHUDWidget::UpdateAIInfoText()
+{
+	AlarmImage->SetVisibility(ESlateVisibility::Visible);
+	AIText->SetVisibility(ESlateVisibility::Visible);
+	FTimerHandle TimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([&]
+	{
+		AlarmImage->SetVisibility(ESlateVisibility::Collapsed);
+		AIText->SetVisibility(ESlateVisibility::Collapsed);
 	}), 10.0f, false);
 }
 
