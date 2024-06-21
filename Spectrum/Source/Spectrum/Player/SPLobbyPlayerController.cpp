@@ -7,11 +7,18 @@
 #include "SPLobbyGameMode.h"
 #include "GameFramework/GameStateBase.h"
 #include "Net/UnrealNetwork.h"
-//#include "UI/SPSelectWidget.h"
+#include "UI/Select/SPSelectWidget.h"
 
 ASPLobbyPlayerController::ASPLobbyPlayerController()
 {
 	ReadyCount=0;
+	
+	static ConstructorHelpers::FClassFinder<USPSelectWidget> LobbyWidgetRef(
+	TEXT("/Game/Spectrum/Yunsoo/UI/WBP_SelectWidget.WBP_SelectWIdget_C"));
+	if (LobbyWidgetRef.Class)
+	{
+		LobbyWidgetClass = LobbyWidgetRef.Class;
+	}
 }
 
 void ASPLobbyPlayerController::BeginPlay()
@@ -21,6 +28,16 @@ void ASPLobbyPlayerController::BeginPlay()
 	FInputModeGameAndUI GameInputMode;
 	SetInputMode(GameInputMode);
 	SetShowMouseCursor(true);
+
+	if (IsLocalPlayerController())
+	{
+		LobbyWidget = CreateWidget<USPSelectWidget>(this, LobbyWidgetClass);
+		if (LobbyWidget)
+		{
+			LobbyWidget->AddToViewport();
+			LobbyWidget->SetVisibility(ESlateVisibility::Visible);
+		}
+	}
 }
 
 void ASPLobbyPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

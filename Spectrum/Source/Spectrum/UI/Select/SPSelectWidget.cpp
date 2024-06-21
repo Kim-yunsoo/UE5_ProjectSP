@@ -8,6 +8,7 @@
 #include "SPPlayerState.h"
 #include "Components/Button.h"
 #include "Components/EditableTextBox.h"
+#include "Components/TextBlock.h"
 #include "Player/SPLobbyPlayerController.h"
 
 USPSelectWidget::USPSelectWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -36,6 +37,11 @@ void USPSelectWidget::NativeConstruct()
 	bIsSelectGender = false;
 	bIsReady = false;
 	bIsSendNickName = false;
+
+	if(PlayerSelecText)
+	{
+		PlayerSelecText->SetVisibility(ESlateVisibility::Collapsed);
+	}
 }
 
 void USPSelectWidget::OnNickNameCommitted(const FText& Text, ETextCommit::Type CommitMethod)
@@ -133,6 +139,8 @@ void USPSelectWidget::OnClickReadyBut()
 			ASPLobbyPlayerController* PC = Cast<ASPLobbyPlayerController>(GetOwningPlayer());
 			if(PC)
 			{
+				PlayerSelecText->SetVisibility(ESlateVisibility::Visible);
+				ReadyBut->SetVisibility(ESlateVisibility::Collapsed);
 				PC->ServerRPCReady();
 			}
 			bIsReady=true;

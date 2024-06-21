@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "SPSelectWidget.generated.h"
 
+class UTextBlock;
 /**
  * 
  */
@@ -42,6 +43,9 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UEditableTextBox> NickNameText;
+
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<UTextBlock> PlayerSelecText;
 	
 	uint8 bIsSelectColor;
 	uint8 bIsSelectGender;
