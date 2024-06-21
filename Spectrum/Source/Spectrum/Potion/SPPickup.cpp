@@ -209,20 +209,3 @@ void ASPPickup::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetim
 	DOREPLIFETIME(ASPPickup, DesiredItemID);
 }
 
-void ASPPickup::MultiRPCPlayAnimation_Implementation()
-{
-}
-
-// void ASPPickup::OnRepItemID()
-// {
-// }
-
-void ASPPickup::ServerRPCInteract_Implementation(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget)
-{
-	//SP_LOG(LogSPNetwork, Log, TEXT("ServerRPCInteract_Implementation"));
-}
-
-void ASPPickup::ClientRPCUpdateWidget_Implementation(ASPCharacterPlayer* Taker)
-{
-	//SP_LOG(LogSPNetwork, Log, TEXT("ClientRPC"));
-}

@@ -74,11 +74,6 @@ protected:
 
 
 protected:
-	UFUNCTION(Client, Unreliable)
-	void ClientRPCUpdateWidget(ASPCharacterPlayer* Taker);
-
-	UFUNCTION(Server, Unreliable)
-	void ServerRPCInteract(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget);
 
 	UFUNCTION()
 	void OnTriggerEnter(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -88,9 +83,6 @@ protected:
 
 	
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const;
-	
-	UFUNCTION(NetMulticast, Unreliable)
-	void MultiRPCPlayAnimation();
 
 	//스펙트럼 물약 스폰을 위한 변수
 public:

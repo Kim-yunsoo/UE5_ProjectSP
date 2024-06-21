@@ -61,14 +61,13 @@ void USPExplosionComponent::Explode(ColorType& MyColor)
 		if(AIPlayer)
 		{
 			//색에 따른 추가 구현
-			if(MyColor == ColorType::Black ||MyOwner->SchoolAffiliation == MyColor )
+			if(MyColor == ColorType::Black ||MyOwner->SchoolAffiliation == MyColor)
 			{
 				AIPlayer->TakeDamage(BaseDamage * 2, true);
 				if (ScoreFuntion)
 				{
 					ScoreFuntion->AddScore(MyOwner->SchoolAffiliation , EScoreType::AttackSpecial); //State에서 점수를 올려준다. 
 				}
-				
 			}
 			else
 			{
