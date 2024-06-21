@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "SPSelectWidget.generated.h"
 
+enum class ColorType : uint8;
 class UTextBlock;
 /**
  * 
@@ -73,4 +74,7 @@ protected:
 
 	UFUNCTION()
 	void OnClickReadyBut();
+
+public:
+	void OnCollapsed(const ColorType& InColor);
 };

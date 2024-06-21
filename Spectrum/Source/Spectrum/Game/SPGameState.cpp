@@ -190,7 +190,6 @@ void ASPGameState::AIAlarmUI()
 		if(MyPlayer)
 		{
 			MyPlayer->ClientAIAlarmUI();
-			//MyPlayer->ClientRPCSpawnUI(RandomIndex);
 		}
 	}
 }

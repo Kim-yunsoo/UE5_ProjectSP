@@ -42,6 +42,8 @@ void USPHUDWidget::NativeConstruct()
 	
 	LoadingWidget = Cast<USPLoadingWidget>(GetWidgetFromName(TEXT("WBP_LoadingUI")));
 
+	AlarmOn = LoadObject<USoundBase>(nullptr, TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/AlarmSound.AlarmSound'"));
+
 	if (ChatWidget)
 	{
 		ChatWidget->ActiveChat(false);
@@ -65,7 +67,7 @@ void USPHUDWidget::NativeConstruct()
 	}
 	if(LoadingWidget)
 	{
-		//LoadingWidget->SetVisibility(ESlateVisibility::Collapsed);
+		LoadingWidget->SetVisibility(ESlateVisibility::Collapsed);
 	}
 
 	if(AIText)
@@ -245,6 +247,7 @@ void USPHUDWidget::ShowChat()
 
 void USPHUDWidget::UpdateShowUIText()
 {
+	PlaySound(AlarmOn);
 	AlarmImage->SetVisibility(ESlateVisibility::Visible);
 	SpectrumText->SetVisibility(ESlateVisibility::Visible);
 	FTimerHandle TimerHandle;
@@ -257,6 +260,7 @@ void USPHUDWidget::UpdateShowUIText()
 
 void USPHUDWidget::UpdateAIInfoText()
 {
+	PlaySound(AlarmOn);
 	AlarmImage->SetVisibility(ESlateVisibility::Visible);
 	AIText->SetVisibility(ESlateVisibility::Visible);
 	FTimerHandle TimerHandle;

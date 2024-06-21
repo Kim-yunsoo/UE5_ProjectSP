@@ -7,6 +7,8 @@
 #include "SPLobbyPlayerController.generated.h"
 
 
+enum class ColorType : uint8;
+
 UCLASS()
 class SPECTRUM_API ASPLobbyPlayerController : public APlayerController
 {
@@ -27,6 +29,14 @@ public:
 	
 	UFUNCTION(Server,Unreliable)
 	void ServerRPCReady();
+
+	UFUNCTION(Server,Unreliable)
+	void ServerRPCSchoolSelect(const ColorType& InColor);
+
+	UFUNCTION(Client,Unreliable)
+	void ClientRPCSchoolSelect(const ColorType& InColor);
+
+	
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 

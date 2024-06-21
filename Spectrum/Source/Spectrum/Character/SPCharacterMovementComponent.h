@@ -13,7 +13,6 @@
 class FSPSavedMove_Character : public FSavedMove_Character
 {
 	typedef FSavedMove_Character Super;
-	// 언리얼 오브젝트가 아니기에 super을 사용할 수 없지만 typedef로 Super 키워드 
 public:
 	virtual void Clear() override;
 	virtual void SetInitialPosition(ACharacter* Character) override; //최초 위치, 최초 상태 정보 지정

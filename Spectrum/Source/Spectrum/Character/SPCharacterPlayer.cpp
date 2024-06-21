@@ -2367,7 +2367,6 @@ void ASPCharacterPlayer::SevenKey(const FInputActionValue& Value)
 {
 	bIsSeven = true;
 	ServerRPCSeven();
-	UE_LOG(LogTemp, Warning, TEXT("SEVEN"));
 }
 
 

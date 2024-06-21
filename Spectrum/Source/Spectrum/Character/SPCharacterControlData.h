@@ -6,9 +6,7 @@
 #include "Engine/DataAsset.h"
 #include "SPCharacterControlData.generated.h"
 
-/**
- *
- */
+
 UCLASS()
 class SPECTRUM_API USPCharacterControlData : public UPrimaryDataAsset
 {

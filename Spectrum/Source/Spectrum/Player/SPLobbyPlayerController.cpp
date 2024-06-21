@@ -40,6 +40,26 @@ void ASPLobbyPlayerController::BeginPlay()
 	}
 }
 
+void ASPLobbyPlayerController::ServerRPCSchoolSelect_Implementation(const ColorType& InColor)
+{
+	for(FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It;++It)
+	{
+		APlayerController* PlayerController = It->Get();
+		ASPLobbyPlayerController* MyPlayer = Cast<ASPLobbyPlayerController>(PlayerController);
+
+		if(MyPlayer)
+		{
+			MyPlayer->ClientRPCSchoolSelect(InColor);
+		}
+	}
+}
+
+void ASPLobbyPlayerController::ClientRPCSchoolSelect_Implementation(const ColorType& InColor)
+{
+	LobbyWidget -> OnCollapsed(InColor);
+	
+}
+
 void ASPLobbyPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);

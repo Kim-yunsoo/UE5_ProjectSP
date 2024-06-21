@@ -70,7 +70,9 @@ protected:
 
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UImage> AlarmImage;
-	
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<USoundBase> AlarmOn;
 
 	UPROPERTY()
 	TObjectPtr<class USPLoadingWidget> LoadingWidget;
@@ -79,10 +81,6 @@ protected:
 public:
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	TSubclassOf<USPInteractionWidget> InteractionWidgetClass;
-
-
-
-	/////////////////
 
 	void ToggleMouse(bool bIsShowMouse);
 	void UpdateTarget(bool bIsShowUI);

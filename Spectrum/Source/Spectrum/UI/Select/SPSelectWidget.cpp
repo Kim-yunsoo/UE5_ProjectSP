@@ -65,11 +65,13 @@ void USPSelectWidget::OnClickGreenBut()
 	if (bIsSelectColor == false)
 	{
 		ASPPlayerState* MyPlayerState = Cast<ASPPlayerState>(GetOwningPlayerState());
+		ASPLobbyPlayerController* MyPlayerController = Cast<ASPLobbyPlayerController>(GetOwningPlayer());
 		if (MyPlayerState)
 		{
 			MyPlayerState->SetPlayerColor(ColorType::Green);
 			bIsSelectColor = true;
-			GreenBut->SetVisibility(ESlateVisibility::Collapsed);
+			MyPlayerController->ServerRPCSchoolSelect(ColorType::Green);
+			//GreenBut->SetVisibility(ESlateVisibility::Collapsed);
 		}
 	}
 }
@@ -79,11 +81,14 @@ void USPSelectWidget::OnClickOrangeBut()
 	if (bIsSelectColor == false)
 	{
 		ASPPlayerState* MyPlayerState = Cast<ASPPlayerState>(GetOwningPlayerState());
+		ASPLobbyPlayerController* MyPlayerController = Cast<ASPLobbyPlayerController>(GetOwningPlayer());
+
 		if (MyPlayerState)
 		{
 			MyPlayerState->SetPlayerColor(ColorType::Orange);
 			bIsSelectColor = true;
-			OrangeBut->SetVisibility(ESlateVisibility::Collapsed);
+			MyPlayerController->ServerRPCSchoolSelect(ColorType::Orange);
+			//OrangeBut->SetVisibility(ESlateVisibility::Collapsed);
 		}
 	}
 }
@@ -93,11 +98,13 @@ void USPSelectWidget::OnClickPurpleBut()
 	if (bIsSelectColor == false)
 	{
 		ASPPlayerState* MyPlayerState = Cast<ASPPlayerState>(GetOwningPlayerState());
+		ASPLobbyPlayerController* MyPlayerController = Cast<ASPLobbyPlayerController>(GetOwningPlayer());
+
 		if (MyPlayerState)
 		{
 			MyPlayerState->SetPlayerColor(ColorType::Purple);
 			bIsSelectColor = true;
-			PurpleBut->SetVisibility(ESlateVisibility::Collapsed);
+			MyPlayerController->ServerRPCSchoolSelect(ColorType::Purple);
 		}
 	}
 }
@@ -145,6 +152,22 @@ void USPSelectWidget::OnClickReadyBut()
 			}
 			bIsReady=true;
 		}
+	}
+}
+
+void USPSelectWidget::OnCollapsed(const ColorType& InColor)
+{
+	switch (InColor)
+	{
+	case ColorType::Green:
+		GreenBut->SetVisibility(ESlateVisibility::Collapsed);
+		break;
+	case ColorType::Orange:
+		OrangeBut->SetVisibility(ESlateVisibility::Collapsed);
+		break;
+	case ColorType::Purple:
+		PurpleBut->SetVisibility(ESlateVisibility::Collapsed);
+		break;
 	}
 }
 
