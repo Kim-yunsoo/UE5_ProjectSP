@@ -11,10 +11,10 @@ UENUM()
 enum class EPotion :uint8
 {
 	Green = 0,
-	Orange = 1,
-	Purple = 2,
-	Black = 3,
-	Special = 4
+	Orange ,
+	Purple,
+	Black ,
+	Special 
 };
 
 class USPItemBase;
@@ -103,8 +103,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Inventory")
 	TArray<USPItemBase*> InventoryContents;
 	
-	int HandleStackableItems(USPItemBase* ItemIn, int32 RequestedAddAmount);
-	int HandleStackableItemsMini(USPItemBase* ItemIn, int32 RequestedAddAmount);
+	int HandleStackableItems(USPItemBase* ItemIn, int32 RequestedAddAmount,const EItemType& InItemType);
+	//int HandleStackableItemsMini(USPItemBase* ItemIn, int32 RequestedAddAmount);
 
 public:
 	int IsPotion(FName  ID);
@@ -112,7 +112,7 @@ public:
 //RPC
 protected:
 	UFUNCTION(Client, Unreliable)
-	void ClientRPCUpdatePotion(const int& num, const int&ServerCount);
+	void ClientRPCUpdatePotion(const int& num, const int&ServerCount , const EItemType& InItemType);
 
 	UFUNCTION(Client, Unreliable)
 	void ClientRPCUpdateMiniPotion(const int& num, const int&ServerCount);

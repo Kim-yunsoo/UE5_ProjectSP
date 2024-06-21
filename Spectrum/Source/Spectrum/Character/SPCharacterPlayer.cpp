@@ -38,12 +38,10 @@
 #include "Player/SPPlayerController.h"
 #include "Potion/SPItemBase.h"
 #include "Potion/SPPickup.h"
-#include "Potion/Make/SPMakePotion.h"
 #include "Skill/SPIceSkill.h"
 #include "Skill/SPTeleSkill.h"
 #include "UI/SPHUDWidget.h"
 #include "Potion/SPSpectrumPotion.h"
-#include "UI/Interaction/SPManual.h"
 
 ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<USPCharacterMovementComponent>(
@@ -408,6 +406,7 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 	}
 
 	bCanUseInput = true;
+	bInteracionOnce= false;
 }
 
 void ASPCharacterPlayer::BeginPlay()
@@ -487,9 +486,6 @@ void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Player
 		                                   &ASPCharacterPlayer::PurplePotionSpawn);
 		EnhancedInputComponent->BindAction(InteractionKey, ETriggerEvent::Triggered, this,
 		                                   &ASPCharacterPlayer::BeginInteract);
-		EnhancedInputComponent->BindAction(InteractionKey, ETriggerEvent::Completed, this,
-		                                   &ASPCharacterPlayer::EndInteract);
-
 		EnhancedInputComponent->BindAction(SlowQ, ETriggerEvent::Triggered, this,
 		                                   &ASPCharacterPlayer::SlowSKill);
 		EnhancedInputComponent->BindAction(IceE, ETriggerEvent::Triggered, this,
@@ -882,7 +878,6 @@ void ASPCharacterPlayer::PurplePotionSpawn(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::SpectrumPotionSpawn(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp, Log, TEXT("Spectrum!"));
 	ServerRPCSpectrumPotionSpawn();
 }
 
@@ -1683,129 +1678,63 @@ void ASPCharacterPlayer::SetupHUDWidget(USPHUDWidget* InUserWidget)
 	}
 }
 
-void ASPCharacterPlayer::PerformInteractionCheck()
+void ASPCharacterPlayer::PerformInteractionCheck(AActor* InActor) //이건 오버랩된 트리거가 자신의 정보를 넘겨준다. 
 {
-	InteractionData.LastInteractionCheckTime = GetWorld()->GetTimeSeconds();
-	TArray<AActor*> OverlappingActors;
-	TArray<AActor*> ASPMakePotionActor;
-	TArray<AActor*> ASPCombinationActor;
-	GetOverlappingActors(OverlappingActors, ASPPickup::StaticClass()); // 겹친 액터들을 검출합니다.
-	GetOverlappingActors(ASPMakePotionActor, ASPMakePotion::StaticClass());
-	GetOverlappingActors(ASPCombinationActor, ASPManual::StaticClass());
-	OverlappingActors.Append(ASPMakePotionActor);
-	OverlappingActors.Append(ASPCombinationActor);
-	for (AActor* OverlappingActor : OverlappingActors)
+	
+	if (InActor->Implements<USPInteractionInterface>()) // 상호작용 가능한 액터인지 검사한다. 
 	{
-		if (OverlappingActor->Implements<USPInteractionInterface>()) // 상호작용 가능한지 확인합니다.
+		if (InActor != InteractionData.CurrentInteractable)
 		{
-			if (OverlappingActor != InteractionData.CurrentInteractable)
-			{
-				FoundInteractable(OverlappingActor); 
-				return;
-			}
+			FoundInteractable(InActor);
+			bInteracionOnce = true;
+			return;
 		}
 	}
 	NoInteractableFound(); // 상호작용할 수 있는 액터를 찾지 못했을 때의 처리를 수행합니다.
 }
 
-void ASPCharacterPlayer::FoundInteractable(AActor* NewInteractable)
+void ASPCharacterPlayer::FoundInteractable(AActor* NewInteractable) //상호작용 가능한 것이라면 데이터를 갱신해준다. 
 {
-	//이전 상호 작용이 있는지 확인
-	if (IsInteracting())
-	{
-		EndInteract();
-	}
-	if (InteractionData.CurrentInteractable) //상호작용 데이터 있으면!
-	{
-		TargetInteractable = InteractionData.CurrentInteractable;
-		TargetInteractable->EndFocus();
-	}
 
 	InteractionData.CurrentInteractable = NewInteractable;
 	TargetInteractable = NewInteractable;
 
 	if (HUDWidget)
 	{
-		HUDWidget->UpdateInteractionWidget(&TargetInteractable->InteractableData);
+		HUDWidget->UpdateInteractionWidget(&TargetInteractable->InteractableData); //위젯을 띄운다. 
 	}
-
-	TargetInteractable->BeginFocus();
 }
 
-void ASPCharacterPlayer::NoInteractableFound()
+void ASPCharacterPlayer::NoInteractableFound() // 트리거에서 나간 경우 호출되는 함수 
 {
-	if (IsInteracting())
-	{
-		GetWorldTimerManager().ClearTimer(TimerHandle_Interaction);
-	}
-
-	//pickup 후 물체가 세계에서 사라짐
 	if (InteractionData.CurrentInteractable)
 	{
-		if (IsValid(TargetInteractable.GetObject())) //한번 더 확인
-		{
-			TargetInteractable->EndFocus();
-		}
-
 		if (HUDWidget)
 		{
 			HUDWidget->HideInteractionWidget();
 		}
-		// 인터렉션 위젯 지우기
+		// 인터렉션 정보 없앤다. 
 		InteractionData.CurrentInteractable = nullptr;
 		TargetInteractable = nullptr;
 	}
 }
 
-void ASPCharacterPlayer::BeginInteract()
+void ASPCharacterPlayer::BeginInteract() //f 키를 누르면 상호작용 키가 뜬다. 
 {
-	PerformInteractionCheck();
-	//인터렉트 가능한 대상 있는지
-	UE_LOG(LogTemp,Log,TEXT("BeginInteract"));
 	if (InteractionData.CurrentInteractable)
 	{
-		if (IsValid(TargetInteractable.GetObject())) //한번 더 확인
+		if (IsValid(TargetInteractable.GetObject()) && bInteracionOnce)
 		{
-			TargetInteractable->BeginInteract();
-
-			//시간을 확인한다!
-			if (FMath::IsNearlyZero(TargetInteractable->InteractableData.InteractionDuration, 0.1f)) //상호작용 시간 비교
-			{
-				// 상호작용 시간이 거의 즉시이므로 바로 Interact 함수 호출
-				Interact();
-			}
-			else
-			{
-				// 상호작용에 시간이 필요하므로 타이머를 설정하여 지정된 시간 후에 Interact 함수 호출
-				GetWorldTimerManager().SetTimer(TimerHandle_Interaction,
-				                                this,
-				                                &ASPCharacterPlayer::Interact,
-				                                TargetInteractable->InteractableData.InteractionDuration,
-				                                false);
-			}
+			Interact();
+			bInteracionOnce=false; 
 		}
 	}
 }
-
-void ASPCharacterPlayer::EndInteract()
-{
-	 // 상호작용을 제대로 종료하면 지운다. 타이머 끝났다고 가정하고 지운다.
-	 GetWorldTimerManager().ClearTimer(TimerHandle_Interaction);
-	 if (IsValid(TargetInteractable.GetObject()))
-	 {
-	 	TargetInteractable->EndInteract();
-	 }
-}
-
 void ASPCharacterPlayer::Interact()
 {
-	GetWorldTimerManager().ClearTimer(TimerHandle_Interaction);
 	if (IsValid(TargetInteractable.GetObject()))
 	{
-		if (TargetInteractable->Interact2(this, HUDWidget))
-		{
-		}
-		else
+		if(ASPPickup* Pickup = Cast<ASPPickup>(InteractionData.CurrentInteractable)) //인터렉션까지 들어왔는데 포션과 인터렉션인 경우?
 		{
 			if (IsMontagePlaying() == false)
 			{
@@ -1813,9 +1742,16 @@ void ASPCharacterPlayer::Interact()
 				GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this]()
 				{
 					UGameplayStatics::PlaySoundAtLocation(GetWorld(), PickupSound, GetActorLocation(),
-					                                      GetActorRotation());
+														  GetActorRotation());
 				}, 0.8f, false);
 				ServerRPCInteract();
+			}
+		}
+		else //인터렉션까지 들어왔는데 제작대 &  인터렉션인 경우 ? 서버 Interact로 갈 필요가 없다. 
+		{
+			if (IsValid(TargetInteractable.GetObject()))
+			{
+				TargetInteractable->Interact(this, HUDWidget); //바로 인터렉션 
 			}
 		}
 	}
@@ -1823,14 +1759,12 @@ void ASPCharacterPlayer::Interact()
 
 void ASPCharacterPlayer::ServerRPCInteract_Implementation()
 {
-	GetWorldTimerManager().ClearTimer(TimerHandle_Interaction);
 	if (IsValid(TargetInteractable.GetObject()))
 	{
 		TargetInteractable->Interact(this, HUDWidget);
 	}
-	// if(HasAuthority())
-	// {
-	bIsPicking = true;
+	bIsPicking = true; //애니메이션 작동한다.
+	
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 	FTimerHandle TimerHandle;
 
@@ -1839,8 +1773,6 @@ void ASPCharacterPlayer::ServerRPCInteract_Implementation()
 		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
 		bIsPicking = false;
 	}, 1.5f, false);
-	// }
-	//여기서 다른 사람들 애니메이션 보내기
 }
 
 void ASPCharacterPlayer::UpdateInteractionWidget() const
@@ -1856,30 +1788,6 @@ void ASPCharacterPlayer::AddItemClick(int Num)
 	ServerRPCAddItemClick(Num);
 }
 
-void ASPCharacterPlayer::DropItem(USPItemBase* ItemToDrop, const int32 QuantityToDrop)
-{
-	// if (PlayerInventory->FindMatchingItem(ItemToDrop, ItemToDrop->ItemType))
-	// {
-	// 	FActorSpawnParameters SpawnParams;
-	// 	SpawnParams.Owner = this;
-	// 	SpawnParams.bNoFail = true;
-	// 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-	//
-	// 	const FVector SpawnLocation{GetActorLocation() + (GetActorForwardVector() * 50.f)};
-	//
-	// 	const FTransform SpawnTransform(GetActorRotation(), SpawnLocation);
-	//
-	// 	const int32 RemovedQuantity = PlayerInventory->RemoveAmountOfItem(ItemToDrop, QuantityToDrop);
-	//
-	// 	ASPPickup* Pickup = GetWorld()->SpawnActor<ASPPickup>(ASPPickup::StaticClass(), SpawnTransform, SpawnParams);
-	//
-	// 	Pickup->InitializeDrop(ItemToDrop, RemovedQuantity);
-	// }
-	// else
-	// {
-	// 	UE_LOG(LogTemp, Warning, TEXT("Item to drop was somehow null"));
-	// }
-}
 
 void ASPCharacterPlayer::DragItem(USPItemBase* ItemToDrop, const int32 QuantityToDrop)
 {

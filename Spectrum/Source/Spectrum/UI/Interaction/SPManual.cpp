@@ -40,7 +40,7 @@ void ASPManual::OnTriggerEnter(UPrimitiveComponent* OverlappedComp, AActor* Othe
 	ASPCharacterPlayer* PlayerCharacter = Cast<ASPCharacterPlayer>(OtherActor);
 	if (PlayerCharacter)
 	{
-		PlayerCharacter->PerformInteractionCheck();
+		PlayerCharacter->PerformInteractionCheck(this);
 	}
 }
 
@@ -51,7 +51,6 @@ void ASPManual::OnTriggerExit(UPrimitiveComponent* OverlappedComp, AActor* Other
 	if (PlayerCharacter)
 	{
 		PlayerCharacter->NoInteractableFound();
-		//PlayerCharacter->HUDWidget->ToggleMouse(false);
 	}
 }
 
@@ -88,9 +87,7 @@ void ASPManual::EndInteract()
 	ISPInteractionInterface::EndInteract();
 }
 
-
-
-bool ASPManual::Interact2(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget)
+bool ASPManual::Interact(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget)
 {
 	HUDWidget->UpdateManualWidget(true);
 	HUDWidget->ToggleMouse(true);

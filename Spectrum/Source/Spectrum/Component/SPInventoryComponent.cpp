@@ -8,11 +8,10 @@
 // Sets default values for this component's properties
 USPInventoryComponent::USPInventoryComponent()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
-	static ConstructorHelpers::FObjectFinder<UDataTable> DataTableFinder(TEXT("/Script/Engine.DataTable'/Game/Spectrum/ItemData/Item.Item'"));
+	static ConstructorHelpers::FObjectFinder<UDataTable> DataTableFinder(
+		TEXT("/Script/Engine.DataTable'/Game/Spectrum/ItemData/Item.Item'"));
 	if (DataTableFinder.Succeeded())
 	{
 		// 데이터 테이블이 유효하면 설정
@@ -23,11 +22,9 @@ USPInventoryComponent::USPInventoryComponent()
 }
 
 
-
-
 void USPInventoryComponent::RemoveSingleinstanceOfItem(USPItemBase* ItemToRemove, EItemType Potion)
 {
-	if(ItemToRemove->ItemType == EItemType::IngredientPotion)
+	if (ItemToRemove->ItemType == EItemType::IngredientPotion)
 		InventoryMiniContents.RemoveSingle(ItemToRemove);
 	else
 	{
@@ -36,24 +33,20 @@ void USPInventoryComponent::RemoveSingleinstanceOfItem(USPItemBase* ItemToRemove
 }
 
 
-
 int32 USPInventoryComponent::RemoveAmountOfItem(USPItemBase* ItemIn, int32 DesiredAmountToRemove)
 {
-	if(GetOwner()->HasAuthority())
+	if (GetOwner()->HasAuthority())
 	{
 		const int32 ActualAmountToRemove = FMath::Min(DesiredAmountToRemove, ItemIn->Quantity);
 		int ServerCount = ItemIn->Quantity - ActualAmountToRemove;
 		ItemIn->SetQuantity(ServerCount);
-		if(ItemIn->ItemType == EItemType::IngredientPotion)
+		if (ItemIn->ItemType == EItemType::IngredientPotion)
 		{
-			
-			ClientRPCUpdateMiniPotion(IsMiniPotion(ItemIn->ID), ServerCount);
-		
+			ClientRPCUpdatePotion(IsMiniPotion(ItemIn->ID), ServerCount, ItemIn->ItemType);
 		}
 		else if (ItemIn->ItemType == EItemType::Potion)
 		{
-
-			ClientRPCUpdatePotion(IsPotion(ItemIn->ID), ServerCount);
+			ClientRPCUpdatePotion(IsPotion(ItemIn->ID), ServerCount, ItemIn->ItemType);
 		}
 	}
 	return 0;
@@ -65,7 +58,7 @@ USPItemBase* USPInventoryComponent::MakingPotion()
 	int Blue = 0;
 	int Yellow = 0;
 	int Red = 0;
-	for(USPItemBase* Item : InventoryMakeContents)
+	for (USPItemBase* Item : InventoryMakeContents)
 	{
 		FString ItemName = Item->ItemTextData.Name.ToString();
 		if (ItemName == TEXT("Blue Potion"))
@@ -81,31 +74,14 @@ USPItemBase* USPInventoryComponent::MakingPotion()
 			Red++;
 		}
 	}
-
-	//FName DesiredItemID = "HAPPY";
-	if(Blue == 2 && Yellow == 1)
+	if (Blue == 2 && Yellow == 1)
 	{
 		FName DesiredItemID = "G_Potion";
 		const FItemData* ItemData = ItemDataTable->FindRow<FItemData>(DesiredItemID, DesiredItemID.ToString());
 		// 원하는 항목 찾기
 
-			UE_LOG(LogTemp, Warning, TEXT("Green"))
-			USPItemBase* Item = NewObject<USPItemBase>(); 
-			Item->ID = ItemData->ID;
-			Item->ItemType = ItemData->ItemType;
-			Item->ItemTextData = ItemData->ItemTextData;
-			Item->ItemNumericData = ItemData->ItemNumericData;
-			Item->ItemAssetData = ItemData->ItemAssetData;
-			Item->Quantity = 1;
-			return Item;
-		
-	}
-	else if(Blue == 1 && Red == 2)
-	{
-		FName DesiredItemID = "P_Potion";
-		const FItemData* ItemData = ItemDataTable->FindRow<FItemData>(DesiredItemID, DesiredItemID.ToString());
-		// 원하는 항목 찾기
-		USPItemBase* Item = NewObject<USPItemBase>(); 
+		UE_LOG(LogTemp, Warning, TEXT("Green"))
+		USPItemBase* Item = NewObject<USPItemBase>();
 		Item->ID = ItemData->ID;
 		Item->ItemType = ItemData->ItemType;
 		Item->ItemTextData = ItemData->ItemTextData;
@@ -114,12 +90,26 @@ USPItemBase* USPInventoryComponent::MakingPotion()
 		Item->Quantity = 1;
 		return Item;
 	}
-	else if (Red == 1 && Yellow ==2)
+	else if (Blue == 1 && Red == 2)
+	{
+		FName DesiredItemID = "P_Potion";
+		const FItemData* ItemData = ItemDataTable->FindRow<FItemData>(DesiredItemID, DesiredItemID.ToString());
+		// 원하는 항목 찾기
+		USPItemBase* Item = NewObject<USPItemBase>();
+		Item->ID = ItemData->ID;
+		Item->ItemType = ItemData->ItemType;
+		Item->ItemTextData = ItemData->ItemTextData;
+		Item->ItemNumericData = ItemData->ItemNumericData;
+		Item->ItemAssetData = ItemData->ItemAssetData;
+		Item->Quantity = 1;
+		return Item;
+	}
+	else if (Red == 1 && Yellow == 2)
 	{
 		FName DesiredItemID = "O_Potion";
 		const FItemData* ItemData = ItemDataTable->FindRow<FItemData>(DesiredItemID, DesiredItemID.ToString());
 		// 원하는 항목 찾기
-		USPItemBase* Item = NewObject<USPItemBase>(); 
+		USPItemBase* Item = NewObject<USPItemBase>();
 		Item->ID = ItemData->ID;
 		Item->ItemType = ItemData->ItemType;
 		Item->ItemTextData = ItemData->ItemTextData;
@@ -132,65 +122,56 @@ USPItemBase* USPInventoryComponent::MakingPotion()
 	{
 		return nullptr;
 	}
-
 }
 
-int USPInventoryComponent::HandleStackableItems(USPItemBase* ItemIn, int32 RequestedAddAmount)
+int USPInventoryComponent::HandleStackableItems(USPItemBase* ItemIn, int32 RequestedAddAmount,
+                                                const EItemType& InItemType)
 {
-	int num = IsPotion(ItemIn->ID);
-
-	//Todo 10개 제한으로 다시 바꾸기 
-	if(num != -1)
+	if (InItemType == EItemType::Potion)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("InventoryContents %d"),InventoryContents[num]->Quantity);
-		int ServerCount = InventoryContents[num]->Quantity + RequestedAddAmount;
-		InventoryContents[num]->SetQuantity(ServerCount);
-		return ServerCount;
+		int Index = IsPotion(ItemIn->ID);
+		if (Index != -1) // 잘못된 아이디를 받지 않도록 검사한다. 
+		{
+			int PotionQuntity = InventoryContents[Index]->Quantity + RequestedAddAmount;
+			InventoryContents[Index]->SetQuantity(PotionQuntity);
+			return PotionQuntity;
+		}
+	}
+	if (InItemType == EItemType::IngredientPotion)
+	{
+		int IngredientIndex = IsMiniPotion(ItemIn->ID);
+		if (IngredientIndex != -1)
+		{
+			int IngredientPotion = InventoryMiniContents[IngredientIndex]->Quantity + RequestedAddAmount;
+			InventoryMiniContents[IngredientIndex]->SetQuantity(IngredientPotion);
+			return IngredientPotion;
+		}
 	}
 	return -1;
 }
 
-int USPInventoryComponent::HandleStackableItemsMini(USPItemBase* ItemIn, int32 RequestedAddAmount)
-{
-	int num = IsMiniPotion(ItemIn->ID);
-	//Todo 10개 제한으로 다시 바꾸기 
-	if(num != -1)
-	{
-		int ServerCount = InventoryMiniContents[num]->Quantity + RequestedAddAmount;
-		InventoryMiniContents[num]->SetQuantity(ServerCount);
-
-		return ServerCount;
-	}
-	return -1;
-}
 
 void USPInventoryComponent::HandleAddItem(USPItemBase* InputItem, int InitialRequestedAddmount)
 {
-	SP_SUBLOG(LogSPSkill, Log, TEXT("%s"), TEXT("HandleAddItem"));
-
-	if (InputItem->ItemType == EItemType::IngredientPotion)
+	int PotionNum = HandleStackableItems(InputItem, InitialRequestedAddmount, InputItem->ItemType);
+	if (InputItem->ItemType == EItemType::Potion)
 	{
-		int ServerCount = HandleStackableItemsMini(InputItem, InitialRequestedAddmount);
-
-		ClientRPCUpdateMiniPotion(IsMiniPotion(InputItem->ID), ServerCount);
+		ClientRPCUpdatePotion(IsPotion(InputItem->ID), PotionNum, InputItem->ItemType);
 	}
-	else if (InputItem->ItemType == EItemType::Potion)
+	else if(InputItem->ItemType == EItemType::IngredientPotion)
 	{
-		int ServerCount = HandleStackableItems(InputItem, InitialRequestedAddmount);
-		ClientRPCUpdatePotion(IsPotion(InputItem->ID), ServerCount);
+		ClientRPCUpdatePotion(IsMiniPotion(InputItem->ID), PotionNum, InputItem->ItemType);
 	}
+
 }
-
-
 
 USPItemBase* USPInventoryComponent::InitializeInventory(const TSubclassOf<USPItemBase> BaseClass, FName DesiredItemID)
 {
 	if (ItemDataTable && !DesiredItemID.IsNone())
 	{
 		const FItemData* ItemData = ItemDataTable->FindRow<FItemData>(DesiredItemID, DesiredItemID.ToString());
-		// 원하는 항목 찾기
 
-		 USPItemBase* ItemReference = NewObject<USPItemBase>(this, BaseClass);
+		USPItemBase* ItemReference = NewObject<USPItemBase>(this, BaseClass);
 
 		ItemReference->ID = ItemData->ID;
 		ItemReference->ItemType = ItemData->ItemType;
@@ -203,12 +184,12 @@ USPItemBase* USPInventoryComponent::InitializeInventory(const TSubclassOf<USPIte
 	return nullptr;
 }
 
-USPItemBase* USPInventoryComponent::FindMatchingMiniItem(int Num) 
+USPItemBase* USPInventoryComponent::FindMatchingMiniItem(int Num)
 {
 	return InventoryMiniContents[Num];
 }
 
-USPItemBase* USPInventoryComponent::FindMatchingItem(int num) 
+USPItemBase* USPInventoryComponent::FindMatchingItem(int num)
 {
 	return InventoryContents[num];
 }
@@ -217,14 +198,14 @@ USPItemBase* USPInventoryComponent::FindItem(USPItemBase* ItemIn, EItemType Poti
 {
 	if (ItemIn && Potion == EItemType::IngredientPotion)
 	{
-		if(InventoryMiniContents.Contains(ItemIn))
+		if (InventoryMiniContents.Contains(ItemIn))
 		{
 			return ItemIn;
 		}
 	}
 	else
 	{
-		if(InventoryContents.Contains(ItemIn))
+		if (InventoryContents.Contains(ItemIn))
 		{
 			return ItemIn;
 		}
@@ -234,18 +215,16 @@ USPItemBase* USPInventoryComponent::FindItem(USPItemBase* ItemIn, EItemType Poti
 
 void USPInventoryComponent::RemoveInventorMakeContents(USPItemBase* ItemToRemove)
 {
-	if(FindItem(ItemToRemove, ItemToRemove->ItemType))
+	if (FindItem(ItemToRemove, ItemToRemove->ItemType))
 	{
 		InventoryMakeContents.RemoveSingle(ItemToRemove);
 	}
 }
 
-
-// Called when the game starts
 void USPInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	USPItemBase* G_Potion = InitializeInventory(USPItemBase::StaticClass(), "G_Potion");
 	G_Potion->OwningInventory = this;
 	InventoryContents.Add(G_Potion);
@@ -262,9 +241,9 @@ void USPInventoryComponent::BeginPlay()
 	S_Potion->OwningInventory = this;
 	InventoryContents.Add(S_Potion);
 
-	for(int i =0; i< InventoryContents.Num(); ++i)
+	for (int i = 0; i < InventoryContents.Num(); ++i)
 		InventoryContents[i]->Quantity = 0;
-	
+
 	USPItemBase* R_Mini = InitializeInventory(USPItemBase::StaticClass(), "R_Mini");
 	R_Mini->OwningInventory = this;
 	InventoryMiniContents.Add(R_Mini);
@@ -275,9 +254,9 @@ void USPInventoryComponent::BeginPlay()
 	B_Mini->OwningInventory = this;
 	InventoryMiniContents.Add(B_Mini);
 
-	for(int i =0; i< InventoryMiniContents.Num(); ++i)
+	for (int i = 0; i < InventoryMiniContents.Num(); ++i)
 		InventoryMiniContents[i]->Quantity = 0;
-	
+
 	OnInventoryUpdated.Broadcast(InventoryContents);
 	OnInventoryMiniUpdated.Broadcast(InventoryMiniContents);
 }
@@ -309,28 +288,35 @@ int USPInventoryComponent::IsMiniPotion(FName ID)
 		if (InventoryItem && InventoryItem->ID == ID)
 		{
 			return Index;
-         		}
+		}
 	}
 	return -1;
 }
 
-void USPInventoryComponent::ClientRPCUpdateMiniPotion_Implementation(const int& num, const int&ServerCount)
+void USPInventoryComponent::ClientRPCUpdateMiniPotion_Implementation(const int& num, const int& ServerCount)
 {
 	InventoryMiniContents[num]->SetQuantity(ServerCount);
 	OnInventoryMiniUpdated.Broadcast(InventoryMiniContents);
 }
 
-void USPInventoryComponent::ClientRPCUpdatePotion_Implementation(const int& num, const int&ServerCount)
+void USPInventoryComponent::ClientRPCUpdatePotion_Implementation(const int& num, const int& ServerCount,
+                                                                 const EItemType& InItemType)
 {
-	InventoryContents[num]->SetQuantity(ServerCount);
-	UE_LOG(LogTemp, Warning, TEXT(" ClientRPC %d"), InventoryContents[num]->Quantity);
-
-	OnInventoryUpdated.Broadcast(InventoryContents);
+	if (InItemType == EItemType::Potion)
+	{
+		InventoryContents[num]->SetQuantity(ServerCount);
+		OnInventoryUpdated.Broadcast(InventoryContents);
+	}
+	else if (InItemType == EItemType::IngredientPotion)
+	{
+		InventoryMiniContents[num]->SetQuantity(ServerCount);
+		OnInventoryMiniUpdated.Broadcast(InventoryMiniContents);
+	}
 }
 
 USPItemBase* USPInventoryComponent::FindMiniItem(FName ID)
 {
-	for(USPItemBase* InventoryItem : InventoryMiniContents)
+	for (USPItemBase* InventoryItem : InventoryMiniContents)
 	{
 		if (InventoryItem && InventoryItem->ID == ID)
 		{
@@ -342,8 +328,7 @@ USPItemBase* USPInventoryComponent::FindMiniItem(FName ID)
 
 USPItemBase* USPInventoryComponent::FindPotionItem(FName ID)
 {
-
-	for(USPItemBase* InventoryItem : InventoryContents)
+	for (USPItemBase* InventoryItem : InventoryContents)
 	{
 		if (InventoryItem && InventoryItem->ID == ID)
 		{

@@ -26,7 +26,3 @@ bool ISPInteractionInterface::Interact(ASPCharacterPlayer* PlayerCharacter, USPH
 	return false;
 }
 
-bool ISPInteractionInterface::Interact2(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget)
-{
-	return false;
-}

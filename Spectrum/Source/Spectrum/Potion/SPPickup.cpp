@@ -29,13 +29,8 @@ ASPPickup::ASPPickup()
 		ItemDataTable = DataTableFinder.Object;
 	}
 
-	//Trigger->SetMobility(EComponentMobility::Static);
-
-
 	PotionRange = 4;
 	bIsSpectrumPotion = false;
-	//PickupMesh->SetSimulatePhysics(false);
-	//Trigger->SetSimulatePhysics(false);
 }
 
 // Called when the game starts or when spawned
@@ -57,9 +52,7 @@ void ASPPickup::BeginPlay()
 
 	Trigger->OnComponentBeginOverlap.AddDynamic(this, &ASPPickup::OnTriggerEnter);
 	Trigger->OnComponentEndOverlap.AddDynamic(this, &ASPPickup::OnTriggerExit);
-
-	//여기서 데이터 테이블 ID 배열 데이터를 넣자
-	// for(int i=0; i<ItemDataTable.Row)
+	
 }
 
 void ASPPickup::InitializePickup(const TSubclassOf<USPItemBase> BaseClass, const int32 InQuantity)
@@ -139,7 +132,7 @@ void ASPPickup::EndFocus()
 	}
 }
 
-bool ASPPickup::Interact(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget) //서버에서 
+bool ASPPickup::Interact(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget) //서버에서 호출된다. 
 {
 	if (PlayerCharacter)
 	{
@@ -160,16 +153,18 @@ void ASPPickup::UpdateInteractableData()
 	InteractableData = InstanceInteractableData;
 }
 
-void ASPPickup::TakePickup(ASPCharacterPlayer* Taker) //서버 
+void ASPPickup::TakePickup(ASPCharacterPlayer* Taker) //서버에서 호출된다. 
 {
-	if (!IsPendingKillPending()) //IsPendingKillPending()
+	if (!IsPendingKillPending()) //이 함수는 객체가 곧 삭제되는 상태인지 확인한다. 
 	{
 		if (ItemReference)
 		{
 			if (USPInventoryComponent* PlayerInvetory = Taker->GetInventory())
 			{
 				FTimerHandle TimerHandle;
-				PlayerInvetory->HandleAddItem(ItemReference, 1);
+				PlayerInvetory->HandleAddItem(ItemReference, 1); //이 함수로 인벤토리의 물량을 늘려준다. 
+
+				
 				GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]()
 				{
 					//여기서 스포너한테 신호 보내야겠다.
@@ -182,10 +177,7 @@ void ASPPickup::TakePickup(ASPCharacterPlayer* Taker) //서버
 					this->Destroy();
 				}, 0.8f, false);
 			}
-			else
-			{
-				//UE_LOG(LogTemp, Warning, TEXT("Inventory is null"));
-			}
+		
 		}
 	}
 }
@@ -197,7 +189,7 @@ void ASPPickup::OnTriggerEnter(UPrimitiveComponent* OverlappedComp, AActor* Othe
 	ASPCharacterPlayer* PlayerCharacter = Cast<ASPCharacterPlayer>(OtherActor);
 	if (PlayerCharacter)
 	{
-		PlayerCharacter->PerformInteractionCheck();
+		PlayerCharacter->PerformInteractionCheck(this);
 	}
 }
 

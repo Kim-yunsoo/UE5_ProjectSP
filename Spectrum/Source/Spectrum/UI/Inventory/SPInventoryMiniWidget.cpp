@@ -50,13 +50,12 @@ void USPInventoryMiniWidget::NativeOnInitialized()
 bool USPInventoryMiniWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent,
 	UDragDropOperation* InOperation)
 {
-	//return Super::NativeOnDrop(InGeometry, InDragDropEvent, InOperation);
 	
 	 const USPItemDragDropOperation* ItemDragDrop = Cast<USPItemDragDropOperation>(InOperation);
 	
 	 if(PlayerCharacter && ItemDragDrop->SourceItem)
 	 {
-	 	PlayerCharacter->DropItem(ItemDragDrop->SourceItem, ItemDragDrop->SourceItem->Quantity);
+	 	//PlayerCharacter->DropItem(ItemDragDrop->SourceItem, ItemDragDrop->SourceItem->Quantity);
 	 	return true;
 	 }
 	 return false;

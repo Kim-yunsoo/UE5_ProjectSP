@@ -393,12 +393,11 @@ protected:
 	
 	FInteractionData InteractionData;
 public:
-	void PerformInteractionCheck();
+	void PerformInteractionCheck(AActor* InActor);
 	
 	void FoundInteractable(AActor* NewInteractable);
 	void NoInteractableFound();
 	void BeginInteract();
-	void EndInteract();
 	void Interact();
 protected:
 	UFUNCTION(Server, Unreliable)
@@ -418,8 +417,6 @@ public:
 	void UpdateInteractionWidget() const;
 	UFUNCTION()
 	void AddItemClick(int Num);
-// 아이템 드롭
-	void DropItem(USPItemBase* ItemToDrop, const int32 QuantityToDrop);
 
 	void DragItem(USPItemBase* ItemToDrop, const int32 QuantityToDrop);
 
@@ -655,5 +652,7 @@ public:
 	UFUNCTION()
 	void SlowSillApply();
 
+	UPROPERTY()
+	uint8 bInteracionOnce:1; 
 	
 };

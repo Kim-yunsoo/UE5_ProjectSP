@@ -32,13 +32,12 @@ void ASPMakePotion::BeginPlay()
 	Trigger->OnComponentEndOverlap.AddDynamic(this, &ASPMakePotion::OnTriggerExit);
 }
 
-// Called every frame
 void ASPMakePotion::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
 
-bool ASPMakePotion::Interact2(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget)
+bool ASPMakePotion::Interact(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget)
 {
 	HUDWidget->UpdateMakingPotionWidget(true);
 	HUDWidget->ToggleMouse(true);
@@ -65,7 +64,7 @@ void ASPMakePotion::OnTriggerEnter(UPrimitiveComponent* OverlappedComp, AActor* 
 	ASPCharacterPlayer* PlayerCharacter = Cast<ASPCharacterPlayer>(OtherActor);
 	if (PlayerCharacter)
 	{
-		PlayerCharacter->PerformInteractionCheck();
+		PlayerCharacter->PerformInteractionCheck(this);
 	}
 }
 

@@ -31,7 +31,7 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	virtual bool Interact2(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget) override;
+	virtual bool Interact(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget) override;
 	virtual void EndInteract() override;
 protected:
 	UPROPERTY(EditInstanceOnly, Category = "Test Actor")
