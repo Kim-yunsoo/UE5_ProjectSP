@@ -409,7 +409,8 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 	{
 		StopGrapSound = StopGrapSoundRef.Object;
 	}
-	bCanUseInput = true;
+	
+	bCanUseInput = false;
 }
 
 void ASPCharacterPlayer::BeginPlay()

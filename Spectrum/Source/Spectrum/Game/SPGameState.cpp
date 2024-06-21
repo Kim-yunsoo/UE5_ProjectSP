@@ -207,18 +207,8 @@ void ASPGameState::OnMathStateSet(FName State) //서버
 		StartTimer();
 		bIsInGame=true;
 		OnInGamePlaySound();
-		for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
-		{
-			APlayerController* PlayerController = Iterator->Get();
-			if (PlayerController)
-			{
-				ASPCharacterPlayer* MyCharacter = Cast<ASPCharacterPlayer>(PlayerController->GetCharacter());
-				if (MyCharacter)
-				{
-					MyCharacter->bCanUseInput=true;
-				}
-			}
-		}
+		SetCanUseInput(true);
+		
 	}
 	if(State == MatchState::WaitingPostMatch  )
 	{
@@ -226,6 +216,7 @@ void ASPGameState::OnMathStateSet(FName State) //서버
 		ColorScoreArray.Add(FColorScoreData(ColorType::Green,GreenScore));
 		ColorScoreArray.Add(FColorScoreData(ColorType::Orange,OrangeScore));
 		ColorScoreArray.Add(FColorScoreData(ColorType::Purple,PurpleScore));
+		SetCanUseInput(false);
 		for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
 		{
 			APlayerController* PlayerController = Iterator->Get();
@@ -238,6 +229,21 @@ void ASPGameState::OnMathStateSet(FName State) //서버
 	}
 }
 
+void ASPGameState::SetCanUseInput(const uint8 InCanUseInput)
+{
+	for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
+	{
+		APlayerController* PlayerController = Iterator->Get();
+		if (PlayerController)
+		{
+			ASPCharacterPlayer* MyCharacter = Cast<ASPCharacterPlayer>(PlayerController->GetCharacter());
+			if (MyCharacter)
+			{
+				MyCharacter->bCanUseInput=InCanUseInput;
+			}
+		}
+	}
+}
 
 
 void ASPGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

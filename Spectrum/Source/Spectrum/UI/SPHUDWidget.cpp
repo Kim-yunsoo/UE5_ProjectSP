@@ -65,10 +65,6 @@ void USPHUDWidget::NativeConstruct()
 	{
 		SpectrumText->SetVisibility(ESlateVisibility::Collapsed);
 	}
-	if(LoadingWidget)
-	{
-		LoadingWidget->SetVisibility(ESlateVisibility::Collapsed);
-	}
 
 	if(AIText)
 	{
@@ -77,6 +73,10 @@ void USPHUDWidget::NativeConstruct()
 	if(AlarmImage)
 	{
 		AlarmImage->SetVisibility(ESlateVisibility::Collapsed);
+	}
+	if(LoadingWidget)
+	{
+		//LoadingWidget->SetVisibility(ESlateVisibility::Collapsed);
 	}
 }
 
