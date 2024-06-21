@@ -29,8 +29,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	
-	virtual void BeginFocus() override;
-	virtual void EndFocus() override;
+	// virtual void BeginFocus() override;
+	// virtual void EndFocus() override;
 	virtual void BeginInteract() override;
 	virtual void EndInteract() override;
 	virtual bool Interact(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget) override;

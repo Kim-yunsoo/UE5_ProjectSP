@@ -37,11 +37,11 @@
 #include "Component/SPInventoryComponent.h"
 #include "Player/SPPlayerController.h"
 #include "Potion/SPItemBase.h"
+#include "Potion/SPPickup.h"
 #include "Potion/Make/SPMakePotion.h"
 #include "Skill/SPIceSkill.h"
 #include "Skill/SPTeleSkill.h"
 #include "UI/SPHUDWidget.h"
-#include "Potion/SPPickup.h"
 #include "Potion/SPSpectrumPotion.h"
 #include "UI/Interaction/SPManual.h"
 
@@ -96,11 +96,8 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 	// //Skill
 	SlowSkillComponent = CreateDefaultSubobject<USPSlowSkill>(TEXT("SkillComponent"));
 	TeleSkillComponent = CreateDefaultSubobject<USPTeleSkill>(TEXT("TeleSkillComponent"));
-	// = CreateDefaultSubobject<USPSlowSkill>(TEXT("SkillComponent"));
 
 	IceSkillComponent = CreateDefaultSubobject<USPIceSkill>(TEXT("IceSkillComponent"));
-	// SlowSkillComponent->SetIsReplicated(true);
-	// SlowSkillComponent = CreateDefaultSubobject<USPSlowSkill>(TEXT("SlowSkill"));
 
 	SkillLocation = CreateDefaultSubobject<USceneComponent>(TEXT("SkillLocation"));
 	SkillLocation->SetupAttachment(RootComponent);
@@ -409,8 +406,8 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 	{
 		StopGrapSound = StopGrapSoundRef.Object;
 	}
-	
-	bCanUseInput = false;
+
+	bCanUseInput = true;
 }
 
 void ASPCharacterPlayer::BeginPlay()
@@ -434,7 +431,6 @@ void ASPCharacterPlayer::Tick(float DeltaTime)
 	{
 		PhysicsHandleComponent->SetTargetLocation(GravityArrow->K2_GetComponentLocation());
 	}
-
 }
 
 void ASPCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -675,7 +671,10 @@ void ASPCharacterPlayer::HandleMontageAnimNotify(FName NotifyName,
 	if (NotifyName == FName("PlayMontageNotify"))
 	{
 		bIsThrowReady = true;
-		ShowProjectilePath();
+		if (IsLocallyControlled())
+		{
+			ShowProjectilePath();
+		}
 	}
 
 	if (NotifyName == FName("SkillNotify"))
@@ -1504,7 +1503,7 @@ void ASPCharacterPlayer::ServerRPCThrowPotion_Implementation(bool IsThrowReady)
 			float Mul = 1500.0f;
 			Potion->Throw((ForwardVector + FVector{0.0f, 0.0f, 0.4f}) * Mul);
 		}
-		bIsTurnReady=false;
+		bIsTurnReady = false;
 		bIsThrowReady = false;
 		MultiRPCAimRotation(false);
 		//GetCharacterMovement()->bOrientRotationToMovement = true;
@@ -1530,7 +1529,7 @@ void ASPCharacterPlayer::ServerRPCThrowPotion_Implementation(bool IsThrowReady)
 	}
 	else //던질 준비가 안된 상태이다. 
 	{
-		bIsTurnReady=false; //턴인플레이스 멈추기
+		bIsTurnReady = false; //턴인플레이스 멈추기
 		MultiRPCAimRotation(false);
 		PlayStopAnimation();
 		for (APlayerController* PlayerController : TActorRange<APlayerController>(GetWorld()))
@@ -1555,117 +1554,112 @@ void ASPCharacterPlayer::ServerRPCThrowPotion_Implementation(bool IsThrowReady)
 
 void ASPCharacterPlayer::ShowProjectilePath()
 {
-	if (IsLocallyControlled())
+	Projectile_Path->ClearSplinePoints(true);
+	for (int i = 0; i < SplineCompArray.Num(); i++)
 	{
-		Projectile_Path->ClearSplinePoints(true);
-		for (int i = 0; i < SplineCompArray.Num(); i++)
+		SplineCompArray[i]->DestroyComponent();
+	}
+	SplineCompArray.Empty();
+	if (bIsThrowReady)
+	{
+		FPredictProjectilePathParams PredictParams;
+		FPredictProjectilePathResult PredictResult;
+
+		FHitResult OutHit;
+		TArray<FVector> OutPathPositions;
+		FVector OutLastTraceDestination;
+		FVector StartPos = PotionThrowStartLocation->GetComponentLocation();
+		FVector LaunchVelocity = (UKismetMathLibrary::GetForwardVector(GetController()->GetControlRotation())
+			+ FVector{0.0f, 0.0f, 0.4f}) * 1500.0f;
+		float ProjectileRadius = 0.0f;
+		TEnumAsByte<ECollisionChannel> TraceChannel = ECollisionChannel::ECC_Camera;
+		TArray<AActor*> ActorsToIgnore;
+		ActorsToIgnore.Add(this);
+		EDrawDebugTrace::Type DrawDebugType = EDrawDebugTrace::None;
+		float DrawDebugTime = 0.0f;
+		float SimFrequency = 15.0f;
+		float MaxSimTime = 2.0f;
+		float OverrideGravityZ = 0.0;
+
+		UGameplayStatics::Blueprint_PredictProjectilePath_ByTraceChannel(GetWorld(), OutHit, OutPathPositions,
+		                                                                 OutLastTraceDestination, StartPos,
+		                                                                 LaunchVelocity, true, ProjectileRadius,
+		                                                                 TraceChannel, false, ActorsToIgnore,
+		                                                                 DrawDebugType, DrawDebugTime, SimFrequency,
+		                                                                 MaxSimTime, OverrideGravityZ);
+
+		FHitResult SweepHitResult;
+
+		DecalSphere->SetVisibility(true);
+		MyDecal->SetVisibility(true);
+		DecalSphere->SetWorldLocation(OutHit.Location, false, &SweepHitResult, ETeleportType::TeleportPhysics);
+
+		for (int i = 0; i < OutPathPositions.Num(); i++)
 		{
-			SplineCompArray[i]->DestroyComponent();
+			Projectile_Path->AddSplinePointAtIndex(OutPathPositions[i], i, ESplineCoordinateSpace::Type::Local,
+			                                       true);
 		}
-		SplineCompArray.Empty();
-		if (bIsThrowReady)
+		for (int i = 0; i < Projectile_Path->GetNumberOfSplinePoints() - 1; ++i)
 		{
-			FPredictProjectilePathParams PredictParams;
-			FPredictProjectilePathResult PredictResult;
+			UClass* whyClass = USplineMeshComponent::StaticClass();
+			FTransform RelativeTransform = FTransform();
 
-			FHitResult OutHit;
-			TArray<FVector> OutPathPositions;
-			FVector OutLastTraceDestination;
-			FVector StartPos = PotionThrowStartLocation->GetComponentLocation();
-			FVector LaunchVelocity = (UKismetMathLibrary::GetForwardVector(GetController()->GetControlRotation())
-				+ FVector{0.0f, 0.0f, 0.4f}) * 1500.0f;
-			float ProjectileRadius = 0.0f;
-			TEnumAsByte<ECollisionChannel> TraceChannel = ECollisionChannel::ECC_Camera;
-			TArray<AActor*> ActorsToIgnore;
-			ActorsToIgnore.Add(this);
-			EDrawDebugTrace::Type DrawDebugType = EDrawDebugTrace::None;
-			float DrawDebugTime = 0.0f;
-			float SimFrequency = 15.0f;
-			float MaxSimTime = 2.0f;
-			float OverrideGravityZ = 0.0;
+			USplineMeshComponent* NewSplineMeshComp = NewObject<USplineMeshComponent>(
+				this, USplineMeshComponent::StaticClass());
 
-			UGameplayStatics::Blueprint_PredictProjectilePath_ByTraceChannel(GetWorld(), OutHit, OutPathPositions,
-			                                                                 OutLastTraceDestination, StartPos,
-			                                                                 LaunchVelocity, true, ProjectileRadius,
-			                                                                 TraceChannel, false, ActorsToIgnore,
-			                                                                 DrawDebugType, DrawDebugTime, SimFrequency,
-			                                                                 MaxSimTime, OverrideGravityZ);
-
-			FHitResult SweepHitResult;
-
-			DecalSphere->SetVisibility(true);
-			MyDecal->SetVisibility(true);
-			DecalSphere->SetWorldLocation(OutHit.Location, false, &SweepHitResult, ETeleportType::TeleportPhysics);
-
-			for (int i = 0; i < OutPathPositions.Num(); i++)
+			if (NewSplineMeshComp == nullptr)
 			{
-				Projectile_Path->AddSplinePointAtIndex(OutPathPositions[i], i, ESplineCoordinateSpace::Type::Local,
-				                                       true);
+				continue;
 			}
-			for (int i = 0; i < Projectile_Path->GetNumberOfSplinePoints() - 1; ++i)
+			float Radius = 50.0f;
+			FColor Color1 = FColor::Red;
+			FColor Color2 = FColor::Blue;
+			FColor Color3 = FColor::Black;
+
+			NewSplineMeshComp->OnComponentCreated();
+			NewSplineMeshComp->SetRelativeTransform(RelativeTransform);
+			NewSplineMeshComp->SetStaticMesh(StaticMeshforSpline);
+			NewSplineMeshComp->SetMobility(EComponentMobility::Movable);
+			NewSplineMeshComp->SetCollisionProfileName(TEXT("SplineCollision"));
+			FVector StartPointLocation;
+			FVector StartPointTangent;
+			FVector EndPointLocation;
+			FVector EndPointTangent;
+			bool bIsSuccessStart = false;
+			bool bIsSuccessEnd = false;
+			if (i < Projectile_Path->GetNumberOfSplinePoints())
 			{
-				UClass* whyClass = USplineMeshComponent::StaticClass();
-				FTransform RelativeTransform = FTransform();
-
-				USplineMeshComponent* NewSplineMeshComp = NewObject<USplineMeshComponent>(
-					this, USplineMeshComponent::StaticClass());
-
-				if (NewSplineMeshComp == nullptr)
-				{
-					continue;
-				}
-				float Radius = 50.0f;
-				FColor Color1 = FColor::Red;
-				FColor Color2 = FColor::Blue;
-				FColor Color3 = FColor::Black;
-
-				NewSplineMeshComp->OnComponentCreated();
-				NewSplineMeshComp->SetRelativeTransform(RelativeTransform);
-				//NewSplineMeshComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
-				//NewSplineMeshComp->SetupAttachment(RootComponent);
-				NewSplineMeshComp->SetStaticMesh(StaticMeshforSpline);
-				NewSplineMeshComp->SetMobility(EComponentMobility::Movable);
-				NewSplineMeshComp->SetCollisionProfileName(TEXT("SplineCollision"));
-				FVector StartPointLocation;
-				FVector StartPointTangent;
-				FVector EndPointLocation;
-				FVector EndPointTangent;
-				bool bIsSuccessStart = false;
-				bool bIsSuccessEnd = false;
-				if (i < Projectile_Path->GetNumberOfSplinePoints())
-				{
-					StartPointLocation = Projectile_Path->GetLocationAtSplinePoint(i, ESplineCoordinateSpace::Local);
-					StartPointTangent = Projectile_Path->GetTangentAtSplinePoint(i, ESplineCoordinateSpace::Local);
-					bIsSuccessStart = true;
-				}
-
-				if (i + 1 < Projectile_Path->GetNumberOfSplinePoints())
-				{
-					EndPointLocation = Projectile_Path->GetLocationAtSplinePoint(i + 1, ESplineCoordinateSpace::Local);
-					EndPointTangent = Projectile_Path->GetTangentAtSplinePoint(i + 1, ESplineCoordinateSpace::Local);
-					bIsSuccessEnd = true;
-				}
-				if (bIsSuccessStart && bIsSuccessEnd)
-				{
-					NewSplineMeshComp->SetStartAndEnd(StartPointLocation, StartPointTangent, EndPointLocation,
-					                                  EndPointTangent, true);
-				}
-				SplineCompArray.Emplace(NewSplineMeshComp);
-				NewSplineMeshComp->RegisterComponent();
+				StartPointLocation = Projectile_Path->GetLocationAtSplinePoint(i, ESplineCoordinateSpace::Local);
+				StartPointTangent = Projectile_Path->GetTangentAtSplinePoint(i, ESplineCoordinateSpace::Local);
+				bIsSuccessStart = true;
 			}
-			FTimerHandle TimerHandle;
-			float DelayTime = 0.01f;
 
-			GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this]()
+			if (i + 1 < Projectile_Path->GetNumberOfSplinePoints())
 			{
-				ShowProjectilePath();
-			}, DelayTime, false);
+				EndPointLocation = Projectile_Path->GetLocationAtSplinePoint(i + 1, ESplineCoordinateSpace::Local);
+				EndPointTangent = Projectile_Path->GetTangentAtSplinePoint(i + 1, ESplineCoordinateSpace::Local);
+				bIsSuccessEnd = true;
+			}
+			if (bIsSuccessStart && bIsSuccessEnd)
+			{
+				NewSplineMeshComp->SetStartAndEnd(StartPointLocation, StartPointTangent, EndPointLocation,
+				                                  EndPointTangent, true);
+			}
+			SplineCompArray.Emplace(NewSplineMeshComp);
+			NewSplineMeshComp->RegisterComponent();
 		}
-		else
+		FTimerHandle TimerHandle;
+		float DelayTime = 0.01f;
+
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this]()
 		{
-			DecalSphere->SetVisibility(false);
-			MyDecal->SetVisibility(false);
-		}
+			ShowProjectilePath();
+		}, DelayTime, false);
+	}
+	else
+	{
+		DecalSphere->SetVisibility(false);
+		MyDecal->SetVisibility(false);
 	}
 }
 
@@ -1706,7 +1700,7 @@ void ASPCharacterPlayer::PerformInteractionCheck()
 		{
 			if (OverlappingActor != InteractionData.CurrentInteractable)
 			{
-				FoundInteractable(OverlappingActor); // 상호작용할 수 있는 액터를 찾았을 때의 처리를 수행합니다.
+				FoundInteractable(OverlappingActor); 
 				return;
 			}
 		}
@@ -1767,6 +1761,7 @@ void ASPCharacterPlayer::BeginInteract()
 {
 	PerformInteractionCheck();
 	//인터렉트 가능한 대상 있는지
+	UE_LOG(LogTemp,Log,TEXT("BeginInteract"));
 	if (InteractionData.CurrentInteractable)
 	{
 		if (IsValid(TargetInteractable.GetObject())) //한번 더 확인
@@ -1794,12 +1789,12 @@ void ASPCharacterPlayer::BeginInteract()
 
 void ASPCharacterPlayer::EndInteract()
 {
-	//상호작용을 제대로 종료하면 지운다. 타이머 끝났다고 가정하고 지운다.
-	GetWorldTimerManager().ClearTimer(TimerHandle_Interaction);
-	if (IsValid(TargetInteractable.GetObject()))
-	{
-		TargetInteractable->EndInteract();
-	}
+	 // 상호작용을 제대로 종료하면 지운다. 타이머 끝났다고 가정하고 지운다.
+	 GetWorldTimerManager().ClearTimer(TimerHandle_Interaction);
+	 if (IsValid(TargetInteractable.GetObject()))
+	 {
+	 	TargetInteractable->EndInteract();
+	 }
 }
 
 void ASPCharacterPlayer::Interact()
@@ -1894,13 +1889,13 @@ void ASPCharacterPlayer::DragItem(USPItemBase* ItemToDrop, const int32 QuantityT
 
 bool ASPCharacterPlayer::BackItem(USPItemBase* ItemToDrop, const int32 QuantityToDrop)
 {
-	if(PlayerInventory->IsMiniPotion(ItemToDrop->ID) == -1)
+	if (PlayerInventory->IsMiniPotion(ItemToDrop->ID) == -1)
 	{
-		return false; 
+		return false;
 	}
 	int num = PlayerInventory->IsMiniPotion(ItemToDrop->ID);
 	ServerRPCBackItem(num, QuantityToDrop);
-	return true; 
+	return true;
 }
 
 
@@ -1963,7 +1958,6 @@ void ASPCharacterPlayer::PlayTeleSkillAnimation()
 
 void ASPCharacterPlayer::HitSlowSkillResult()
 {
-
 	bIsDamage = true;
 	if (false == IsMontagePlaying())
 	{
@@ -2016,8 +2010,8 @@ void ASPCharacterPlayer::OverlapPortal(const FVector& Location)
 
 	GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([&]
 		                                       {
-												GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
-												this->SetActorRelativeLocation(Location);
+			                                       GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+			                                       this->SetActorRelativeLocation(Location);
 		                                       }
 	                                       ), 5.0f, false);
 }
@@ -2054,11 +2048,6 @@ void ASPCharacterPlayer::NetTESTRPCSlowSkill_Implementation()
 			                                       GetCharacterMovement()->MaxWalkSpeed = 500.f;
 		                                       }
 	                                       ), 5, false, -1.0f);
-	// USPCharacterMovementComponent* SPMovement = Cast<USPCharacterMovementComponent>(GetCharacterMovement());
-	// if(SPMovement)
-	// {
-	// 	// SPMovement->SetSlowSkillCommand();
-	// }
 }
 
 

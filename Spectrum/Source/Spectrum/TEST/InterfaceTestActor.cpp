@@ -31,21 +31,21 @@ void AInterfaceTestActor::Tick(float DeltaTime)
 
 }
 
-void AInterfaceTestActor::BeginFocus()
-{
-	if(Mesh)
-	{
-		Mesh->SetRenderCustomDepth(true);
-	}
-}
-
-void AInterfaceTestActor::EndFocus()
-{
-	if(Mesh)
-	{
-		Mesh->SetRenderCustomDepth(false);
-	}
-}
+// void AInterfaceTestActor::BeginFocus()
+// {
+// 	if(Mesh)
+// 	{
+// 		Mesh->SetRenderCustomDepth(true);
+// 	}
+// }
+//
+// void AInterfaceTestActor::EndFocus()
+// {
+// 	if(Mesh)
+// 	{
+// 		Mesh->SetRenderCustomDepth(false);
+// 	}
+// }
 
 void AInterfaceTestActor::BeginInteract()
 {

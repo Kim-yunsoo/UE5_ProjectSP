@@ -15,8 +15,6 @@ ASPMakePotion::ASPMakePotion()
 	PrimaryActorTick.bCanEverTick = true;
 	
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>("Mesh");
-	//Mesh->SetSimulatePhysics(true); //�ùķ��̼� true ����غ���
-	//SetRootComponent(Mesh);
 	Trigger = CreateDefaultSubobject<UBoxComponent>(TEXT("PickupTriggerComponent"));
 }
 // Called when the game starts or when spawned
