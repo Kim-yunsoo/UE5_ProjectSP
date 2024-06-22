@@ -28,6 +28,7 @@
 #include "SPCharacterMovementComponent.h"
 //#include "UI/SPHUDWidget.h"
 #include "EngineUtils.h"
+#include "SpectrumLog.h"
 #include "GameFramework/GameStateBase.h"
 #include "Net/UnrealNetwork.h"
 #include "Skill/SPSkillCastComponent.h"
@@ -42,6 +43,8 @@
 #include "Skill/SPTeleSkill.h"
 #include "UI/SPHUDWidget.h"
 #include "Potion/SPSpectrumPotion.h"
+#include "NiagaraSystem.h"
+#include "NiagaraFunctionLibrary.h"
 
 ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<USPCharacterMovementComponent>(
@@ -404,6 +407,18 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 	{
 		StopGrapSound = StopGrapSoundRef.Object;
 	}
+
+	static ConstructorHelpers::FObjectFinder<UNiagaraSystem> SlowEffectRef(TEXT("/Script/Niagara.NiagaraSystem'/Game/Ice_Magic/VFX_Niagara/NS_Ice_Magic_Arena.NS_Ice_Magic_Arena'"));
+	if(SlowEffectRef.Succeeded())
+	{
+		SlowEffect = SlowEffectRef.Object;
+	}
+	static ConstructorHelpers::FObjectFinder<UNiagaraSystem> IceEffectRef(TEXT("/Script/Niagara.NiagaraSystem'/Game/Ice_Magic/VFX_Niagara/NS_Ice_Magic_Sheild.NS_Ice_Magic_Sheild'"));
+	if(IceEffectRef.Succeeded())
+	{
+		IceEffect = IceEffectRef.Object;
+	}
+	
 
 	bCanUseInput = true;
 	bInteracionOnce= false;
@@ -1046,7 +1061,7 @@ void ASPCharacterPlayer::ServerRPCTeleSkill_Implementation(float AttackStartTime
 }
 
 void ASPCharacterPlayer::ServerRPCIceSkill_Implementation(float AttackStartTime)
-{
+{ 
 	if (bIsActiveIceSkill)
 	{
 		bIsActiveIceSkill = false;
@@ -1858,9 +1873,13 @@ void ASPCharacterPlayer::PlayTeleSkillAnimation()
 	                                      GetActorRotation());
 }
 
-void ASPCharacterPlayer::HitSlowSkillResult()
+void ASPCharacterPlayer::HitSlowSkillResult() 
 {
+	//todo 
 	bIsDamage = true;
+	//FVector CapsuleRadius = GetCapsuleComponent()->GetUnscaledCapsuleRadius();
+	FVector CapsuleRadius = FVector{0.0f, 0.0f,GetCapsuleComponent()->GetScaledCapsuleRadius()*2 };
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), SlowEffect, GetActorLocation()-CapsuleRadius, GetActorRotation());
 	if (false == IsMontagePlaying())
 	{
 		GetMesh()->GetAnimInstance()->Montage_Play(ImpactMontage, 1.0f);
@@ -1872,7 +1891,7 @@ void ASPCharacterPlayer::HitSlowSkillResult()
 
 void ASPCharacterPlayer::SlowSillApply()
 {
-	UE_LOG(LogTemp, Log, TEXT("SlowSillApply"));
+	//UE_LOG(LogTemp, Log, TEXT("SlowSillApply"));
 	GetCharacterMovement()->MaxWalkSpeed = 500.f;
 	bIsDamage = false;
 }
@@ -1882,6 +1901,10 @@ void ASPCharacterPlayer::HitIceSkillResult()
 {
 	bIsDamage = true;
 	// GetCharacterMovement()->MaxWalkSpeed = 0.0f;
+	FVector CapsuleRadius = FVector{0.0f, 0.0f,GetCapsuleComponent()->GetScaledCapsuleRadius()*2 };
+
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), IceEffect, GetActorLocation()-CapsuleRadius, GetActorRotation());
+
 	if (false == IsMontagePlaying())
 	{
 		GetMesh()->GetAnimInstance()->Montage_Play(ImpactMontage, 1.0f);
@@ -1893,7 +1916,7 @@ void ASPCharacterPlayer::HitIceSkillResult()
 			                                       GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
 			                                       bIsDamage = false;
 		                                       }
-	                                       ), 5, false, -1.0f);
+	                                       ), 4, false, -1.0f);
 }
 
 void ASPCharacterPlayer::HitTeleSkillResult(const FVector TeleportLocation)

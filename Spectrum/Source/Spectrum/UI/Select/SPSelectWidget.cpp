@@ -42,6 +42,8 @@ void USPSelectWidget::NativeConstruct()
 	{
 		PlayerSelecText->SetVisibility(ESlateVisibility::Collapsed);
 	}
+	ClickOn = LoadObject<USoundBase>(nullptr, TEXT("/Script/Engine.SoundWave'/Game/Spectrum/Sound/ClickOn.ClickOn'"));
+
 }
 
 void USPSelectWidget::OnNickNameCommitted(const FText& Text, ETextCommit::Type CommitMethod)
@@ -70,6 +72,7 @@ void USPSelectWidget::OnClickGreenBut()
 		{
 			MyPlayerState->SetPlayerColor(ColorType::Green);
 			bIsSelectColor = true;
+			PlaySound(ClickOn);
 			MyPlayerController->ServerRPCSchoolSelect(ColorType::Green);
 			//GreenBut->SetVisibility(ESlateVisibility::Collapsed);
 		}
@@ -87,6 +90,7 @@ void USPSelectWidget::OnClickOrangeBut()
 		{
 			MyPlayerState->SetPlayerColor(ColorType::Orange);
 			bIsSelectColor = true;
+			PlaySound(ClickOn);
 			MyPlayerController->ServerRPCSchoolSelect(ColorType::Orange);
 			//OrangeBut->SetVisibility(ESlateVisibility::Collapsed);
 		}
@@ -104,6 +108,7 @@ void USPSelectWidget::OnClickPurpleBut()
 		{
 			MyPlayerState->SetPlayerColor(ColorType::Purple);
 			bIsSelectColor = true;
+			PlaySound(ClickOn);
 			MyPlayerController->ServerRPCSchoolSelect(ColorType::Purple);
 		}
 	}
@@ -118,6 +123,7 @@ void USPSelectWidget::OnClickManBut()
 		{
 			MyPlayerState->SetPlayerGender(GenderType::Man);
 			bIsSelectGender = true;
+			PlaySound(ClickOn);
 			ManBut->SetVisibility(ESlateVisibility::Collapsed);
 		}
 	}
@@ -132,6 +138,7 @@ void USPSelectWidget::OnClickWomanBut()
 		{
 			MyPlayerState->SetPlayerGender(GenderType::Woman);
 			bIsSelectGender = true;
+			PlaySound(ClickOn);
 			WomanBut->SetVisibility(ESlateVisibility::Collapsed);
 		}
 	}
@@ -146,6 +153,7 @@ void USPSelectWidget::OnClickReadyBut()
 			ASPLobbyPlayerController* PC = Cast<ASPLobbyPlayerController>(GetOwningPlayer());
 			if(PC)
 			{
+				PlaySound(ClickOn);
 				PlayerSelecText->SetVisibility(ESlateVisibility::Visible);
 				ReadyBut->SetVisibility(ESlateVisibility::Collapsed);
 				PC->ServerRPCReady();

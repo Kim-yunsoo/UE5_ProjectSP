@@ -47,6 +47,9 @@ protected:
 
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UTextBlock> PlayerSelecText;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<USoundBase> ClickOn;
 	
 	uint8 bIsSelectColor;
 	uint8 bIsSelectGender;

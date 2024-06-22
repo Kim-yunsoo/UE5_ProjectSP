@@ -87,7 +87,7 @@ void ASPGameModeBase::OnMatchStateSet()
 	// {
 	// 	FinalizeMatchResults();
 	// }
-	
+	//
 }
 
 void ASPGameModeBase::HandleMatchIsWaitingToStart()
@@ -189,7 +189,7 @@ void ASPGameModeBase::SpawnPlayerCharacter(APlayerController* MyController, Colo
 			OldPawn->Destroy();
 		}
 
-		FVector SpawnLocation = FVector(2547.0f, 247.0f, 2894.0f);
+		FVector SpawnLocation = FVector(303.0f, 315.0f, 3738.0f);
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Owner = MyController;
 		APawn* NewPawn = GetWorld()->SpawnActor<APawn>(DesiredPawnClass, SpawnLocation, FRotator::ZeroRotator,

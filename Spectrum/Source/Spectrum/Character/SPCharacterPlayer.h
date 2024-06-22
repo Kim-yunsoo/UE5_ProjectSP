@@ -653,6 +653,14 @@ public:
 	void SlowSillApply();
 
 	UPROPERTY()
-	uint8 bInteracionOnce:1; 
+	uint8 bInteracionOnce:1;
+
+
+	//스킬 이펙트
+	UPROPERTY()
+	TObjectPtr<class UNiagaraSystem> SlowEffect;
+
+	UPROPERTY()
+	TObjectPtr<class UNiagaraSystem> IceEffect;
 	
 };
