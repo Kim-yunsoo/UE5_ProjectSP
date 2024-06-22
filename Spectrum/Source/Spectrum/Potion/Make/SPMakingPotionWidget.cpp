@@ -34,7 +34,6 @@ void USPMakingPotionWidget::MakingPotion(USPItemBase* Item)
 		ItemSlot->SetItemReference(Item);
 		ItemSlot->HideText();
 	}
-	UE_LOG(LogTemp, Warning, TEXT("MakingPotion"))
 	Make->AddChild(ItemSlot);
 }
 
@@ -50,14 +49,13 @@ void USPMakingPotionWidget::NativeConstruct()
 }
 
 bool USPMakingPotionWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent,
-	UDragDropOperation* InOperation)
+	UDragDropOperation* InOperation) //InventorySlot 위젯에서 데이터를 받은 것을 드랍할 때 
 {
 	const USPItemDragDropOperation* ItemDragDrop = Cast<USPItemDragDropOperation>(InOperation);
     
 	if ((ItemDragDrop && PlayerCharacter && ItemDragDrop->SourceItem->Quantity != 0) || (ItemDragDrop && PlayerCharacter && PlayerCharacter->bIsSeven == true))
 	{
 		FVector2D DropLocation = InDragDropEvent.GetScreenSpacePosition();
-		//내가 놓은 위치 
 
 		TArray<USizeBox*> DropWidgets = {Drop1, Drop2, Drop3}; //위에있는거
 
@@ -70,8 +68,10 @@ bool USPMakingPotionWidget::NativeOnDrop(const FGeometry& InGeometry, const FDra
 			{
 				
 				FVector2D DropWidgetLocation = DropWidget->GetCachedGeometry().GetAbsolutePosition();
+				//위젯의 절대 좌표를 가져온다. 
 
 				float DistanceSquared = FVector2D::DistSquared(DropLocation, DropWidgetLocation);
+				//두 점 사이의 거리를 제곱한 값이다. 
 
 				if (DistanceSquared < MinDistanceSquared)
 				{
@@ -93,7 +93,6 @@ bool USPMakingPotionWidget::NativeOnDrop(const FGeometry& InGeometry, const FDra
 				ItemSlot->HideText();
 			}
 			ClosestDropWidget->AddChild(ItemSlot);
-			UE_LOG(LogTemp, Warning, TEXT("%s"), *GetOwningPlayer()->GetName());
 			PlayerCharacter->DragItem(ItemDragDrop->SourceItem,1);
 			PlaySound(DropSound);
 			return true;
@@ -102,18 +101,8 @@ bool USPMakingPotionWidget::NativeOnDrop(const FGeometry& InGeometry, const FDra
 	return false;
 }
 
-// FReply USPMakingPotionWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
-// {
-// 	FReply Reply = Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
-//
-// 	return Reply.Unhandled();
-//
-// }
-
-void USPMakingPotionWidget::BackCallBack()
+void USPMakingPotionWidget::BackCallBack() //뒤로가기 버튼 
 {
-	//UE_LOG(LogTemp, Log, TEXT("SpectrumLocationCallBack!!!"));
 	PlayerCharacter->HUDWidget->UpdateMakingPotionWidget(false);
-
 	PlaySound(ClickOn);
 }

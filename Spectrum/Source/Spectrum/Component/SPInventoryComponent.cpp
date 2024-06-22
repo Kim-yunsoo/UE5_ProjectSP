@@ -19,6 +19,13 @@ USPInventoryComponent::USPInventoryComponent()
 	}
 	// ...
 	InventorySlotsCapacity = 100;
+	//GetPotionName
+	ItemCountMap.FindOrAdd(GetPotionName(EPotionType::BluePotion)) = 0;
+	ItemCountMap.FindOrAdd(GetPotionName(EPotionType::RedPotion)) = 0;
+	ItemCountMap.FindOrAdd(GetPotionName(EPotionType::YellowPotion)) = 0;
+
+	SinglePotion = 1;
+	DoublePotion = 2;
 }
 
 
@@ -54,74 +61,51 @@ int32 USPInventoryComponent::RemoveAmountOfItem(USPItemBase* ItemIn, int32 Desir
 
 USPItemBase* USPInventoryComponent::MakingPotion()
 {
-	//그 칸에 몇개가 들어왔는지 확인 
-	int Blue = 0;
-	int Yellow = 0;
-	int Red = 0;
+	ItemCountMap.FindOrAdd(GetPotionName(EPotionType::BluePotion)) = 0;
+	ItemCountMap.FindOrAdd(GetPotionName(EPotionType::RedPotion)) = 0;
+	ItemCountMap.FindOrAdd(GetPotionName(EPotionType::YellowPotion)) = 0;
 	for (USPItemBase* Item : InventoryMakeContents)
 	{
-		FString ItemName = Item->ItemTextData.Name.ToString();
-		if (ItemName == TEXT("Blue Potion"))
+		FString ItemNameString = Item->ItemTextData.Name.ToString();
+		FName ItemName = FName(*ItemNameString);
+		if (ItemCountMap.Contains(ItemName))
 		{
-			Blue++;
-		}
-		else if (ItemName == TEXT("Yellow Potion"))
-		{
-			Yellow++;
-		}
-		else if (ItemName == TEXT("Red Potion"))
-		{
-			Red++;
+			ItemCountMap[ItemName]++;
 		}
 	}
-	if (Blue == 2 && Yellow == 1)
+	ItemCountMap[GetPotionName(EPotionType::BluePotion)];
+	if (ItemCountMap[GetPotionName(EPotionType::BluePotion)] == DoublePotion && ItemCountMap[GetPotionName(
+		EPotionType::YellowPotion)] == SinglePotion)
 	{
-		FName DesiredItemID = "G_Potion";
-		const FItemData* ItemData = ItemDataTable->FindRow<FItemData>(DesiredItemID, DesiredItemID.ToString());
-		// 원하는 항목 찾기
+		FName DesiredItemID = GetPotionName(EPotionType::GreenPotion);
+		return CreateItemFromDataTable(DesiredItemID);
+	}
+	else if (ItemCountMap[GetPotionName(EPotionType::BluePotion)] == SinglePotion && ItemCountMap[GetPotionName(
+		EPotionType::RedPotion)] == DoublePotion)
+	{
+		FName DesiredItemID = GetPotionName(EPotionType::PurplePotion);
+		return CreateItemFromDataTable(DesiredItemID);
+	}
+	else if (ItemCountMap[GetPotionName(EPotionType::RedPotion)] == SinglePotion&& ItemCountMap[GetPotionName(
+		EPotionType::YellowPotion)] == DoublePotion)
+	{
+		FName DesiredItemID = GetPotionName(EPotionType::OrangePotion);
+		return CreateItemFromDataTable(DesiredItemID);
+	}
+	return nullptr;
+}
 
-		UE_LOG(LogTemp, Warning, TEXT("Green"))
-		USPItemBase* Item = NewObject<USPItemBase>();
-		Item->ID = ItemData->ID;
-		Item->ItemType = ItemData->ItemType;
-		Item->ItemTextData = ItemData->ItemTextData;
-		Item->ItemNumericData = ItemData->ItemNumericData;
-		Item->ItemAssetData = ItemData->ItemAssetData;
-		Item->Quantity = 1;
-		return Item;
-	}
-	else if (Blue == 1 && Red == 2)
-	{
-		FName DesiredItemID = "P_Potion";
-		const FItemData* ItemData = ItemDataTable->FindRow<FItemData>(DesiredItemID, DesiredItemID.ToString());
-		// 원하는 항목 찾기
-		USPItemBase* Item = NewObject<USPItemBase>();
-		Item->ID = ItemData->ID;
-		Item->ItemType = ItemData->ItemType;
-		Item->ItemTextData = ItemData->ItemTextData;
-		Item->ItemNumericData = ItemData->ItemNumericData;
-		Item->ItemAssetData = ItemData->ItemAssetData;
-		Item->Quantity = 1;
-		return Item;
-	}
-	else if (Red == 1 && Yellow == 2)
-	{
-		FName DesiredItemID = "O_Potion";
-		const FItemData* ItemData = ItemDataTable->FindRow<FItemData>(DesiredItemID, DesiredItemID.ToString());
-		// 원하는 항목 찾기
-		USPItemBase* Item = NewObject<USPItemBase>();
-		Item->ID = ItemData->ID;
-		Item->ItemType = ItemData->ItemType;
-		Item->ItemTextData = ItemData->ItemTextData;
-		Item->ItemNumericData = ItemData->ItemNumericData;
-		Item->ItemAssetData = ItemData->ItemAssetData;
-		Item->Quantity = 1;
-		return Item;
-	}
-	else
-	{
-		return nullptr;
-	}
+USPItemBase* USPInventoryComponent::CreateItemFromDataTable(const FName& InDesiredItemID)
+{
+	const FItemData* ItemData = ItemDataTable->FindRow<FItemData>(InDesiredItemID, InDesiredItemID.ToString());
+	USPItemBase* Item = NewObject<USPItemBase>();
+	Item->ID = ItemData->ID;
+	Item->ItemType = ItemData->ItemType;
+	Item->ItemTextData = ItemData->ItemTextData;
+	Item->ItemNumericData = ItemData->ItemNumericData;
+	Item->ItemAssetData = ItemData->ItemAssetData;
+	Item->Quantity = 1;
+	return Item;
 }
 
 int USPInventoryComponent::HandleStackableItems(USPItemBase* ItemIn, int32 RequestedAddAmount,
@@ -158,11 +142,10 @@ void USPInventoryComponent::HandleAddItem(USPItemBase* InputItem, int InitialReq
 	{
 		ClientRPCUpdatePotion(IsPotion(InputItem->ID), PotionNum, InputItem->ItemType);
 	}
-	else if(InputItem->ItemType == EItemType::IngredientPotion)
+	else if (InputItem->ItemType == EItemType::IngredientPotion)
 	{
 		ClientRPCUpdatePotion(IsMiniPotion(InputItem->ID), PotionNum, InputItem->ItemType);
 	}
-
 }
 
 USPItemBase* USPInventoryComponent::InitializeInventory(const TSubclassOf<USPItemBase> BaseClass, FName DesiredItemID)
@@ -292,6 +275,28 @@ int USPInventoryComponent::IsMiniPotion(FName ID)
 	}
 	return -1;
 }
+
+FName USPInventoryComponent::GetPotionName(const EPotionType& InPotionType)
+{
+	switch (InPotionType)
+	{
+	case EPotionType::BluePotion:
+		return FName("Blue Potion");
+	case EPotionType::RedPotion:
+		return FName("Red Potion");
+	case EPotionType::YellowPotion:
+		return FName("Yellow Potion");
+	case EPotionType::GreenPotion:
+		return FName("G_Potion");
+	case EPotionType::OrangePotion:
+		return FName("O_Potion");
+	case EPotionType::PurplePotion:
+		return FName("P_Potion");
+	default:
+		return FName("Nullptr");
+	}
+}
+
 
 void USPInventoryComponent::ClientRPCUpdateMiniPotion_Implementation(const int& num, const int& ServerCount)
 {

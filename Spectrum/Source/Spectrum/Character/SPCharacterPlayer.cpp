@@ -1385,16 +1385,15 @@ void ASPCharacterPlayer::ClientRPCIceAnimation_Implementation(ASPCharacterPlayer
 
 void ASPCharacterPlayer::ServerRPCDragItem_Implementation(int Num, const int32 QuantityToDrop)
 {
-	// for(USPItemBase* ItemBase : PlayerInventory->GetInventorMiniContents())
-	// {
-	// 	UE_LOG(LogTemp, Warning, TEXT("%s %d"), *ItemBase->ItemTextData.Name.ToString(), ItemBase->Quantity);
-	// }
-	USPItemBase* ItemBase = PlayerInventory->FindMatchingMiniItem(Num);
-	PlayerInventory->RemoveAmountOfItem(ItemBase, 1);
+	USPItemBase* ItemBase = PlayerInventory->FindMatchingMiniItem(Num); //미니 물약에서 정보 찾아오기
+	
+	PlayerInventory->RemoveAmountOfItem(ItemBase, 1); //물약 하나 뺴기
+	
 	GetInventory()->AddInventorMakeContents(ItemBase);
+	//몇개 들어왔는지 인벤토리 어레이에 담는다. 
 	if (GetInventory()->GetInventorMakeContents().Num() == 3) //3개의 칸에 어떤게 들어왔는지 확인 GetInventorMakeContents
 	{
-		USPItemBase* Item = PlayerInventory->MakingPotion();
+		USPItemBase* Item = PlayerInventory->MakingPotion(); //만들 수 있는지 검사 
 		if (Item)
 		{
 			int MakeNum = PlayerInventory->IsPotion(Item->ID);
@@ -1407,10 +1406,9 @@ void ASPCharacterPlayer::ServerRPCDragItem_Implementation(int Num, const int32 Q
 void ASPCharacterPlayer::ClientRPCUpdateMakingPotion_Implementation(int Num)
 {
 	USPItemBase* ItemBase = PlayerInventory->FindMatchingItem(Num);
-
 	HUDWidget->MakingPotionWieget(ItemBase);
-	int MakeNum = PlayerInventory->IsPotion(ItemBase->ID);
-	UE_LOG(LogTemp, Warning, TEXT("ITEMBASE %d"), MakeNum);
+	// int MakeNum = PlayerInventory->IsPotion(ItemBase->ID);
+	// UE_LOG(LogTemp, Warning, TEXT("ITEMBASE %d"), MakeNum);
 }
 
 void ASPCharacterPlayer::ServerRPCBackItem_Implementation(int Num, const int32 QuantityToDrop)

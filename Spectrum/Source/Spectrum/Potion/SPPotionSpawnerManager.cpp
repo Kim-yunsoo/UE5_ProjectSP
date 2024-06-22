@@ -42,14 +42,11 @@ void USPPotionSpawnerManager::NotifyEmptySpawners() //없어지면 여기로 신호가 온�
 			EmptyArray.Add(i); 
 		}
 	}
-
-	
 	EmptyArray.Sort([this](const int32 Lhs ,const int32 Rhs) //셔플 
 	{
 		return FMath::FRand()<0.5f;
 	});
-
-	int32 RandomIndex = FMath::RandRange(0, EmptyArray.Num() - 1);
+	int32 RandomIndex = FMath::RandRange(0, EmptyArray.Num() - 1); //한번 더 랜덤하게 
 	PotionSpawners[EmptyArray[RandomIndex]]-> SpawnPotion();
 }
 

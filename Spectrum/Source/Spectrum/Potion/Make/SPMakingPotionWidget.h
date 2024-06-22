@@ -32,14 +32,6 @@ public:
 	void MakingPotion(USPItemBase* Item);
 	
 protected:
-	// UPROPERTY(meta = (BindWidget))
-	// TObjectPtr<USizeBox> YellowPotion;
-	//
-	// UPROPERTY(meta = (BindWidget))
-	// TObjectPtr<USizeBox> RedPotion;
-	//
-	// UPROPERTY(meta = (BindWidget))
-	// TObjectPtr<USizeBox> BluePotion;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<USizeBox> Drop1;
@@ -61,17 +53,9 @@ protected:
 	UPROPERTY()
 	TObjectPtr<USPInventoryComponent> InventoryReference;
 	
-	// UPROPERTY(meta=(BindWidget))
-	// TObjectPtr<UWrapBox> InventoryPanel;
-
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<USPInventoryItemSlot> InventorySlotClass;
 	
-	// UPROPERTY(EditDefaultsOnly)
-	// TSubclassOf<USPInventoryItemSlot> InventorySlotClass;
-
-	// UPROPERTY(meta=(BindWidget))
-	// TObjectPtr<UWrapBox> InventoryPanel;
 	
 	void NativeConstruct() override;
 	
@@ -98,6 +82,4 @@ protected:
 	UFUNCTION()
 	void BackCallBack();
 
-	
-	
 };

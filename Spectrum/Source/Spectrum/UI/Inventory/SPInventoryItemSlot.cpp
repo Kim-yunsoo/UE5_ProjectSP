@@ -40,22 +40,20 @@ void USPInventoryItemSlot::NativeConstruct()
 
 FReply USPInventoryItemSlot::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
 {
-	FReply Reply = Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
+	FReply Reply = Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent); 
 	if(InMouseEvent.GetEffectingButton() == EKeys::LeftMouseButton) //좌클릭 드래그 버튼 
 	{
-		return Reply.Handled().DetectDrag(TakeWidget(), EKeys::LeftMouseButton);
+		return Reply.Handled().DetectDrag(TakeWidget(), EKeys::LeftMouseButton); // DetectDrag 메서드를 호출해서 동작 감지한다. 
 	}
 	if(InMouseEvent.GetEffectingButton() == EKeys::RightMouseButton) //우클릭 - 취소할 때 
 	{
 		ASPCharacterPlayer* Player = Cast<ASPCharacterPlayer>(GetOwningPlayerPawn());
 		
-		ClickResult = Player->BackItem(ItemReference, 1); //되돌린다. 근데 완제품을 누르면 터짐
+		ClickResult = Player->BackItem(ItemReference, 1); 
 		if(ClickResult)
 		{
 			this->RemoveFromParent();
 		}
-
-		
 		return Reply.Handled();
 	}
 	return Reply.Unhandled();
@@ -72,7 +70,7 @@ void USPInventoryItemSlot::HideText()
 }
 
 FReply USPInventoryItemSlot::NativeOnMouseButtonUp(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
-{
+{/// 마우스 버튼을 땔 때 완제품을 클릭하고 땐 경우? 
 	FReply Reply = Super::NativeOnMouseButtonUp(InGeometry, InMouseEvent);
 	if(PlayerCharacter->GetInventory()->IsPotion(ItemReference->ID) != -1 )
 	{
@@ -87,7 +85,7 @@ FReply USPInventoryItemSlot::NativeOnMouseButtonUp(const FGeometry& InGeometry, 
 	return Reply.Unhandled();
 }
 
-void USPInventoryItemSlot::ServerRPCButtonUp_Implementation(int num)
+void USPInventoryItemSlot::ServerRPCButtonUp_Implementation(int num) //안쓰는듯하다 
 {
 	ASPCharacterPlayer* Player = Cast<ASPCharacterPlayer>(GetOwningPlayerPawn());
 	USPItemBase* ItemBase = Player->GetInventory()->FindMatchingItem(num);
@@ -95,11 +93,11 @@ void USPInventoryItemSlot::ServerRPCButtonUp_Implementation(int num)
 }
 
 void USPInventoryItemSlot::NativeOnDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent,
-                                                UDragDropOperation*& OutOperation)
+                                                UDragDropOperation*& OutOperation) //위에서 드래그 동작이 감지되었을 때 호출하는 클래스 메서드 
 {
 	Super::NativeOnDragDetected(InGeometry, InMouseEvent, OutOperation);
 
-	if(DragItemVisualClass)
+	if(DragItemVisualClass) //드레그 했을  때 보이는 위젯 클래스가 유효한지 
 	{
 		const TObjectPtr<USPDrageItemVisual> DragVisual = CreateWidget<USPDrageItemVisual>(this, DragItemVisualClass);
 
@@ -109,13 +107,13 @@ void USPInventoryItemSlot::NativeOnDragDetected(const FGeometry& InGeometry, con
 			DragVisual->ItemBorder->SetBrushColor(ItemBorder->GetBrushColor());
 			DragVisual->ItemQuantity->SetVisibility(ESlateVisibility::Hidden);
 			
-			USPItemDragDropOperation* DragItemOperation = NewObject<USPItemDragDropOperation>();
-			DragItemOperation->SourceItem = ItemReference;
+			USPItemDragDropOperation* DragItemOperation = NewObject<USPItemDragDropOperation>(); //드레그엔 드롭 작업을 관리
+			DragItemOperation->SourceItem = ItemReference; //드레그 앤 드롭의 리소스
 			DragItemOperation->SourceInventory = ItemReference->OwningInventory;
 
-			DragItemOperation->DefaultDragVisual = DragVisual;
-			DragItemOperation->Pivot = EDragPivot::TopLeft;
-			OutOperation = DragItemOperation;
+			DragItemOperation->DefaultDragVisual = DragVisual; //드래그 했을때 보이는 위젯 
+			DragItemOperation->Pivot = EDragPivot::TopLeft; //보이는 피봇
+			OutOperation = DragItemOperation; //이벤트를 처리할 수 있는 객체가 설정된다. 
 		}
 	}
 }

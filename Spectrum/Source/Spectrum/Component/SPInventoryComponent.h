@@ -17,6 +17,17 @@ enum class EPotion :uint8
 	Special 
 };
 
+UENUM()
+enum class EPotionType : uint8
+{
+	BluePotion ,
+	RedPotion ,
+	YellowPotion,
+	GreenPotion ,
+	PurplePotion,
+	OrangePotion
+};
+
 class USPItemBase;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnInventoryUpdated, const TArray<USPItemBase*>);
@@ -90,9 +101,6 @@ protected:
 	int32 InventorySlotsCapacity;
 	UPROPERTY(VisibleAnywhere, Category = "Inventory")
 	float inventoryWeightCapacity;
-
-	// UPROPERTY(VisibleAnywhere, Category = "Inventory")
-	// TArray<USPItemBase*> InventoryContents;
 	
 	UPROPERTY(VisibleAnywhere, Category = "Inventory")
 	TArray<USPItemBase*> InventoryMiniContents;
@@ -116,6 +124,14 @@ protected:
 
 	UFUNCTION(Client, Unreliable)
 	void ClientRPCUpdateMiniPotion(const int& num, const int&ServerCount);
+	
+	TMap<FName, int32> ItemCountMap;
 
+	int32 SinglePotion;
+	int32 DoublePotion;
+
+	FName GetPotionName(const EPotionType& InPotionType );
+
+	USPItemBase* CreateItemFromDataTable(const FName& InDesiredItemID);
 
 };
