@@ -43,7 +43,7 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UDataTable> PositionTable;
 
-	virtual void AddScore(const ColorType& MyColor,EScoreType ScoreType) override;
+	virtual void AddScore(const ColorType& MyColor,const EScoreType& ScoreType) override;
 
 
 	
@@ -52,7 +52,7 @@ public:
 	int32 RemainingTime;
 	
 	int32 MatchPlayTime = 180.f; // 3분
-	int32 AISpawnTime= 150.0f; //30초 남았을 때 
+	int32 AISpawnTime= 30.0f; //30초 남았을 때 
 	int32 SpectrumPotionSpawnTime = 100.0; //2분전
 	
 protected: //Timer
@@ -95,5 +95,7 @@ public:
 	void OnMathStateSet(FName State); // 매치 상태를 알려주는 함수를 만든다.
 
 	void SetCanUseInput(const uint8 InCanUseInput);
+
+	int32 SetScorePoint(const EScoreType& InScoreType);
 	
 };

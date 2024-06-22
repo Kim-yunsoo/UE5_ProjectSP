@@ -21,5 +21,5 @@ class SPECTRUM_API ISPScoreInterface
 	GENERATED_BODY()
 
 public:
-	virtual void AddScore(const ColorType& MyColor,EScoreType ScoreType) = 0;
+	virtual void AddScore(const ColorType& MyColor,const EScoreType& ScoreType) = 0;
 };

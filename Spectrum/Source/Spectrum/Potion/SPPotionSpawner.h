@@ -7,6 +7,9 @@
 #include "Interface/SPPotionSpawnInterface.h"
 #include "SPPotionSpawner.generated.h"
 
+DECLARE_MULTICAST_DELEGATE(FOnSpawnerEmpty)
+
+
 UCLASS()
 class SPECTRUM_API ASPPotionSpawner : public AActor, public ISPPotionSpawnInterface
 {
@@ -14,22 +17,29 @@ class SPECTRUM_API ASPPotionSpawner : public AActor, public ISPPotionSpawnInterf
 	
 public:	
 	// Sets default values for this actor's properties
+	FOnSpawnerEmpty OnSpawnerEmpty;
 	ASPPotionSpawner();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-	void SpawnPotion();
-
-
+	
 	UFUNCTION(Server,Unreliable)
 	void ServerSpanwRPC();
 
-public:
-	virtual void SpawnEvent() override;
+	UFUNCTION()
+	void SetItemSpawnEmpty();
 
+	UPROPERTY()
+	bool bHasPotion ;
+
+public:
+	FORCEINLINE bool GetHasPotion() const {return bHasPotion;};
+	void SpawnPotion();
+	virtual void SpawnEvent() override;
 	float SpawnTimeRate ;
+
+
 
 
 // public:	

@@ -11,34 +11,43 @@ ASPPotionSpawner::ASPPotionSpawner()
 	// PrimaryActorTick.bCanEverTick = true;
 	SpawnTimeRate = 5.f;
 	bReplicates = true;
+	bHasPotion = false;
 }
 
 // Called when the game starts or when spawned
 void ASPPotionSpawner::BeginPlay()
 {
 	Super::BeginPlay();
-	if (HasAuthority())
-	{
-		SpawnPotion();
-	}
+	// if (HasAuthority())
+	// {
+	// 	//SpawnPotion();
+	// }
 }
 
-void ASPPotionSpawner::SpawnPotion()
+void ASPPotionSpawner::SpawnPotion() //신호가 오면 스폰하는 역할을 한다. 
 {
 	ServerSpanwRPC();
 }
 
 void ASPPotionSpawner::SpawnEvent()
 {
-	FTimerHandle TimerHandle;
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([&]
-	{
-		ServerSpanwRPC();
-	}), SpawnTimeRate, false);
+	// FTimerHandle TimerHandle;
+	// GetWorld()->GetTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([&]
+	// {
+	// 	ServerSpanwRPC();
+	// }), SpawnTimeRate, false);
 }
+
+void ASPPotionSpawner::SetItemSpawnEmpty()
+{
+	bHasPotion =false; //없음 표시
+	OnSpawnerEmpty.Broadcast();
+}
+
 
 void ASPPotionSpawner::ServerSpanwRPC_Implementation()
 {
+	bHasPotion = true;
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
@@ -47,6 +56,8 @@ void ASPPotionSpawner::ServerSpanwRPC_Implementation()
 	if (PotionObject)
 	{
 		PotionObject->SetOwner(this);
+	//바인드
+		PotionObject->OnItemPickedUp.AddUObject(this, &ASPPotionSpawner::SetItemSpawnEmpty); //델리게이트 걸어주기 
 	}
 }
 

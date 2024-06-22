@@ -12,8 +12,7 @@
 #include "Interface/SPDamageInterface.h"
 #include "Interface/SPScoreInterface.h"
 #include "GameFramework\GameStateBase.h"
-//D:\UE_5.3\Engine\Source\Runtime\Engine\Classes\GameFramework\GameStateBase.h
-// Sets default values for this component's properties
+
 USPExplosionComponent::USPExplosionComponent()
 {
 	

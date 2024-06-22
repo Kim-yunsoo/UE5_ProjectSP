@@ -1,5 +1,7 @@
 
 #include "Game/SPGameModeBase.h"
+
+#include "SpectrumLog.h"
 #include "SPPlayerState.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "Game/SPGameState.h"
@@ -7,11 +9,12 @@
 #include "Character/SPCharacterPlayer.h"
 #include "Player/SPPlayerController.h"
 #include "BehaviorTree/BehaviorTree.h"
+#include "Potion/SPPotionSpawnerManager.h"
 
 
 ASPGameModeBase::ASPGameModeBase()
 {
-	//bDelayedStart = true;
+	bDelayedStart = true;
 	bUseSeamlessTravel = true;
 	GameStateClass = ASPGameState::StaticClass();
 	PlayerStateClass = ASPPlayerState::StaticClass();
@@ -30,6 +33,8 @@ ASPGameModeBase::ASPGameModeBase()
 	{
 		BTAsset = BTAssetRef.Object;
 	}
+
+	PotionSpawnerManager = CreateDefaultSubobject<USPPotionSpawnerManager>(TEXT("PotionSpawnerManager"));
 }
 
 void ASPGameModeBase::BeginPlay()
@@ -42,42 +47,56 @@ void ASPGameModeBase::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	// if (MatchState == MatchState::WaitingToStart)
-	// {
-	// 	CountdownTime = WarmupTime - GetWorld()->GetTimeSeconds() + LevelStartingTime; //10초 로딩 시간
-	//
-	// 	if (CountdownTime <= 0.f)
-	// 	{
-	// 		StartMatch(); //진행 모드로 변환
-	// 	}
-	// }
+	if (MatchState == MatchState::WaitingToStart)
+	{
+		CountdownTime = WarmupTime - GetWorld()->GetTimeSeconds() + LevelStartingTime; //10초 로딩 시간
+	
+		
+		if (CountdownTime <= 0.f)
+		{
+			StartMatch(); //진행 모드로 변환
+		}
+	}
 }
 
 void ASPGameModeBase::OnMatchStateSet()
 {
 	Super::OnMatchStateSet();
+	if(MatchState == MatchState::InProgress)
+	{
+		SP_LOG(LogTemp,Log,TEXT("InProgress")); //서버에서만 불리는 것을 확인
+		//PotionSpawnerManager->CollectAllPotionSpawners(GetWorld());
+		PotionSpawnerManager->Initialize(GetWorld()); 
+	}
 
-	// for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
-	// {
-	// 	ASPPlayerController* MyPlayer = Cast<ASPPlayerController>(It->Get());
-	// 	if (MyPlayer)
-	// 	{
-	// 		MyPlayer->ClientRCPMathState(MatchState);
-	// 	}
-	// }
-	// ASPGameState* SPGameState = Cast<ASPGameState>(GetWorld()->GetGameState());
-	// if (SPGameState)
-	// {
-	// 	SPGameState->OnMathStateSet(MatchState);
-	// }
-	//
-	// if (MatchState == MatchState::WaitingPostMatch)
-	// {
-	// 	FinalizeMatchResults();
-	// }
+	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+	{
+		ASPPlayerController* MyPlayer = Cast<ASPPlayerController>(It->Get());
+		if (MyPlayer)
+		{
+			MyPlayer->ClientRCPMathState(MatchState);
+		}
+	}
+	ASPGameState* SPGameState = Cast<ASPGameState>(GetWorld()->GetGameState());
+	if (SPGameState)
+	{
+		SPGameState->OnMathStateSet(MatchState);
+	}
+	
+	if (MatchState == MatchState::WaitingPostMatch)
+	{
+		FinalizeMatchResults();
+	}
 	
 }
 
+void ASPGameModeBase::HandleMatchIsWaitingToStart()
+{
+	Super::HandleMatchIsWaitingToStart();
+	// PotionSpawnerManager->CollectAllPotionSpawners(GetWorld());
+	// PotionSpawnerManager->Initialize(); // 20개 초기 넣어주기 
+	// //게임을 시작하기 전에 스포너에게 포션을 스폰하라고 함수 호출해야한다. 
+}
 
 
 void ASPGameModeBase::FinalizeMatchResults()

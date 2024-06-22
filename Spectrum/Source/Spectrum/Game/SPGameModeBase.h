@@ -8,6 +8,7 @@
 #include "GameFramework/GameMode.h"
 #include "SPGameModeBase.generated.h"
 
+class USPPotionSpawnerManager;
 class ASPPlayerController;
 enum class GenderType : uint8;
 enum class ColorType : uint8;
@@ -48,12 +49,16 @@ public:
 	void FinishMatch(); //매치가 종료되면 호출한다. 
 protected:
 	UPROPERTY()
+	TObjectPtr<USPPotionSpawnerManager> PotionSpawnerManager;
+
+	UPROPERTY()
 	TObjectPtr<class UBehaviorTree> BTAsset;
 	
 	UPROPERTY()
 	TSubclassOf<APawn> AIPawnClass;
 	
 	virtual void OnMatchStateSet() override;
+	virtual void HandleMatchIsWaitingToStart()override;
 	float CountdownTime = 0.f;
 
 	UPROPERTY()

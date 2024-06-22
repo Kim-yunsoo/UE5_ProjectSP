@@ -12,12 +12,15 @@ class UBoxComponent;
 class USPItemBase;
 class ASPPotionBase;
 
+DECLARE_MULTICAST_DELEGATE(FOnItemPickedUp)
+
 UCLASS()
 class SPECTRUM_API ASPPickup : public AActor, public ISPInteractionInterface
 {
 	GENERATED_BODY()
 	
-public:	
+public:
+	FOnItemPickedUp OnItemPickedUp;
 	// Sets default values for this actor's properties
 	ASPPickup();
 	

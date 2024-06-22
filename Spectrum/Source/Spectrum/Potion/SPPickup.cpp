@@ -171,7 +171,12 @@ void ASPPickup::TakePickup(ASPCharacterPlayer* Taker) //서버에서 호출된�
 					ASPPotionSpawner* PotionSpawner = Cast<ASPPotionSpawner>(GetOwner());
 					if (PotionSpawner)
 					{
-						PotionSpawner->SpawnEvent();
+						//비활성화 신호를 주자 
+						//PotionSpawner->SpawnEvent();
+						//PotionSpawner->bHasPotion=false;
+						//스포너에서 델리게이트로  // 서버에서 전달될 것
+						//PotionSpawner->SetItemSpawnEmpty();
+						OnItemPickedUp.Broadcast();
 					}
 					this->SetOwner(MyPlayerOwner);
 					this->Destroy();
