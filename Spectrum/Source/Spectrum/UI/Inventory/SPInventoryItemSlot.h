@@ -71,5 +71,7 @@ protected:
 	
 	UPROPERTY(EditAnywhere)
 	USoundBase* ClickOn;
+
+	FName InventoryPanelName ;
 	
 };

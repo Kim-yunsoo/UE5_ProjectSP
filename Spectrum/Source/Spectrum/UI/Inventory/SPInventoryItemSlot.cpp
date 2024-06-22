@@ -20,7 +20,8 @@ void USPInventoryItemSlot::NativeOnInitialized()
 void USPInventoryItemSlot::NativeConstruct()
 {
 	Super::NativeConstruct();
-	
+	InventoryPanelName = FName("InventoryPanel");
+
 	PlayerCharacter = Cast<ASPCharacterPlayer>(GetOwningPlayerPawn());
 	
 	if(ItemReference)
@@ -40,9 +41,14 @@ void USPInventoryItemSlot::NativeConstruct()
 
 FReply USPInventoryItemSlot::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
 {
+	UPanelWidget* ParentWidget = Cast<UPanelWidget>(GetParent());
 	FReply Reply = Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent); 
 	if(InMouseEvent.GetEffectingButton() == EKeys::LeftMouseButton) //좌클릭 드래그 버튼 
 	{
+		if(!(InventoryPanelName== ParentWidget->GetFName()))
+		{
+			return Reply.Unhandled();
+		}
 		return Reply.Handled().DetectDrag(TakeWidget(), EKeys::LeftMouseButton); // DetectDrag 메서드를 호출해서 동작 감지한다. 
 	}
 	if(InMouseEvent.GetEffectingButton() == EKeys::RightMouseButton) //우클릭 - 취소할 때 

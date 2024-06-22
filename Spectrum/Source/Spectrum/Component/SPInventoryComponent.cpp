@@ -2,7 +2,6 @@
 
 
 #include "Component/SPInventoryComponent.h"
-#include "SpectrumLog.h"
 #include "Potion/SPItemBase.h"
 
 // Sets default values for this component's properties

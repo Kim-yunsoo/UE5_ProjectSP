@@ -1388,7 +1388,6 @@ void ASPCharacterPlayer::ServerRPCDragItem_Implementation(int Num, const int32 Q
 	USPItemBase* ItemBase = PlayerInventory->FindMatchingMiniItem(Num); //미니 물약에서 정보 찾아오기
 	
 	PlayerInventory->RemoveAmountOfItem(ItemBase, 1); //물약 하나 뺴기
-	
 	GetInventory()->AddInventorMakeContents(ItemBase);
 	//몇개 들어왔는지 인벤토리 어레이에 담는다. 
 	if (GetInventory()->GetInventorMakeContents().Num() == 3) //3개의 칸에 어떤게 들어왔는지 확인 GetInventorMakeContents
@@ -1661,7 +1660,6 @@ void ASPCharacterPlayer::SetupHUDWidget(USPHUDWidget* InUserWidget)
 	SlowSkillComponent->OnSlowCDChange.AddUObject(InUserWidget, &USPHUDWidget::UpdateSlowCDTime);
 	IceSkillComponent->OnIceCDChange.AddUObject(InUserWidget, &USPHUDWidget::UpdateIceCDTime);
 	TeleSkillComponent->OnTeleCDChange.AddUObject(InUserWidget, &USPHUDWidget::UpdateTeleCDTime);
-	//AGameStateBase* State = player->GetController()->GetWorld()->GetGameState();
 
 	OnAimChanged.AddUObject(InUserWidget, &USPHUDWidget::UpdateTarget);
 	AGameStateBase* State = GetController()->GetWorld()->GetGameState();
@@ -1693,10 +1691,8 @@ void ASPCharacterPlayer::PerformInteractionCheck(AActor* InActor) //이건 오�
 
 void ASPCharacterPlayer::FoundInteractable(AActor* NewInteractable) //상호작용 가능한 것이라면 데이터를 갱신해준다. 
 {
-
 	InteractionData.CurrentInteractable = NewInteractable;
 	TargetInteractable = NewInteractable;
-
 	if (HUDWidget)
 	{
 		HUDWidget->UpdateInteractionWidget(&TargetInteractable->InteractableData); //위젯을 띄운다. 
