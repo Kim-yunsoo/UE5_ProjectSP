@@ -74,7 +74,7 @@ void ASPObject::BeginPlay()
 	}
 }
 
-void ASPObject::OnExplosionHit()
+void ASPObject::OnChangeColorBlack()
 {
 	if (bHasBeenCalled)
 	{
@@ -93,6 +93,7 @@ void ASPObject::OnExplosionHit()
 		
 			Geometry->RegisterComponent();
 			Geometry->AddImpulse(FVector(0.0f, 0.0f, 125.f));
+			
 			this->SetLifeSpan(5.0f);
 		}
 		bHasBeenCalled = false;

@@ -21,7 +21,7 @@ class SPECTRUM_API ISPDamageInterface
 	GENERATED_BODY()
 
 public:
-	virtual void OnExplosionHit() = 0;
+	virtual void OnChangeColorBlack() = 0;
 	virtual void OnChangeColorGreen() = 0;
 	virtual void OnChangeColorOrange() = 0;
 	virtual void OnChangeColorPurple() = 0;

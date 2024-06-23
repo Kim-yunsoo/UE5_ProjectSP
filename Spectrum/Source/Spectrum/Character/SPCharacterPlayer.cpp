@@ -45,6 +45,7 @@
 #include "Potion/SPSpectrumPotion.h"
 #include "NiagaraSystem.h"
 #include "NiagaraFunctionLibrary.h"
+#include "Object/SPNonSimulateObject.h"
 
 ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<USPCharacterMovementComponent>(
@@ -2110,10 +2111,12 @@ void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 
 			if (HitSuccess && outHitResult.Component->Mobility == EComponentMobility::Movable)
 			{
+				//
 				outHitResult.Component->SetSimulatePhysics(true);
 				outHitResult.GetActor()->SetOwner(this);
 				HitComponent = outHitResult.GetComponent();
 				HitMyActor = outHitResult.GetActor();
+
 				if (Cast<ASPObject>(HitMyActor))
 				{
 					MultiChangeCollision(TEXT("BlackItemCollision"));
@@ -2142,6 +2145,14 @@ void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 					for (const FHitResult& HitResult : OutHits)
 					{
 						AActor* Hit = HitResult.GetActor();
+
+						ASPNonSimulateObject* SimulableObject = Cast<ASPNonSimulateObject>(Hit);
+						if(SimulableObject)
+						{
+							SimulableObject->StartPhysicsSleepTimer();
+						}
+						
+
 						UPrimitiveComponent* PrimitiveHit = Cast<UPrimitiveComponent>(Hit->GetRootComponent());
 						if (PrimitiveHit)
 						{

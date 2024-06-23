@@ -18,9 +18,13 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
+	virtual void BeginDestroy() override; 
+	
+	FTimerHandle TimerHandle;
+	
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
+	void StartPhysicsSleepTimer();
+	void PhysicsSleepIfNeed();
 };

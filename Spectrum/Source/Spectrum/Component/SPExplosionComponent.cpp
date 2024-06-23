@@ -1,6 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
+
+#define COLOR_CASE(ColorName)                \
+case ColorType::ColorName :					 \
+DamageInterface->OnChangeColor##ColorName(); \
+break;										 \
+
 #include "Component/SPExplosionComponent.h"
 
 #include "SpectrumLog.h"
@@ -15,7 +21,6 @@
 
 USPExplosionComponent::USPExplosionComponent()
 {
-	
 }
 
 
@@ -28,7 +33,11 @@ void USPExplosionComponent::BeginPlay()
 void USPExplosionComponent::Explode(ColorType& MyColor)
 {
 	Super::Explode(MyColor);
-	
+
+	if(!GetOwner()->HasAuthority())
+	{
+		return;
+	}
 	
 	FVector SphereTracePoint = GetOwner()->GetRootComponent()->GetComponentLocation();
 	float Radius = 125.f;
@@ -41,121 +50,85 @@ void USPExplosionComponent::Explode(ColorType& MyColor)
 	FLinearColor RedColor(1.0f, 0.0f, 0.0f);
 	float DrawTime = 5.0f;
 	bool Success = UKismetSystemLibrary::SphereTraceMultiForObjects(GetWorld(), SphereTracePoint, SphereTracePoint,
-																	Radius, ObjectTypes, false, ActorsToIgnore,
-																	EDrawDebugTrace::ForDuration, OutHits, true,
-																	GreenColor, RedColor, DrawTime);
+	                                                                Radius, ObjectTypes, false, ActorsToIgnore,
+	                                                                EDrawDebugTrace::ForDuration, OutHits, true,
+	                                                                GreenColor, RedColor, DrawTime);
 
-	TArray<AActor*>MyArray;
+	TArray<AActor*> MyArray;
 
 	ASPCharacterPlayer* MyOwner = Cast<ASPCharacterPlayer>(GetOwner()->Owner);
-	AGameStateBase* State  = GetWorld()->GetGameState();
+	AGameStateBase* State = GetWorld()->GetGameState();
 	ISPScoreInterface* ScoreFuntion = Cast<ISPScoreInterface>(State);
 
-	
-	for(FHitResult& Hits : OutHits)
+
+	for (FHitResult& Hits : OutHits)
 	{
 		MyArray.AddUnique(Hits.GetActor());
 
 		ASPCharacterNonPlayer* AIPlayer = Cast<ASPCharacterNonPlayer>(Hits.GetActor());
-		if(AIPlayer)
+		if (AIPlayer)
 		{
 			//색에 따른 추가 구현
-			if(MyColor == ColorType::Black ||MyOwner->SchoolAffiliation == MyColor)
+			if (MyColor == ColorType::Black || MyOwner->SchoolAffiliation == MyColor)
 			{
 				AIPlayer->TakeDamage(BaseDamage * 2, true);
 				if (ScoreFuntion)
 				{
-					ScoreFuntion->AddScore(MyOwner->SchoolAffiliation , EScoreType::AttackSpecial); //State에서 점수를 올려준다. 
+					ScoreFuntion->AddScore(MyOwner->SchoolAffiliation, EScoreType::AttackSpecial); //State에서 점수를 올려준다. 
 				}
 			}
 			else
 			{
-				AIPlayer->TakeDamage(BaseDamage , true);
+				AIPlayer->TakeDamage(BaseDamage, true);
 				if (ScoreFuntion)
 				{
-					ScoreFuntion->AddScore(MyOwner->SchoolAffiliation , EScoreType::AttackDefault); //State에서 점수를 올려준다. 
+					ScoreFuntion->AddScore(MyOwner->SchoolAffiliation, EScoreType::AttackDefault); //State에서 점수를 올려준다. 
 				}
 			}
 		}
-		
 	}
 
 	if (Success)
 	{
-		MultiRPCExplosion(MyArray,MyColor);
+		MultiRPCExplosion(MyArray, MyColor);
 	}
 }
+
+
+
+
+
 void USPExplosionComponent::MultiRPCExplosion_Implementation(const TArray<AActor*>& MyArray, const ColorType& MyColor)
 {
 	if (MyArray.Num() > 0)
 	{
 		for (AActor* HitActor : MyArray)
 		{
-			if(MyColor == ColorType::Black)
+			ISPDamageInterface* DamageInterface = Cast<ISPDamageInterface>(HitActor);
+			if (DamageInterface == nullptr)
 			{
-				ISPDamageInterface* DamageInterface = Cast<ISPDamageInterface>(HitActor);
-				if (DamageInterface)
-				{
-					DamageInterface->OnExplosionHit();
-				}
+				continue;
 			}
-			else if(MyColor == ColorType::Green)
+			switch (MyColor)
 			{
-				ISPDamageInterface* DamageInterface = Cast<ISPDamageInterface>(HitActor);
-				if (DamageInterface)
-				{
-					DamageInterface->OnChangeColorGreen();
-				}
-			}
-			else if(MyColor == ColorType::Orange)
-			{
-				ISPDamageInterface* DamageInterface = Cast<ISPDamageInterface>(HitActor);
-				if (DamageInterface)
-				{
-					DamageInterface->OnChangeColorOrange();
-				}
-			}
-			else if(MyColor == ColorType::Purple)
-			{
-				ISPDamageInterface* DamageInterface = Cast<ISPDamageInterface>(HitActor);
-				if (DamageInterface)
-				{
-					DamageInterface->OnChangeColorPurple();
-				}
+				// ColorType값에 따라 영향 , DamageInterface의 함수명에 영향이 있습니다.
+				COLOR_CASE(Black);
+				COLOR_CASE(Orange);
+				COLOR_CASE(Purple);
+				COLOR_CASE(Green);
+				default:
+					break;
 			}
 		}
 	}
-	
-	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), EmitterHit, GetOwner()->GetActorLocation(), FRotator::ZeroRotator,
-												 FVector(1.0f), true, EPSCPoolMethod::None, true);
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), EmitterHit, GetOwner()->GetActorLocation(),
+											 FRotator::ZeroRotator,
+											 FVector(1.0f), true, EPSCPoolMethod::None, true);
 	UGameplayStatics::PlaySoundAtLocation(GetWorld(), WaterSound, GetOwner()->GetActorLocation());
 
-	if(CrushSound)
+	if (CrushSound)
 	{
 		UGameplayStatics::PlaySoundAtLocation(GetWorld(), CrushSound, GetOwner()->GetActorLocation());
 	}
-
 }
-
-
-
-// void USPExplosionComponent::MultiRPCExplosion_Implementation(const TArray<AActor*> ActorArray)
-// {
-// 	// if (ActorArray.Num() > 0)
-// 	// {
-// 	// 	for (AActor*& HitActor : ActorArray)
-// 	// 	{
-// 	// 		ISPDamageInterface* DamageInterface = Cast<ISPDamageInterface>(HitActor);
-// 	// 		if (DamageInterface)
-// 	// 		{
-// 	// 			SP_SUBLOG(LogSPNetwork,Log,TEXT("OnExplosionHit !! "));
-// 	// 			DamageInterface->OnExplosionHit();
-// 	// 		}
-// 	// 	}
-// 	// }
-// }
-
-//
-
-
 

@@ -35,7 +35,7 @@ protected:
 	virtual void BeginPlay() override;
 
 protected: //ISPDamageInterface
-	virtual void OnExplosionHit() override;
+	virtual void OnChangeColorBlack() override;
 	virtual void OnChangeColorGreen() override;
 	virtual void OnChangeColorOrange() override;
 	virtual void OnChangeColorPurple() override;
@@ -62,7 +62,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (AllowPrivateAccess = "ture"))
 	FVector ObjectLocation;
 
-protected:// chaos distruction
+protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<class UGeometryCollection> GeometryCollection;
 public:
@@ -110,8 +110,5 @@ public:
 
 public:
 	void SetObjectCollisionType(const FName& CollisionType);
-
-
-	
 
 };
