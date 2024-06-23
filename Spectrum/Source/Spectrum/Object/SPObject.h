@@ -65,7 +65,7 @@ protected:
 protected:// chaos distruction
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<class UGeometryCollection> GeometryCollection;
-public://DynamicMaterial
+public:
 	UPROPERTY()
 	TObjectPtr<class UMaterialInstanceDynamic> ObjectDynamic ;
 	UPROPERTY()

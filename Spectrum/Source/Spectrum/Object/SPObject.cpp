@@ -18,7 +18,7 @@ ASPObject::ASPObject()
 	MyColorType = ColorType::None;
 	//bHasBeenCalled = false; 
 	//MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
-	
+
 	ObjectMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ObjectMesh"));
 	ObjectMesh->SetCollisionProfileName(TEXT("PropCollision"));
 	ObjectMesh->SetMobility(EComponentMobility::Movable);
@@ -28,28 +28,30 @@ ASPObject::ASPObject()
 	//ObjectMesh->SetIsReplicated(true);
 	//this->SetReplicates(true);
 	// ObjectMesh->SetIsReplicated(true);
-	
+
 	bHasBeenCalled = true;
 	bIsScoreReflected = false;
 
-	static ConstructorHelpers::FObjectFinder<UDataTable>GreenDataRef(TEXT("/Game/Spectrum/ColorData/DT_Green.DT_Green"));
-	if(GreenDataRef.Object)
+	static ConstructorHelpers::FObjectFinder<UDataTable> GreenDataRef(
+		TEXT("/Game/Spectrum/ColorData/DT_Green.DT_Green"));
+	if (GreenDataRef.Object)
 	{
-		GreenData=GreenDataRef.Object;
+		GreenData = GreenDataRef.Object;
 	}
-	static ConstructorHelpers::FObjectFinder<UDataTable>OrangeDataRef(TEXT("/Game/Spectrum/ColorData/DT_Orange.DT_Orange"));
-	if(OrangeDataRef.Object)
+	static ConstructorHelpers::FObjectFinder<UDataTable> OrangeDataRef(
+		TEXT("/Game/Spectrum/ColorData/DT_Orange.DT_Orange"));
+	if (OrangeDataRef.Object)
 	{
-		OrangeData=OrangeDataRef.Object;
+		OrangeData = OrangeDataRef.Object;
 	}
-	static ConstructorHelpers::FObjectFinder<UDataTable>PurpleDataRef(TEXT("/Game/Spectrum/ColorData/DT_Purple.DT_Purple"));
-	if(PurpleDataRef.Object)
+	static ConstructorHelpers::FObjectFinder<UDataTable> PurpleDataRef(
+		TEXT("/Game/Spectrum/ColorData/DT_Purple.DT_Purple"));
+	if (PurpleDataRef.Object)
 	{
-		PurpleData=PurpleDataRef.Object;
+		PurpleData = PurpleDataRef.Object;
 	}
 
-	bReplicates = true; 
-
+	bReplicates = true;
 }
 
 ASPObject::~ASPObject()
@@ -65,24 +67,21 @@ void ASPObject::BeginPlay()
 	OriginMaterial = ObjectMesh->GetMaterial(ElementIndex); // mesh origin
 	ObjectDynamic = ObjectMesh->CreateDynamicMaterialInstance(ElementIndex, nullptr, FName(TEXT("None")));
 	ChaosDynamic = UMaterialInstanceDynamic::Create(OriginMaterial, nullptr, NAME_None);
-	if(HasAuthority())
+	if (HasAuthority())
 	{
 		//this->SetReplicates(true);
 		this->AActor::SetReplicateMovement(true);
 	}
-	
 }
 
 void ASPObject::OnExplosionHit()
 {
-	
 	if (bHasBeenCalled)
 	{
 		ObjectMesh->SetHiddenInGame(true);
 		ObjectMesh->SetSimulatePhysics(true);
 		ObjectMesh->SetCollisionProfileName(TEXT("OnlyStaticCollision"));
-
-		//FName ComponentName = FName(TEXT("GC_Cone"));
+		
 		UGeometryCollectionComponent* Geometry = NewObject<UGeometryCollectionComponent>(
 			this, UGeometryCollectionComponent::StaticClass(), TEXT("GeometryComponent"));
 		if (Geometry)
@@ -99,6 +98,7 @@ void ASPObject::OnExplosionHit()
 		bHasBeenCalled = false;
 	}
 }
+
 
 // Called every frame
 // void ASPObject::Tick(float DeltaTime)
@@ -140,9 +140,9 @@ void ASPObject::DynamicSetColor(const UDataTable* Table)
 	//ColorType
 	FColorData* ColorRow = Table->FindRow<FColorData>(RowName, "");
 	MyColorType = ColorRow->Color;
-	
-	ObjectDynamic->SetVectorParameterValue(DynamicParam,ColorRow->ColorData);
-	ChaosDynamic->SetVectorParameterValue(DynamicParam,ColorRow->ColorData);
+
+	ObjectDynamic->SetVectorParameterValue(DynamicParam, ColorRow->ColorData);
+	ChaosDynamic->SetVectorParameterValue(DynamicParam, ColorRow->ColorData);
 }
 
 void ASPObject::SetObjectCollisionType(const FName& CollisionType)

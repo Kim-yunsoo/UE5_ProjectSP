@@ -42,7 +42,7 @@ void USPExplosionComponent::Explode(ColorType& MyColor)
 	float DrawTime = 5.0f;
 	bool Success = UKismetSystemLibrary::SphereTraceMultiForObjects(GetWorld(), SphereTracePoint, SphereTracePoint,
 																	Radius, ObjectTypes, false, ActorsToIgnore,
-																	EDrawDebugTrace::None, OutHits, true,
+																	EDrawDebugTrace::ForDuration, OutHits, true,
 																	GreenColor, RedColor, DrawTime);
 
 	TArray<AActor*>MyArray;
@@ -125,6 +125,7 @@ void USPExplosionComponent::MultiRPCExplosion_Implementation(const TArray<AActor
 			}
 		}
 	}
+	
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), EmitterHit, GetOwner()->GetActorLocation(), FRotator::ZeroRotator,
 												 FVector(1.0f), true, EPSCPoolMethod::None, true);
 	UGameplayStatics::PlaySoundAtLocation(GetWorld(), WaterSound, GetOwner()->GetActorLocation());
