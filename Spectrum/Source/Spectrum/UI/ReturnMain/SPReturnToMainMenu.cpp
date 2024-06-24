@@ -42,6 +42,8 @@ void USPReturnToMainMenu::MenuSetup(const TArray<FColorScoreData>& ColorScoreDat
 		FString AssetColor = UEnum::GetValueAsString(MutableArray[i].Color);
 		AddSchoolImage(i, AssetColor,MutableArray[i].Score);
 	}
+
+	
 	AddToViewport();
 	SetVisibility(ESlateVisibility::Visible);
 	SetIsFocusable(true);
@@ -59,8 +61,10 @@ void USPReturnToMainMenu::MenuSetup(const TArray<FColorScoreData>& ColorScoreDat
 		}
 	}
 
-	if (ReturnButton && !ReturnButton->OnClicked.IsBound())
+	//if (ReturnButton && !ReturnButton->OnClicked.IsBound())
+	if(ReturnButton)
 	{
+		UE_LOG(LogTemp,Log,TEXT("MenuSetup"));
 		ReturnButton->OnClicked.AddDynamic(this, &USPReturnToMainMenu::ReturnButtonClicked);
 	}
 

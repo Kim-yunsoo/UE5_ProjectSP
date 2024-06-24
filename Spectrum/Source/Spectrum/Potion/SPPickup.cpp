@@ -22,11 +22,12 @@ ASPPickup::ASPPickup()
 
 
 	Trigger = CreateDefaultSubobject<UBoxComponent>(TEXT("PickupTriggerComponent"));
-	static ConstructorHelpers::FObjectFinder<UDataTable> DataTableFinder(
+	
+	static ConstructorHelpers::FObjectFinder<UDataTable> DataTableRef(
 		TEXT("/Script/Engine.DataTable'/Game/Spectrum/ItemData/Item.Item'"));
-	if (DataTableFinder.Succeeded())
+	if (DataTableRef.Succeeded())
 	{
-		ItemDataTable = DataTableFinder.Object;
+		ItemDataTable = DataTableRef.Object;
 	}
 
 	PotionRange = 4;
@@ -50,9 +51,8 @@ void ASPPickup::BeginPlay()
 	Trigger->SetRelativeLocation(ActorLocation);
 	Trigger->SetRelativeScale3D(FVector(1, 1, 2));
 
-	Trigger->OnComponentBeginOverlap.AddDynamic(this, &ASPPickup::OnTriggerEnter);
-	Trigger->OnComponentEndOverlap.AddDynamic(this, &ASPPickup::OnTriggerExit);
-	
+	Trigger->OnComponentBeginOverlap.AddDynamic(this, &ASPPickup::OnBoxComponentOverlapBegin);
+	Trigger->OnComponentEndOverlap.AddDynamic(this, &ASPPickup::OnBoxComponentOverlapEnd);
 }
 
 void ASPPickup::InitializePickup(const TSubclassOf<USPItemBase> BaseClass, const int32 InQuantity)
@@ -102,8 +102,6 @@ void ASPPickup::InitializePickup(const TSubclassOf<USPItemBase> BaseClass, const
 
 		PickupMesh->SetStaticMesh(ItemData->ItemAssetData.Mesh);
 		PickupMesh->SetMobility(EComponentMobility::Static);
-
-
 		UpdateInteractableData();
 	}
 }
@@ -183,23 +181,23 @@ void ASPPickup::TakePickup(ASPCharacterPlayer* Taker) //서버에서 호출된�
 }
 
 
-void ASPPickup::OnTriggerEnter(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+void ASPPickup::OnBoxComponentOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
                                int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	ASPCharacterPlayer* PlayerCharacter = Cast<ASPCharacterPlayer>(OtherActor);
 	if (PlayerCharacter)
 	{
-		PlayerCharacter->PerformInteractionCheck(this);
+		PlayerCharacter->UpdateItemData(this);
 	}
 }
 
-void ASPPickup::OnTriggerExit(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+void ASPPickup::OnBoxComponentOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
                               int32 OtherBodyIndex)
 {
 	ASPCharacterPlayer* PlayerCharacter = Cast<ASPCharacterPlayer>(OtherActor);
 	if (PlayerCharacter)
 	{
-		PlayerCharacter->NoInteractableFound();
+		PlayerCharacter->ClearItemData();
 	}
 }
 

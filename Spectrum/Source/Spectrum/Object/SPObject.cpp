@@ -64,12 +64,14 @@ void ASPObject::BeginPlay()
 	Super::BeginPlay();
 	RootComponent->SetMobility(EComponentMobility::Movable);
 	ObjectLocation = GetActorLocation();
-	OriginMaterial = ObjectMesh->GetMaterial(ElementIndex); // mesh origin
+	
+	OriginMaterial = ObjectMesh->GetMaterial(ElementIndex); 
 	ObjectDynamic = ObjectMesh->CreateDynamicMaterialInstance(ElementIndex, nullptr, FName(TEXT("None")));
+	
 	ChaosDynamic = UMaterialInstanceDynamic::Create(OriginMaterial, nullptr, NAME_None);
+	
 	if (HasAuthority())
 	{
-		//this->SetReplicates(true);
 		this->AActor::SetReplicateMovement(true);
 	}
 }
@@ -136,9 +138,8 @@ void ASPObject::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetim
 	DOREPLIFETIME(ASPObject, bIsScoreReflected);
 }
 
-void ASPObject::DynamicSetColor(const UDataTable* Table)
+void ASPObject::SetDynamicColor(const UDataTable* Table)
 {
-	//ColorType
 	FColorData* ColorRow = Table->FindRow<FColorData>(RowName, "");
 	MyColorType = ColorRow->Color;
 
@@ -158,7 +159,7 @@ void ASPObject::OnChangeColorGreen()
 {
 	if (ObjectDynamic)
 	{
-		DynamicSetColor(GreenData);
+		SetDynamicColor(GreenData);
 	}
 }
 
@@ -166,7 +167,7 @@ void ASPObject::OnChangeColorOrange()
 {
 	if (ObjectDynamic)
 	{
-		DynamicSetColor(OrangeData);
+		SetDynamicColor(OrangeData);
 	}
 }
 
@@ -174,6 +175,7 @@ void ASPObject::OnChangeColorPurple()
 {
 	if (ObjectDynamic)
 	{
-		DynamicSetColor(PurpleData);
+		SetDynamicColor(PurpleData);
 	}
 }
+

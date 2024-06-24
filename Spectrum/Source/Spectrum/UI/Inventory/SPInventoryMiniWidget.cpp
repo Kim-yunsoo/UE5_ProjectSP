@@ -10,7 +10,7 @@
 
 class USPItemDragDropOperation;
 
-void USPInventoryMiniWidget::RefreshMiniInventory(TArray<USPItemBase*> Inventory)
+void USPInventoryMiniWidget::RefreshMiniInventory(TArray<USPItemBase*> Inventory) //델리게이트에 연결된 것 
 {
 	
 	if(InventoryReference && InventorySlotClass)
@@ -22,7 +22,6 @@ void USPInventoryMiniWidget::RefreshMiniInventory(TArray<USPItemBase*> Inventory
 				USPInventoryItemSlot* ItemSlot = CreateWidget<USPInventoryItemSlot>(this, InventorySlotClass);
 				ItemSlot->SetItemReference(InventoryItem);
 				InventoryPanel->AddChildToWrapBox(ItemSlot);
-
 		}
 		SetInfoText();
 	}
@@ -55,7 +54,6 @@ bool USPInventoryMiniWidget::NativeOnDrop(const FGeometry& InGeometry, const FDr
 	
 	 if(PlayerCharacter && ItemDragDrop->SourceItem)
 	 {
-	 	//PlayerCharacter->DropItem(ItemDragDrop->SourceItem, ItemDragDrop->SourceItem->Quantity);
 	 	return true;
 	 }
 	 return false;

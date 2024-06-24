@@ -14,7 +14,7 @@
 
 ASPGameModeBase::ASPGameModeBase()
 {
-	//bDelayedStart = true;
+	bDelayedStart = true;
 	bUseSeamlessTravel = true;
 	GameStateClass = ASPGameState::StaticClass();
 	PlayerStateClass = ASPPlayerState::StaticClass();
@@ -47,16 +47,16 @@ void ASPGameModeBase::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	// if (MatchState == MatchState::WaitingToStart)
-	// {
-	// 	CountdownTime = WarmupTime - GetWorld()->GetTimeSeconds() + LevelStartingTime; //10초 로딩 시간
-	//
-	// 	
-	// 	if (CountdownTime <= 0.f)
-	// 	{
-	// 		StartMatch(); //진행 모드로 변환
-	// 	}
-	// }
+	if (MatchState == MatchState::WaitingToStart)
+	{
+		CountdownTime = WarmupTime - GetWorld()->GetTimeSeconds() + LevelStartingTime; //10초 로딩 시간
+	
+		
+		if (CountdownTime <= 0.f)
+		{
+			StartMatch(); //진행 모드로 변환
+		}
+	}
 }
 
 void ASPGameModeBase::OnMatchStateSet()
@@ -68,34 +68,32 @@ void ASPGameModeBase::OnMatchStateSet()
 	// 	//PotionSpawnerManager->CollectAllPotionSpawners(GetWorld());
 	// 	PotionSpawnerManager->Initialize(GetWorld()); 
 	// }
-	//
-	// for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
-	// {
-	// 	ASPPlayerController* MyPlayer = Cast<ASPPlayerController>(It->Get());
-	// 	if (MyPlayer)
-	// 	{
-	// 		MyPlayer->ClientRCPMathState(MatchState);
-	// 	}
-	// }
-	// ASPGameState* SPGameState = Cast<ASPGameState>(GetWorld()->GetGameState());
-	// if (SPGameState)
-	// {
-	// 	SPGameState->OnMathStateSet(MatchState);
-	// }
-	//
-	// if (MatchState == MatchState::WaitingPostMatch)
-	// {
-	// 	FinalizeMatchResults();
-	// }
+	
+	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+	{
+		ASPPlayerController* MyPlayer = Cast<ASPPlayerController>(It->Get());
+		if (MyPlayer)
+		{
+			MyPlayer->ClientRCPMathState(MatchState);
+		}
+	}
+	ASPGameState* SPGameState = Cast<ASPGameState>(GetWorld()->GetGameState());
+	if (SPGameState)
+	{
+		SPGameState->OnMathStateSet(MatchState);
+	}
+	
+	if (MatchState == MatchState::WaitingPostMatch)
+	{
+		FinalizeMatchResults();
+	}
 	
 }
 
 void ASPGameModeBase::HandleMatchIsWaitingToStart()
 {
 	Super::HandleMatchIsWaitingToStart();
-	// PotionSpawnerManager->CollectAllPotionSpawners(GetWorld());
-	// PotionSpawnerManager->Initialize(); // 20개 초기 넣어주기 
-	// //게임을 시작하기 전에 스포너에게 포션을 스폰하라고 함수 호출해야한다. 
+	 PotionSpawnerManager->Initialize(GetWorld()); 
 }
 
 
@@ -219,10 +217,10 @@ void ASPGameModeBase::SendMessagesToEveryOne(const FString& Sender, const FStrin
 		APlayerController* PlayerController = Iterator->Get();
 		if (PlayerController)
 		{
-			ASPCharacterPlayer* MyPlayer = Cast<ASPCharacterPlayer>(PlayerController->GetPawn());
-			if (MyPlayer)
+			ASPPlayerController* MyPlayerController = Cast<ASPPlayerController>(PlayerController);
+			if (MyPlayerController)
 			{
-				MyPlayer->ClientRPCAddMessageToChat(Sender, Message);
+				MyPlayerController->ClientRPCAddMessageToChat(Sender, Message);
 			}
 		}
 	}

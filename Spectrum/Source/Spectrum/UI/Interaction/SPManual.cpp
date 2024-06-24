@@ -40,7 +40,7 @@ void ASPManual::OnTriggerEnter(UPrimitiveComponent* OverlappedComp, AActor* Othe
 	ASPCharacterPlayer* PlayerCharacter = Cast<ASPCharacterPlayer>(OtherActor);
 	if (PlayerCharacter)
 	{
-		PlayerCharacter->PerformInteractionCheck(this);
+		PlayerCharacter->UpdateItemData(this);
 	}
 }
 
@@ -50,7 +50,7 @@ void ASPManual::OnTriggerExit(UPrimitiveComponent* OverlappedComp, AActor* Other
 	ASPCharacterPlayer* PlayerCharacter = Cast<ASPCharacterPlayer>(OtherActor);
 	if (PlayerCharacter)
 	{
-		PlayerCharacter->NoInteractableFound();
+		PlayerCharacter->ClearItemData();
 	}
 }
 

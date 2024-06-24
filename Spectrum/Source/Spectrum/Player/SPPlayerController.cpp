@@ -92,3 +92,22 @@ void ASPPlayerController::ClientRPCSpawnUI_Implementation(const int32 Index)
 {
 	SPHUDWidget->UpdatePotionUI(Index);
 }
+
+
+void ASPPlayerController::ServerRPCSendMessage_Implementation(const FString& Sender, const FString& Message)
+{
+	AGameModeBase* GameMode = GetWorld()->GetAuthGameMode();
+	if (GameMode)
+	{
+		ASPGameModeBase* MyGameMode = Cast<ASPGameModeBase>(GameMode);
+		if (MyGameMode)
+		{
+			MyGameMode->SendMessagesToEveryOne(Sender, Message);
+		}
+	}
+}
+
+void ASPPlayerController::ClientRPCAddMessageToChat_Implementation(const FString& Sender, const FString& Message)
+{
+	SPHUDWidget->UpdateChatting(Sender, Message);
+}

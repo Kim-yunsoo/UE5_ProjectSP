@@ -103,7 +103,7 @@ public:
 	FName DynamicParam{TEXT("Base Color Tint")};
 
 	//DataFunction
-	void DynamicSetColor(const UDataTable* Table);
+	void SetDynamicColor(const UDataTable* Table);
 
 	UPROPERTY(Replicated)
 	uint8 bIsScoreReflected :1 ;

@@ -409,20 +409,22 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 		StopGrapSound = StopGrapSoundRef.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UNiagaraSystem> SlowEffectRef(TEXT("/Script/Niagara.NiagaraSystem'/Game/Ice_Magic/VFX_Niagara/NS_Ice_Magic_Arena.NS_Ice_Magic_Arena'"));
-	if(SlowEffectRef.Succeeded())
+	static ConstructorHelpers::FObjectFinder<UNiagaraSystem> SlowEffectRef(
+		TEXT("/Script/Niagara.NiagaraSystem'/Game/Ice_Magic/VFX_Niagara/NS_Ice_Magic_Arena.NS_Ice_Magic_Arena'"));
+	if (SlowEffectRef.Succeeded())
 	{
 		SlowEffect = SlowEffectRef.Object;
 	}
-	static ConstructorHelpers::FObjectFinder<UNiagaraSystem> IceEffectRef(TEXT("/Script/Niagara.NiagaraSystem'/Game/Ice_Magic/VFX_Niagara/NS_Ice_Magic_Sheild.NS_Ice_Magic_Sheild'"));
-	if(IceEffectRef.Succeeded())
+	static ConstructorHelpers::FObjectFinder<UNiagaraSystem> IceEffectRef(
+		TEXT("/Script/Niagara.NiagaraSystem'/Game/Ice_Magic/VFX_Niagara/NS_Ice_Magic_Sheild.NS_Ice_Magic_Sheild'"));
+	if (IceEffectRef.Succeeded())
 	{
 		IceEffect = IceEffectRef.Object;
 	}
-	
+
 
 	bCanUseInput = true;
-	bInteracionOnce= false;
+	bInteracionOnce = false;
 }
 
 void ASPCharacterPlayer::BeginPlay()
@@ -1062,7 +1064,7 @@ void ASPCharacterPlayer::ServerRPCTeleSkill_Implementation(float AttackStartTime
 }
 
 void ASPCharacterPlayer::ServerRPCIceSkill_Implementation(float AttackStartTime)
-{ 
+{
 	if (bIsActiveIceSkill)
 	{
 		bIsActiveIceSkill = false;
@@ -1402,7 +1404,7 @@ void ASPCharacterPlayer::ClientRPCIceAnimation_Implementation(ASPCharacterPlayer
 void ASPCharacterPlayer::ServerRPCDragItem_Implementation(int Num, const int32 QuantityToDrop)
 {
 	USPItemBase* ItemBase = PlayerInventory->FindMatchingMiniItem(Num); //미니 물약에서 정보 찾아오기
-	
+
 	PlayerInventory->RemoveAmountOfItem(ItemBase, 1); //물약 하나 뺴기
 	GetInventory()->AddInventorMakeContents(ItemBase);
 	//몇개 들어왔는지 인벤토리 어레이에 담는다. 
@@ -1690,19 +1692,18 @@ void ASPCharacterPlayer::SetupHUDWidget(USPHUDWidget* InUserWidget)
 	}
 }
 
-void ASPCharacterPlayer::PerformInteractionCheck(AActor* InActor) //이건 오버랩된 트리거가 자신의 정보를 넘겨준다. 
+void ASPCharacterPlayer::UpdateItemData(AActor* InActor) //아이템 정보를 받음 
 {
-	
 	if (InActor->Implements<USPInteractionInterface>()) // 상호작용 가능한 액터인지 검사한다. 
 	{
 		if (InActor != InteractionData.CurrentInteractable)
 		{
 			FoundInteractable(InActor);
-			bInteracionOnce = true;
+			bInteracionOnce = false;
 			return;
 		}
 	}
-	NoInteractableFound(); // 상호작용할 수 있는 액터를 찾지 못했을 때의 처리를 수행합니다.
+	ClearItemData(); // 상호작용할 수 있는 액터를 찾지 못했을 때의 처리를 수행
 }
 
 void ASPCharacterPlayer::FoundInteractable(AActor* NewInteractable) //상호작용 가능한 것이라면 데이터를 갱신해준다. 
@@ -1715,7 +1716,7 @@ void ASPCharacterPlayer::FoundInteractable(AActor* NewInteractable) //상호작�
 	}
 }
 
-void ASPCharacterPlayer::NoInteractableFound() // 트리거에서 나간 경우 호출되는 함수 
+void ASPCharacterPlayer::ClearItemData() // 트리거에서 나간 경우 호출되는 함수 
 {
 	if (InteractionData.CurrentInteractable)
 	{
@@ -1729,22 +1730,23 @@ void ASPCharacterPlayer::NoInteractableFound() // 트리거에서 나간 경우 
 	}
 }
 
-void ASPCharacterPlayer::BeginInteract() //f 키를 누르면 상호작용 키가 뜬다. 
+void ASPCharacterPlayer::BeginInteract() //f 키를 누르면 호출
 {
 	if (InteractionData.CurrentInteractable)
 	{
-		if (IsValid(TargetInteractable.GetObject()) && bInteracionOnce)
+		if (IsValid(TargetInteractable.GetObject()) && !bInteracionOnce)
 		{
 			Interact();
-			bInteracionOnce=false; 
+			bInteracionOnce = true;
 		}
 	}
 }
+
 void ASPCharacterPlayer::Interact()
 {
 	if (IsValid(TargetInteractable.GetObject()))
 	{
-		if(ASPPickup* Pickup = Cast<ASPPickup>(InteractionData.CurrentInteractable)) //인터렉션까지 들어왔는데 포션과 인터렉션인 경우?
+		if (ASPPickup* Pickup = Cast<ASPPickup>(InteractionData.CurrentInteractable)) //인터렉션까지 들어왔는데 포션과 인터렉션인 경우?
 		{
 			if (IsMontagePlaying() == false)
 			{
@@ -1752,7 +1754,7 @@ void ASPCharacterPlayer::Interact()
 				GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this]()
 				{
 					UGameplayStatics::PlaySoundAtLocation(GetWorld(), PickupSound, GetActorLocation(),
-														  GetActorRotation());
+					                                      GetActorRotation());
 				}, 0.8f, false);
 				ServerRPCInteract();
 			}
@@ -1774,7 +1776,7 @@ void ASPCharacterPlayer::ServerRPCInteract_Implementation()
 		TargetInteractable->Interact(this, HUDWidget);
 	}
 	bIsPicking = true; //애니메이션 작동한다.
-	
+
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 	FTimerHandle TimerHandle;
 
@@ -1874,13 +1876,14 @@ void ASPCharacterPlayer::PlayTeleSkillAnimation()
 	                                      GetActorRotation());
 }
 
-void ASPCharacterPlayer::HitSlowSkillResult() 
+void ASPCharacterPlayer::HitSlowSkillResult()
 {
 	//todo 
 	bIsDamage = true;
 	//FVector CapsuleRadius = GetCapsuleComponent()->GetUnscaledCapsuleRadius();
-	FVector CapsuleRadius = FVector{0.0f, 0.0f,GetCapsuleComponent()->GetScaledCapsuleRadius()*2 };
-	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), SlowEffect, GetActorLocation()-CapsuleRadius, GetActorRotation());
+	FVector CapsuleRadius = FVector{0.0f, 0.0f, GetCapsuleComponent()->GetScaledCapsuleRadius() * 2};
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), SlowEffect, GetActorLocation() - CapsuleRadius,
+	                                               GetActorRotation());
 	if (false == IsMontagePlaying())
 	{
 		GetMesh()->GetAnimInstance()->Montage_Play(ImpactMontage, 1.0f);
@@ -1902,9 +1905,10 @@ void ASPCharacterPlayer::HitIceSkillResult()
 {
 	bIsDamage = true;
 	// GetCharacterMovement()->MaxWalkSpeed = 0.0f;
-	FVector CapsuleRadius = FVector{0.0f, 0.0f,GetCapsuleComponent()->GetScaledCapsuleRadius()*2 };
+	FVector CapsuleRadius = FVector{0.0f, 0.0f, GetCapsuleComponent()->GetScaledCapsuleRadius() * 2};
 
-	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), IceEffect, GetActorLocation()-CapsuleRadius, GetActorRotation());
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), IceEffect, GetActorLocation() - CapsuleRadius,
+	                                               GetActorRotation());
 
 	if (false == IsMontagePlaying())
 	{
@@ -2108,6 +2112,7 @@ void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 
 			bool HitSuccess = GetWorld()->LineTraceSingleByChannel(outHitResult, Location, SphereLocationEnd,
 			                                                       ECC_GameTraceChannel1, Params);
+		
 
 			if (HitSuccess && outHitResult.Component->Mobility == EComponentMobility::Movable)
 			{
@@ -2147,11 +2152,11 @@ void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 						AActor* Hit = HitResult.GetActor();
 
 						ASPNonSimulateObject* SimulableObject = Cast<ASPNonSimulateObject>(Hit);
-						if(SimulableObject)
+						if (SimulableObject)
 						{
 							SimulableObject->StartPhysicsSleepTimer();
 						}
-						
+
 
 						UPrimitiveComponent* PrimitiveHit = Cast<UPrimitiveComponent>(Hit->GetRootComponent());
 						if (PrimitiveHit)
@@ -2346,20 +2351,5 @@ void ASPCharacterPlayer::Chatting(const FInputActionValue& Value)
 	HUDWidget->ShowChat();
 }
 
-void ASPCharacterPlayer::ServerRPCSendMessage_Implementation(const FString& Sender, const FString& Message)
-{
-	AGameModeBase* GameMode = GetWorld()->GetAuthGameMode();
-	if (GameMode)
-	{
-		ASPGameModeBase* MyGameMode = Cast<ASPGameModeBase>(GameMode);
-		if (MyGameMode)
-		{
-			MyGameMode->SendMessagesToEveryOne(Sender, Message);
-		}
-	}
-}
 
-void ASPCharacterPlayer::ClientRPCAddMessageToChat_Implementation(const FString& Sender, const FString& Message)
-{
-	HUDWidget->UpdateChatting(Sender, Message);
-}
+

@@ -76,3 +76,6 @@ public:
 	virtual bool Interact(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget);
 	FInteractableData InteractableData;
 };
+
+
+

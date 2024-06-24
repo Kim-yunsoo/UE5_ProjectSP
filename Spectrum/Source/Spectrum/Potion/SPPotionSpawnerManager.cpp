@@ -53,13 +53,11 @@ void USPPotionSpawnerManager::NotifyEmptySpawners() //없어지면 여기로 신호가 온�
 void USPPotionSpawnerManager::Initialize(UWorld* InWorld)
 {
 	CollectAllPotionSpawners(InWorld);
-
-	// 스포너 객체 하나하나 바인드 걸기
+	// 스포너 객체 하나하나 델리게이트 바인드 걸기
 	for(int i=0; i<PotionSpawners.Num(); ++i)
 	{
 		PotionSpawners[i]->OnSpawnerEmpty.AddUObject(this, &USPPotionSpawnerManager::NotifyEmptySpawners);
 	}
-	
 	TArray<int32> AllIndex;
 	AllIndex.SetNum(PotionSpawners.Num());
 
@@ -67,14 +65,12 @@ void USPPotionSpawnerManager::Initialize(UWorld* InWorld)
 	{
 		AllIndex[i] = i;
 	}
-
 	AllIndex.Sort([this](const int32 Lhs ,const int32 Rhs)
 	{
 		return FMath::FRand()<0.5f;
 	});
-
 	for(int i=0; i<MaxSpawnCount ; ++i)
 	{
-		PotionSpawners[AllIndex[i]]->SpawnPotion(); //랜덤값으로 20개 
+		PotionSpawners[AllIndex[i]]->SpawnPotion();
 	}
 }

@@ -65,7 +65,7 @@ ASPAIController::ASPAIController()
 	}
 	//AIPerception->OnTargetPerceptionUpdated.AddDynamic(this, &ASPAIController::HandleSightSense);
 
-	AIPerception->OnPerceptionUpdated.AddDynamic(this,&ASPAIController::HandleSightSenseArray);
+	AIPerception->OnPerceptionUpdated.AddDynamic(this, &ASPAIController::HandleSightSenseArray);
 }
 
 void ASPAIController::RunAI()
@@ -166,16 +166,7 @@ void ASPAIController::HandleSightSense(AActor* Actor, FAIStimulus Stimulus)
 
 void ASPAIController::HandleSensedSight(AActor* Actor)
 {
-	//GetCurrentState();
-	// if (GetCurrentState() == AIState::Passive || GetCurrentState() == AIState::Investigating || GetCurrentState() ==
-	// 	AIState::Frozen)
-	// {
-
-		if (Cast<ACharacter>(Actor)) //내플레이어가 맞으면 
-		{
-			SetStateAttacking(Actor, false); //여기서 타겟값을 바꿔준다. 
-		}
-	// }
+	SetStateAttacking(Actor, false); //여기서 타겟값을 바꿔준다. 
 }
 
 void ASPAIController::HandleSensedSound(const FVector Location)
@@ -235,28 +226,31 @@ void ASPAIController::HandleSightSenseArray(const TArray<AActor*>& Actors)
 
 	AActor* ClosestActor = nullptr;
 	float MinDistance = TNumericLimits<float>::Max();
-	
-	for(AActor* Actor : Actors)
+
+	for (AActor* Actor : Actors)
 	{
-		if(Cast<ASPCharacterPlayer>(Actor))
+		if (Cast<ASPCharacterPlayer>(Actor))
 		{
 			FVector ActorLocation = Actor->GetActorLocation();
 			float Distance = FVector::Dist(MyLocation, ActorLocation); //거리 계산
 
-			if(Distance<MinDistance)
+			if (Distance < MinDistance)
 			{
-				MinDistance=Distance;
+				MinDistance = Distance;
 				ClosestActor = Actor;
 			}
 		}
 	}
-	
-	if(ClosestActor &&nullptr == AttackTarget)
+
+	if (ClosestActor && nullptr == AttackTarget)
 	{
 		HandleSensedSight(ClosestActor);
 	}
-	else if( SetTarget && ClosestActor)
+	else if (SetTarget && ClosestActor)
 	{
 		HandleSensedSight(ClosestActor);
 	}
 }
+
+
+

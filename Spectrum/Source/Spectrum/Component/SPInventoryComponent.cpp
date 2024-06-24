@@ -107,19 +107,19 @@ USPItemBase* USPInventoryComponent::CreateItemFromDataTable(const FName& InDesir
 	return Item;
 }
 
-int USPInventoryComponent::HandleStackableItems(USPItemBase* ItemIn, int32 RequestedAddAmount,
-                                                const EItemType& InItemType)
+int USPInventoryComponent::HandleStackableItems(USPItemBase* ItemIn, int32 RequestedAddAmount, const EItemType& InItemType)
 {
 	if (InItemType == EItemType::Potion)
 	{
 		int Index = IsPotion(ItemIn->ID);
-		if (Index != -1) // 잘못된 아이디를 받지 않도록 검사한다. 
+		if (Index != -1)  
 		{
 			int PotionQuntity = InventoryContents[Index]->Quantity + RequestedAddAmount;
 			InventoryContents[Index]->SetQuantity(PotionQuntity);
 			return PotionQuntity;
 		}
 	}
+	
 	if (InItemType == EItemType::IngredientPotion)
 	{
 		int IngredientIndex = IsMiniPotion(ItemIn->ID);

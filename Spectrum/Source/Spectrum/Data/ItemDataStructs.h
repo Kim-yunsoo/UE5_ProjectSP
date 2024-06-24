@@ -48,7 +48,7 @@ struct FItemAssetData
 	UTexture2D* Icon;
 	
 	UPROPERTY(EditAnywhere)
-	UStaticMesh* Mesh; //필요 없을수도!
+	UStaticMesh* Mesh; 
 };
 
 

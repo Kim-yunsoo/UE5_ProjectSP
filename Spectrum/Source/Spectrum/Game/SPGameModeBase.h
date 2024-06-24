@@ -46,7 +46,8 @@ public:
 	UFUNCTION()
 	void AISpawn();
 
-	void FinishMatch(); //매치가 종료되면 호출한다. 
+	void FinishMatch(); //매치가 종료되면 호출한다.
+	
 protected:
 	UPROPERTY()
 	TObjectPtr<USPPotionSpawnerManager> PotionSpawnerManager;

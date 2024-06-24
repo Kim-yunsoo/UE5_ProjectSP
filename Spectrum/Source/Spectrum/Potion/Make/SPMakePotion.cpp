@@ -64,7 +64,7 @@ void ASPMakePotion::OnTriggerEnter(UPrimitiveComponent* OverlappedComp, AActor* 
 	ASPCharacterPlayer* PlayerCharacter = Cast<ASPCharacterPlayer>(OtherActor);
 	if (PlayerCharacter)
 	{
-		PlayerCharacter->PerformInteractionCheck(this);
+		PlayerCharacter->UpdateItemData(this);
 	}
 }
 
@@ -74,7 +74,7 @@ void ASPMakePotion::OnTriggerExit(UPrimitiveComponent* OverlappedComp, AActor* O
 	ASPCharacterPlayer* PlayerCharacter = Cast<ASPCharacterPlayer>(OtherActor);
 	if (PlayerCharacter)
 	{
-		PlayerCharacter->NoInteractableFound();
+		PlayerCharacter->ClearItemData();
 	}
 }
 

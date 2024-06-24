@@ -393,10 +393,10 @@ protected:
 	
 	FInteractionData InteractionData;
 public:
-	void PerformInteractionCheck(AActor* InActor);
+	void UpdateItemData(AActor* InActor);
 	
 	void FoundInteractable(AActor* NewInteractable);
-	void NoInteractableFound();
+	void ClearItemData();
 	void BeginInteract();
 	void Interact();
 protected:
@@ -410,7 +410,7 @@ public:
 // Inventory
 	UPROPERTY(VisibleAnywhere, Category = "Character | Inventory")
 	TObjectPtr<USPInventoryComponent> PlayerInventory;
-public:
+	
 	//인벤토리 가지고 오기
 	FORCEINLINE USPInventoryComponent* GetInventory() const {return PlayerInventory;};
 	
@@ -640,11 +640,7 @@ public:
 	UFUNCTION(NetMulticast,Unreliable)
 	void MultiRPCStopMove(bool IsStop);
 
-	//chatting
-	UFUNCTION(Server,Unreliable)
-	void ServerRPCSendMessage(const FString& Sender, const FString& Message );
-	UFUNCTION(Client,Unreliable)
-	void ClientRPCAddMessageToChat(const FString& Sender, const FString& Message );
+
 
 	UPROPERTY(Replicated)
 	uint8 bCanUseInput:1;

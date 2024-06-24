@@ -72,5 +72,13 @@ private:
 	TObjectPtr<USPReturnToMainMenu> ReturnToMainMenu;
 
 	uint8 bReturnToMainMenuOpen :1;
+	
+
+public:
+	//chatting
+	UFUNCTION(Server,Unreliable)
+	void ServerRPCSendMessage(const FString& Sender, const FString& Message );
+	UFUNCTION(Client,Unreliable)
+	void ClientRPCAddMessageToChat(const FString& Sender, const FString& Message );
 };
 

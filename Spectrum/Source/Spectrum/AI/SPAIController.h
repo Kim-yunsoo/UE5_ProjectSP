@@ -38,8 +38,8 @@ private:
 
 public:
 	UPROPERTY(EditInstanceOnly,BlueprintReadWrite)
-	bool SetTarget;
-	
+    	bool SetTarget;
+    	
 	UPROPERTY(Blueprintable, EditAnywhere,BlueprintReadWrite )
 	TObjectPtr<AActor> AttackTarget;
 	
@@ -64,6 +64,11 @@ public:
 
 	UFUNCTION()
 	void HandleSightSenseArray(const TArray<AActor*>& Actors);
+
+
+	UPROPERTY(EditInstanceOnly,BlueprintReadWrite)
+	bool bCanSetTarget;
+	
 
 };
 
