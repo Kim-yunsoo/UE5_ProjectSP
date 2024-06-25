@@ -50,8 +50,6 @@ void ASPGameModeBase::Tick(float DeltaSeconds)
 	if (MatchState == MatchState::WaitingToStart)
 	{
 		CountdownTime = WarmupTime - GetWorld()->GetTimeSeconds() + LevelStartingTime; //10초 로딩 시간
-	
-		
 		if (CountdownTime <= 0.f)
 		{
 			StartMatch(); //진행 모드로 변환
@@ -62,12 +60,13 @@ void ASPGameModeBase::Tick(float DeltaSeconds)
 void ASPGameModeBase::OnMatchStateSet()
 {
 	Super::OnMatchStateSet();
-	// if(MatchState == MatchState::InProgress)
-	// {
-	// 	//SP_LOG(LogTemp,Log,TEXT("InProgress")); //서버에서만 불리는 것을 확인
-	// 	//PotionSpawnerManager->CollectAllPotionSpawners(GetWorld());
-	// 	PotionSpawnerManager->Initialize(GetWorld()); 
-	// }
+
+	if(MatchState == MatchState::InProgress)
+	{
+		//SP_LOG(LogTemp,Log,TEXT("InProgress")); //서버에서만 불리는 것을 확인
+		//PotionSpawnerManager->CollectAllPotionSpawners(GetWorld());
+		//PotionSpawnerManager->Initialize(GetWorld()); 
+	}
 	
 	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
 	{
@@ -87,7 +86,6 @@ void ASPGameModeBase::OnMatchStateSet()
 	{
 		FinalizeMatchResults();
 	}
-	
 }
 
 void ASPGameModeBase::HandleMatchIsWaitingToStart()

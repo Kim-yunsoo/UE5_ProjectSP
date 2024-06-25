@@ -26,7 +26,6 @@ ASPCharacterNonPlayer::ASPCharacterNonPlayer()
 	bUseControllerRotationRoll = false;
 
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
-	//GetCapsuleComponent()->SetCollisionProfileName(CPROFILE_ABCAPSULE); 일단 보류
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
@@ -91,7 +90,6 @@ void ASPCharacterNonPlayer::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	//APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
 	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
 	if (PlayerController && HpBar)
 	{
@@ -100,14 +98,11 @@ void ASPCharacterNonPlayer::Tick(float DeltaSeconds)
 		{
 			FVector CameraLocation = CameraManager->GetCameraLocation();
 
-			// Get the location of the HpBar
 			FVector HpBarLocation = HpBar->GetComponentLocation();
 
-			// Calculate the direction from the HpBar to the camera
 			FVector Direction = CameraLocation - HpBarLocation;
 			FRotator LookAtRotation = Direction.Rotation();
 
-			// Set the relative rotation of the HpBar to face the camera
 			HpBar->SetWorldRotation(LookAtRotation);
 		}
 	}

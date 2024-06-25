@@ -51,7 +51,7 @@ public:
 	int32 RemainingTime;
 	
 	int32 MatchPlayTime = 180.f; // 3분
-	int32 AISpawnTime= 170.0f; //30초 남았을 때 
+	int32 AISpawnTime= 160.0f; //30초 남았을 때 
 	int32 SpectrumPotionSpawnTime = 120.0; //2분전
 	
 protected: //Timer

@@ -38,9 +38,12 @@ protected:
 	float BaseDamage; 
 
 	bool bHasExecutedOnce;
+
+	void ChangeCollisionProfile();
 public:
 	void Throw(const FVector& PotionDirection);
 
+	
 	void MoveTo();
 
 	virtual  void GetPotion() override;

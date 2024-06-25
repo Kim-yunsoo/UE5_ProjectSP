@@ -3,6 +3,7 @@
 
 #include "Potion/SPPotionBase.h"
 
+#include "SpectrumLog.h"
 #include "Component/SPExplosionComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -23,7 +24,6 @@ ASPPotionBase::ASPPotionBase()
 	PotionMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PotionMesh"));
 	PotionMesh->SetupAttachment(SphereComponent);
 	PotionMesh->SetCollisionProfileName(TEXT("NoCollision"));
-
 	ExplosionComponent = CreateDefaultSubobject<USPExplosionComponent>(TEXT("ExplosionComponent"));
 
 	//EmitterHit = CreateDefaultSubobject<UParticleSystem>(TEXT("EmitterHit"));
@@ -42,19 +42,27 @@ void ASPPotionBase::BeginPlay()
 	}
 }
 
+
+
 void ASPPotionBase::Throw(const FVector& PotionDirection)
 {
+	SP_LOG(LogTemp,Log,TEXT("Throw"));
 	if (false == bHasExecutedOnce)
 	{
 		this->K2_DetachFromActor(EDetachmentRule::KeepWorld, EDetachmentRule::KeepWorld, EDetachmentRule::KeepWorld);
 		MovementComponent->Velocity = PotionDirection;
 		MovementComponent->Activate(false);
-		SphereComponent->SetCollisionProfileName(TEXT("BlackItemCollision"), true);
+		//SphereComponent->SetCollisionProfileName(TEXT("BlackItemCollision"), true);
+		FTimerHandle TimerHandle;
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ASPPotionBase::ChangeCollisionProfile,0.1f, false);
 		MoveTo();
 		bHasExecutedOnce = true;
 	}
 }
-
+void ASPPotionBase::ChangeCollisionProfile()
+{
+	SphereComponent->SetCollisionProfileName(TEXT("BlackItemCollision"), true);
+}
 void ASPPotionBase::MoveTo()
 {
 	FLatentActionInfo LatentInfo;

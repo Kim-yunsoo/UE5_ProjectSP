@@ -76,13 +76,13 @@ void USPSlowSkill::SkillAction()
 	FTransform SpawnTransform(Owner->SkillLocation->GetComponentRotation(), Owner->SkillLocation->GetComponentLocation());
 	ASPSlowSkillActor* MyActor =GetWorld()->SpawnActorDeferred<ASPSlowSkillActor>(ASPSlowSkillActor::StaticClass(),SpawnTransform);
 	MyActor->SetOwner(Owner);
+	
 	MyActor->FinishSpawning(SpawnTransform);
 }
 
 void USPSlowSkill::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	// DOREPLIFETIME(USPSlowSkill, bIsActiveSlowSkill);
 }
 
 void USPSlowSkill::ClientSkillRPC_Implementation(float Time)

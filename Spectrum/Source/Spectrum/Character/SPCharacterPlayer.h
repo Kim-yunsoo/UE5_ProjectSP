@@ -353,6 +353,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile", Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class USceneComponent> SkillLocation;
 
+
 	UPROPERTY()
 	TArray<class USplineMeshComponent*> SplineCompArray;
 

@@ -59,6 +59,10 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 	//Capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Pawn"));
+	GetCapsuleComponent()->BodyInstance.bLockXRotation = true;
+	GetCapsuleComponent()->BodyInstance.bLockYRotation = true;
+	GetCapsuleComponent()->BodyInstance.bLockZRotation = true;
+
 
 	//Movement
 	GetCharacterMovement()->bOrientRotationToMovement = true;
@@ -103,6 +107,7 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 
 	SkillLocation = CreateDefaultSubobject<USceneComponent>(TEXT("SkillLocation"));
 	SkillLocation->SetupAttachment(RootComponent);
+
 
 	//Sphere
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereMeshRef(
@@ -151,6 +156,7 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = false;
+
 
 	PotionThrowStartLocation = CreateDefaultSubobject<USceneComponent>(TEXT("PotionThrowStartLocation"));
 	PotionThrowStartLocation->SetupAttachment(GetMesh(), FName(TEXT("Item_Socket")));
@@ -436,8 +442,11 @@ void ASPCharacterPlayer::BeginPlay()
 		EnableInput(PlayerController);
 	}
 	SetCharacterControl(CurrentCharacterControlType);
-	GetMesh()->GetAnimInstance()->OnPlayMontageNotifyBegin.AddDynamic(
-		this, &ASPCharacterPlayer::HandleMontageAnimNotify);
+	if (GetMesh() && GetMesh()->GetAnimInstance())
+	{
+		GetMesh()->GetAnimInstance()->OnPlayMontageNotifyBegin.AddDynamic(
+			this, &ASPCharacterPlayer::HandleMontageAnimNotify);
+	}
 };
 
 void ASPCharacterPlayer::Tick(float DeltaTime)
@@ -821,6 +830,11 @@ void ASPCharacterPlayer::ServerRPCTurnReady_Implementation()
 
 void ASPCharacterPlayer::ThrowPotion(const FInputActionValue& Value)
 {
+	if (GetMesh() == nullptr || GetMesh()->GetAnimInstance() == nullptr) // 예외처리 
+	{
+		return;
+	}
+
 	if (GetMesh()->GetAnimInstance()->Montage_IsPlaying(ThrowMontage))
 	{
 		if (bIsThrowReady) //던질 준비 완료
@@ -901,6 +915,10 @@ void ASPCharacterPlayer::SpectrumPotionSpawn(const FInputActionValue& Value)
 
 void ASPCharacterPlayer::ServerRPCSpectrumPotionSpawn_Implementation()
 {
+	if (GetMesh() == nullptr)
+	{
+		return;
+	}
 	if (!bIsSeven)
 	{
 		if (PlayerInventory->CountPotion(PlayerInventory->IsPotion("S_Potion")))
@@ -915,6 +933,7 @@ void ASPCharacterPlayer::ServerRPCSpectrumPotionSpawn_Implementation()
 				                                                   GetMesh()->GetSocketLocation("Item_Socket"),
 				                                                   FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
 				Potion->SetOwner(this);
+
 				bIsSpawn = true;
 				if (Potion)
 				{
@@ -1148,6 +1167,10 @@ void ASPCharacterPlayer::ClientRPCSlowAnimation_Implementation(ASPCharacterPlaye
 
 void ASPCharacterPlayer::OnRep_Potion()
 {
+	if (GetMesh() == nullptr)
+	{
+		return;
+	}
 	if (Potion)
 	{
 		FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
@@ -1175,6 +1198,10 @@ void ASPCharacterPlayer::ClientRPCStopAnimation_Implementation(ASPCharacterPlaye
 
 void ASPCharacterPlayer::ServerRPCGreenPotionSpawn_Implementation()
 {
+	if (GetMesh() == nullptr)
+	{
+		return;
+	}
 	if (!bIsSeven)
 	{
 		if (PlayerInventory->CountPotion(PlayerInventory->IsPotion("G_Potion")))
@@ -1249,6 +1276,11 @@ void ASPCharacterPlayer::ServerRPCGreenPotionSpawn_Implementation()
 
 void ASPCharacterPlayer::ServerRPCOrangePotionSpawn_Implementation()
 {
+	if (GetMesh() == nullptr)
+	{
+		return;
+	}
+
 	if (!bIsSeven)
 	{
 		if (PlayerInventory->CountPotion(PlayerInventory->IsPotion("O_Potion")))
@@ -1317,6 +1349,10 @@ void ASPCharacterPlayer::ServerRPCOrangePotionSpawn_Implementation()
 
 void ASPCharacterPlayer::ServerRPCPurplePotionSpawn_Implementation()
 {
+	if (GetMesh() == nullptr)
+	{
+		return;
+	}
 	if (!bIsSeven)
 	{
 		if (PlayerInventory->CountPotion(PlayerInventory->IsPotion("P_Potion")))
@@ -1475,24 +1511,48 @@ void ASPCharacterPlayer::OnRep_PotionSpawn()
 
 void ASPCharacterPlayer::PlayTurnAnimation()
 {
-	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-	AnimInstance->Montage_Play(ThrowMontage, 1.0f);
-	// TorsoAnimInstance->Montage_Play(ThrowMontage, 1.0f);
-	GetCharacterMovement()->bOrientRotationToMovement = false;
-	GetCharacterMovement()->bUseControllerDesiredRotation = true;
+	if (GetMesh() == nullptr || GetMesh()->GetAnimInstance() == nullptr)
+	{
+		return;
+	}
+	if (GetMesh())
+	{
+		if (GetMesh()->GetAnimInstance())
+		{
+			UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+			AnimInstance->Montage_Play(ThrowMontage, 1.0f);
+			// TorsoAnimInstance->Montage_Play(ThrowMontage, 1.0f);
+			GetCharacterMovement()->bOrientRotationToMovement = false;
+			GetCharacterMovement()->bUseControllerDesiredRotation = true;
+		}
+	}
 }
 
 void ASPCharacterPlayer::PlayThrowAnimation()
 {
-	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-	AnimInstance->Montage_JumpToSection(FName("End"), ThrowMontage);
+	if (GetMesh() == nullptr || GetMesh()->GetAnimInstance() == nullptr)
+	{
+		return;
+	}
+
+	if (GetMesh())
+	{
+		if (GetMesh()->GetAnimInstance())
+		{
+			UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+			AnimInstance->Montage_JumpToSection(FName("End"), ThrowMontage);
+		}
+	}
 }
 
 void ASPCharacterPlayer::PlayStopAnimation()
 {
-	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-	UAnimInstance* TorsoAnimInstance = GetMesh()->GetAnimInstance();
-	AnimInstance->Montage_Stop(0.0f);
+	if (GetMesh() == nullptr || GetMesh()->GetAnimInstance() == nullptr)
+	{
+		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+		UAnimInstance* TorsoAnimInstance = GetMesh()->GetAnimInstance();
+		AnimInstance->Montage_Stop(0.0f);
+	}
 }
 
 void ASPCharacterPlayer::ServerRPCdirection_Implementation(bool TurnRight, bool Turnleft)
@@ -1848,39 +1908,58 @@ void ASPCharacterPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 
 void ASPCharacterPlayer::PlaySkillAnimation()
 {
-	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-	AnimInstance->StopAllMontages(0.0f);
-	AnimInstance->Montage_Play(SkillMontage);
-	//사운드 여기서
-	//void UGameplayStatics::PlaySoundAtLocation();
-	UGameplayStatics::PlaySoundAtLocation(GetWorld(), SlowSkillComponent->SkillSound, GetActorLocation(),
-	                                      GetActorRotation());
+	if (GetMesh())
+	{
+		if (GetMesh()->GetAnimInstance())
+		{
+			UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+			AnimInstance->StopAllMontages(0.0f);
+			AnimInstance->Montage_Play(SkillMontage);
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), SlowSkillComponent->SkillSound, GetActorLocation(),
+			                                      GetActorRotation());
+		}
+	}
 }
 
 
 void ASPCharacterPlayer::PlayIceSkillAnimation()
 {
-	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-	AnimInstance->StopAllMontages(0.0f);
-	AnimInstance->Montage_Play(SkillIceMontage);
-	UGameplayStatics::PlaySoundAtLocation(GetWorld(), IceSkillComponent->SkillSound, GetActorLocation(),
-	                                      GetActorRotation());
+	if (GetMesh())
+	{
+		if (GetMesh()->GetAnimInstance())
+		{
+			UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+			AnimInstance->StopAllMontages(0.0f);
+			AnimInstance->Montage_Play(SkillIceMontage);
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), IceSkillComponent->SkillSound, GetActorLocation(),
+			                                      GetActorRotation());
+		}
+	}
 }
 
 void ASPCharacterPlayer::PlayTeleSkillAnimation()
 {
-	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-	AnimInstance->StopAllMontages(0.0f);
-	AnimInstance->Montage_Play(SkillTeleMontage);
-	UGameplayStatics::PlaySoundAtLocation(GetWorld(), TeleSkillComponent->SkillSound, GetActorLocation(),
-	                                      GetActorRotation());
+	if (GetMesh())
+	{
+		if (GetMesh()->GetAnimInstance())
+		{
+			UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+			AnimInstance->StopAllMontages(0.0f);
+			AnimInstance->Montage_Play(SkillTeleMontage);
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), TeleSkillComponent->SkillSound, GetActorLocation(),
+			                                      GetActorRotation());
+		}
+	}
 }
 
 void ASPCharacterPlayer::HitSlowSkillResult()
 {
 	//todo 
+	if (GetMesh() == nullptr || GetMesh()->GetAnimInstance() == nullptr)
+	{
+		return;
+	}
 	bIsDamage = true;
-	//FVector CapsuleRadius = GetCapsuleComponent()->GetUnscaledCapsuleRadius();
 	FVector CapsuleRadius = FVector{0.0f, 0.0f, GetCapsuleComponent()->GetScaledCapsuleRadius() * 2};
 	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), SlowEffect, GetActorLocation() - CapsuleRadius,
 	                                               GetActorRotation());
@@ -1895,7 +1974,6 @@ void ASPCharacterPlayer::HitSlowSkillResult()
 
 void ASPCharacterPlayer::SlowSillApply()
 {
-	//UE_LOG(LogTemp, Log, TEXT("SlowSillApply"));
 	GetCharacterMovement()->MaxWalkSpeed = 500.f;
 	bIsDamage = false;
 }
@@ -1903,6 +1981,10 @@ void ASPCharacterPlayer::SlowSillApply()
 
 void ASPCharacterPlayer::HitIceSkillResult()
 {
+	if (GetMesh() == nullptr || GetMesh()->GetAnimInstance() == nullptr)
+	{
+		return;
+	}
 	bIsDamage = true;
 	// GetCharacterMovement()->MaxWalkSpeed = 0.0f;
 	FVector CapsuleRadius = FVector{0.0f, 0.0f, GetCapsuleComponent()->GetScaledCapsuleRadius() * 2};
@@ -1926,6 +2008,10 @@ void ASPCharacterPlayer::HitIceSkillResult()
 
 void ASPCharacterPlayer::HitTeleSkillResult(const FVector TeleportLocation)
 {
+	if (GetMesh() == nullptr || GetMesh()->GetAnimInstance() == nullptr)
+	{
+		return;
+	}
 	if (false == IsMontagePlaying())
 	{
 		GetMesh()->GetAnimInstance()->Montage_Play(ImpactMontage, 1.0f);
@@ -1953,6 +2039,10 @@ void ASPCharacterPlayer::ActiveGrapping(const bool Active)
 
 bool ASPCharacterPlayer::IsMontagePlaying()
 {
+	if (GetMesh() == nullptr || GetMesh()->GetAnimInstance() == nullptr)
+	{
+		return false;
+	}
 	if (GetMesh()->GetAnimInstance()->Montage_IsPlaying(ThrowMontage) ||
 		GetMesh()->GetAnimInstance()->Montage_IsPlaying(SkillMontage) ||
 		GetMesh()->GetAnimInstance()->Montage_IsPlaying(SkillIceMontage) ||
@@ -1983,22 +2073,29 @@ void ASPCharacterPlayer::NetTESTRPCSlowSkill_Implementation()
 
 void ASPCharacterPlayer::ServerRPCBlackPotionSpawn_Implementation()
 {
+	if (GetMesh() == nullptr || GetMesh()->GetAnimInstance() == nullptr)
+	{
+		return;
+	}
 	if (!bIsSeven)
 	{
 		if (PlayerInventory->CountPotion(PlayerInventory->IsPotion("B_Potion")))
 		{
 			if (false == bIsSpawn)
 			{
-				FVector ItemLocation = GetMesh()->GetSocketLocation("Item_Socket");
-				FActorSpawnParameters SpawnParams;
-				SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-				SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
-				SpawnParams.Owner = this;
-				Potion = GetWorld()->SpawnActor<ASPBlackPotion>(ASPBlackPotion::StaticClass(),
-				                                                GetMesh()->GetSocketLocation("Item_Socket"),
-				                                                FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
+				if (GetMesh())
+				{
+					FVector ItemLocation = GetMesh()->GetSocketLocation("Item_Socket");
+					FActorSpawnParameters SpawnParams;
+					SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+					SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
+					SpawnParams.Owner = this;
+					Potion = GetWorld()->SpawnActor<ASPBlackPotion>(ASPBlackPotion::StaticClass(),
+					                                                GetMesh()->GetSocketLocation("Item_Socket"),
+					                                                FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
+				}
 				bIsSpawn = true;
-				if (Potion)
+				if (Potion && GetMesh())
 				{
 					FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget,
 					                                          EAttachmentRule::SnapToTarget,
@@ -2008,7 +2105,7 @@ void ASPCharacterPlayer::ServerRPCBlackPotionSpawn_Implementation()
 			}
 			else
 			{
-				if (Potion)
+				if (Potion && GetMesh())
 				{
 					FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget,
 					                                          EAttachmentRule::SnapToTarget,
@@ -2021,7 +2118,7 @@ void ASPCharacterPlayer::ServerRPCBlackPotionSpawn_Implementation()
 	}
 	else
 	{
-		if (false == bIsSpawn)
+		if (false == bIsSpawn && GetMesh())
 		{
 			FVector ItemLocation = GetMesh()->GetSocketLocation("Item_Socket");
 			FActorSpawnParameters SpawnParams;
@@ -2041,7 +2138,7 @@ void ASPCharacterPlayer::ServerRPCBlackPotionSpawn_Implementation()
 		}
 		else
 		{
-			if (Potion)
+			if (Potion && GetMesh())
 			{
 				FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
 				                                          EAttachmentRule::SnapToTarget, true);
@@ -2112,7 +2209,7 @@ void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 
 			bool HitSuccess = GetWorld()->LineTraceSingleByChannel(outHitResult, Location, SphereLocationEnd,
 			                                                       ECC_GameTraceChannel1, Params);
-		
+
 
 			if (HitSuccess && outHitResult.Component->Mobility == EComponentMobility::Movable)
 			{
@@ -2350,6 +2447,3 @@ void ASPCharacterPlayer::Chatting(const FInputActionValue& Value)
 	}
 	HUDWidget->ShowChat();
 }
-
-
-
