@@ -38,8 +38,6 @@ ASPAIMagicSkill::ASPAIMagicSkill()
 	{
 		MainVFX->SetTemplate(VfxRef.Object);
 		MainVFX->SetRelativeLocation(FVector(70.0f, 0.0f, 0.0f));
-		// MainVFX->SetRelativeRotation(FRotator(0.0f,0.0f,180.f));
-		// MainVFX->SetRelativeScale3D(FVector(0.5f,0.5f,0.5f));
 	}
 
 	static ConstructorHelpers::FObjectFinder<UParticleSystem> HitRef(

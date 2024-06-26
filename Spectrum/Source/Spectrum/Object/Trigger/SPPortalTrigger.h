@@ -17,6 +17,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	void DestroyEffect(UParticleSystemComponent* ParticleComponent);
 
 public:	
 
@@ -44,9 +45,9 @@ public:
 
 	UFUNCTION(Client,Unreliable)
 	void ClientRPCSound(USoundWave* Sound);
-	
 
-	// UFUNCTION(NetMulticast,Unreliable)
-	// void MultiRPC(AActor* OverlapActor,const FVector& Location);
+	UPROPERTY()
+	TObjectPtr<UParticleSystem> Effect;
+
 
 };

@@ -23,7 +23,6 @@ ASPHealZone::ASPHealZone()
 // Called when the game starts or when spawned
 void ASPHealZone::BeginPlay()
 {
-	Super::BeginPlay();
 	if (HasAuthority())
 	{
 		this->SetReplicates(true);
