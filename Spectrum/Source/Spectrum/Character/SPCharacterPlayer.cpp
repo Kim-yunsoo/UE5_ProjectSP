@@ -2214,7 +2214,7 @@ void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 
 				if (Cast<ASPObject>(HitMyActor))
 				{
-					MultiChangeCollision(TEXT("BlackItemCollision"));
+					MultiChangeCollision(TEXT("GrapObjectCollision"));
 				}
 
 

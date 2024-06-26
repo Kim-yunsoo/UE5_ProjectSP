@@ -101,7 +101,7 @@ void ASPPortal::ClientRPCSound_Implementation(USoundWave* Sound)
 	GetWorld()->GetTimerManager().SetTimer(DestroyTimerHandle, [ParticleComponent]()
 		 {
 			 ParticleComponent->DestroyComponent();
-		 }, 4.0f, false);
+		 }, 5.0f, false);
 }
 
 
