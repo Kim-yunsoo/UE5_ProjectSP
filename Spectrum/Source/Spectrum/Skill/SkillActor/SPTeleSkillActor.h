@@ -18,8 +18,8 @@ class SPECTRUM_API ASPTeleSkillActor : public ASPSkillActorBase
 	ASPTeleSkillActor();
 
 protected:
-	UFUNCTION(NetMulticast, Unreliable)
-	void MultiRPCTeleSkill(const FHitResult& Hit , const FVector TeleportLocation);
+	// UFUNCTION(NetMulticast, Unreliable)
+	// void MultiRPCTeleSkill(const FHitResult& Hit , const FVector TeleportLocation);
 	virtual void BeginPlay() override;
 
 	UFUNCTION()
@@ -27,6 +27,11 @@ protected:
 						   UPrimitiveComponent* OtherComp, FVector NormalImpulse,
 						   const FHitResult& Hit);
 
+	UFUNCTION(NetMulticast, Unreliable)
+	void MultiRPCTeleSkillEffect(const FVector& InHitLoction);
+	
+	UFUNCTION(NetMulticast,Unreliable)
+	void MultiRPCTeleSkill(ASPCharacterPlayer* Player, const FVector& TeleportLocation);
 public:
 	UPROPERTY()
 	TObjectPtr<UDataTable> TPData;

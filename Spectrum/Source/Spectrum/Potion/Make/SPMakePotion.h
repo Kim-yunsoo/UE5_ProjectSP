@@ -49,14 +49,17 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "MakePotion | Components")
 	TObjectPtr<UStaticMeshComponent> Mesh;
 
-	UFUNCTION(Client, Unreliable)
-	void ClientRPCInteract(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget);
+	// UFUNCTION(Client, Unreliable)
+	// void ClientRPCInteract(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget);
 
 	UFUNCTION()
 	void OnTriggerEnter(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UFUNCTION()
 	void OnTriggerExit(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	UFUNCTION(Client, Unreliable)
+	void ClientRPC(ASPCharacterPlayer*  InPlayer);
 
 
 };

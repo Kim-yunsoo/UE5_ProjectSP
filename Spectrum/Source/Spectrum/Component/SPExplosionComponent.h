@@ -22,6 +22,9 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
+	UPROPERTY()
+	uint8 bHasExecuted:1; 
+
 public:
 	virtual void Explode(ColorType& MyColor) override;
 	//RPC

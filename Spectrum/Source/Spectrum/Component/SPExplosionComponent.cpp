@@ -21,6 +21,7 @@ break;										 \
 
 USPExplosionComponent::USPExplosionComponent()
 {
+	bHasExecuted=false ; 
 }
 
 
@@ -34,6 +35,10 @@ void USPExplosionComponent::Explode(ColorType& MyColor)
 {
 	Super::Explode(MyColor);
 
+	if (bHasExecuted) // 실행되었다면 ? 예외처리 
+	{
+		return ; 
+	}
 	if(!GetOwner()->HasAuthority())
 	{
 		return;
@@ -90,6 +95,7 @@ void USPExplosionComponent::Explode(ColorType& MyColor)
 
 	if (Success)
 	{
+		bHasExecuted = true;  //실행이 되었다. 
 		MultiRPCExplosion(MyArray, MyColor);
 	}
 }

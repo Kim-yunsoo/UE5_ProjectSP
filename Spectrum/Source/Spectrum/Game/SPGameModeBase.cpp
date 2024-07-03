@@ -60,7 +60,11 @@ void ASPGameModeBase::Tick(float DeltaSeconds)
 void ASPGameModeBase::OnMatchStateSet()
 {
 	Super::OnMatchStateSet();
-
+	if(MatchState == MatchState::InProgress)
+	{
+		PotionSpawnerManager->Initialize(GetWorld()); 
+	}
+	
 	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
 	{
 		ASPPlayerController* MyPlayer = Cast<ASPPlayerController>(It->Get());
@@ -84,7 +88,7 @@ void ASPGameModeBase::OnMatchStateSet()
 void ASPGameModeBase::HandleMatchIsWaitingToStart()
 {
 	Super::HandleMatchIsWaitingToStart();
-	 PotionSpawnerManager->Initialize(GetWorld()); 
+	 //PotionSpawnerManager->Initialize(GetWorld()); 
 }
 
 

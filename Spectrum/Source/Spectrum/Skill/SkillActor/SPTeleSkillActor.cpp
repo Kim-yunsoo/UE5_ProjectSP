@@ -2,6 +2,8 @@
 
 
 #include "Skill/SkillActor/SPTeleSkillActor.h"
+
+#include "Character/SPCharacterPlayer.h"
 #include "Components/BoxComponent.h"
 #include "Data/SPTeleportData.h"
 #include "Interface/SPSkillInterface.h"
@@ -50,49 +52,93 @@ void ASPTeleSkillActor::BeginPlay()
 		this->SetReplicates(true);
 		this->AActor::SetReplicateMovement(true);
 	}
-	//	FColorData* ColorRow = Table->FindRow<FColorData>(RowName, "");
 
 }
 
 void ASPTeleSkillActor::OnBoxCollisionHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	if (HasAuthority()) //���⼭ ��ġ ���� ���ϰ� ������ 
+	if (HasAuthority()) 
 	{
-		// float RandomRow = FMath::RandRange()
-
-		if(RangeData)
+		if(bIsOnce && RangeData )
 		{
-			float TeleportY = FMath::RandRange(RangeData->MinRow,RangeData->MaxRow);
-			float TeleportX = FMath::RandRange(RangeData->MinCol,RangeData->MaxCol);
+			float TeleportY = FMath::RandRange(RangeData->MinRow, RangeData->MaxRow);
+			float TeleportX = FMath::RandRange(RangeData->MinCol, RangeData->MaxCol);
 			float TeleportZ = RangeData->TeleportZ;
+
+			FVector TeleportLocation =  {TeleportX,TeleportY,TeleportZ };
+
 			
-			MultiRPCTeleSkill(Hit,FVector(TeleportX,TeleportY,TeleportZ));
+			
+			MultiRPCTeleSkillEffect(Hit.ImpactPoint);
+			TArray<AActor*> OverlappedActors;
+			TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
+			ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn));
+			TArray<AActor*> ActorsToIgnore;
+
+			bool Result = UKismetSystemLibrary::SphereOverlapActors(GetWorld(), GetActorLocation(), 100.f, ObjectTypes,
+																	nullptr, ActorsToIgnore, OverlappedActors);
+			//DrawDebugSphere(GetWorld(), GetActorLocation(), 100, 32, FColor::Green, false, 5.0f);
+			if (Result)
+			{
+				for (AActor* Actor : OverlappedActors)
+				{
+					ASPCharacterPlayer* Player = Cast<ASPCharacterPlayer>(Actor);
+					if (Player)
+					{
+						MultiRPCTeleSkill(Player,TeleportLocation);
+					}
+				}
+			}
+
 			this->SetActorHiddenInGame(true);
 			this->SetLifeSpan(0.1f);
-			
+			bIsOnce=false;
 		}
+		// if(RangeData)
+		// {
+		// 	float TeleportY = FMath::RandRange(RangeData->MinRow,RangeData->MaxRow);
+		// 	float TeleportX = FMath::RandRange(RangeData->MinCol,RangeData->MaxCol);
+		// 	float TeleportZ = RangeData->TeleportZ;
+		// 	
+		// 	MultiRPCTeleSkill(Hit,FVector(TeleportX,TeleportY,TeleportZ));
+		// 	this->SetActorHiddenInGame(true);
+		// 	this->SetLifeSpan(0.1f);
+		// 	
+		// }
 		
 	}
 }
 
-
-void ASPTeleSkillActor::MultiRPCTeleSkill_Implementation(const FHitResult& Hit ,const FVector TeleportLocation)
+void ASPTeleSkillActor::MultiRPCTeleSkill_Implementation(ASPCharacterPlayer* Player, const FVector& TeleportLocation)
 {
-	FVector HitLocation = Hit.ImpactPoint;
-	if(bIsOnce)
-	{
-		UParticleSystemComponent* Particle = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), EmitterHit, HitLocation, FRotator::ZeroRotator,
-												 FVector(1.0f), true, EPSCPoolMethod::None, true);
-
-
-
-		bIsOnce=false;
-	}
-	
-	ISPSkillInterface* CheckIceAction = Cast<ISPSkillInterface>(Hit.GetActor());
+	ISPSkillInterface* CheckIceAction = Cast<ISPSkillInterface>(Player);
 	if (CheckIceAction)
 	{
 		CheckIceAction->HitTeleSkillResult(TeleportLocation);
 	}
 }
+
+void ASPTeleSkillActor::MultiRPCTeleSkillEffect_Implementation(const FVector& InHitLoction)
+{
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), EmitterHit, InHitLoction, FRotator::ZeroRotator,
+												 FVector(1.0f), true, EPSCPoolMethod::None, true);
+}
+
+
+// void ASPTeleSkillActor::MultiRPCTeleSkill_Implementation(const FHitResult& Hit ,const FVector TeleportLocation)
+// {
+// 	FVector HitLocation = Hit.ImpactPoint;
+// 	if(bIsOnce)
+// 	{
+// 		UParticleSystemComponent* Particle = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), EmitterHit, HitLocation, FRotator::ZeroRotator,
+// 												 FVector(1.0f), true, EPSCPoolMethod::None, true);
+// 		bIsOnce=false;
+// 	}
+// 	
+// 	ISPSkillInterface* CheckIceAction = Cast<ISPSkillInterface>(Hit.GetActor());
+// 	if (CheckIceAction)
+// 	{
+// 		CheckIceAction->HitTeleSkillResult(TeleportLocation);
+// 	}
+// }

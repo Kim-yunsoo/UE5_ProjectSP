@@ -3,6 +3,7 @@
 
 #include "Object/SPHealZone.h"
 
+#include "SpectrumLog.h"
 #include "Character/SPCharacterNonPlayer.h"
 #include "Character/SPCharacterPlayer.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -11,6 +12,7 @@
 // Sets default values
 ASPHealZone::ASPHealZone()
 {
+	SP_LOG(LogSPNetwork,Log,TEXT("ASPHealZone"));
 	HealEffect= CreateDefaultSubobject<UParticleSystemComponent>(TEXT("MainVFX"));
 	SetRootComponent(HealEffect);
 	static ConstructorHelpers::FObjectFinder<UParticleSystem> HealEffectRef(TEXT("/Script/Engine.ParticleSystem'/Game/Box/FXVarietyPack/Particles/P_ky_healAura.P_ky_healAura'"));
@@ -23,15 +25,14 @@ ASPHealZone::ASPHealZone()
 // Called when the game starts or when spawned
 void ASPHealZone::BeginPlay()
 {
+	Super::BeginPlay();
 	if (HasAuthority())
 	{
 		this->SetReplicates(true);
 		this->AActor::SetReplicateMovement(true);
 	}
-
 	float HealTimeDuration = 0.5f;
-	
-	FTimerHandle TimerHandle;
+
 	GetWorldTimerManager().SetTimer(TimerHandle, this, &ASPHealZone::SpawnHealSphere,
 	HealTimeDuration, true);
 	

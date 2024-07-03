@@ -558,7 +558,7 @@ public:
 	UPROPERTY()
 	TObjectPtr<class USPTeleSkill> TeleSkillComponent;
 
-	float SlowAttackTime = 2.5;
+	float SlowAttackTime = 1.7f;
 	float AttackTimeDifference = 0.0f;
 
 	void PlaySkillAnimation();
@@ -588,6 +588,14 @@ public:
 
 	UPROPERTY()
 	uint8 bIsActiveSlowSkill : 1;
+
+
+	UPROPERTY()
+	uint8 bSkillRunning : 1;
+
+	UPROPERTY()
+	uint8 bActiveHitIce : 1;
+	
 
 	UPROPERTY()
 	uint8 bIsActiveIceSkill : 1;
@@ -649,7 +657,7 @@ public:
 	UFUNCTION()
 	void SlowSillApply();
 
-	UPROPERTY()
+	UPROPERTY(Replicated)
 	uint8 bInteracionOnce:1;
 
 
@@ -659,5 +667,23 @@ public:
 
 	UPROPERTY()
 	TObjectPtr<class UNiagaraSystem> IceEffect;
-	
+
+	void SetMovementModeWalking();
+	void SetMovementModeSkillWalking();
+
+	void InteractionTimerFun();
+
+	UFUNCTION(Client,Unreliable)
+	void ClientTestRPC( AActor* NewInteractable);
+
+
+
+	UFUNCTION(Client,Unreliable)
+	void ClientTestRPC2();
+
+	UFUNCTION(Client,Unreliable)
+	void ClientTestRPC3();
+
 };
+
+

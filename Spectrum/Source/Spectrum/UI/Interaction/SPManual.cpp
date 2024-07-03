@@ -89,8 +89,8 @@ void ASPManual::EndInteract()
 
 bool ASPManual::Interact(ASPCharacterPlayer* PlayerCharacter, USPHUDWidget* HUDWidget)
 {
-	HUDWidget->UpdateManualWidget(true);
-	HUDWidget->ToggleMouse(true);
+	// HUDWidget->UpdateManualWidget(true);
+	// HUDWidget->ToggleMouse(true);
 	return true;
 }
 

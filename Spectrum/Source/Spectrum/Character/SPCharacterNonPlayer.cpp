@@ -137,12 +137,13 @@ void ASPCharacterNonPlayer::SetDead()
 
 
 	FTimerHandle DeadTimerHandle;
-	GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda(
-		                                       [&]()
-		                                       {
-			                                       Destroy();
-		                                       }
-	                                       ), DeadEventDelayTime, false);
+	// GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda(
+	// 	                                       [&]()
+	// 	                                       {
+	// 		                                       Destroy();
+	// 	                                       }
+	//                                        ), DeadEventDelayTime, false);
+	GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, this , &ASPCharacterNonPlayer::DestroyAI,DeadEventDelayTime,false);
 }
 
 void ASPCharacterNonPlayer::PlayDeadAnimation()
@@ -151,7 +152,6 @@ void ASPCharacterNonPlayer::PlayDeadAnimation()
 	AnimInstance->StopAllMontages(0.0f);
 	AnimInstance->Montage_Play(DeadMontage, 1.0f);
 }
-
 
 
 void ASPCharacterNonPlayer::SetupCharacterWidget(USPUserWidget* InUserWidget)
@@ -309,9 +309,8 @@ void ASPCharacterNonPlayer::HealOverTiem()
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
 	SpawnParams.Owner = this;
-	//(GetCapsuleComponent()->GetScaledCapsuleHalfHeight())
-	FVector SpawnLocation = GetActorLocation() - FVector(
-		0.0f, 0.0f, GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
+	FVector SpawnLocation = GetActorLocation() - FVector(0.0f, 0.0f, GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
+
 	HealZone = GetWorld()->SpawnActor<ASPHealZone>(ASPHealZone::StaticClass(), SpawnLocation,
 	                                               FRotator::ZeroRotator, SpawnParams);
 	HealZone->OnHpUpDelegate.AddUObject(this, &ASPCharacterNonPlayer::HealDelegateFun);
@@ -395,15 +394,6 @@ void ASPCharacterNonPlayer::HandleMontageAnimNotify(FName NotifyName,
 			AttackComponent->MagicSpell(MyTarget, Transform);
 		}
 	}
-	//AIDead
-
-	// if (NotifyName == FName("AIDead"))
-	// {
-	// 	if (HasAuthority())
-	// 	{
-	// 		Destroy();
-	// 	}
-	// }
 }
 
 void ASPCharacterNonPlayer::HitMontageEnded(UAnimMontage* Montage, bool bInterrupted)
@@ -418,8 +408,10 @@ void ASPCharacterNonPlayer::HealMontageEnded(UAnimMontage* Montage, bool bInterr
 {
 	if (HealZone)
 	{
-		HealZone->Destroy();
+		GetWorld()->GetTimerManager().ClearTimer(HealZone->TimerHandle);
+		 HealZone->Destroy();
 	}
+
 	OnHealFinished.ExecuteIfBound(); //델리게이트에 묶인 함수를 호출한다. 
 }
 
@@ -460,6 +452,11 @@ void ASPCharacterNonPlayer::DeletParticle()
 	{
 		TeleportTrailComponent->DestroyComponent();
 	}
+}
+
+void ASPCharacterNonPlayer::DestroyAI()
+{
+	Destroy();
 }
 
 void ASPCharacterNonPlayer::MultiRPCAttack_Implementation()

@@ -21,11 +21,15 @@ public:
 
 protected:
 	UFUNCTION(NetMulticast, Unreliable)
-	void MultiRPCIceSkill(const FHitResult& Hit );
+	void MultiRPCIceSkillEffect(const FVector& InHitLoction);
+	UFUNCTION(NetMulticast,Unreliable)
+	void MultiRPCIceSkill(ASPCharacterPlayer* Player);
 
 	UFUNCTION()
 	void OnBoxCollisionHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
 						   UPrimitiveComponent* OtherComp, FVector NormalImpulse,
 						   const FHitResult& Hit);
+
+
 	
 };

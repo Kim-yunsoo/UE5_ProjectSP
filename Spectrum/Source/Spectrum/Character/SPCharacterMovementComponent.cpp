@@ -89,7 +89,6 @@ void USPCharacterMovementComponent::SPSlow()
 {
 	if(CharacterOwner)
 	{
-		SP_SUBLOG(LogSPSkill,Log,TEXT("%s"), TEXT("Slow Begin"));
 
 		MaxWalkSpeed=100.f;
 		bDidTeleport=true;
@@ -100,7 +99,6 @@ void USPCharacterMovementComponent::SPSlow()
 		{
 			bDidTeleport = false;
 			MaxWalkSpeed=500.f;
-			SP_SUBLOG(LogSPSkill, Log, TEXT("%s"), TEXT("slow End"));
 		}
 	), SlowTime, false, -1.0f); //반복 없이 일정 시간 이후에 람다 호출 
 

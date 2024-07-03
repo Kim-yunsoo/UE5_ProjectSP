@@ -7,7 +7,7 @@
 
 USPPotionSpawnerManager::USPPotionSpawnerManager()
 {
-	MaxSpawnCount=25; 
+	MaxSpawnCount=22; 
 }
 
 void USPPotionSpawnerManager::CollectAllPotionSpawners(UWorld* InWorld)

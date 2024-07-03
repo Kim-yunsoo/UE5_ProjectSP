@@ -49,5 +49,7 @@ public:
 	UPROPERTY()
 	TObjectPtr<UParticleSystem> Effect;
 
+	void DestroyParticle();
+
 
 };

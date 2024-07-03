@@ -172,4 +172,6 @@ public: //interface
 	// void ClientRPCTeleport();
 
 	void DeletParticle();
+
+	void DestroyAI();
 };

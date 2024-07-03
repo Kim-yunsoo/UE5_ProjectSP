@@ -19,7 +19,7 @@ ASPPortal::ASPPortal()
 	Trigger->SetMobility(EComponentMobility::Static);
 
 	SetRootComponent(Trigger);
-
+	Trigger->SetMobility(EComponentMobility::Static);
 	// PortalMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PortalMesh"));
 
 	static ConstructorHelpers::FObjectFinder<UDataTable> DataRef(
@@ -81,7 +81,7 @@ void ASPPortal::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* Othe
                                int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	SetOwner(OtherActor);
-
+	
 	ClientRPCSound(PortalSound);
 	if (HasAuthority())
 	{
@@ -90,18 +90,23 @@ void ASPPortal::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* Othe
 	
 }
 
+void ASPPortal::DestroyParticle()
+{
+	
+}
+
 void ASPPortal::ClientRPCSound_Implementation(USoundWave* Sound)
 {
 	FVector Location = GetActorLocation() - FVector {0.0f , 0.0f , 300.0f} ;
 	FVector Scale = FVector{2.0f, 2.0f, 2.0f} ;
-	UParticleSystemComponent* ParticleComponent= UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), Effect,Location, GetActorRotation(),Scale );
+	//UParticleSystemComponent* ParticleComponent= UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), Effect,Location, GetActorRotation(),Scale );
 	UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, GetActorLocation(), GetActorRotation());
-
-	FTimerHandle DestroyTimerHandle;
-	GetWorld()->GetTimerManager().SetTimer(DestroyTimerHandle, [ParticleComponent]()
-		 {
-			 ParticleComponent->DestroyComponent();
-		 }, 5.0f, false);
+	
+	//FTimerHandle DestroyTimerHandle;
+	// GetWorld()->GetTimerManager().SetTimer(DestroyTimerHandle, [ParticleComponent]()
+	// 	 {
+	// 		 ParticleComponent->DestroyComponent();
+	// 	 }, 5.0f, false);
 }
 
 

@@ -3,6 +3,8 @@
 
 #include "Skill/SkillActor/SPIceSkillActor.h"
 
+#include "SpectrumLog.h"
+#include "Character/SPCharacterPlayer.h"
 #include "Components/BoxComponent.h"
 #include "Interface/SPSkillInterface.h"
 #include "Kismet/GameplayStatics.h"
@@ -14,17 +16,18 @@ class ISPSkillInterface;
 ASPIceSkillActor::ASPIceSkillActor()
 {
 	static ConstructorHelpers::FObjectFinder<UParticleSystem> VfxRef(TEXT(
-	"/Script/Engine.ParticleSystem'/Game/MagicProjectilesVol2/Particles/Projectiles/P_Projectile_IceSpike01_Blue.P_Projectile_IceSpike01_Blue'"));
+		"/Script/Engine.ParticleSystem'/Game/MagicProjectilesVol2/Particles/Projectiles/P_Projectile_IceSpike01_Blue.P_Projectile_IceSpike01_Blue'"));
 	if (VfxRef.Succeeded())
 	{
 		MainVFX->SetTemplate(VfxRef.Object);
 		MainVFX->SetRelativeLocation(FVector(-36.0f, 0.0f, 0.0f));
-		MainVFX->SetRelativeRotation(FRotator(0.0f,0.0f,180.f));
-		MainVFX->SetRelativeScale3D(FVector(0.5f,0.5f,0.5f));
+		MainVFX->SetRelativeRotation(FRotator(0.0f, 0.0f, 180.f));
+		MainVFX->SetRelativeScale3D(FVector(0.5f, 0.5f, 0.5f));
 	}
 
 	static ConstructorHelpers::FObjectFinder<UParticleSystem> HitRef(
-		TEXT("/Script/Engine.ParticleSystem'/Game/MagicProjectilesVol2/Particles/Muzzles/P_Muzzle_IceSpike01_Blue.P_Muzzle_IceSpike01_Blue'"));
+		TEXT(
+			"/Script/Engine.ParticleSystem'/Game/MagicProjectilesVol2/Particles/Muzzles/P_Muzzle_IceSpike01_Blue.P_Muzzle_IceSpike01_Blue'"));
 
 	if (HitRef.Succeeded())
 	{
@@ -35,7 +38,7 @@ ASPIceSkillActor::ASPIceSkillActor()
 void ASPIceSkillActor::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	BoxCollision->OnComponentHit.AddDynamic(this, &ASPIceSkillActor::OnBoxCollisionHit);
 	if (HasAuthority())
 	{
@@ -45,28 +48,54 @@ void ASPIceSkillActor::BeginPlay()
 }
 
 void ASPIceSkillActor::OnBoxCollisionHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+                                         UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	if (HasAuthority())
 	{
-		MultiRPCIceSkill(Hit);
-		this->SetActorHiddenInGame(true);
-		this->SetLifeSpan(0.1f);
+		if(bIsOnce)
+		{
+			MultiRPCIceSkillEffect(Hit.ImpactPoint);
+
+			TArray<AActor*> OverlappedActors;
+			TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
+			ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn));
+			TArray<AActor*> ActorsToIgnore;
+
+			bool Result = UKismetSystemLibrary::SphereOverlapActors(GetWorld(), GetActorLocation(), 100.f, ObjectTypes,
+			                                                        nullptr, ActorsToIgnore, OverlappedActors);
+			//DrawDebugSphere(GetWorld(), GetActorLocation(), 100, 32, FColor::Green, false, 5.0f);
+			if (Result)
+			{
+				for (AActor* Actor : OverlappedActors)
+				{
+					ASPCharacterPlayer* Player = Cast<ASPCharacterPlayer>(Actor);
+					if (Player)
+					{
+						MultiRPCIceSkill(Player);
+					}
+				}
+			}
+
+			this->SetActorHiddenInGame(true);
+			this->SetLifeSpan(0.1f);
+			bIsOnce=false;
+			
+		}
 	}
 }
 
-void ASPIceSkillActor::MultiRPCIceSkill_Implementation(const FHitResult& Hit)
+void ASPIceSkillActor::MultiRPCIceSkill_Implementation(ASPCharacterPlayer* Player)
 {
-	FVector HitLocation = Hit.ImpactPoint;
-	if(bIsOnce)
-	{
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), EmitterHit, HitLocation, FRotator::ZeroRotator,
-												 FVector(1.0f), true, EPSCPoolMethod::None, true);
-		bIsOnce=false;
-	}
-	ISPSkillInterface* CheckIceAction = Cast<ISPSkillInterface>(Hit.GetActor());
+	ISPSkillInterface* CheckIceAction = Cast<ISPSkillInterface>(Player);
 	if (CheckIceAction)
 	{
 		CheckIceAction->HitIceSkillResult();
 	}
+}
+
+void ASPIceSkillActor::MultiRPCIceSkillEffect_Implementation(const FVector& InHitLoction)
+{
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), EmitterHit, InHitLoction, FRotator::ZeroRotator,
+	                                         FVector(1.0f), true, EPSCPoolMethod::None, true);
+
 }

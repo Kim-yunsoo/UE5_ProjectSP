@@ -41,12 +41,6 @@ void ASPBlackPotion::BeginPlay()
 
 void ASPBlackPotion::HandleActorHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
 {
-	//서버만 들어옴
-	if(OtherActor)
-	{
-		SP_LOG(LogSPNetwork,Log,TEXT("%s"), *OtherActor->GetName());
-	}
-
 	ExplosionComponent->Explode(MyColor);
 	this->SetLifeSpan(0.1f);
 }

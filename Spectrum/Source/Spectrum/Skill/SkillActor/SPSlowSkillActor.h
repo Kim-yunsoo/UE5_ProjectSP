@@ -7,6 +7,7 @@
 #include "GameFramework/Actor.h"
 #include "SPSlowSkillActor.generated.h"
 
+class ASPCharacterPlayer;
 class ISPSkillInterface;
 
 UCLASS()
@@ -29,12 +30,16 @@ protected:
 	
 	UPROPERTY()
 	TObjectPtr<UDataTable> VFXDataTable;
+	
 	UFUNCTION(NetMulticast, Unreliable)
-	void MultiRPCSlowSkill(const FHitResult& Hit );
+	void MultiRPCSlowSkillEffect(const FVector& InHitLoction);
+	
+	UFUNCTION(NetMulticast,Unreliable)
+	void MultiRPCSlowSkill(ASPCharacterPlayer* Player);
 
 	
-	UFUNCTION(Server, Unreliable)
-	void ServerRPCSlowSkill(const FHitResult& Hit);
+	// UFUNCTION(Server, Unreliable)
+	// void ServerRPCSlowSkill(const FHitResult& Hit);
 	
 	virtual void BeginPlay() override;
 
