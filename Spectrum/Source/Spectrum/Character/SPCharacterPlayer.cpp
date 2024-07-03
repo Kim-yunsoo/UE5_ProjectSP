@@ -26,14 +26,12 @@
 #include "Potion/SPOrangePotion.h"
 #include "Potion/SPPurplePotion.h"
 #include "SPCharacterMovementComponent.h"
-//#include "UI/SPHUDWidget.h"
 #include "EngineUtils.h"
 #include "SpectrumLog.h"
 #include "GameFramework/GameStateBase.h"
 #include "Net/UnrealNetwork.h"
 #include "Skill/SPSkillCastComponent.h"
 #include "Skill/SPSlowSkill.h"
-#include "SPGameModeBase.h"
 #include "SPGameState.h"
 #include "Component/SPInventoryComponent.h"
 #include "Player/SPPlayerController.h"
@@ -46,7 +44,6 @@
 #include "NiagaraSystem.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Object/SPNonSimulateObject.h"
-#include "Object/Trigger/SPPortalTrigger.h"
 #include "Potion/Make/SPMakePotion.h"
 
 ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializer)
@@ -104,14 +101,11 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 	// //Skill
 	SlowSkillComponent = CreateDefaultSubobject<USPSlowSkill>(TEXT("SkillComponent"));
 	TeleSkillComponent = CreateDefaultSubobject<USPTeleSkill>(TEXT("TeleSkillComponent"));
-
 	IceSkillComponent = CreateDefaultSubobject<USPIceSkill>(TEXT("IceSkillComponent"));
 
 	SkillLocation = CreateDefaultSubobject<USceneComponent>(TEXT("SkillLocation"));
 	SkillLocation->SetupAttachment(RootComponent);
 
-
-	//Sphere
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereMeshRef(
 		TEXT("/Script/Engine.StaticMesh'/Engine/EditorMeshes/ArcadeEditorSphere.ArcadeEditorSphere'"));
 	Sphere = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Sphere"));
@@ -390,16 +384,14 @@ ASPCharacterPlayer::ASPCharacterPlayer(const FObjectInitializer& ObjectInitializ
 	bIsActiveTeleSkill = true;
 	bIsActiveGraping = true;
 	bSkillRunning = false;
-	SphereRange = 10000000;
+	SphereRange = 100000;
 	bIsPicking = false;
 	KeyToggle = true;
 	bIsSeven = false;
 	bActiveHitIce = false;
 	HitDistance = 1800.f;
-
 	InteractionCheckFrequency = 0.1;
 	InteractionCheckDistance = 225.0f;
-
 	BaseEyeHeight = 74.0f;
 
 	//Inventory
@@ -1047,14 +1039,6 @@ void ASPCharacterPlayer::ServerRPCTeleSkill_Implementation(float AttackStartTime
 			bSkillRunning = true;
 			GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 		}
-
-		// GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([&]
-		// 	                                       {
-		// 		                                       GetCharacterMovement()->SetMovementMode(
-		// 			                                       EMovementMode::MOVE_Walking);
-		// 	                                       }
-		//                                        ), 3.0 - AttackTimeDifference, false, -1.0f);
-
 		GetWorld()->GetTimerManager().SetTimer(Handle, this, &ASPCharacterPlayer::SetMovementModeWalking,
 		                                       1.5 - AttackTimeDifference, false, -1.0f);
 
@@ -1086,12 +1070,6 @@ void ASPCharacterPlayer::ServerRPCIceSkill_Implementation(float AttackStartTime)
 			GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 		}
 
-		// GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([&]
-		// 	                                       {
-		// 		                                       GetCharacterMovement()->SetMovementMode(
-		// 			                                       EMovementMode::MOVE_Walking);
-		// 	                                       }
-		//                                        ), 3.5 - AttackTimeDifference, false, -1.0f);
 		FTimerHandle Handle;
 		GetWorld()->GetTimerManager().SetTimer(Handle, this, &ASPCharacterPlayer::SetMovementModeWalking,
 		                                       2.3 - AttackTimeDifference, false, -1.0f);
@@ -1240,8 +1218,6 @@ void ASPCharacterPlayer::ServerRPCOrangePotionSpawn_Implementation()
 	{
 		return;
 	}
-
-
 	if (PlayerInventory->CountPotion(PlayerInventory->IsPotion("O_Potion")) || bIsSeven)
 	{
 		if (false == bIsSpawn)
@@ -1391,10 +1367,6 @@ void ASPCharacterPlayer::MultiRPCWidgetMove_Implementation(bool move)
 			GetCharacterMovement()->MovementMode = EMovementMode::MOVE_None;
 		}
 	}
-}
-
-void ASPCharacterPlayer::OnRep_PotionSpawn()
-{
 }
 
 void ASPCharacterPlayer::PlayTurnAnimation()
@@ -1935,7 +1907,6 @@ void ASPCharacterPlayer::HitIceSkillResult()
 	FVector CapsuleRadius = FVector{0.0f, 0.0f, GetCapsuleComponent()->GetScaledCapsuleRadius() * 2};
 	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), IceEffect, GetActorLocation() - CapsuleRadius,
 	                                               GetActorRotation());
-
 	if (false == IsMontagePlaying())
 	{
 		GetMesh()->GetAnimInstance()->Montage_Play(ImpactMontage, 1.0f);
@@ -1945,13 +1916,6 @@ void ASPCharacterPlayer::HitIceSkillResult()
 		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 	}
 	FTimerHandle Handle;
-	// GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([&]
-	// 	                                       {
-	// 		                                       GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
-	// 		                                       bIsDamage = false;
-	// 	                                       }
-	//                                        ), 4, false, -1.0f);
-
 	GetWorld()->GetTimerManager().SetTimer(Handle, this, &ASPCharacterPlayer::SetMovementModeSkillWalking, 4, false,
 	                                       -1.0f);
 }
@@ -1977,8 +1941,6 @@ void ASPCharacterPlayer::OverlapPortal(const FVector& Location)
 		return;
 	}
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
-	//todo
-	//GetWorld()->GetTimerManager().SetTimer(Handle, this, )
 	GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([&]
 		                                       {
 			                                       GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
@@ -2050,13 +2012,13 @@ void ASPCharacterPlayer::ServerRPCBlackPotionSpawn_Implementation()
 			                                                ItemLocation,
 			                                                FRotator::ZeroRotator, SpawnParams);
 			bIsSpawn = true;
-			if (Potion)
-			{
-				FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget,
-				                                          EAttachmentRule::SnapToTarget,
-				                                          EAttachmentRule::SnapToTarget, true);
-				Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
-			}
+			// if (Potion)
+			// {
+			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget,
+			                                          EAttachmentRule::SnapToTarget,
+			                                          EAttachmentRule::SnapToTarget, true);
+			Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
+			// }
 		}
 		if (!bIsSeven)
 		{
@@ -2122,19 +2084,8 @@ void ASPCharacterPlayer::ServerRPCGraping_Implementation()
 			{
 				Params.AddIgnoredActor(FoundActor);
 			}
-
-			// UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASPPortal::StaticClass(), HitTriggerToIgnore);
-			// for (AActor* FoundActor : HitTriggerToIgnore)
-			// {
-			// 	Params.AddIgnoredActor(FoundActor);
-			// }
-			Params.bTraceComplex = true;
-			float DrawTime = 5.0f;
-
 			bool HitSuccess = GetWorld()->LineTraceSingleByChannel(outHitResult, Location, SphereLocationEnd,
 			                                                       ECC_GameTraceChannel1, Params);
-
-
 			if (HitSuccess && outHitResult.Component->Mobility == EComponentMobility::Movable)
 			{
 				outHitResult.Component->SetSimulatePhysics(true);
@@ -2295,7 +2246,6 @@ void ASPCharacterPlayer::QuaterMove(const FInputActionValue& Value)
 	{
 		MovementVectorSize = FMath::Sqrt(MovementVectorSizeSquared);
 	}
-
 	FVector MoveDirection = FVector(MovementVector.X, MovementVector.Y, 0.0f);
 	GetController()->SetControlRotation(FRotationMatrix::MakeFromX(MoveDirection).Rotator());
 	AddMovementInput(MoveDirection, MovementVectorSize);

@@ -190,7 +190,7 @@ protected:
 	UPROPERTY(Replicated, BlueprintReadWrite, Category = "Character")
 	uint8 bIsHolding : 1;
 
-	UPROPERTY(ReplicatedUsing = OnRep_PotionSpawn, EditAnywhere, BlueprintReadWrite, Category = "Character")
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "Character")
 	uint8 bIsSpawn : 1; //Spawn check
 
 	UPROPERTY(Replicated, BlueprintReadWrite, Category = "Character")
@@ -514,8 +514,8 @@ public:
 	
 	
 	//OnRep
-	UFUNCTION()
-	void OnRep_PotionSpawn();
+	// UFUNCTION()
+	// void OnRep_PotionSpawn();
 
 	//function
 	void Aiming_CameraMove();

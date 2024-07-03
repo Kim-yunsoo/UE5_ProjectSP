@@ -61,6 +61,7 @@ void USPIceSkill::SkillAction()
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
+	SpawnParams.Owner = Owner;
 	ASPIceSkillActor* MyActor =GetWorld()->SpawnActor<ASPIceSkillActor>(ASPIceSkillActor::StaticClass(),Owner->SkillLocation->GetComponentLocation(),
 											   Owner->SkillLocation->GetComponentRotation(), SpawnParams);
 	MyActor->SetOwner(Owner);
