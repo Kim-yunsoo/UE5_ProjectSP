@@ -105,7 +105,7 @@ protected:
 
 	void Chatting(const FInputActionValue& Value) ;
 
-	void Interaction(const FInputActionValue& Value);
+	// void Interaction(const FInputActionValue& Value);
 	void ToggleKeyWidget(const FInputActionValue& Value);
 	
 	UPROPERTY()
@@ -195,11 +195,6 @@ protected:
 
 	UPROPERTY(Replicated, BlueprintReadWrite, Category = "Character")
 	uint8 bIsThrowReady : 1; //Throw Ready?
-	
-
-	
-	// UPROPERTY(Replicated, BlueprintReadWrite, Category = "Character")
-	// uint8 bIsActiveSlowSkill : 1; //Throw Ready?
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UAnimMontage> ThrowMontage;
@@ -614,14 +609,7 @@ public:
 
 	UFUNCTION(NetMulticast,Unreliable)
 	void MultiChangeCollision(const FName& CollisionName);
-	// UPROPERTY(EditAnywhere,BlueprintReadWrite)
-	// ESchoolColor SchoolAffiliation;
 
-
-	//사운드
-
-	
-	//Todo 치트키 7번
 	UPROPERTY()
 	uint8 bIsSeven : 1;
 
@@ -646,11 +634,6 @@ public:
 	UFUNCTION(NetMulticast,Unreliable)
 	void MultiRPCAimRotation(bool IsAim);
 
-	UFUNCTION(NetMulticast,Unreliable)
-	void MultiRPCStopMove(bool IsStop);
-
-
-
 	UPROPERTY(Replicated)
 	uint8 bCanUseInput:1;
 
@@ -674,15 +657,18 @@ public:
 	void InteractionTimerFun();
 
 	UFUNCTION(Client,Unreliable)
-	void ClientTestRPC( AActor* NewInteractable);
+	void ClientRPCInteractionPotionUI( AActor* NewInteractable);
 
 
 
 	UFUNCTION(Client,Unreliable)
-	void ClientTestRPC2();
+	void ClientRPCHideInteractionUI();
 
 	UFUNCTION(Client,Unreliable)
-	void ClientTestRPC3();
+	void ClientRPCInteractionWidget();
+
+	// UFUNCTION(Client,Unreliable)
+	// void ClientRPCInteractionPotion();
 
 };
 

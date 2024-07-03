@@ -935,44 +935,7 @@ void ASPCharacterPlayer::ServerRPCSpectrumPotionSpawn_Implementation()
 	{
 		return;
 	}
-	if (!bIsSeven)
-	{
-		if (PlayerInventory->CountPotion(PlayerInventory->IsPotion("S_Potion")))
-		{
-			if (false == bIsSpawn)
-			{
-				FActorSpawnParameters SpawnParams;
-				SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-				SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
-				SpawnParams.Owner = this;
-				Potion = GetWorld()->SpawnActor<ASPSpectrumPotion>(ASPSpectrumPotion::StaticClass(),
-				                                                   GetMesh()->GetSocketLocation("Item_Socket"),
-				                                                   FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
-				Potion->SetOwner(this);
-
-				bIsSpawn = true;
-				if (Potion)
-				{
-					FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget,
-					                                          EAttachmentRule::SnapToTarget,
-					                                          EAttachmentRule::SnapToTarget, true);
-					Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
-				}
-			}
-			else
-			{
-				if (Potion)
-				{
-					FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget,
-					                                          EAttachmentRule::SnapToTarget,
-					                                          EAttachmentRule::SnapToTarget, true);
-					Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
-				}
-			}
-			PlayerInventory->RemoveAmountOfItem(PlayerInventory->FindPotionItem("S_Potion"), 1);
-		}
-	}
-	else
+	if (PlayerInventory->CountPotion(PlayerInventory->IsPotion("S_Potion")) || bIsSeven)
 	{
 		if (false == bIsSpawn)
 		{
@@ -983,46 +946,41 @@ void ASPCharacterPlayer::ServerRPCSpectrumPotionSpawn_Implementation()
 			Potion = GetWorld()->SpawnActor<ASPSpectrumPotion>(ASPSpectrumPotion::StaticClass(),
 			                                                   GetMesh()->GetSocketLocation("Item_Socket"),
 			                                                   FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
-			Potion->SetOwner(this);
 			bIsSpawn = true;
 			if (Potion)
 			{
-				FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+				FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget,
+				                                          EAttachmentRule::SnapToTarget,
 				                                          EAttachmentRule::SnapToTarget, true);
 				Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
 			}
 		}
-		else
+		if (!bIsSeven)
 		{
-			if (Potion)
-			{
-				FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
-				                                          EAttachmentRule::SnapToTarget, true);
-				Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
-			}
+			PlayerInventory->RemoveAmountOfItem(PlayerInventory->FindPotionItem("S_Potion"), 1);
 		}
 	}
 }
 
-void ASPCharacterPlayer::Interaction(const FInputActionValue& Value)
-{
-	TArray<AActor*> OverlappingActors;
-	GetOverlappingActors(OverlappingActors);
-
-	for (AActor* Actor : OverlappingActors)
-	{
-		//Todo if를 두번 해야하는건가?
-		if (Actor->GetClass()->ImplementsInterface(USPGetInterface::StaticClass()))
-		{
-			ISPGetInterface* PotionActor = Cast<ISPGetInterface>(Actor);
-			if (PotionActor)
-			{
-				PotionActor->GetPotion();
-				break;
-			}
-		}
-	}
-}
+// void ASPCharacterPlayer::Interaction(const FInputActionValue& Value)
+// {
+// 	TArray<AActor*> OverlappingActors;
+// 	GetOverlappingActors(OverlappingActors);
+//
+// 	for (AActor* Actor : OverlappingActors)
+// 	{
+// 		//Todo if를 두번 해야하는건가?
+// 		if (Actor->GetClass()->ImplementsInterface(USPGetInterface::StaticClass()))
+// 		{
+// 			ISPGetInterface* PotionActor = Cast<ISPGetInterface>(Actor);
+// 			if (PotionActor)
+// 			{
+// 				PotionActor->GetPotion();
+// 				break;
+// 			}
+// 		}
+// 	}
+// }
 
 void ASPCharacterPlayer::ToggleKeyWidget(const FInputActionValue& Value)
 {
@@ -1247,45 +1205,8 @@ void ASPCharacterPlayer::ServerRPCGreenPotionSpawn_Implementation()
 	{
 		return;
 	}
-	if (!bIsSeven)
-	{
-		if (PlayerInventory->CountPotion(PlayerInventory->IsPotion("G_Potion")))
-		{
-			if (false == bIsSpawn)
-			{
-				FActorSpawnParameters SpawnParams;
-				SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-				SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
-				SpawnParams.Owner = this;
-				Potion = GetWorld()->SpawnActor<ASPGreenPotion>(ASPGreenPotion::StaticClass(),
-				                                                GetMesh()->GetSocketLocation("Item_Socket"),
-				                                                FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
-				//Potion->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
-				//Potion->SetupAttachment(RootComponent);
-				//Potion->RegisterComponent();
-				bIsSpawn = true;
-				if (Potion)
-				{
-					FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget,
-					                                          EAttachmentRule::SnapToTarget,
-					                                          EAttachmentRule::SnapToTarget, true);
-					Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
-				}
-			}
-			else
-			{
-				if (Potion)
-				{
-					FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget,
-					                                          EAttachmentRule::SnapToTarget,
-					                                          EAttachmentRule::SnapToTarget, true);
-					Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
-				}
-			}
-			PlayerInventory->RemoveAmountOfItem(PlayerInventory->FindPotionItem("G_Potion"), 1);
-		}
-	}
-	else
+
+	if (PlayerInventory->CountPotion(PlayerInventory->IsPotion("G_Potion")) || bIsSeven)
 	{
 		if (false == bIsSpawn)
 		{
@@ -1296,25 +1217,19 @@ void ASPCharacterPlayer::ServerRPCGreenPotionSpawn_Implementation()
 			Potion = GetWorld()->SpawnActor<ASPGreenPotion>(ASPGreenPotion::StaticClass(),
 			                                                GetMesh()->GetSocketLocation("Item_Socket"),
 			                                                FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
-			//Potion->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
-			//Potion->SetupAttachment(RootComponent);
-			//Potion->RegisterComponent();
 			bIsSpawn = true;
+
 			if (Potion)
 			{
-				FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+				FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget,
+				                                          EAttachmentRule::SnapToTarget,
 				                                          EAttachmentRule::SnapToTarget, true);
 				Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
 			}
 		}
-		else
+		if (!bIsSeven)
 		{
-			if (Potion)
-			{
-				FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
-				                                          EAttachmentRule::SnapToTarget, true);
-				Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
-			}
+			PlayerInventory->RemoveAmountOfItem(PlayerInventory->FindPotionItem("G_Potion"), 1);
 		}
 	}
 }
@@ -1326,42 +1241,8 @@ void ASPCharacterPlayer::ServerRPCOrangePotionSpawn_Implementation()
 		return;
 	}
 
-	if (!bIsSeven)
-	{
-		if (PlayerInventory->CountPotion(PlayerInventory->IsPotion("O_Potion")))
-		{
-			if (false == bIsSpawn)
-			{
-				FActorSpawnParameters SpawnParams;
-				SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-				SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
-				SpawnParams.Owner = this;
-				Potion = GetWorld()->SpawnActor<ASPOrangePotion>(ASPOrangePotion::StaticClass(),
-				                                                 GetMesh()->GetSocketLocation("Item_Socket"),
-				                                                 FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
-				bIsSpawn = true;
-				if (Potion)
-				{
-					FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget,
-					                                          EAttachmentRule::SnapToTarget,
-					                                          EAttachmentRule::SnapToTarget, true);
-					Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
-				}
-			}
-			else
-			{
-				if (Potion)
-				{
-					FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget,
-					                                          EAttachmentRule::SnapToTarget,
-					                                          EAttachmentRule::SnapToTarget, true);
-					Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
-				}
-			}
-			PlayerInventory->RemoveAmountOfItem(PlayerInventory->FindPotionItem("O_Potion"), 1);
-		}
-	}
-	else
+
+	if (PlayerInventory->CountPotion(PlayerInventory->IsPotion("O_Potion")) || bIsSeven)
 	{
 		if (false == bIsSpawn)
 		{
@@ -1375,19 +1256,16 @@ void ASPCharacterPlayer::ServerRPCOrangePotionSpawn_Implementation()
 			bIsSpawn = true;
 			if (Potion)
 			{
-				FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+				FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget,
+				                                          EAttachmentRule::SnapToTarget,
 				                                          EAttachmentRule::SnapToTarget, true);
 				Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
 			}
 		}
-		else
+
+		if (!bIsSeven)
 		{
-			if (Potion)
-			{
-				FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
-				                                          EAttachmentRule::SnapToTarget, true);
-				Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
-			}
+			PlayerInventory->RemoveAmountOfItem(PlayerInventory->FindPotionItem("O_Potion"), 1);
 		}
 	}
 }
@@ -1398,42 +1276,8 @@ void ASPCharacterPlayer::ServerRPCPurplePotionSpawn_Implementation()
 	{
 		return;
 	}
-	if (!bIsSeven)
-	{
-		if (PlayerInventory->CountPotion(PlayerInventory->IsPotion("P_Potion")))
-		{
-			if (false == bIsSpawn)
-			{
-				FActorSpawnParameters SpawnParams;
-				SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-				SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
-				SpawnParams.Owner = this;
-				Potion = GetWorld()->SpawnActor<ASPPurplePotion>(ASPPurplePotion::StaticClass(),
-				                                                 GetMesh()->GetSocketLocation("Item_Socket"),
-				                                                 FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
-				bIsSpawn = true;
-				if (Potion)
-				{
-					FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget,
-					                                          EAttachmentRule::SnapToTarget,
-					                                          EAttachmentRule::SnapToTarget, true);
-					Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
-				}
-			}
-			else
-			{
-				if (Potion)
-				{
-					FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget,
-					                                          EAttachmentRule::SnapToTarget,
-					                                          EAttachmentRule::SnapToTarget, true);
-					Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
-				}
-			}
-			PlayerInventory->RemoveAmountOfItem(PlayerInventory->FindPotionItem("P_Potion"), 1);
-		}
-	}
-	else
+
+	if (PlayerInventory->CountPotion(PlayerInventory->IsPotion("P_Potion")) || bIsSeven)
 	{
 		if (false == bIsSpawn)
 		{
@@ -1447,19 +1291,15 @@ void ASPCharacterPlayer::ServerRPCPurplePotionSpawn_Implementation()
 			bIsSpawn = true;
 			if (Potion)
 			{
-				FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+				FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget,
+				                                          EAttachmentRule::SnapToTarget,
 				                                          EAttachmentRule::SnapToTarget, true);
 				Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
 			}
 		}
-		else
+		if (!bIsSeven)
 		{
-			if (Potion)
-			{
-				FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
-				                                          EAttachmentRule::SnapToTarget, true);
-				Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
-			}
+			PlayerInventory->RemoveAmountOfItem(PlayerInventory->FindPotionItem("P_Potion"), 1);
 		}
 	}
 }
@@ -1504,8 +1344,6 @@ void ASPCharacterPlayer::ClientRPCUpdateMakingPotion_Implementation(int Num)
 {
 	USPItemBase* ItemBase = PlayerInventory->FindMatchingItem(Num);
 	HUDWidget->MakingPotionWieget(ItemBase);
-	// int MakeNum = PlayerInventory->IsPotion(ItemBase->ID);
-	// UE_LOG(LogTemp, Warning, TEXT("ITEMBASE %d"), MakeNum);
 }
 
 void ASPCharacterPlayer::ServerRPCBackItem_Implementation(int Num, const int32 QuantityToDrop)
@@ -1613,7 +1451,7 @@ void ASPCharacterPlayer::ServerRPCThrowPotion_Implementation(bool IsThrowReady)
 		PlayThrowAnimation();
 		if (Potion)
 		{
-			GetController()->GetControlRotation();
+			//GetController()->GetControlRotation();
 			FVector ForwardVector = UKismetMathLibrary::GetForwardVector(GetController()->GetControlRotation());
 			float Mul = 1500.0f;
 			Potion->Throw((ForwardVector + FVector{0.0f, 0.0f, 0.4f}) * Mul);
@@ -1621,8 +1459,6 @@ void ASPCharacterPlayer::ServerRPCThrowPotion_Implementation(bool IsThrowReady)
 		bIsTurnReady = false;
 		bIsThrowReady = false;
 		MultiRPCAimRotation(false);
-		//GetCharacterMovement()->bOrientRotationToMovement = true;
-		//GetCharacterMovement()->bUseControllerDesiredRotation = false;
 		bIsSpawn = false;
 		Potion = nullptr;
 		for (APlayerController* PlayerController : TActorRange<APlayerController>(GetWorld()))
@@ -1654,8 +1490,6 @@ void ASPCharacterPlayer::ServerRPCThrowPotion_Implementation(bool IsThrowReady)
 			{
 				if (!PlayerController->IsLocalController())
 				{
-					//서버 아니고 공격 명령 내린 플레이어 컨트롤러도 아닌 시뮬레이트 프록시
-					//폰을 재생하는 플레이어 컨트롤러
 					ASPCharacterPlayer* OtherPlayer = Cast<ASPCharacterPlayer>(PlayerController->GetPawn());
 					if (OtherPlayer)
 					{
@@ -1801,36 +1635,24 @@ void ASPCharacterPlayer::UpdateItemData(AActor* InActor) //아이템 정보를 �
 {
 	if (InActor->Implements<USPInteractionInterface>()) // 상호작용 가능한 액터인지 검사한다. 
 	{
-		// if (InActor != InteractionData.CurrentInteractable)
-		// {
 		FoundInteractable(InActor);
 		bInteracionOnce = false;
 		return;
-		// }
 	}
 	ClearItemData(); // 상호작용할 수 있는 액터를 찾지 못했을 때의 처리를 수행
 }
 
 void ASPCharacterPlayer::FoundInteractable(AActor* NewInteractable) //상호작용 가능한 것이라면 데이터를 갱신해준다. 
 {
-	SP_LOG(LogSPNetwork, Log, TEXT("FoundInteractable"));
 	InteractionData.CurrentInteractable = NewInteractable;
 	TargetInteractable = NewInteractable;
-
-	//TargetInteractable = NewInteractable;
-	// if (HUDWidget)
-	// {
-	// 	HUDWidget->UpdateInteractionWidget(&TargetInteractable->InteractableData); //위젯을 띄운다. 
-	// }
-	ClientTestRPC(NewInteractable);
+	ClientRPCInteractionPotionUI(NewInteractable);
 }
 
-void ASPCharacterPlayer::ClientTestRPC_Implementation(AActor* NewInteractable)
+void ASPCharacterPlayer::ClientRPCInteractionPotionUI_Implementation(AActor* NewInteractable)
 {
-	TargetInteractable= NewInteractable;
-	//ISPInteractionInterface* Interface = Cast<ISPInteractionInterface>(NewInteractable);
-	bInteracionOnce=false;
-	//TargetInteractable;
+	TargetInteractable = NewInteractable;
+	bInteracionOnce = false;
 	if (HUDWidget)
 	{
 		HUDWidget->UpdateInteractionWidget(&TargetInteractable->InteractableData); //위젯을 띄운다. 
@@ -1840,18 +1662,12 @@ void ASPCharacterPlayer::ClientTestRPC_Implementation(AActor* NewInteractable)
 
 void ASPCharacterPlayer::ClearItemData() // 트리거에서 나간 경우 호출되는 함수 
 {
-	// if (HUDWidget)
-	// {
-	// 	HUDWidget->HideInteractionWidget();
-	// }
-	// // 인터렉션 정보 없앤다. 
-	// InteractionData.CurrentInteractable = nullptr;
 	TargetInteractable = nullptr;
 	bInteracionOnce = false;
-	ClientTestRPC2();
+	ClientRPCHideInteractionUI();
 }
 
-void ASPCharacterPlayer::ClientTestRPC2_Implementation()
+void ASPCharacterPlayer::ClientRPCHideInteractionUI_Implementation()
 {
 	if (HUDWidget)
 	{
@@ -1860,9 +1676,9 @@ void ASPCharacterPlayer::ClientTestRPC2_Implementation()
 	// 인터렉션 정보 없앤다. 
 }
 
-void ASPCharacterPlayer::ClientTestRPC3_Implementation()
+void ASPCharacterPlayer::ClientRPCInteractionWidget_Implementation()
 {
-	if(Cast<ASPMakePotion>(TargetInteractable.GetObject()))
+	if (Cast<ASPMakePotion>(TargetInteractable.GetObject()))
 	{
 		HUDWidget->UpdateMakingPotionWidget(true);
 		HUDWidget->ToggleMouse(true);
@@ -1872,9 +1688,6 @@ void ASPCharacterPlayer::ClientTestRPC3_Implementation()
 		HUDWidget->UpdateManualWidget(true);
 		HUDWidget->ToggleMouse(true);
 	}
-	// 인터렉션 정보 없앤다.
-	//TargetInteractable->Interact(this, HUDWidget); //바로 인터렉션 
-
 }
 
 void ASPCharacterPlayer::BeginInteract() //f 키를 누르면 호출
@@ -1899,7 +1712,6 @@ void ASPCharacterPlayer::BeginInteract() //f 키를 누르면 호출
 
 void ASPCharacterPlayer::Interact()
 {
-	SP_LOG(LogTemp,Log,TEXT("Interact"));
 	if (IsValid(TargetInteractable.GetObject()))
 	{
 		if (ASPPickup* Pickup = Cast<ASPPickup>(TargetInteractable.GetObject())) //인터렉션까지 들어왔는데 포션과 인터렉션인 경우?
@@ -1917,24 +1729,9 @@ void ASPCharacterPlayer::Interact()
 		}
 		else //인터렉션까지 들어왔는데 제작대 &  인터렉션인 경우 ? 서버 Interact로 갈 필요가 없다. 
 		{
-			SP_LOG(LogTemp, Log, TEXT("Interact"));
-
 			if (IsValid(TargetInteractable.GetObject()))
 			{
-				ClientTestRPC3();
-				// SP_LOG(LogTemp, Log, TEXT("IsValid"));
-				// if(Cast<ASPMakePotion>(TargetInteractable.GetObject()))
-				// {
-				// 	HUDWidget->UpdateMakingPotionWidget(true);
-				// 	HUDWidget->ToggleMouse(true);
-				// }
-				// else
-				// {
-				// 	
-				// }
-				
-
-				//TargetInteractable->Interact(this, HUDWidget); //바로 인터렉션 
+				ClientRPCInteractionWidget();
 			}
 		}
 	}
@@ -1953,12 +1750,6 @@ void ASPCharacterPlayer::ServerRPCInteract_Implementation()
 		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 	}
 	FTimerHandle TimerHandle;
-
-	// GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]()
-	// {
-	// 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
-	// 	bIsPicking = false;
-	// }, 1.5f, false);
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ASPCharacterPlayer::InteractionTimerFun, 1.5f, false);
 }
 
@@ -2246,45 +2037,9 @@ void ASPCharacterPlayer::ServerRPCBlackPotionSpawn_Implementation()
 	{
 		return;
 	}
-	if (!bIsSeven)
+	if (PlayerInventory->CountPotion(PlayerInventory->IsPotion("B_Potion")) || bIsSeven)
 	{
-		if (PlayerInventory->CountPotion(PlayerInventory->IsPotion("B_Potion")))
-		{
-			if (false == bIsSpawn)
-			{
-				FVector ItemLocation = GetMesh()->GetSocketLocation("Item_Socket");
-				FActorSpawnParameters SpawnParams;
-				SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-				SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
-				SpawnParams.Owner = this;
-				Potion = GetWorld()->SpawnActor<ASPBlackPotion>(ASPBlackPotion::StaticClass(),
-				                                                GetMesh()->GetSocketLocation("Item_Socket"),
-				                                                FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
-				bIsSpawn = true;
-				if (Potion)
-				{
-					FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget,
-					                                          EAttachmentRule::SnapToTarget,
-					                                          EAttachmentRule::SnapToTarget, true);
-					Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
-				}
-			}
-			else
-			{
-				if (Potion)
-				{
-					FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget,
-					                                          EAttachmentRule::SnapToTarget,
-					                                          EAttachmentRule::SnapToTarget, true);
-					Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
-				}
-			}
-			PlayerInventory->RemoveAmountOfItem(PlayerInventory->FindPotionItem("B_Potion"), 1);
-		}
-	}
-	else
-	{
-		if (false == bIsSpawn)
+		if (false == bIsSpawn) //스폰이 되지 않았다면 ? 
 		{
 			FVector ItemLocation = GetMesh()->GetSocketLocation("Item_Socket");
 			FActorSpawnParameters SpawnParams;
@@ -2292,24 +2047,20 @@ void ASPCharacterPlayer::ServerRPCBlackPotionSpawn_Implementation()
 			SpawnParams.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
 			SpawnParams.Owner = this;
 			Potion = GetWorld()->SpawnActor<ASPBlackPotion>(ASPBlackPotion::StaticClass(),
-			                                                GetMesh()->GetSocketLocation("Item_Socket"),
-			                                                FRotator{0.0f, 0.0f, 0.0f}, SpawnParams);
+			                                                ItemLocation,
+			                                                FRotator::ZeroRotator, SpawnParams);
 			bIsSpawn = true;
 			if (Potion)
 			{
-				FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+				FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget,
+				                                          EAttachmentRule::SnapToTarget,
 				                                          EAttachmentRule::SnapToTarget, true);
 				Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
 			}
 		}
-		else
+		if (!bIsSeven)
 		{
-			if (Potion)
-			{
-				FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
-				                                          EAttachmentRule::SnapToTarget, true);
-				Potion->AttachToComponent(GetMesh(), AttachmentRules, FName{"Item_Socket"});
-			}
+			PlayerInventory->RemoveAmountOfItem(PlayerInventory->FindPotionItem("B_Potion"), 1);
 		}
 	}
 }
@@ -2562,10 +2313,9 @@ void ASPCharacterPlayer::QuaterMove(const FInputActionValue& Value)
 	}
 }
 
-//////////////////////////////////////
 void ASPCharacterPlayer::SevenKey(const FInputActionValue& Value)
 {
-	bIsSeven = true;
+	//bIsSeven = true;
 	ServerRPCSeven();
 }
 
@@ -2578,11 +2328,6 @@ void ASPCharacterPlayer::ServerRPCSeven_Implementation()
 void ASPCharacterPlayer::ShowTargetUI(bool ShowUI)
 {
 	OnAimChanged.Broadcast(ShowUI);
-}
-
-
-void ASPCharacterPlayer::MultiRPCStopMove_Implementation(bool IsStop)
-{
 }
 
 void ASPCharacterPlayer::MultiRPCAimRotation_Implementation(bool IsAim)
